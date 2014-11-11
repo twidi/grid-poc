@@ -44,6 +44,52 @@ var Manipulator = {
      */
     XMLGridToXMLString: function(XMLGrid) {
         return (new JXON.XMLSerializer()).serializeToString(XMLGrid);
+    },
+
+    /**
+     * Create a new grid from scratch
+     * @param  {string} name - The name of the new grid to create
+     * @param  {integer} space - The space between modules in the new grid
+     * @return {JSON} The JSON version of the new created grid
+     */
+    createBaseGrid: function(name, space) {
+        return {
+            name: name,
+            space: space + 'px',
+            rows: []
+        };
+    },
+
+    /**
+     * Add a row to the given grid node. Update the node in place.
+     * @param {object} node - The JSON grid node on which to add a row
+     * @return {object} The added row
+     */
+    addRow: function(node) {
+        if (_.isUndefined(node.rows)) {
+            node.rows = [];
+        }
+        var row = {};
+        node.rows.push(row);
+        return row;
+    },
+
+    /**
+     * Add a cell to the given grid row. Update the row in place.
+     * @param {object} row - The JSON grid row on which to add a cell
+     * @param {string} type - The type of cell to add: 'grid' or 'module'
+     * @return {object} The added cell, with the type and an empty 'content' object
+     */
+    addCell: function(row, type) {
+        if (_.isUndefined(row.cells)) {
+            row.cells = [];
+        }
+        var cell = {
+            type: type,
+            content: {}
+        };
+        row.cells.push(cell);
+        return cell;
     }
 };
 
