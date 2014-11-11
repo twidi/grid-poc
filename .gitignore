@@ -10,3 +10,6 @@ build/*.css
 build/*.js
 dist/*.css
 dist/*.js
+
+# Ignore doc directory
+/doc/

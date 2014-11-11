@@ -18,9 +18,14 @@ Read more about FLUX over at [Facebook Flux](http://facebook.github.io/flux/) an
 ### Minify the code, ready for production
 * Run `gulp deploy`
 
+### Documentation
+* run `gulp doc`
+* Go to the `doc` folder in your browser
+
 ### Directory
 * **build/**: Where your automatically builds to. This is where you launch your app in development
 * **dist/**: Where the deployed code exists, ready for production
+* **doc/**: Where the builded doc is saved
 * **styles/**: Where you put your css files
 * **specs/**: Where you put your test files
 * **gulpfile**: Gulp configuration
