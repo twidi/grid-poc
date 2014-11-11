@@ -1,2 +1,12 @@
+# Node downloaded packages
 node_modules
+npm-debug.log
+
+# Used for guard-livereload
 Gemfile.lock
+
+# Don't commit builded files
+build/*.css
+build/*.js
+dist/*.css
+dist/*.js
