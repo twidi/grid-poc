@@ -108,7 +108,8 @@ describe("Manipulator", function() {
     var expected = {
         name: 'foo',
         space: '5px',
-        rows: []
+        type: 'grid',
+        content: {}
     };
     expect(_.isEqual(grid, expected)).toEqual(true);
   });
@@ -121,7 +122,10 @@ describe("Manipulator", function() {
     var expected = {
         name: 'foo',
         space: '5px',
-        rows: [{}]
+        type: 'grid',
+        content: {
+            rows: [{}]
+        }
     };
     expect(_.isEqual(grid, expected)).toEqual(true);
 
@@ -130,21 +134,88 @@ describe("Manipulator", function() {
     var expected = {
         name: 'foo',
         space: '5px',
-        rows: [{}, {}]
+        type: 'grid',
+        content: {
+            rows: [{}, {}]
+        }
     };
     expect(_.isEqual(grid, expected)).toEqual(true);
 
     // without the "rows" key, and check that row is returned by reference
-    delete grid.rows;
+    delete grid.content.rows;
     var row = Manipulator.addRow(grid);
     row.foo = 'bar'
 
     var expected = {
         name: 'foo',
         space: '5px',
-        rows: [{foo: 'bar'}]
+        type: 'grid',
+        content: {
+            rows: [{foo: 'bar'}]
+        }
     };
     expect(_.isEqual(grid, expected)).toEqual(true);
+
+    // transform a non-grid node
+    delete row.foo;
+    var cell = Manipulator.addCell(row, 'module');
+    cell.content.foo = 'bar';
+
+    var expected = {
+        name: 'foo',
+        space: '5px',
+        type: 'grid',
+        content: {
+            rows: [
+                {
+                    cells: [
+                        {
+                            type: 'module',
+                            content: {foo: 'bar'}
+                        }
+                    ]
+                }
+            ]
+        }
+    };
+    expect(_.isEqual(grid, expected)).toEqual(true);
+
+
+    var row = Manipulator.addRow(cell);
+    row.bar = 'foo';
+
+    var expected = {
+        name: 'foo',
+        space: '5px',
+        type: 'grid',
+        content: {
+            rows: [
+                {
+                    cells: [
+                        {
+                            type: 'grid',
+                            content: {
+                                rows:[
+                                    {
+                                        cells: [
+                                            {
+                                                type: 'module',
+                                                content: {foo: 'bar'}
+                                            },
+                                        ]
+                                    },
+                                    {bar: 'foo'}
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    };
+
+    expect(_.isEqual(grid, expected)).toEqual(true);
+
   });
 
   it("should add a cell", function() {
@@ -187,71 +258,74 @@ describe("Manipulator", function() {
     var grid = Manipulator.createBaseGrid('foo', 5);
     var row1 = Manipulator.addRow(grid);
         var cell1 = Manipulator.addCell(row1, 'grid');
-            var row2 = Manipulator.addRow(cell1.content);
+            var row2 = Manipulator.addRow(cell1);
                 Manipulator.addCell(row2, 'module').content.path = 'path.to.module1';
                 Manipulator.addCell(row2, 'module').content.path = 'path.to.module2';
-            var row3 = Manipulator.addRow(cell1.content);
+            var row3 = Manipulator.addRow(cell1);
                 Manipulator.addCell(row3, 'module').content.path = 'path.to.module3';
                 var cell2 = Manipulator.addCell(row3, 'grid');
-                    var row4 = Manipulator.addRow(cell2.content);
+                    var row4 = Manipulator.addRow(cell2);
                         Manipulator.addCell(row4, 'module').content.path = 'path.to.module4';
         var cell3 = Manipulator.addCell(row1, 'grid');
 
     var expected = {
         name:"foo",
         space:"5px",
-        rows:[
-            {
-                cells:[
-                    {
-                        type:"grid",
-                        content:{
-                            rows:[
-                                {
-                                    cells: [
-                                        {
-                                            type:"module",
-                                            content: {path: "path.to.module1"}
-                                        },
-                                        {
-                                            type:"module",
-                                            content: {path: "path.to.module2"}
-                                        }
-                                    ]
-                                },
-                                {
-                                    cells:[
-                                        {
-                                            type:"module",
-                                            content: {path: "path.to.module3"}
-                                        },
-                                        {
-                                            type:"grid",
-                                            content:{
-                                                rows:[
-                                                    {
-                                                        cells:[
-                                                            {
-                                                                type:"module",
-                                                                content: {path: "path.to.module4"}
-                                                            }
-                                                        ]
-                                                    }
-                                                ]
+        type:"grid",
+        content: {
+            rows:[
+                {
+                    cells:[
+                        {
+                            type:"grid",
+                            content:{
+                                rows:[
+                                    {
+                                        cells: [
+                                            {
+                                                type:"module",
+                                                content: {path: "path.to.module1"}
+                                            },
+                                            {
+                                                type:"module",
+                                                content: {path: "path.to.module2"}
                                             }
-                                        }
-                                    ]
-                                }
-                            ]
+                                        ]
+                                    },
+                                    {
+                                        cells:[
+                                            {
+                                                type:"module",
+                                                content: {path: "path.to.module3"}
+                                            },
+                                            {
+                                                type:"grid",
+                                                content:{
+                                                    rows:[
+                                                        {
+                                                            cells:[
+                                                                {
+                                                                    type:"module",
+                                                                    content: {path: "path.to.module4"}
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            type:"grid",
+                            content:{}
                         }
-                    },
-                    {
-                        type:"grid",
-                        content:{}
-                    }
-                ]
-            }
-        ]
+                    ]
+                }
+            ]
+        }
     };
 
     expect(_.isEqual(grid, expected)).toEqual(true);
