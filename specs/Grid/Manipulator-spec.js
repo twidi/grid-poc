@@ -99,7 +99,7 @@ describe("Manipulator", function() {
     expect(subChild.childNodes.length).toEqual(0);
 
     var j2 = Manipulator.XMLGridToJSON(x);
-    expect(_.isEqual(j2, j)).toEqual(true);
+    expect(j2).toEqual(j);
 
   });
 
@@ -108,10 +108,10 @@ describe("Manipulator", function() {
     var expected = {
         name: 'foo',
         space: '5px',
-        type: 'grid',
+        type: 'mainGrid',
         content: {}
     };
-    expect(_.isEqual(grid, expected)).toEqual(true);
+    expect(grid).toEqual(expected);
   });
 
   it("should add a row", function() {
@@ -122,24 +122,24 @@ describe("Manipulator", function() {
     var expected = {
         name: 'foo',
         space: '5px',
-        type: 'grid',
+        type: 'mainGrid',
         content: {
             rows: [{}]
         }
     };
-    expect(_.isEqual(grid, expected)).toEqual(true);
+    expect(grid).toEqual(expected);
 
     // with a rows list with one row
     Manipulator.addRow(grid);
     var expected = {
         name: 'foo',
         space: '5px',
-        type: 'grid',
+        type: 'mainGrid',
         content: {
             rows: [{}, {}]
         }
     };
-    expect(_.isEqual(grid, expected)).toEqual(true);
+    expect(grid).toEqual(expected);
 
     // without the "rows" key, and check that row is returned by reference
     delete grid.content.rows;
@@ -149,12 +149,12 @@ describe("Manipulator", function() {
     var expected = {
         name: 'foo',
         space: '5px',
-        type: 'grid',
+        type: 'mainGrid',
         content: {
             rows: [{foo: 'bar'}]
         }
     };
-    expect(_.isEqual(grid, expected)).toEqual(true);
+    expect(grid).toEqual(expected);
 
     // transform a non-grid node
     delete row.foo;
@@ -164,7 +164,7 @@ describe("Manipulator", function() {
     var expected = {
         name: 'foo',
         space: '5px',
-        type: 'grid',
+        type: 'mainGrid',
         content: {
             rows: [
                 {
@@ -178,8 +178,7 @@ describe("Manipulator", function() {
             ]
         }
     };
-    expect(_.isEqual(grid, expected)).toEqual(true);
-
+    expect(grid).toEqual(expected);
 
     var row = Manipulator.addRow(cell);
     row.bar = 'foo';
@@ -187,7 +186,7 @@ describe("Manipulator", function() {
     var expected = {
         name: 'foo',
         space: '5px',
-        type: 'grid',
+        type: 'mainGrid',
         content: {
             rows: [
                 {
@@ -214,7 +213,7 @@ describe("Manipulator", function() {
         }
     };
 
-    expect(_.isEqual(grid, expected)).toEqual(true);
+    expect(grid).toEqual(expected);
 
   });
 
@@ -229,7 +228,7 @@ describe("Manipulator", function() {
             {type: 'grid', content: {}}
         ]
     };
-    expect(_.isEqual(row, expected)).toEqual(true);
+    expect(row).toEqual(expected);
 
     // with a cells list with one cell
     Manipulator.addCell(row, 'module');
@@ -239,7 +238,7 @@ describe("Manipulator", function() {
             {type: 'module', content: {}}
         ]
     };
-    expect(_.isEqual(row, expected)).toEqual(true);
+    expect(row).toEqual(expected);
 
     // without the "rows" key, and check that row is returned by reference
     delete row.cells;
@@ -251,7 +250,7 @@ describe("Manipulator", function() {
             {type: 'grid', content: {foo: 'bar'}}
         ]
     };
-    expect(_.isEqual(row, expected)).toEqual(true);
+    expect(row).toEqual(expected);
   });
 
   it("should create a full grid", function() {
@@ -271,7 +270,7 @@ describe("Manipulator", function() {
     var expected = {
         name:"foo",
         space:"5px",
-        type:"grid",
+        type:"mainGrid",
         content: {
             rows:[
                 {
@@ -328,7 +327,67 @@ describe("Manipulator", function() {
         }
     };
 
-    expect(_.isEqual(grid, expected)).toEqual(true);
+    expect(grid).toEqual(expected);
   });
+
+    it("should clean a node with one row and one cell", function() {
+        var grid = Manipulator.createBaseGrid('test');
+        var row = Manipulator.addRow(grid);
+        var cell = Manipulator.addCell(row, type='module');
+        cell.content.foo = 'bar';
+
+        // do not update the main grid
+        Manipulator.cleanNode(grid);
+        var expected = {
+            name: 'test',
+            space: '5px',
+            type: 'mainGrid',
+            content: {
+                rows: [
+                    {
+                        cells: [
+                            {
+                                type: 'module',
+                                content: { foo: 'bar' }
+                            }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        expect(grid).toEqual(expected);
+
+        // add a row (and convert to cell to have rows), and delete it
+        row = Manipulator.addRow(cell);
+        // remove the last row, we should have one
+        cell.content.rows.pop()
+
+        // check we have the correct cell
+        var expectedCell = {
+            type: 'grid',
+            content: {
+                rows: [
+                    {
+                        cells: [
+                            {
+                                type: 'module',
+                                content: { foo: 'bar' }
+                            }
+                        ]
+                    }
+                ]
+            }
+        };
+        expect(cell).toEqual(expectedCell);
+
+        // then clean
+        Manipulator.cleanNode(cell);
+
+        // we should be back to the original grid
+        expect(cell).toEqual(expected.content.rows[0].cells[0]);
+        expect(grid).toEqual(expected);
+
+    });
 
 });
