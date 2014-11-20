@@ -57,9 +57,9 @@ var Manipulator = {
      */
     createBaseGrid: function(name, space) {
         return {
-            name: name,
-            space: (space || 5) + 'px',
-            type: 'mainGrid',
+            _name: name,
+            _space: (space || 5) + 'px',
+            _type: 'mainGrid',
             content: {}
         };
     },
@@ -73,12 +73,12 @@ var Manipulator = {
     addRow: function(node) {
         /* If this is not a grid node, create a first row this the actual
          * content in a cell */
-        if (!this.reGrid.test(node.type)) {
+        if (!this.reGrid.test(node._type)) {
             // keep node data to insert in cell later
-            var cell_type = node.type;
+            var cell_type = node._type;
             var cell_content = node.content;
             // transform the current node into a grid one
-            node.type = 'grid';
+            node._type = 'grid';
             node.content = {};
             // add a row to hold the cell with old node data
             var cell_row = this.addRow(node);
@@ -108,7 +108,7 @@ var Manipulator = {
             row.cells = [];
         }
         var cell = {
-            type: type,
+            _type: type,
             content: {}
         };
         row.cells.push(cell);
@@ -121,21 +121,22 @@ var Manipulator = {
      * @param  {object} node - The JSON grid node to clean
      */
     cleanNode: function(node) {
-        if (node.type == 'grid'
+        if (node._type == 'grid'
                 && node.content.rows
                 && node.content.rows.length == 1
                 && (!node.content.rows[0].cells || node.content.rows[0].cells.length == 1)) {
             if (!node.content.rows[0].cells || node.content.rows[0].cells.length < 1) {
                 // manage the case of a row with no cells
-                node.type = 'unknown';
+                node._type = 'unknown';
                 node.content = {};
             } else {
                 var cell = node.content.rows[0].cells.shift();
-                node.type = cell.type;
+                node._type = cell._type;
                 node.content = cell.content;
             }
         }
-    }
+    },
 };
 
+window.Manipulator = Manipulator;
 module.exports = Manipulator;

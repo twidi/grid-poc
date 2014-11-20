@@ -106,9 +106,9 @@ describe("Manipulator", function() {
   it("should create a new grid", function() {
     var grid = Manipulator.createBaseGrid('foo', 5);
     var expected = {
-        name: 'foo',
-        space: '5px',
-        type: 'mainGrid',
+        _name: 'foo',
+        _space: '5px',
+        _type: 'mainGrid',
         content: {}
     };
     expect(grid).toEqual(expected);
@@ -120,9 +120,9 @@ describe("Manipulator", function() {
     // with an empty rows list
     Manipulator.addRow(grid);
     var expected = {
-        name: 'foo',
-        space: '5px',
-        type: 'mainGrid',
+        _name: 'foo',
+        _space: '5px',
+        _type: 'mainGrid',
         content: {
             rows: [{}]
         }
@@ -132,9 +132,9 @@ describe("Manipulator", function() {
     // with a rows list with one row
     Manipulator.addRow(grid);
     var expected = {
-        name: 'foo',
-        space: '5px',
-        type: 'mainGrid',
+        _name: 'foo',
+        _space: '5px',
+        _type: 'mainGrid',
         content: {
             rows: [{}, {}]
         }
@@ -144,34 +144,34 @@ describe("Manipulator", function() {
     // without the "rows" key, and check that row is returned by reference
     delete grid.content.rows;
     var row = Manipulator.addRow(grid);
-    row.foo = 'bar'
+    row._foo = 'bar'
 
     var expected = {
-        name: 'foo',
-        space: '5px',
-        type: 'mainGrid',
+        _name: 'foo',
+        _space: '5px',
+        _type: 'mainGrid',
         content: {
-            rows: [{foo: 'bar'}]
+            rows: [{_foo: 'bar'}]
         }
     };
     expect(grid).toEqual(expected);
 
     // transform a non-grid node
-    delete row.foo;
+    delete row._foo;
     var cell = Manipulator.addCell(row, 'module');
-    cell.content.foo = 'bar';
+    cell.content._foo = 'bar';
 
     var expected = {
-        name: 'foo',
-        space: '5px',
-        type: 'mainGrid',
+        _name: 'foo',
+        _space: '5px',
+        _type: 'mainGrid',
         content: {
             rows: [
                 {
                     cells: [
                         {
-                            type: 'module',
-                            content: {foo: 'bar'}
+                            _type: 'module',
+                            content: {_foo: 'bar'}
                         }
                     ]
                 }
@@ -184,22 +184,22 @@ describe("Manipulator", function() {
     row.bar = 'foo';
 
     var expected = {
-        name: 'foo',
-        space: '5px',
-        type: 'mainGrid',
+        _name: 'foo',
+        _space: '5px',
+        _type: 'mainGrid',
         content: {
             rows: [
                 {
                     cells: [
                         {
-                            type: 'grid',
+                            _type: 'grid',
                             content: {
                                 rows:[
                                     {
                                         cells: [
                                             {
-                                                type: 'module',
-                                                content: {foo: 'bar'}
+                                                _type: 'module',
+                                                content: {_foo: 'bar'}
                                             },
                                         ]
                                     },
@@ -225,7 +225,7 @@ describe("Manipulator", function() {
     Manipulator.addCell(row, 'grid');
     var expected = {
         cells: [
-            {type: 'grid', content: {}}
+            {_type: 'grid', content: {}}
         ]
     };
     expect(row).toEqual(expected);
@@ -234,8 +234,8 @@ describe("Manipulator", function() {
     Manipulator.addCell(row, 'module');
     var expected = {
         cells: [
-            {type: 'grid', content: {}},
-            {type: 'module', content: {}}
+            {_type: 'grid', content: {}},
+            {_type: 'module', content: {}}
         ]
     };
     expect(row).toEqual(expected);
@@ -243,11 +243,11 @@ describe("Manipulator", function() {
     // without the "rows" key, and check that row is returned by reference
     delete row.cells;
     var cell = Manipulator.addCell(row, 'grid');
-    cell.content.foo = 'bar';
+    cell.content._foo = 'bar';
 
     var expected = {
         cells: [
-            {type: 'grid', content: {foo: 'bar'}}
+            {_type: 'grid', content: {_foo: 'bar'}}
         ]
     };
     expect(row).toEqual(expected);
@@ -258,54 +258,54 @@ describe("Manipulator", function() {
     var row1 = Manipulator.addRow(grid);
         var cell1 = Manipulator.addCell(row1, 'grid');
             var row2 = Manipulator.addRow(cell1);
-                Manipulator.addCell(row2, 'module').content.path = 'path.to.module1';
-                Manipulator.addCell(row2, 'module').content.path = 'path.to.module2';
+                Manipulator.addCell(row2, 'module').content._path = 'path.to.module1';
+                Manipulator.addCell(row2, 'module').content._path = 'path.to.module2';
             var row3 = Manipulator.addRow(cell1);
-                Manipulator.addCell(row3, 'module').content.path = 'path.to.module3';
+                Manipulator.addCell(row3, 'module').content._path = 'path.to.module3';
                 var cell2 = Manipulator.addCell(row3, 'grid');
                     var row4 = Manipulator.addRow(cell2);
-                        Manipulator.addCell(row4, 'module').content.path = 'path.to.module4';
+                        Manipulator.addCell(row4, 'module').content._path = 'path.to.module4';
         var cell3 = Manipulator.addCell(row1, 'grid');
 
     var expected = {
-        name:"foo",
-        space:"5px",
-        type:"mainGrid",
+        _name:"foo",
+        _space:"5px",
+        _type:"mainGrid",
         content: {
             rows:[
                 {
                     cells:[
                         {
-                            type:"grid",
+                            _type:"grid",
                             content:{
                                 rows:[
                                     {
                                         cells: [
                                             {
-                                                type:"module",
-                                                content: {path: "path.to.module1"}
+                                                _type:"module",
+                                                content: {_path: "path.to.module1"}
                                             },
                                             {
-                                                type:"module",
-                                                content: {path: "path.to.module2"}
+                                                _type:"module",
+                                                content: {_path: "path.to.module2"}
                                             }
                                         ]
                                     },
                                     {
                                         cells:[
                                             {
-                                                type:"module",
-                                                content: {path: "path.to.module3"}
+                                                _type:"module",
+                                                content: {_path: "path.to.module3"}
                                             },
                                             {
-                                                type:"grid",
+                                                _type:"grid",
                                                 content:{
                                                     rows:[
                                                         {
                                                             cells:[
                                                                 {
-                                                                    type:"module",
-                                                                    content: {path: "path.to.module4"}
+                                                                    _type:"module",
+                                                                    content: {_path: "path.to.module4"}
                                                                 }
                                                             ]
                                                         }
@@ -318,7 +318,7 @@ describe("Manipulator", function() {
                             }
                         },
                         {
-                            type:"grid",
+                            _type:"grid",
                             content:{}
                         }
                     ]
@@ -334,21 +334,21 @@ describe("Manipulator", function() {
         var grid = Manipulator.createBaseGrid('test');
         var row = Manipulator.addRow(grid);
         var cell = Manipulator.addCell(row, type='module');
-        cell.content.foo = 'bar';
+        cell.content._foo = 'bar';
 
         // do not update the main grid
         Manipulator.cleanNode(grid);
         var expected = {
-            name: 'test',
-            space: '5px',
-            type: 'mainGrid',
+            _name: 'test',
+            _space: '5px',
+            _type: 'mainGrid',
             content: {
                 rows: [
                     {
                         cells: [
                             {
-                                type: 'module',
-                                content: { foo: 'bar' }
+                                _type: 'module',
+                                content: { _foo: 'bar' }
                             }
                         ]
                     }
@@ -365,14 +365,14 @@ describe("Manipulator", function() {
 
         // check we have the correct cell
         var expectedCell = {
-            type: 'grid',
+            _type: 'grid',
             content: {
                 rows: [
                     {
                         cells: [
                             {
-                                type: 'module',
-                                content: { foo: 'bar' }
+                                _type: 'module',
+                                content: { _foo: 'bar' }
                             }
                         ]
                     }
