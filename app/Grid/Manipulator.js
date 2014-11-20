@@ -1,6 +1,6 @@
 /** @module Grid */
 
-var JXON = require('../libs/JXON');
+var JXON = require('../../vendors/JXON.js');
 var _ = require('lodash');
 
 /** 
