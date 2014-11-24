@@ -23,8 +23,6 @@ var Manipulator = {
          *
          * @param {string} [message] - The raised message
          *
-         * @returns {} - Return an "InvalidType" object, which is a subclass of "Error"
-         *
          * @property {string} name - The name of the exception: "InvalidType"
          * @property {string} message - The message passed when the exception was raised, or a default value
          */
@@ -32,6 +30,21 @@ var Manipulator = {
             this.name = 'InvalidType';
             this.message = message || 'Invalid type detected';
         },
+
+        /**
+         * Exception raised when an inconsistency occurs
+         * This is a subclass of "Error"
+         * @class
+         *
+         * @param {string} [message] - The raised message
+         *
+         * @property {string} name - The name of the exception: "Inconsistency"
+         * @property {string} message - The message passed when the exception was raised, or a default value
+         */
+        Inconsistency: function (message) {
+            this.name = 'Inconsistency';
+            this.message = message || 'Inconsistency detected';
+        }
     },
 
     // Nodes types that can directly accept rows
@@ -116,16 +129,24 @@ var Manipulator = {
      * Will transform a non-grid node into a grid one, with a first row containing the actuel content
      *
      * @param {XML} node - The XML grid node on which to add a row (should contain a "type", which must be "mainGrid" or "grid")
+     * @param {XML} [beforeRow] - The XML node of a row, on the given node, where to insert the new row before. If not given, the new row is added at the end. Cannot be used if the current type of the node is not "grid".
      *
      * @returns {XML} - The added row
+     *
+     * @throws {module:Grid~Manipulator.Exceptions.Inconsistency} If "beforeRow" is given but the node is not yet a grid
+     * @throws {module:Grid~Manipulator.Exceptions.Inconsistency} If "beforeRow" is not in the content of the "node"
      */
-    addRow: function(node) {
+    addRow: function(node, beforeRow) {
         // we insert the row in the content node
         var contentNode = node.querySelector(':scope > content');
         /* If this is not a grid node, create a first row this the actual
          * content in a cell */
         var nodeType = node.getAttribute('type');
         if (!this.reGrid.test(nodeType)) {
+            // not compatible when we ask for inserting the new row before a new one
+            if (beforeRow) {
+                throw new this.Exceptions.Inconsistency("Cannot insert before a row if there is no row");
+            }
             // remove the node from its parent to move it into the future new cell
             node.removeChild(contentNode);
             // transform the current node into a grid one
@@ -139,8 +160,15 @@ var Manipulator = {
             // it's here we'll attach the row
             contentNode = newContentNode;
         };
+        if (beforeRow && beforeRow.parentNode != contentNode) {
+            throw new this.Exceptions.Inconsistency("The 'beforeRow' must be a child of the content of the 'node'");
+        }
         var row = node.ownerDocument.createElement('rows');
-        contentNode.appendChild(row);
+        if (beforeRow) {
+            contentNode.insertBefore(row, beforeRow);
+        } else {
+            contentNode.appendChild(row);
+        }
         return row;
     },
 
@@ -209,8 +237,13 @@ var Manipulator = {
 };
 
 // Exceptions must be based on the Error class
-Manipulator.Exceptions.InvalidType.prototype = new Error();
-Manipulator.Exceptions.InvalidType.prototype.constructor = Manipulator.Exceptions.InvalidType;
+_([
+    Manipulator.Exceptions.InvalidType,
+    Manipulator.Exceptions.Inconsistency,
+]).forEach(function(exceptionClass) {
+    exceptionClass.prototype = new Error();
+    exceptionClass.prototype.constructor = exceptionClass;
+});
 
 
 window.Manipulator = Manipulator;

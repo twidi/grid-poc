@@ -188,6 +188,64 @@ describe("Manipulator", function() {
 
   });
 
+  it("should add a row before another one", function() {
+    var grid = Manipulator.createBaseGrid('foo', 5);
+    var row1 = Manipulator.addRow(grid.firstChild);
+    row1.setAttribute('created', 'first');
+
+    // add a row before the first one
+    var row2 = Manipulator.addRow(grid.firstChild, row1);
+    row2.setAttribute('inserted', 'before');
+
+    var expected =
+        '<grid name="foo" space="5px" type="mainGrid">' +
+            '<content>' +
+                '<rows inserted="before"/>' +
+                '<rows created="first"/>' +
+            '</content>' +
+        '</grid>';
+    expect(Manipulator.XMLGridToXMLString(grid)).toEqual(expected);
+
+    // add a module cell and add a row asking to set it before another
+    var cell = Manipulator.addCell(row1, 'module');
+
+    // this should fail
+    expect(function() {
+        Manipulator.addRow(cell, row1)
+    }).toThrowError(Manipulator.Exceptions.Inconsistency, "Cannot insert before a row if there is no row");
+
+    // transform this cell to have rows and try to use one from the first level for the beforeRow argument
+    var subRow1 = Manipulator.addRow(cell);
+    subRow1.setAttribute('created', 'first (sub-row)');
+
+    // this should fail
+    expect(function() {
+        Manipulator.addRow(cell, row1)
+    }).toThrowError(Manipulator.Exceptions.Inconsistency, "The 'beforeRow' must be a child of the content of the 'node'");
+
+    // now a working test but at a sublevel, to be sure
+    var subRow2 = Manipulator.addRow(cell, subRow1);
+    subRow2.setAttribute('inserted', 'before (sub-row)');
+
+    var expected =
+        '<grid name="foo" space="5px" type="mainGrid">' +
+            '<content>' +
+                '<rows inserted="before"/>' +
+                '<rows created="first">' +
+                    '<cells type="grid">' +
+                        '<content>' +
+                            '<rows><cells type="module"><content/></cells></rows>' +
+                            '<rows inserted="before (sub-row)"/>' +
+                            '<rows created="first (sub-row)"/>' +
+                        '</content>' +
+                    '</cells>' +
+                '</rows>' +
+            '</content>' +
+        '</grid>';
+    expect(Manipulator.XMLGridToXMLString(grid)).toEqual(expected);
+
+  });
+
   it("should add a cell", function() {
     var grid = Manipulator.createBaseGrid('foo', 5);
     var row = Manipulator.addRow(grid.firstChild);
