@@ -105,167 +105,160 @@ describe("Manipulator", function() {
 
   it("should create a new grid", function() {
     var grid = Manipulator.createBaseGrid('foo', 5);
-    var expected = {
-        _name: 'foo',
-        _space: '5px',
-        _type: 'mainGrid',
-        content: {}
-    };
-    expect(grid).toEqual(expected);
+
+    var expected =
+        '<grid name="foo" space="5px" type="mainGrid">' +
+            '<content/>' +
+        '</grid>';
+    expect(Manipulator.XMLGridToXMLString(grid)).toEqual(expected);
   });
 
   it("should add a row", function() {
     var grid = Manipulator.createBaseGrid('foo', 5);
 
     // with an empty rows list
-    Manipulator.addRow(grid);
-    var expected = {
-        _name: 'foo',
-        _space: '5px',
-        _type: 'mainGrid',
-        content: {
-            rows: [{}]
-        }
-    };
-    expect(grid).toEqual(expected);
+    Manipulator.addRow(grid.firstChild); // the grid is the first child of the "root document"
+    var expected =
+        '<grid name="foo" space="5px" type="mainGrid">' +
+            '<content>' +
+                '<rows/>' +
+            '</content>' +
+        '</grid>';
+    expect(Manipulator.XMLGridToXMLString(grid)).toEqual(expected);
 
     // with a rows list with one row
-    Manipulator.addRow(grid);
-    var expected = {
-        _name: 'foo',
-        _space: '5px',
-        _type: 'mainGrid',
-        content: {
-            rows: [{}, {}]
-        }
-    };
-    expect(grid).toEqual(expected);
+    var row = Manipulator.addRow(grid.firstChild);
+    var expected =
+        '<grid name="foo" space="5px" type="mainGrid">' +
+            '<content>' +
+                '<rows/>' +
+                '<rows/>' +
+            '</content>' +
+        '</grid>';
+    expect(Manipulator.XMLGridToXMLString(grid)).toEqual(expected);
 
-    // without the "rows" key, and check that row is returned by reference
-    delete grid.content.rows;
-    var row = Manipulator.addRow(grid);
-    row._foo = 'bar'
+    // check that we really have the real row
+    row.setAttribute('foo', 'bar');
+    var expected =
+        '<grid name="foo" space="5px" type="mainGrid">' +
+            '<content>' +
+                '<rows/>' +
+                '<rows foo="bar"/>' +
+            '</content>' +
+        '</grid>';
+    expect(Manipulator.XMLGridToXMLString(grid)).toEqual(expected);
 
-    var expected = {
-        _name: 'foo',
-        _space: '5px',
-        _type: 'mainGrid',
-        content: {
-            rows: [{_foo: 'bar'}]
-        }
-    };
-    expect(grid).toEqual(expected);
-
-    // transform a non-grid node
-    delete row._foo;
+    // transform a non-grid node (we have to create a cell for that)
+    grid = Manipulator.createBaseGrid('foo', 5);
+    row = Manipulator.addRow(grid.firstChild);
     var cell = Manipulator.addCell(row, 'module');
-    cell.content._foo = 'bar';
+    cell.setAttribute('foo', 'bar');
+    cell.querySelector(':scope > content').setAttribute('bar', 'baz');
+    var expected =
+        '<grid name="foo" space="5px" type="mainGrid">' +
+            '<content>' +
+                '<rows>' +
+                    '<cells type="module" foo="bar">' +
+                        '<content bar="baz"/>' +
+                    '</cells>' +
+                '</rows>' +
+            '</content>' +
+        '</grid>';
+    expect(Manipulator.XMLGridToXMLString(grid)).toEqual(expected);
 
-    var expected = {
-        _name: 'foo',
-        _space: '5px',
-        _type: 'mainGrid',
-        content: {
-            rows: [
-                {
-                    cells: [
-                        {
-                            _type: 'module',
-                            content: {_foo: 'bar'}
-                        }
-                    ]
-                }
-            ]
-        }
-    };
-    expect(grid).toEqual(expected);
-
-    var row = Manipulator.addRow(cell);
-    row.bar = 'foo';
-
-    var expected = {
-        _name: 'foo',
-        _space: '5px',
-        _type: 'mainGrid',
-        content: {
-            rows: [
-                {
-                    cells: [
-                        {
-                            _type: 'grid',
-                            content: {
-                                rows:[
-                                    {
-                                        cells: [
-                                            {
-                                                _type: 'module',
-                                                content: {_foo: 'bar'}
-                                            },
-                                        ]
-                                    },
-                                    {bar: 'foo'}
-                                ]
-                            }
-                        }
-                    ]
-                }
-            ]
-        }
-    };
-
-    expect(grid).toEqual(expected);
+    Manipulator.addRow(cell);
+    var expected =
+        '<grid name="foo" space="5px" type="mainGrid">' +
+            '<content>' +
+                '<rows>' +
+                    '<cells type="grid" foo="bar">' +
+                        '<content>' +
+                            '<rows>' +
+                                '<cells type="module">' +
+                                    '<content bar="baz"/>' +
+                                '</cells>' +
+                            '</rows>' +
+                            '<rows/>' +
+                        '</content>' +
+                    '</cells>' +
+                '</rows>' +
+            '</content>' +
+        '</grid>';
+    expect(Manipulator.XMLGridToXMLString(grid)).toEqual(expected);
 
   });
 
   it("should add a cell", function() {
     var grid = Manipulator.createBaseGrid('foo', 5);
-    var row = Manipulator.addRow(grid);
+    var row = Manipulator.addRow(grid.firstChild);
 
-    // without the "cells" key
+    // with an empty cells list
     Manipulator.addCell(row, 'grid');
-    var expected = {
-        cells: [
-            {_type: 'grid', content: {}}
-        ]
-    };
-    expect(row).toEqual(expected);
+    var expected =
+        '<grid name="foo" space="5px" type="mainGrid">' +
+            '<content>' +
+                '<rows>' +
+                    '<cells type="grid">' +
+                        '<content/>' +
+                    '</cells>' +
+                '</rows>' +
+            '</content>' +
+        '</grid>';
+    expect(Manipulator.XMLGridToXMLString(grid)).toEqual(expected);
 
     // with a cells list with one cell
-    Manipulator.addCell(row, 'module');
-    var expected = {
-        cells: [
-            {_type: 'grid', content: {}},
-            {_type: 'module', content: {}}
-        ]
-    };
-    expect(row).toEqual(expected);
-
-    // without the "rows" key, and check that row is returned by reference
-    delete row.cells;
     var cell = Manipulator.addCell(row, 'grid');
-    cell.content._foo = 'bar';
+    var expected =
+        '<grid name="foo" space="5px" type="mainGrid">' +
+            '<content>' +
+                '<rows>' +
+                    '<cells type="grid">' +
+                        '<content/>' +
+                    '</cells>' +
+                    '<cells type="grid">' +
+                        '<content/>' +
+                    '</cells>' +
+                '</rows>' +
+            '</content>' +
+        '</grid>';
+    expect(Manipulator.XMLGridToXMLString(grid)).toEqual(expected);
 
-    var expected = {
-        cells: [
-            {_type: 'grid', content: {_foo: 'bar'}}
-        ]
-    };
-    expect(row).toEqual(expected);
+    // check that we really have the real cell
+    cell.setAttribute('foo', 'bar');
+    var expected =
+        '<grid name="foo" space="5px" type="mainGrid">' +
+            '<content>' +
+                '<rows>' +
+                    '<cells type="grid">' +
+                        '<content/>' +
+                    '</cells>' +
+                    '<cells type="grid" foo="bar">' +
+                        '<content/>' +
+                    '</cells>' +
+                '</rows>' +
+            '</content>' +
+        '</grid>';
+    expect(Manipulator.XMLGridToXMLString(grid)).toEqual(expected);
+
   });
 
   it("should create a full grid", function() {
     var grid = Manipulator.createBaseGrid('foo', 5);
-    var row1 = Manipulator.addRow(grid);
+    var row1 = Manipulator.addRow(grid.firstChild);
         var cell1 = Manipulator.addCell(row1, 'grid');
-            var row2 = Manipulator.addRow(cell1);
-                Manipulator.addCell(row2, 'module').content._path = 'path.to.module1';
-                Manipulator.addCell(row2, 'module').content._path = 'path.to.module2';
+            var row = Manipulator.addRow(cell1);
+                var cell2 = Manipulator.addCell(row, 'module');
+                cell2.querySelector(':scope > content').setAttribute('path', 'path.to.module1');
+                var cell3 = Manipulator.addCell(row, 'module');
+                cell3.querySelector(':scope > content').setAttribute('path', 'path.to.module2');
             var row3 = Manipulator.addRow(cell1);
-                Manipulator.addCell(row3, 'module').content._path = 'path.to.module3';
-                var cell2 = Manipulator.addCell(row3, 'grid');
-                    var row4 = Manipulator.addRow(cell2);
-                        Manipulator.addCell(row4, 'module').content._path = 'path.to.module4';
-        var cell3 = Manipulator.addCell(row1, 'grid');
+                var cell4 = Manipulator.addCell(row3, 'module');
+                cell4.querySelector(':scope > content').setAttribute('path', 'path.to.module3');
+                var cell5 = Manipulator.addCell(row3, 'grid');
+                    var row4 = Manipulator.addRow(cell5);
+                        var cell6 = Manipulator.addCell(row4, 'module')
+                        cell6.querySelector(':scope > content').setAttribute('path', 'path.to.module4');
+        var cell7 = Manipulator.addCell(row1, 'grid');
 
     var expected = {
         _name:"foo",
@@ -327,17 +320,18 @@ describe("Manipulator", function() {
         }
     };
 
-    expect(grid).toEqual(expected);
+    expect(Manipulator.XMLGridToJSON(grid)).toEqual(expected);
   });
 
     it("should clean a node with one row and one cell", function() {
         var grid = Manipulator.createBaseGrid('test');
-        var row = Manipulator.addRow(grid);
-        var cell = Manipulator.addCell(row, type='module');
-        cell.content._foo = 'bar';
+        var row = Manipulator.addRow(grid.firstChild);
+        var cell = Manipulator.addCell(row, 'module');
+        var cellContent = cell.querySelector(':scope > content');
+        cellContent.setAttribute('foo', 'bar');
 
-        // do not update the main grid
-        Manipulator.cleanNode(grid);
+        // we should not update the main grid
+        Manipulator.cleanNode(grid.firstChild);
         var expected = {
             _name: 'test',
             _space: '5px',
@@ -355,13 +349,13 @@ describe("Manipulator", function() {
                 ]
             }
         };
+        expect(Manipulator.XMLGridToJSON(grid)).toEqual(expected);
 
-        expect(grid).toEqual(expected);
 
-        // add a row (and convert to cell to have rows), and delete it
+        // add a row (which will convert the cell to have rows), and delete it
         row = Manipulator.addRow(cell);
-        // remove the last row, we should have one
-        cell.content.rows.pop()
+        // remove this added row, we want to keep only the one created to hold our content
+        row.parentNode.removeChild(row);
 
         // check we have the correct cell
         var expectedCell = {
@@ -379,14 +373,14 @@ describe("Manipulator", function() {
                 ]
             }
         };
-        expect(cell).toEqual(expectedCell);
+        expect(Manipulator.XMLGridToJSON(cell.parentNode)).toEqual(expectedCell);
 
         // then clean
         Manipulator.cleanNode(cell);
 
         // we should be back to the original grid
-        expect(cell).toEqual(expected.content.rows[0].cells[0]);
-        expect(grid).toEqual(expected);
+        expect(Manipulator.XMLGridToJSON(cell.parentNode)).toEqual(expected.content.rows[0].cells[0]);
+        expect(Manipulator.XMLGridToJSON(grid)).toEqual(expected);
 
     });
 
