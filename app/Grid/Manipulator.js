@@ -5,10 +5,34 @@ var _ = require('lodash');
 
 /**
  * Manipulates grid data
- *
  * @namespace
+ *
  */
 var Manipulator = {
+
+    /**
+     * Exceptions for the Manipulator module
+     * @namespace
+     *
+     */
+    Exceptions: {
+        /**
+         * Exception raised when a type is invalid
+         * This is a subclass of "Error"
+         * @class
+         *
+         * @param {string} [message] - The raised message
+         *
+         * @returns {} - Return an "InvalidType" object, which is a subclass of "Error"
+         *
+         * @property {string} name - The name of the exception: "InvalidType"
+         * @property {string} message - The message passed when the exception was raised, or a default value
+         */
+        InvalidType: function(message) {
+            this.name = 'InvalidType';
+            this.message = message || 'Invalid type detected';
+        },
+    },
 
     // Nodes types that can directly accept rows
     reGrid: /^(mainGrid|grid)$/,
@@ -131,10 +155,12 @@ var Manipulator = {
      * If not given, a new empty "content" node will be created.
      *
      * @returns {XML} - The added cell (XML), with the type and a content.
+     *
+     * @throws {module:Grid~Manipulator.Exceptions.InvalidType} If the given "type" is not "grid" or "module"
      */
     addCell: function(row, type, contentNode) {
         if (!this.reType.test(type)) {
-            throw "Invalid type <" + type + ">. Should be 'grid' or 'module'";
+            throw new this.Exceptions.InvalidType("Cannot add cell of type <" + type + ">. Should be <grid> or <module>");
         }
         var cell = row.ownerDocument.createElement('cells');
         cell.setAttribute('type', type);
@@ -153,9 +179,14 @@ var Manipulator = {
      * @param  {XML} node - The JSON grid node to clean
      *
      * @returns {} - Returns nothing
+     *
+     * @throws {module:Grid~Manipulator.Exceptions.InvalidType} If the type of the given node is not "grid"
      */
     cleanNode: function(node) {
-        if (node.getAttribute('type') != 'grid') { return }
+        var nodeType = node.getAttribute('type');
+        if (nodeType != 'grid') {
+            throw new this.Exceptions.InvalidType("Cannot clean node of type <" + nodeType + ">. Should be <grid>");
+        }
 
         var contentNode = node.querySelector(':scope > content');
         var rows = contentNode.querySelectorAll(':scope > rows');
@@ -176,6 +207,11 @@ var Manipulator = {
         }
     }
 };
+
+// Exceptions must be based on the Error class
+Manipulator.Exceptions.InvalidType.prototype = new Error();
+Manipulator.Exceptions.InvalidType.prototype.constructor = Manipulator.Exceptions.InvalidType;
+
 
 window.Manipulator = Manipulator;
 module.exports = Manipulator;

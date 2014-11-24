@@ -240,6 +240,11 @@ describe("Manipulator", function() {
         '</grid>';
     expect(Manipulator.XMLGridToXMLString(grid)).toEqual(expected);
 
+    // shouldn't be able to add cell with an invalid type
+    expect(function() {
+        Manipulator.addCell(row, 'foo')
+    }).toThrowError(Manipulator.Exceptions.InvalidType, "Cannot add cell of type <foo>. Should be <grid> or <module>");
+
   });
 
   it("should create a full grid", function() {
@@ -330,8 +335,11 @@ describe("Manipulator", function() {
         var cellContent = cell.querySelector(':scope > content');
         cellContent.setAttribute('foo', 'bar');
 
-        // we should not update the main grid
-        Manipulator.cleanNode(grid.firstChild);
+        // we cannot update the main grid
+        expect(function() {
+            Manipulator.cleanNode(grid.firstChild);
+        }).toThrowError(Manipulator.Exceptions.InvalidType, "Cannot clean node of type <mainGrid>. Should be <grid>");
+
         var expected = {
             _name: 'test',
             _space: '5px',
