@@ -27,7 +27,13 @@ var Manipulator = {
      * @returns {JSON} - The JSON representation of the XML Grid
      */
     XMLGridToJSON: function(XMLGrid) {
-        return JXON.build(XMLGrid.firstChild);
+        return JXON.build(
+            XMLGrid.firstChild,
+            2,  // verbosity set to 2 to convert empty nodes in {} instead of "true"
+            null,
+            null,
+            this.reXMLNodesAsArray // regexp of nodes to always transform as arrays
+        );
     },
 
     /**

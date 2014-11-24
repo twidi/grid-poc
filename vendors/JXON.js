@@ -44,7 +44,7 @@ var JXON = new (function () {
     return vValue === null ? new EmptyTree() : vValue instanceof Object ? vValue : new vValue.constructor(vValue);
   }
 
-  function createObjTree (oParentNode, nVerb, bFreeze, bNesteAttr) {
+  function createObjTree (oParentNode, nVerb, bFreeze, bNesteAttr, rToArray) {
     var
       nLevelStart = aCache.length, bChildren = oParentNode.hasChildNodes(),
       bAttributes = oParentNode.hasAttributes(), bHighVerb = Boolean(nVerb & 2);
@@ -68,12 +68,16 @@ var JXON = new (function () {
 
     for (var nElId = nLevelStart; nElId < nLevelEnd; nElId++) {
       sProp = bLower ? aCache[nElId].nodeName.toLowerCase() : aCache[nElId].nodeName;
-      vContent = createObjTree(aCache[nElId], nVerb, bFreeze, bNesteAttr);
+      vContent = createObjTree(aCache[nElId], nVerb, bFreeze, bNesteAttr, rToArray);
       if (vResult.hasOwnProperty(sProp)) {
         if (vResult[sProp].constructor !== Array) { vResult[sProp] = [vResult[sProp]]; }
         vResult[sProp].push(vContent);
       } else {
-        vResult[sProp] = vContent;
+        if (rToArray && rToArray.test(sProp)) {
+          vResult[sProp] = [vContent];
+        } else {
+          vResult[sProp] = vContent;
+        }
         nLength++;
       }
     }
@@ -145,9 +149,9 @@ var JXON = new (function () {
     }
   }
 
-  this.build = function (oXMLParent, nVerbosity /* optional */, bFreeze /* optional */, bNesteAttributes /* optional */) {
+  this.build = function (oXMLParent, nVerbosity /* optional */, bFreeze /* optional */, bNesteAttributes /* optional */, rToArray /* optional */) {
     var _nVerb = arguments.length > 1 && typeof nVerbosity === "number" ? nVerbosity & 3 : /* put here the default verbosity level: */ 1;
-    return createObjTree(oXMLParent, _nVerb, bFreeze || false, arguments.length > 3 ? bNesteAttributes : _nVerb === 3);
+    return createObjTree(oXMLParent, _nVerb, bFreeze || false, arguments.length > 3 ? bNesteAttributes : _nVerb === 3, rToArray);
   };
 
   this.unbuild = function (oObjTree, sNamespaceURI /* optional */, sQualifiedName /* optional */, oDocumentType /* optional */) {
