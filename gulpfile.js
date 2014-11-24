@@ -49,14 +49,14 @@ var browserifyTask = function (options) {
       .pipe(source('main.js'))
       .pipe(gulpif(!options.development, streamify(uglify())))
       .pipe(gulp.dest(options.dest))
-      .pipe(gulpif(options.development, livereload()))
+      .pipe(gulpif(options.live_update, livereload()))
       .pipe(notify(function () {
         console.log('APP bundle built in ' + (Date.now() - start) + 'ms');
       }));
   };
 
   // Fire up Watchify when developing
-  if (options.development) {
+  if (options.live_update) {
     appBundler = watchify(appBundler);
     appBundler.on('update', rebundle);
   }
@@ -88,14 +88,16 @@ var browserifyTask = function (options) {
       .on('error', gutil.log)
 	      .pipe(source('specs.js'))
 	      .pipe(gulp.dest(options.dest))
-	      .pipe(livereload())
+	      .pipe(gulpif(options.live_update, livereload()))
 	      .pipe(notify(function () {
 	        console.log('TEST bundle built in ' + (Date.now() - start) + 'ms');
 	      }));
   	};
 
-    testBundler = watchify(testBundler);
-    testBundler.on('update', rebundleTests);
+    if (options.live_update) {
+      testBundler = watchify(testBundler);
+      testBundler.on('update', rebundleTests);
+    }
     rebundleTests();
 
     // Remove react-addons when deploying, as it is only for
@@ -104,24 +106,28 @@ var browserifyTask = function (options) {
       dependencies.splice(dependencies.indexOf('react-addons'), 1);
     }
 
-    var vendorFiles = glob.sync('./vendors/**/*.js');
-    var vendorsBundler = browserify({
-      entries: vendorFiles,
-      debug: true,
-      require: dependencies
-    });
+    if (options.vendors) {
 
-    // Run the vendor bundle
-    var start = new Date();
-    console.log('Building VENDORS bundle');
-    vendorsBundler.bundle()
-      .on('error', gutil.log)
-      .pipe(source('vendors.js'))
-      .pipe(gulpif(!options.development, streamify(uglify())))
-      .pipe(gulp.dest(options.dest))
-      .pipe(notify(function () {
-        console.log('VENDORS bundle built in ' + (Date.now() - start) + 'ms');
-      }));
+      var vendorFiles = glob.sync('./vendors/**/*.js');
+      var vendorsBundler = browserify({
+        entries: vendorFiles,
+        debug: true,
+        require: dependencies
+      });
+
+      // Run the vendor bundle
+      var start = new Date();
+      console.log('Building VENDORS bundle');
+      vendorsBundler.bundle()
+        .on('error', gutil.log)
+        .pipe(source('vendors.js'))
+        .pipe(gulpif(!options.development, streamify(uglify())))
+        .pipe(gulp.dest(options.dest))
+        .pipe(notify(function () {
+          console.log('VENDORS bundle built in ' + (Date.now() - start) + 'ms');
+        }));
+
+      }
 
   }
 
@@ -155,6 +161,26 @@ gulp.task('default', function () {
 
   browserifyTask({
     development: true,
+    live_update: true,
+    vendors: false,
+    src: './app/main.js',
+    dest: './build'
+  });
+
+  cssTask({
+    development: true,
+    src: './styles/**/*.css',
+    dest: './build'
+  });
+
+});
+
+gulp.task('vendors', function() {
+
+  browserifyTask({
+    development: true,
+    live_update: false,
+    vendors: true,
     src: './app/main.js',
     dest: './build'
   });
@@ -171,6 +197,8 @@ gulp.task('deploy', function () {
 
   browserifyTask({
     development: false,
+    live_update: false,
+    vendors: true,
     src: './app/main.js',
     dest: './dist'
   });
