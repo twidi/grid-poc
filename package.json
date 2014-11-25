@@ -25,7 +25,8 @@
     "watchify": "^2.1.1",
     "gulp-jsdoc": "~0.1.4",
     "gulp-jsx": "~0.5.0",
-    "jaguarjs-jsdoc": "0.0.1"
+    "jaguarjs-jsdoc": "0.0.1",
+    "requireify": "~0.2.1"
   },
   "dependencies": {
     "flux-react": "^2.4.1",

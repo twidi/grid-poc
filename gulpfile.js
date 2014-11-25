@@ -16,6 +16,7 @@ var livereload = require('gulp-livereload');
 var jasminePhantomJs = require('gulp-jasmine2-phantomjs');
 var jsdoc = require('gulp-jsdoc');
 var jsx = require('gulp-jsx');
+var requireify = require('requireify');
 
 // External dependencies you do not want to rebundle while developing,
 // but include in your application deployment
@@ -25,12 +26,23 @@ var dependencies = [
   'flux-react'
 ];
 
+
 var browserifyTask = function (options) {
+
+  var browserifyTransforms = [
+    reactify  // We want to convert JSX to normal javascript
+  ];
+
+  if (options.development) {
+    browserifyTransforms.push(
+      requireify  // allow access to modules in console
+    );
+  }
 
   // Our app bundler
 	var appBundler = browserify({
 		entries: [options.src], // Only need initial file, browserify finds the rest
-   	transform: [reactify], // We want to convert JSX to normal javascript
+   	transform: browserifyTransforms,
 		debug: options.development, // Gives us sourcemapping
 		cache: {}, packageCache: {}, fullPaths: true // Requirement of watchify
 	});
@@ -73,7 +85,7 @@ var browserifyTask = function (options) {
 		var testBundler = browserify({
 			entries: testFiles,
 			debug: true, // Gives us sourcemapping
-			transform: [reactify],
+			transform: browserifyTransforms,
 			cache: {}, packageCache: {}, fullPaths: true // Requirement of watchify
 		});
 
@@ -112,6 +124,7 @@ var browserifyTask = function (options) {
       var vendorsBundler = browserify({
         entries: vendorFiles,
         debug: true,
+        transform: browserifyTransforms,
         require: dependencies
       });
 
