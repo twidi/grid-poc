@@ -237,14 +237,10 @@ var Manipulator = {
 };
 
 // Exceptions must be based on the Error class
-_([
-    Manipulator.Exceptions.InvalidType,
-    Manipulator.Exceptions.Inconsistency,
-]).forEach(function(exceptionClass) {
+_(Manipulator.Exceptions).forEach(function(exceptionClass) {
     exceptionClass.prototype = new Error();
     exceptionClass.prototype.constructor = exceptionClass;
 });
-
 
 window.Manipulator = Manipulator;
 module.exports = Manipulator;
