@@ -1,7 +1,34 @@
 var Manipulator = require('./../../app/Grid/Manipulator.js');
 var _ = require('lodash');
 
+var customMatchers = {
+    toEqualXML: function(util, customEqualityTesters) {
+        return {
+            compare: function(actual, expected) {
+                if (!_.isString(actual)) {
+                    actual = Manipulator.XMLGridToXMLString(actual);
+                }
+                if (!_.isString(expected)) {
+                    expected = Manipulator.XMLGridToXMLString(expected);
+                }
+                var result = {};
+                result.pass = util.equals(actual, expected);
+                if (result.pass) {
+                    result.message = "XML is the one wanted";
+                } else {
+                    result.message = "XML is not the one wanted. Actual VS expected:\n" + actual + "\n" + expected;
+                }
+                return result;
+            }
+        };
+    }
+};
+
 describe("Manipulator", function() {
+
+  beforeEach(function() {
+    jasmine.addMatchers(customMatchers);
+  });
 
   it("should convert Json to Xml and vice-versa", function() {
     var j = {
@@ -110,7 +137,7 @@ describe("Manipulator", function() {
         '<grid name="foo" space="5px" type="mainGrid">' +
             '<content/>' +
         '</grid>';
-    expect(Manipulator.XMLGridToXMLString(grid)).toEqual(expected);
+    expect(grid).toEqualXML(expected);
   });
 
   it("should add a row", function() {
@@ -124,7 +151,7 @@ describe("Manipulator", function() {
                 '<rows/>' +
             '</content>' +
         '</grid>';
-    expect(Manipulator.XMLGridToXMLString(grid)).toEqual(expected);
+    expect(grid).toEqualXML(expected);
 
     // with a rows list with one row
     var row = Manipulator.addRow(grid.firstChild);
@@ -135,7 +162,7 @@ describe("Manipulator", function() {
                 '<rows/>' +
             '</content>' +
         '</grid>';
-    expect(Manipulator.XMLGridToXMLString(grid)).toEqual(expected);
+    expect(grid).toEqualXML(expected);
 
     // check that we really have the real row
     row.setAttribute('foo', 'bar');
@@ -146,7 +173,7 @@ describe("Manipulator", function() {
                 '<rows foo="bar"/>' +
             '</content>' +
         '</grid>';
-    expect(Manipulator.XMLGridToXMLString(grid)).toEqual(expected);
+    expect(grid).toEqualXML(expected);
 
     // transform a non-grid node (we have to create a cell for that)
     grid = Manipulator.createBaseGrid('foo', 5);
@@ -164,7 +191,7 @@ describe("Manipulator", function() {
                 '</rows>' +
             '</content>' +
         '</grid>';
-    expect(Manipulator.XMLGridToXMLString(grid)).toEqual(expected);
+    expect(grid).toEqualXML(expected);
 
     Manipulator.addRow(cell);
     var expected =
@@ -184,7 +211,7 @@ describe("Manipulator", function() {
                 '</rows>' +
             '</content>' +
         '</grid>';
-    expect(Manipulator.XMLGridToXMLString(grid)).toEqual(expected);
+    expect(grid).toEqualXML(expected);
 
   });
 
@@ -204,7 +231,7 @@ describe("Manipulator", function() {
                 '<rows created="first"/>' +
             '</content>' +
         '</grid>';
-    expect(Manipulator.XMLGridToXMLString(grid)).toEqual(expected);
+    expect(grid).toEqualXML(expected);
 
     // add a module cell and add a row asking to set it before another
     var cell = Manipulator.addCell(row1, 'module');
@@ -242,7 +269,7 @@ describe("Manipulator", function() {
                 '</rows>' +
             '</content>' +
         '</grid>';
-    expect(Manipulator.XMLGridToXMLString(grid)).toEqual(expected);
+    expect(grid).toEqualXML(expected);
 
   });
 
@@ -262,7 +289,7 @@ describe("Manipulator", function() {
                 '</rows>' +
             '</content>' +
         '</grid>';
-    expect(Manipulator.XMLGridToXMLString(grid)).toEqual(expected);
+    expect(grid).toEqualXML(expected);
 
     // with a cells list with one cell
     var cell = Manipulator.addCell(row, 'grid');
@@ -279,7 +306,7 @@ describe("Manipulator", function() {
                 '</rows>' +
             '</content>' +
         '</grid>';
-    expect(Manipulator.XMLGridToXMLString(grid)).toEqual(expected);
+    expect(grid).toEqualXML(expected);
 
     // check that we really have the real cell
     cell.setAttribute('foo', 'bar');
@@ -296,7 +323,7 @@ describe("Manipulator", function() {
                 '</rows>' +
             '</content>' +
         '</grid>';
-    expect(Manipulator.XMLGridToXMLString(grid)).toEqual(expected);
+    expect(grid).toEqualXML(expected);
 
     // shouldn't be able to add cell with an invalid type
     expect(function() {
