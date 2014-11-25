@@ -156,7 +156,7 @@ var Manipulator = {
             // add a row to hold the cell with old node data
             var cellRow = this.addRow(node);
             // add the cell to hold the old node data
-            var cell = this.addCell(cellRow, nodeType, contentNode);
+            var cell = this.addCell(cellRow, nodeType, null, contentNode);
             // it's here we'll attach the row
             contentNode = newContentNode;
         };
@@ -180,13 +180,15 @@ var Manipulator = {
      * @param {XML} row - The XML grid row on which to add a cell
      * @param {string} type - The type of cell to add: "grid" or "module"
      * @param {XML} [contentNode] - The XML "content" node to insert in the cell.
-     * If not given, a new empty "content" node will be created.
+     *     If not given, a new empty "content" node will be created.
+     * @param {XML} [beforeCell] - The XML node of a cell, on the given row, where to insert the new cell before. If not given, the new cell is added at the end.
      *
      * @returns {XML} - The added cell (XML), with the type and a content.
      *
      * @throws {module:Grid~Manipulator.Exceptions.InvalidType} If the given "type" is not "grid" or "module"
+     * @throws {module:Grid~Manipulator.Exceptions.Inconsistency} If "beforeCell" is not in the "row"
      */
-    addCell: function(row, type, contentNode) {
+    addCell: function(row, type, beforeCell, contentNode) {
         if (!this.reType.test(type)) {
             throw new this.Exceptions.InvalidType("Cannot add cell of type <" + type + ">. Should be <grid> or <module>");
         }
@@ -195,8 +197,15 @@ var Manipulator = {
         if (!contentNode) {
             contentNode = row.ownerDocument.createElement('content');
         }
+        if (beforeCell && beforeCell.parentNode != row) {
+            throw new this.Exceptions.Inconsistency("The 'beforeCell' must be a child of 'row'");
+        }
         cell.appendChild(contentNode);
-        row.appendChild(cell);
+        if (beforeCell) {
+            row.insertBefore(cell, beforeCell);
+        } else {
+            row.appendChild(cell);
+        }
         return cell;
     },
 
