@@ -64,7 +64,7 @@ var Manipulator = {
      * @returns {XML} - The XML representation of the JSON Grid
      */
     JSONGridToXML: function(JSONGrid) {
-        return JXON.unbuild({grid: JSONGrid});
+        return JXON.unbuild({grid: JSONGrid}).documentElement;
     },
 
     /**
@@ -76,7 +76,7 @@ var Manipulator = {
      */
     XMLGridToJSON: function(XMLGrid) {
         return JXON.build(
-            XMLGrid.firstChild,
+            XMLGrid,
             2,  // verbosity set to 2 to convert empty nodes in {} instead of "true"
             null,
             null,
@@ -220,6 +220,7 @@ var Manipulator = {
      * @throws {module:Grid~Manipulator.Exceptions.InvalidType} If the type of the given node is not "grid"
      */
     cleanNode: function(node) {
+
         var nodeType = node.getAttribute('type');
         if (nodeType != 'grid') {
             throw new this.Exceptions.InvalidType("Cannot clean node of type <" + nodeType + ">. Should be <grid>");
@@ -242,7 +243,7 @@ var Manipulator = {
             node.removeChild(contentNode);
             node.appendChild(cells[0].querySelector(':scope > content'));
         }
-    }
+    },
 };
 
 // Exceptions must be based on the Error class

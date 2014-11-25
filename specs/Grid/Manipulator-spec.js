@@ -70,10 +70,7 @@ describe("Manipulator", function() {
             '</grid>'
         );
 
-        var x = Manipulator.JSONGridToXML(j);
-        expect(x.childNodes.length).toEqual(1);
-
-        var root = x.documentElement;
+        var root = Manipulator.JSONGridToXML(j);
 
         expect(root.attributes.length).toEqual(2);
         expect(root.attributes[0].name).toEqual('param1');
@@ -125,7 +122,7 @@ describe("Manipulator", function() {
         expect(subChild.attributes[0].value).toEqual('8');
         expect(subChild.childNodes.length).toEqual(0);
 
-        var j2 = Manipulator.XMLGridToJSON(x);
+        var j2 = Manipulator.XMLGridToJSON(root);
         expect(j2).toEqual(j);
 
     });
@@ -144,7 +141,7 @@ describe("Manipulator", function() {
         var grid = Manipulator.createBaseGrid('foo', 5);
 
         // with an empty rows list
-        Manipulator.addRow(grid.firstChild); // the grid is the first child of the "root document"
+        Manipulator.addRow(grid); // the grid is the first child of the "root document"
         var expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
@@ -154,7 +151,7 @@ describe("Manipulator", function() {
         expect(grid).toEqualXML(expected);
 
         // with a rows list with one row
-        var row = Manipulator.addRow(grid.firstChild);
+        var row = Manipulator.addRow(grid);
         var expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
@@ -177,7 +174,7 @@ describe("Manipulator", function() {
 
         // transform a non-grid node (we have to create a cell for that)
         grid = Manipulator.createBaseGrid('foo', 5);
-        row = Manipulator.addRow(grid.firstChild);
+        row = Manipulator.addRow(grid);
         var cell = Manipulator.addCell(row, 'module');
         cell.setAttribute('foo', 'bar');
         cell.querySelector(':scope > content').setAttribute('bar', 'baz');
@@ -217,11 +214,11 @@ describe("Manipulator", function() {
 
     it("should add a row before another one", function() {
         var grid = Manipulator.createBaseGrid('foo', 5);
-        var row1 = Manipulator.addRow(grid.firstChild);
+        var row1 = Manipulator.addRow(grid);
         row1.setAttribute('created', 'first');
 
         // add a row before the first one
-        var row2 = Manipulator.addRow(grid.firstChild, row1);
+        var row2 = Manipulator.addRow(grid, row1);
         row2.setAttribute('inserted', 'before');
 
         var expected =
@@ -275,7 +272,7 @@ describe("Manipulator", function() {
 
     it("should add a cell", function() {
         var grid = Manipulator.createBaseGrid('foo', 5);
-        var row = Manipulator.addRow(grid.firstChild);
+        var row = Manipulator.addRow(grid);
 
         // with an empty cells list
         Manipulator.addCell(row, 'grid');
@@ -334,7 +331,7 @@ describe("Manipulator", function() {
 
     it("should add a cell before another one", function() {
         var grid = Manipulator.createBaseGrid('foo', 5);
-        var row = Manipulator.addRow(grid.firstChild);
+        var row = Manipulator.addRow(grid);
         var cell1 = Manipulator.addCell(row, 'module');
         cell1.setAttribute('created', 'first');
 
@@ -355,7 +352,6 @@ describe("Manipulator", function() {
 
         // add a new sub level of cells to try to insert cell before one at another level
         var subRow = Manipulator.addRow(cell1);
-        console.log(subRow);
         var subCell1 = Manipulator.addCell(subRow, 'module');
         subCell1.setAttribute('created', 'first (sub-cell)');
 
@@ -393,7 +389,7 @@ describe("Manipulator", function() {
 
     it("should create a full grid", function() {
         var grid = Manipulator.createBaseGrid('foo', 5);
-        var row1 = Manipulator.addRow(grid.firstChild);
+        var row1 = Manipulator.addRow(grid);
             var cell1 = Manipulator.addCell(row1, 'grid');
                 var row = Manipulator.addRow(cell1);
                     var cell2 = Manipulator.addCell(row, 'module');
@@ -474,14 +470,14 @@ describe("Manipulator", function() {
 
     it("should clean a node with one row and one cell", function() {
         var grid = Manipulator.createBaseGrid('test');
-        var row = Manipulator.addRow(grid.firstChild);
+        var row = Manipulator.addRow(grid);
         var cell = Manipulator.addCell(row, 'module');
         var cellContent = cell.querySelector(':scope > content');
         cellContent.setAttribute('foo', 'bar');
 
         // we cannot update the main grid
         expect(function() {
-            Manipulator.cleanNode(grid.firstChild);
+            Manipulator.cleanNode(grid);
         }).toThrowError(Manipulator.Exceptions.InvalidType, "Cannot clean node of type <mainGrid>. Should be <grid>");
 
         var expected = {
@@ -525,13 +521,13 @@ describe("Manipulator", function() {
                 ]
             }
         };
-        expect(Manipulator.XMLGridToJSON(cell.parentNode)).toEqual(expectedCell);
+        expect(Manipulator.XMLGridToJSON(cell)).toEqual(expectedCell);
 
         // then clean
         Manipulator.cleanNode(cell);
 
         // we should be back to the original grid
-        expect(Manipulator.XMLGridToJSON(cell.parentNode)).toEqual(expected.content.rows[0].cells[0]);
+        expect(Manipulator.XMLGridToJSON(cell)).toEqual(expected.content.rows[0].cells[0]);
         expect(Manipulator.XMLGridToJSON(grid)).toEqual(expected);
 
     });
