@@ -469,67 +469,89 @@ describe("Manipulator", function() {
     });
 
     it("should clean a node with one row and one cell", function() {
-        var grid = Manipulator.createBaseGrid('test');
-        var row = Manipulator.addRow(grid);
-        var cell = Manipulator.addCell(row, 'module');
-        var cellContent = cell.querySelector(':scope > content');
-        cellContent.setAttribute('foo', 'bar');
+
+        var grid = Manipulator.XMLStringToXMLGrid(
+            '<grid name="foo" space="5px" type="mainGrid">' +
+                '<content>' +
+                    '<rows>' +
+                        '<cells type="grid" toclean="2">' +
+                            '<content>' +
+                                '<rows>' +
+                                    '<cells type="grid">' +
+                                        '<content>' +
+                                            '<rows>' +
+                                                '<cells type="grid" toclean="1">' +
+                                                    '<content>' +
+                                                        '<rows>' +
+                                                            '<cells type="module">' +
+                                                                '<content foo="bar"/>' +
+                                                            '</cells>' +
+                                                        '</rows>' +
+                                                    '</content>' +
+                                                '</cells>' +
+                                            '</rows>' +
+                                        '</content>' +
+                                    '</cells>' +
+                                '</rows>' +
+                                '<rows><cells type="module"><content/></cells></rows>' +
+                            '</content>' +
+                        '</cells>' +
+                    '</rows>' +
+                '</content>' +
+            '</grid>');
+
+        console.log(grid);
 
         // we cannot update the main grid
         expect(function() {
             Manipulator.cleanNode(grid);
         }).toThrowError(Manipulator.Exceptions.InvalidType, "Cannot clean node of type <mainGrid>. Should be <grid>");
 
-        var expected = {
-            _name: 'test',
-            _space: '5px',
-            _type: 'mainGrid',
-            content: {
-                rows: [
-                    {
-                        cells: [
-                            {
-                                _type: 'module',
-                                content: { _foo: 'bar' }
-                            }
-                        ]
-                    }
-                ]
-            }
-        };
-        expect(Manipulator.XMLGridToJSON(grid)).toEqual(expected);
-
-
-        // add a row (which will convert the cell to have rows), and delete it
-        row = Manipulator.addRow(cell);
-        // remove this added row, we want to keep only the one created to hold our content
-        row.parentNode.removeChild(row);
-
-        // check we have the correct cell
-        var expectedCell = {
-            _type: 'grid',
-            content: {
-                rows: [
-                    {
-                        cells: [
-                            {
-                                _type: 'module',
-                                content: { _foo: 'bar' }
-                            }
-                        ]
-                    }
-                ]
-            }
-        };
-        expect(Manipulator.XMLGridToJSON(cell)).toEqual(expectedCell);
 
         // then clean
-        Manipulator.cleanNode(cell);
+        Manipulator.cleanNode(grid.querySelector('cells[toclean="1"]'));
 
-        // we should be back to the original grid
-        expect(Manipulator.XMLGridToJSON(cell)).toEqual(expected.content.rows[0].cells[0]);
-        expect(Manipulator.XMLGridToJSON(grid)).toEqual(expected);
+        // we should have the useless grids removed
+        var expected =
+            '<grid name="foo" space="5px" type="mainGrid">' +
+                '<content>' +
+                    '<rows>' +
+                        '<cells type="grid" toclean="2">' +
+                            '<content>' +
+                                '<rows>' +
+                                    '<cells type="module">' +
+                                        '<content foo="bar"/>' +
+                                    '</cells>' +
+                                '</rows>' +
+                                '<rows><cells type="module"><content/></cells></rows>' +
+                            '</content>' +
+                        '</cells>' +
+                    '</rows>' +
+                '</content>' +
+            '</grid>';
 
+        expect(grid).toEqualXML(expected);
+
+        // remove the last row
+        var row = grid.querySelector('cells[toclean="2"] rows:last-child');
+        row.parentNode.removeChild(row);
+
+        // then clean
+        Manipulator.cleanNode(grid.querySelector('cells[toclean="2"]'));
+
+        // we should have the useless grids removed
+        var expected =
+            '<grid name="foo" space="5px" type="mainGrid">' +
+                '<content>' +
+                    '<rows>' +
+                        '<cells type="module" toclean="2">' +
+                            '<content foo="bar"/>' +
+                        '</cells>' +
+                    '</rows>' +
+                '</content>' +
+            '</grid>';
+
+        expect(grid).toEqualXML(expected);
     });
 
     it("should manage placeholders", function() {

@@ -224,12 +224,16 @@ var Manipulator = {
     /**
      * Convert a XML grid node with only one row with only one cell, into a node
      * without rows (only the type and content are copied) but only the content of the cell
+     * This is done recursively by calling the same method for the parent grid if a clean
+     * was done on the current one
      *
      * @param  {XML} node - The JSON grid node to clean
      *
      * @returns {} - Returns nothing
      *
      * @throws {module:Grid~Manipulator.Exceptions.InvalidType} If the type of the given node is not "grid"
+     *
+     * @todo It may be possible to reduce more when we have a grid with only one row containing a grid
      */
     cleanNode: function(node) {
 
@@ -255,7 +259,20 @@ var Manipulator = {
             node.removeChild(contentNode);
             node.appendChild(cells[0].querySelector(':scope > content'));
         }
+
+        // Do the same for the parent grid (parent is the row, parent.parent is the content, parent.parent.parent is the grid)
+        try {
+            this.cleanNode(node.parentNode.parentNode.parentNode);
+        } catch (e) {
+            // This can happen for many reasons:
+            // - a parentNode is null => TypeError
+            // - the final parentNode has no "getAttribute" (the xml root document) => TypeError
+            // - the final parentNode is not a "grid" => InvalidType
+            //
+            // We can silently ignore these reasons
+        }
     },
+
 
     /**
      * Add all placeholders in the given grid
