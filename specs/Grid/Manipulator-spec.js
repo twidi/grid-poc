@@ -71,57 +71,6 @@ describe("Manipulator", function() {
         );
 
         var root = Manipulator.JSONGridToXML(j);
-
-        expect(root.attributes.length).toEqual(2);
-        expect(root.attributes[0].name).toEqual('param1');
-        expect(root.attributes[0].value).toEqual('1');
-        expect(root.attributes[1].name).toEqual('param2');
-        expect(root.attributes[1].value).toEqual('2');
-
-        expect(root.childNodes.length).toEqual(4);
-
-        var child = root.childNodes[0];
-        expect(child.tagName).toEqual('child');
-        expect(child.attributes.length).toEqual(1);
-        expect(child.attributes[0].name).toEqual('childParam');
-        expect(child.attributes[0].value).toEqual('3');
-        expect(child.childNodes.length).toEqual(1);
-
-        var subChild = child.childNodes[0];
-        expect(subChild.tagName).toEqual('subChild');
-        expect(subChild.attributes.length).toEqual(1);
-        expect(subChild.attributes[0].name).toEqual('subChildParam');
-        expect(subChild.attributes[0].value).toEqual('4');
-        expect(subChild.childNodes.length).toEqual(0);
-
-        child = root.childNodes[1];
-        expect(child.tagName).toEqual('childs');
-        expect(child.attributes.length).toEqual(1);
-        expect(child.attributes[0].name).toEqual('childs1Param');
-        expect(child.attributes[0].value).toEqual('5');
-        expect(child.childNodes.length).toEqual(0);
-
-        child = root.childNodes[2];
-        expect(child.tagName).toEqual('childs');
-        expect(child.attributes.length).toEqual(1);
-        expect(child.attributes[0].name).toEqual('childs2Param');
-        expect(child.attributes[0].value).toEqual('6');
-        expect(child.childNodes.length).toEqual(0);
-
-        child = root.childNodes[3];
-        expect(child.tagName).toEqual('childs');
-        expect(child.attributes.length).toEqual(1);
-        expect(child.attributes[0].name).toEqual('childs3Param');
-        expect(child.attributes[0].value).toEqual('7');
-        expect(child.childNodes.length).toEqual(1);
-
-        subChild = child.childNodes[0];
-        expect(subChild.tagName).toEqual('subChild');
-        expect(subChild.attributes.length).toEqual(1);
-        expect(subChild.attributes[0].name).toEqual('subChildParam');
-        expect(subChild.attributes[0].value).toEqual('8');
-        expect(subChild.childNodes.length).toEqual(0);
-
         var j2 = Manipulator.XMLGridToJSON(root);
         expect(j2).toEqual(j);
 
@@ -203,9 +152,7 @@ describe("Manipulator", function() {
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<rows>' +
-                        '<cells type="module" foo="bar">' +
-                            '<content bar="baz"/>' +
-                        '</cells>' +
+                        '<cells type="module" foo="bar"><content bar="baz"/></cells>' +
                     '</rows>' +
                 '</content>' +
             '</grid>';
@@ -219,9 +166,7 @@ describe("Manipulator", function() {
                         '<cells type="grid" foo="bar">' +
                             '<content>' +
                                 '<rows>' +
-                                    '<cells type="module">' +
-                                        '<content bar="baz"/>' +
-                                    '</cells>' +
+                                    '<cells type="module"><content bar="baz"/></cells>' +
                                 '</rows>' +
                                 '<rows/>' +
                             '</content>' +
@@ -426,67 +371,34 @@ describe("Manipulator", function() {
                             cell6.querySelector(':scope > content').setAttribute('path', 'path.to.module4');
             var cell7 = Manipulator.addCell(row1, 'grid');
 
-        var expected = {
-            _name:"foo",
-            _space:"5px",
-            _type:"mainGrid",
-            content: {
-                rows:[
-                    {
-                        cells:[
-                            {
-                                _type:"grid",
-                                content:{
-                                    rows:[
-                                        {
-                                            cells: [
-                                                {
-                                                    _type:"module",
-                                                    content: {_path: "path.to.module1"}
-                                                },
-                                                {
-                                                    _type:"module",
-                                                    content: {_path: "path.to.module2"}
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            cells:[
-                                                {
-                                                    _type:"module",
-                                                    content: {_path: "path.to.module3"}
-                                                },
-                                                {
-                                                    _type:"grid",
-                                                    content:{
-                                                        rows:[
-                                                            {
-                                                                cells:[
-                                                                    {
-                                                                        _type:"module",
-                                                                        content: {_path: "path.to.module4"}
-                                                                    }
-                                                                ]
-                                                            }
-                                                        ]
-                                                    }
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            },
-                            {
-                                _type:"grid",
-                                content:{}
-                            }
-                        ]
-                    }
-                ]
-            }
-        };
+            var expected =
+                '<grid name="foo" space="5px" type="mainGrid">' +
+                    '<content>' +
+                        '<rows>' +
+                            '<cells type="grid">' +
+                                '<content>' +
+                                    '<rows>' +
+                                        '<cells type="module"><content path="path.to.module1"/></cells>' +
+                                        '<cells type="module"><content path="path.to.module2"/></cells>' +
+                                    '</rows>' +
+                                    '<rows>' +
+                                        '<cells type="module"><content path="path.to.module3"/></cells>' +
+                                        '<cells type="grid">' +
+                                            '<content>' +
+                                                '<rows>' +
+                                                    '<cells type="module"><content path="path.to.module4"/></cells>' +
+                                                '</rows>' +
+                                            '</content>' +
+                                        '</cells>' +
+                                    '</rows>' +
+                                '</content>' +
+                            '</cells>' +
+                            '<cells type="grid"><content/></cells>' +
+                        '</rows>' +
+                    '</content>' +
+                '</grid>';
 
-        expect(Manipulator.XMLGridToJSON(grid)).toEqual(expected);
+        expect(grid).toEqualXML(expected);
     });
 
     it("should clean a node with one row and one cell", function() {
@@ -563,10 +475,6 @@ describe("Manipulator", function() {
         expect(grid).toEqualXML(expected);
 
         // do it wth a grid with one row/one cell
-        var grid = Manipulator.createBaseGrid('foo');
-        var row = Manipulator.addRow(grid);
-        Manipulator.addCell(row, "module");
-
         var expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
@@ -575,6 +483,8 @@ describe("Manipulator", function() {
                     '</rows>' +
                 '</content>' +
             '</grid>';
+
+        var grid = Manipulator.XMLStringToXMLGrid(expected);
 
         Manipulator.addPlaceholders(grid);
 
@@ -590,25 +500,13 @@ describe("Manipulator", function() {
                     '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
                 '</content>' +
             '</grid>';
+
         expect(grid).toEqualXML(expectedWithPlaceholders);
 
         Manipulator.removePlaceholders(grid);
         expect(grid).toEqualXML(expected);
 
         // do it with with a grid with many rows/many cells
-        var grid = Manipulator.createBaseGrid('foo');
-        var row1 = Manipulator.addRow(grid);
-        var row2 = Manipulator.addRow(grid);
-        Manipulator.addCell(row1, "module");
-        Manipulator.addCell(row1, "module");
-        var cell2_1 = Manipulator.addCell(row2, "grid");
-        Manipulator.addCell(row2, "module");
-        var row2_1 = Manipulator.addRow(cell2_1);
-        var row2_2 = Manipulator.addRow(cell2_1);
-        Manipulator.addCell(row2_1, "module");
-        Manipulator.addCell(row2_1, "module");
-        Manipulator.addCell(row2_2, "module");
-
         var expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
@@ -632,6 +530,8 @@ describe("Manipulator", function() {
                     '</rows>' +
                 '</content>' +
             '</grid>';
+
+        var grid = Manipulator.XMLStringToXMLGrid(expected);
 
         Manipulator.addPlaceholders(grid);
 
@@ -675,6 +575,7 @@ describe("Manipulator", function() {
                     '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
                 '</content>' +
             '</grid>';
+
         expect(grid).toEqualXML(expectedWithPlaceholders);
 
         Manipulator.removePlaceholders(grid);
