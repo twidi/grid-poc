@@ -49,14 +49,24 @@ var Manipulator = {
         }
     },
 
-    // Nodes types that can directly accept rows
+    /**
+     * Nodes types that can directly accept rows
+     * @type {RegExp}
+     */
     reGrid: /^(mainGrid|grid)$/,
 
-    // Allowed types of cell
+    /**
+     * Allowed types of cell
+     * @type {RegExp}
+     */
     reType: /^(module|grid|placeholder)$/,
 
-    // RegExp to match XML nodes that will always be converted as array in JSON
-    reXMLNodesAsArray: /^(rows|cells)$/,
+    /**
+     * RegExp to match XML nodes that will always be converted as array in JSON
+     * @type {RegExp}
+     * @private
+     */
+    _reXMLNodesAsArray: /^(rows|cells)$/,
 
     /**
      * Convert a Grid in JSON format to its XML representation
@@ -82,7 +92,7 @@ var Manipulator = {
             2,  // verbosity set to 2 to convert empty nodes in {} instead of "true"
             null,
             null,
-            this.reXMLNodesAsArray // regexp of nodes to always transform as arrays
+            this._reXMLNodesAsArray // regexp of nodes to always transform as arrays
         );
     },
 
