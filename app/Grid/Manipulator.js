@@ -9,6 +9,8 @@ var _ = require('lodash');
  *
  */
 var Manipulator = {
+    XMLSerializer: new XMLSerializer(),
+    DOMParser: new DOMParser(),
 
     /**
      * Exceptions for the Manipulator module
@@ -92,8 +94,7 @@ var Manipulator = {
      * @returns {string} - The stringified XML representation of the JSON Grid
      */
     JSONGridToXMLString: function(JSONGrid) {
-        var XMLGrid = this.JSONGridToXML(JSONGrid);
-        return (new JXON.XMLSerializer()).serializeToString(XMLGrid);
+        return this.XMLGridToXMLString(this.JSONGridToXML(JSONGrid));
     },
 
     /**
@@ -104,7 +105,18 @@ var Manipulator = {
      * @returns {string} - The stringified XML representation of the XML Grid
      */
     XMLGridToXMLString: function(XMLGrid) {
-        return (new JXON.XMLSerializer()).serializeToString(XMLGrid);
+        return this.XMLSerializer.serializeToString(XMLGrid);
+    },
+
+    /**
+     * Convert a string representation of an XML Grid to an XML document
+     *
+     * @param {string} XMLString - The string representation of the XML Grid to convert
+     *
+     * @returns {string} - The XML Grid based on the string representation
+     */
+    XMLStringToXMLGrid: function(XMLString) {
+        return this.DOMParser.parseFromString(XMLString, "text/xml").documentElement;
     },
 
     /**

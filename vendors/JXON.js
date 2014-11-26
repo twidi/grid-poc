@@ -22,6 +22,9 @@ if (typeof XMLSerializer === 'undefined') {
   document = {};
   document.implementation = new (require("xmldom").DOMImplementation)();
 }
+if (typeof DOMParser === 'undefined') {
+  DOMParser = require("xmldom").DOMParser;
+}
 
 var JXON = new (function () {
   var
@@ -160,11 +163,19 @@ var JXON = new (function () {
     return oNewDoc;
   };
 
-  this.XMLSerializer = XMLSerializer;
-
   this.stringify = function (oObjTree, sNamespaceURI /* optional */, sQualifiedName /* optional */, oDocumentType /* optional */) {
     return (new XMLSerializer()).serializeToString(JXON.unbuild(oObjTree, sNamespaceURI, sQualifiedName, oDocumentType));
   }
+
+  // access dom utils from the JXON namespace
+  this.XMLSerializer = XMLSerializer;
+  this.DOMParser = DOMParser;
+  // and from the window if they don't exist
+  if (window) {
+    if (!window.XMLSerializer) { window.XMLSerializer = XMLSerializer; }
+    if (!window.DOMParser) { window.DOMParser = DOMParser; }
+  }
+
 })();
 
 if (typeof module !== 'undefined') module.exports = JXON;
