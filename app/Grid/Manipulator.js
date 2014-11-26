@@ -51,7 +51,7 @@ var Manipulator = {
     reGrid: /^(mainGrid|grid)$/,
 
     // Allowed types of cell
-    reType: /^(module|grid)$/,
+    reType: /^(module|grid|placeholder)$/,
 
     // RegExp to match XML nodes that will always be converted as array in JSON
     reXMLNodesAsArray: /^(rows|cells)$/,
@@ -244,6 +244,109 @@ var Manipulator = {
             node.appendChild(cells[0].querySelector(':scope > content'));
         }
     },
+
+    /**
+     * Add all placeholders in the given grid
+     *
+     * @param {XML} grid - The grid to insert placeholders in
+     *
+     * @returns {} - Returns nothing
+     *
+     * @throws {module:Grid~Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
+     */
+    addPlaceholders: function(grid) {
+        nodeType = grid.getAttribute('type');
+        if (nodeType != 'mainGrid') {
+            throw new this.Exceptions.InvalidType("Cannot add placeholders in grid of type <" + nodeType + ">. Should be <mainGrid>");
+        }
+        this._addRowsPlaceholders(grid);
+    },
+
+    /**
+     * Add rows placeholders around each row in the given grid
+     * (each row will have an empty placeholder cell)
+     *
+     * @param {XML} grid - The grid to insert placeholders in
+     *
+     * @returns {} - Returns nothing
+     *
+     * @throws {module:Grid~Manipulator.Exceptions.InvalidType} If the grid is not a grid (type nor "grid" nor "mainGrid")
+     *
+     * @private
+     */
+    _addRowsPlaceholders: function(grid) {
+        nodeType = grid.getAttribute('type');
+        if (!this.reGrid.test(nodeType)) {
+            throw new this.Exceptions.InvalidType("Cannot add rows placeholders in node of type <" + nodeType + ">. Should be <grid> or <mainGrid>");
+        }
+
+        var contentNode = grid.querySelector(':scope > content');
+        // add a row before each one in the list
+        _(contentNode.querySelectorAll(':scope > rows')).forEach(function(row) {
+            var placeholder = Manipulator.addRow(grid, row);
+            placeholder.setAttribute('type', 'placeholder');
+            Manipulator._addCellsPlaceholders(row);
+            Manipulator._addCellsPlaceholders(placeholder);
+        });
+        // and one at the end
+        var placeholder = Manipulator.addRow(grid);
+        placeholder.setAttribute('type', 'placeholder');
+        Manipulator._addCellsPlaceholders(placeholder);
+    },
+
+    /**
+     * Add cells placeholders around each cell in the given row
+     * Each existing "grid" cell will also be populated with row placeholders
+     *
+     * @param {XML} row - The row to insert placeholders in
+     *
+     * @returns {} - Returns nothing
+     *
+    * @private
+     */
+    _addCellsPlaceholders: function(row) {
+        // add a cell before each one in the list
+        _(row.querySelectorAll(':scope > cells')).forEach(function(cell) {
+            Manipulator.addCell(row, 'placeholder', cell);
+            if (cell.getAttribute('type') == 'grid') {
+                Manipulator._addRowsPlaceholders(cell);
+            }
+        });
+        // and one at the end
+        Manipulator.addCell(row, 'placeholder');
+    },
+
+    /**
+     * Remove all existing placeholders, except ones with a module
+     *
+     * @param  {XML} grid The grid in whitch to remove the placeholders
+     *
+     * @returns {} - Returns nothing
+     *
+     * @throws {module:Grid~Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
+     */
+    removePlaceholders: function(grid) {
+        nodeType = grid.getAttribute('type');
+        if (nodeType != 'mainGrid') {
+            throw new this.Exceptions.InvalidType("Cannot remove placeholders in grid of type <" + nodeType + ">. Should be <mainGrid>");
+        }
+
+        // remove each placeholders rows except ones with a module in
+        _(grid.querySelectorAll('rows[type=placeholder]')).forEach(function(row) {
+            if (row.querySelectorAll('cells[type=module]').length) { return; }
+            row.parentNode.removeChild(row);
+        });
+        // remove each placeholders cells except ones with a module in
+        _(grid.querySelectorAll('cells[type=placeholder]')).forEach(function(cell) {
+            if (cell.querySelectorAll('cells[type=module]').length) { return; }
+            cell.parentNode.removeChild(cell);
+        });
+        // remove type=placeholder attribute for trees with a module (ie, all nodes left having type=placeholder)
+        _(grid.querySelectorAll('[type=placeholder]')).forEach(function(node) {
+            node.removeAttribute('type');
+        });
+    }
+
 };
 
 // Exceptions must be based on the Error class

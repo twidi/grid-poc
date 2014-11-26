@@ -532,4 +532,197 @@ describe("Manipulator", function() {
 
     });
 
+    it("should manage placeholders", function() {
+        // do it on an empty grid
+        var grid = Manipulator.createBaseGrid('foo');
+        var expected =
+            '<grid name="foo" space="5px" type="mainGrid">' +
+                '<content/>' +
+            '</grid>';
+
+        Manipulator.addPlaceholders(grid);
+
+        var expectedWithPlaceholders =
+            '<grid name="foo" space="5px" type="mainGrid">' +
+                '<content>' +
+                    '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
+                '</content>' +
+            '</grid>';
+        expect(grid).toEqualXML(expectedWithPlaceholders);
+
+        Manipulator.removePlaceholders(grid);
+        expect(grid).toEqualXML(expected);
+
+        // do it wth a grid with one row/one cell
+        var grid = Manipulator.createBaseGrid('foo');
+        var row = Manipulator.addRow(grid);
+        Manipulator.addCell(row, "module");
+
+        var expected =
+            '<grid name="foo" space="5px" type="mainGrid">' +
+                '<content>' +
+                    '<rows>' +
+                        '<cells type="module"><content/></cells>' +
+                    '</rows>' +
+                '</content>' +
+            '</grid>';
+
+        Manipulator.addPlaceholders(grid);
+
+        var expectedWithPlaceholders =
+            '<grid name="foo" space="5px" type="mainGrid">' +
+                '<content>' +
+                    '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
+                    '<rows>' +
+                        '<cells type="placeholder"><content/></cells>' +
+                        '<cells type="module"><content/></cells>' +
+                        '<cells type="placeholder"><content/></cells>' +
+                    '</rows>' +
+                    '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
+                '</content>' +
+            '</grid>';
+        expect(grid).toEqualXML(expectedWithPlaceholders);
+
+        Manipulator.removePlaceholders(grid);
+        expect(grid).toEqualXML(expected);
+
+        // do it with with a grid with many rows/many cells
+        var grid = Manipulator.createBaseGrid('foo');
+        var row1 = Manipulator.addRow(grid);
+        var row2 = Manipulator.addRow(grid);
+        Manipulator.addCell(row1, "module");
+        Manipulator.addCell(row1, "module");
+        var cell2_1 = Manipulator.addCell(row2, "grid");
+        Manipulator.addCell(row2, "module");
+        var row2_1 = Manipulator.addRow(cell2_1);
+        var row2_2 = Manipulator.addRow(cell2_1);
+        Manipulator.addCell(row2_1, "module");
+        Manipulator.addCell(row2_1, "module");
+        Manipulator.addCell(row2_2, "module");
+
+        var expected =
+            '<grid name="foo" space="5px" type="mainGrid">' +
+                '<content>' +
+                    '<rows>' +
+                        '<cells type="module"><content/></cells>' +
+                        '<cells type="module"><content/></cells>' +
+                    '</rows>' +
+                    '<rows>' +
+                        '<cells type="grid">' +
+                            '<content>' +
+                                '<rows>' +
+                                    '<cells type="module"><content/></cells>' +
+                                    '<cells type="module"><content/></cells>' +
+                                '</rows>' +
+                                '<rows>' +
+                                    '<cells type="module"><content/></cells>' +
+                                '</rows>' +
+                            '</content>' +
+                        '</cells>' +
+                        '<cells type="module"><content/></cells>' +
+                    '</rows>' +
+                '</content>' +
+            '</grid>';
+
+        Manipulator.addPlaceholders(grid);
+
+        var expectedWithPlaceholders =
+            '<grid name="foo" space="5px" type="mainGrid">' +
+                '<content>' +
+                    '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
+                    '<rows>' +
+                        '<cells type="placeholder"><content/></cells>' +
+                        '<cells type="module"><content/></cells>' +
+                        '<cells type="placeholder"><content/></cells>' +
+                        '<cells type="module"><content/></cells>' +
+                        '<cells type="placeholder"><content/></cells>' +
+                    '</rows>' +
+                    '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
+                    '<rows>' +
+                        '<cells type="placeholder"><content/></cells>' +
+                        '<cells type="grid">' +
+                            '<content>' +
+                                '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
+                                '<rows>' +
+                                    '<cells type="placeholder"><content/></cells>' +
+                                    '<cells type="module"><content/></cells>' +
+                                    '<cells type="placeholder"><content/></cells>' +
+                                    '<cells type="module"><content/></cells>' +
+                                    '<cells type="placeholder"><content/></cells>' +
+                                '</rows>' +
+                                '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
+                                '<rows>' +
+                                    '<cells type="placeholder"><content/></cells>' +
+                                    '<cells type="module"><content/></cells>' +
+                                    '<cells type="placeholder"><content/></cells>' +
+                                '</rows>' +
+                                '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
+                            '</content>' +
+                        '</cells>' +
+                        '<cells type="placeholder"><content/></cells>' +
+                        '<cells type="module"><content/></cells>' +
+                        '<cells type="placeholder"><content/></cells>' +
+                    '</rows>' +
+                    '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
+                '</content>' +
+            '</grid>';
+        expect(grid).toEqualXML(expectedWithPlaceholders);
+
+        Manipulator.removePlaceholders(grid);
+        expect(grid).toEqualXML(expected);
+
+    });
+
+    it("should not clean placeholder with a module", function() {
+        var grid = Manipulator.createBaseGrid('foo');
+        var row = Manipulator.addRow(grid);
+        Manipulator.addCell(row, "module");
+
+        Manipulator.addPlaceholders(grid);
+
+        // add a module in a placeholder cell (in the second row (our first original one), last cell (a placeholder))
+        var cell = grid.querySelector('rows:nth-child(2) > cells:last-child');
+        cell.setAttribute('type', 'module');
+        cell.setAttribute('was', 'placeholder');
+
+        Manipulator.removePlaceholders(grid);
+
+        var expected =
+            '<grid name="foo" space="5px" type="mainGrid">' +
+                '<content>' +
+                    '<rows>' +
+                        '<cells type="module"><content/></cells>' +
+                        '<cells type="module" was="placeholder"><content/></cells>' +
+                    '</rows>' +
+                '</content>' +
+            '</grid>';
+
+        expect(grid).toEqualXML(expected);
+
+        // do it again but set the module in a cell placeholder within a row placeholder
+
+        Manipulator.addPlaceholders(grid);
+        var cell = grid.querySelector('rows:last-child > cells');
+        cell.setAttribute('type', 'module');
+        cell.setAttribute('was', 'placeholder, too');
+
+        Manipulator.removePlaceholders(grid);
+
+        var expected =
+            '<grid name="foo" space="5px" type="mainGrid">' +
+                '<content>' +
+                    '<rows>' +
+                        '<cells type="module"><content/></cells>' +
+                        '<cells type="module" was="placeholder"><content/></cells>' +
+                    '</rows>' +
+                    '<rows>' +
+                        '<cells type="module" was="placeholder, too"><content/></cells>' +
+                    '</rows>' +
+                '</content>' +
+            '</grid>';
+
+        expect(grid).toEqualXML(expected);
+
+    });
+
 });
