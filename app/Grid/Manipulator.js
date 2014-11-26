@@ -130,6 +130,17 @@ var Manipulator = {
     },
 
     /**
+     * Return a deep clone of the given grid. Nothinf is shared between the clones.
+     *
+     * @param  {XML} grid - The grid to clone
+     *
+     * @return {XML} - The clone of the original grid
+     */
+    clone: function(grid) {
+        return this.XMLStringToXMLGrid(this.XMLGridToXMLString(grid));
+    },
+
+    /**
      * Create a new XML grid from scratch
      *
      * @param  {string} name - The name of the new grid to create

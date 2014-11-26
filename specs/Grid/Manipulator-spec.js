@@ -127,6 +127,27 @@ describe("Manipulator", function() {
 
     });
 
+    it("should clone a grid", function() {
+        var grid = Manipulator.XMLStringToXMLGrid(
+            '<grid name="foo" space="5px" type="mainGrid">' +
+                '<content>' +
+                    '<rows>' +
+                        '<cells type="grid">' +
+                            '<content>' +
+                                '<rows>' +
+                                    '<cells type="module"><content/></cells>' +
+                                '</rows>' +
+                            '</content>' +
+                        '</cells>' +
+                        '<cells type="module"><content/></cells>' +
+                    '</rows>' +
+                '</content>' +
+            '</grid>');
+
+        var clone = Manipulator.clone(grid);
+        expect(Manipulator.XMLGridToXMLString(clone)).toEqual(Manipulator.XMLGridToXMLString(grid));
+    });
+
     it("should create a new grid", function() {
         var grid = Manipulator.createBaseGrid('foo', 5);
 
