@@ -401,7 +401,7 @@ describe("Manipulator", function() {
         expect(grid).toEqualXML(expected);
     });
 
-    it("should clean a node with one row and one cell", function() {
+    it("should clean a grid", function() {
 
         var grid = Manipulator.XMLStringToXMLGrid(
             '<grid name="foo" space="5px" type="mainGrid">' +
@@ -418,6 +418,17 @@ describe("Manipulator", function() {
                                                         '<rows id="r4">' +
                                                             '<cells type="module" id="c4">' +
                                                                 '<content foo="bar"/>' +
+                                                            '</cells>' +
+                                                            '<cells type="grid"/>' +
+                                                            '<cells type="grid">' +
+                                                                '<content>' +
+                                                                    '<rows/>' +
+                                                                    '<rows>' +
+                                                                        '<cells type="grid">' +
+                                                                            '<content/>' +
+                                                                        '</cells>' +
+                                                                    '</rows>' +
+                                                                '</content>' +
                                                             '</cells>' +
                                                         '</rows>' +
                                                     '</content>' +

@@ -244,9 +244,10 @@ var Manipulator = {
 
     /**
      * Clean a grid node by doing two operations:
-     * 1/ if a XML grid node has only one row with only one cell, convert the grid node into a node
+     * 1/ Remove all empty cells/rows/contents
+     * 2/ if a XML grid node has only one row with only one cell, convert the grid node into a node
      * without rows (only the type and content are copied) but only the content of the cell
-     * 2/ if a XML grid node has only one row, with only one cell of type "grid", move all rows from
+     * 3/ if a XML grid node has only one row, with only one cell of type "grid", move all rows from
      * this cell into the current grid
      * All this is done recursively by calling the same method for the parent grid
      *
@@ -263,23 +264,42 @@ var Manipulator = {
         }
 
         var contentNode = grid.querySelector(':scope > content');
-        var rows = contentNode.querySelectorAll(':scope > rows');
-        var cells;
 
-        if (!rows.length) { return }
+        // remove all empty things, until there is no more
+        var somethingRemoved = true;
+        while (somethingRemoved) {
+            somethingRemoved = false;
+
+            // remove all empty cells (assume only possible children is "content")
+            _(contentNode.querySelectorAll('cells:empty')).forEach(function(cell) {
+                cell.parentNode.removeChild(cell);
+                somethingRemoved = true;
+            });
+
+            // remove all empty rows (assume only possible children are "cells")
+            _(contentNode.querySelectorAll('rows:empty')).forEach(function(row) {
+                row.parentNode.removeChild(row);
+                somethingRemoved = true;
+            });
+
+            // remove all grid withtout rows
+            _(contentNode.querySelectorAll('cells[type=grid] > content:empty')).forEach(function(content) {
+                content.parentNode.removeChild(content);
+                somethingRemoved = true;
+            });
+        }
+
+        // reload contentNode if emptyed below
+        contentNode = grid.querySelector(':scope > content');
+        var rows = contentNode.querySelectorAll(':scope > rows');
 
         if (rows.length == 1) {
+            var cells;
 
             // move a grid inside the current grid only if it's a subgrid
             if (nodeType == 'grid') {
                 cells = rows[0].querySelectorAll(':scope > cells');
-                if (!cells.length) {
-                    // in theory this should not happen (not having any cell)
-                    // byt only if we just created a row
-                    grid.setAttribute('type', 'unknown');
-                    grid.removeChild(contentNode);
-                    grid.appendChild(grid.ownerDocument.createElement('content'));
-                } else if (cells.length == 1) {
+                if (cells.length == 1) {
                     grid.setAttribute('type', cells[0].getAttribute('type'));
                     grid.removeChild(contentNode);
                     grid.appendChild(cells[0].querySelector(':scope > content'));
