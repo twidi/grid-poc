@@ -473,17 +473,17 @@ describe("Manipulator", function() {
         var grid = Manipulator.XMLStringToXMLGrid(
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
-                    '<rows>' +
-                        '<cells type="grid" toclean="2">' +
+                    '<rows id="r1">' +
+                        '<cells type="grid" id="c1" toclean="2">' +
                             '<content>' +
-                                '<rows>' +
-                                    '<cells type="grid">' +
+                                '<rows id="r2">' +
+                                    '<cells type="grid" id="c2">' +
                                         '<content>' +
-                                            '<rows>' +
-                                                '<cells type="grid" toclean="1">' +
+                                            '<rows id="r3">' +
+                                                '<cells type="grid" toclean="1" id="c3">' +
                                                     '<content>' +
-                                                        '<rows>' +
-                                                            '<cells type="module">' +
+                                                        '<rows id="r4">' +
+                                                            '<cells type="module" id="c4">' +
                                                                 '<content foo="bar"/>' +
                                                             '</cells>' +
                                                         '</rows>' +
@@ -493,65 +493,31 @@ describe("Manipulator", function() {
                                         '</content>' +
                                     '</cells>' +
                                 '</rows>' +
-                                '<rows><cells type="module"><content/></cells></rows>' +
+                                '<rows id="r5"><cells type="module" id="c6"><content/></cells></rows>' +
                             '</content>' +
                         '</cells>' +
                     '</rows>' +
                 '</content>' +
             '</grid>');
 
-        console.log(grid);
-
-        // we cannot update the main grid
-        expect(function() {
-            Manipulator.cleanNode(grid);
-        }).toThrowError(Manipulator.Exceptions.InvalidType, "Cannot clean node of type <mainGrid>. Should be <grid>");
-
-
         // then clean
-        Manipulator.cleanNode(grid.querySelector('cells[toclean="1"]'));
+        Manipulator.cleanGrid(grid.querySelector('cells[toclean="1"]'));
 
-        // we should have the useless grids removed
+        // we should have the useless rows and grids removed
         var expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
-                    '<rows>' +
-                        '<cells type="grid" toclean="2">' +
-                            '<content>' +
-                                '<rows>' +
-                                    '<cells type="module">' +
-                                        '<content foo="bar"/>' +
-                                    '</cells>' +
-                                '</rows>' +
-                                '<rows><cells type="module"><content/></cells></rows>' +
-                            '</content>' +
-                        '</cells>' +
-                    '</rows>' +
-                '</content>' +
-            '</grid>';
-
-        expect(grid).toEqualXML(expected);
-
-        // remove the last row
-        var row = grid.querySelector('cells[toclean="2"] rows:last-child');
-        row.parentNode.removeChild(row);
-
-        // then clean
-        Manipulator.cleanNode(grid.querySelector('cells[toclean="2"]'));
-
-        // we should have the useless grids removed
-        var expected =
-            '<grid name="foo" space="5px" type="mainGrid">' +
-                '<content>' +
-                    '<rows>' +
-                        '<cells type="module" toclean="2">' +
+                    '<rows id="r2">' +
+                        '<cells type="module" id="c2">' +
                             '<content foo="bar"/>' +
                         '</cells>' +
                     '</rows>' +
+                    '<rows id="r5"><cells type="module" id="c6"><content/></cells></rows>' +
                 '</content>' +
             '</grid>';
 
         expect(grid).toEqualXML(expected);
+
     });
 
     it("should manage placeholders", function() {

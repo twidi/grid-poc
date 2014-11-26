@@ -222,54 +222,85 @@ var Manipulator = {
     },
 
     /**
-     * Convert a XML grid node with only one row with only one cell, into a node
+     * Clean a grid node by doing two operations:
+     * 1/ if a XML grid node has only one row with only one cell, convert the grid node into a node
      * without rows (only the type and content are copied) but only the content of the cell
-     * This is done recursively by calling the same method for the parent grid if a clean
-     * was done on the current one
+     * 2/ if a XML grid node has only one row, with only one cell of type "grid", move all rows from
+     * this cell into the current grid
+     * All this is done recursively by calling the same method for the parent grid
      *
-     * @param  {XML} node - The JSON grid node to clean
+     * @param  {XML} grid - The JSON grid node to clean
      *
      * @returns {} - Returns nothing
      *
-     * @throws {module:Grid~Manipulator.Exceptions.InvalidType} If the type of the given node is not "grid"
-     *
-     * @todo It may be possible to reduce more when we have a grid with only one row containing a grid
+     * @throws {module:Grid~Manipulator.Exceptions.InvalidType} If the grid is not a grid (type nor "grid" nor "mainGrid")
      */
-    cleanNode: function(node) {
-
-        var nodeType = node.getAttribute('type');
-        if (nodeType != 'grid') {
-            throw new this.Exceptions.InvalidType("Cannot clean node of type <" + nodeType + ">. Should be <grid>");
+    cleanGrid: function(grid) {
+        nodeType = grid.getAttribute('type');
+        if (!this.reGrid.test(nodeType)) {
+            throw new this.Exceptions.InvalidType("Cannot clean node of type <" + nodeType + ">. Should be <grid> or <mainGrid>");
         }
 
-        var contentNode = node.querySelector(':scope > content');
+        var contentNode = grid.querySelector(':scope > content');
         var rows = contentNode.querySelectorAll(':scope > rows');
+        var cells;
 
-        if (rows.length != 1) { return }
+        if (!rows.length) { return }
 
-        var cells = rows[0].querySelectorAll(':scope > cells');
+        if (rows.length == 1) {
 
-        if (!cells.length) {
-            // in theory this should not happen (not having any cell)
-            node.setAttribute('type', 'unknown');
-            node.removeChild(contentNode);
-            node.appendChild(node.ownerDocument.createElement('content'));
-        } else if (cells.length == 1) {
-            node.setAttribute('type', cells[0].getAttribute('type'));
-            node.removeChild(contentNode);
-            node.appendChild(cells[0].querySelector(':scope > content'));
+            // move a grid inside the current grid only if it's a subgrid
+            if (nodeType == 'grid') {
+                cells = rows[0].querySelectorAll(':scope > cells');
+                if (!cells.length) {
+                    // in theory this should not happen (not having any cell)
+                    // byt only if we just created a row
+                    grid.setAttribute('type', 'unknown');
+                    grid.removeChild(contentNode);
+                    grid.appendChild(grid.ownerDocument.createElement('content'));
+                } else if (cells.length == 1) {
+                    grid.setAttribute('type', cells[0].getAttribute('type'));
+                    grid.removeChild(contentNode);
+                    grid.appendChild(cells[0].querySelector(':scope > content'));
+                }
+                rows = null;
+                cells = null;
+            }
+
+            // we have only one row, but with it only one grid cell, ce move all replace our row by the cell ones
+            if (!rows) {
+                rows = contentNode.querySelectorAll(':scope > rows');
+            }
+            if (rows.length == 1) {
+                if (!cells) {
+                    cells = rows[0].querySelectorAll(':scope > cells');
+                }
+                if (cells.length == 1 && cells[0].getAttribute('type') == 'grid') {
+                    var contentNode = grid.querySelector(':scope > content');
+                    // add all sub rows to the current grid
+                    _(cells[0].querySelectorAll(':scope > content > rows')).forEach(function(cellRow) {
+                        contentNode.appendChild(cellRow);
+                    });
+                    // our original row is now empty, we can remove it
+                    contentNode.removeChild(rows[0]);
+                }
+            }
+
         }
 
-        // Do the same for the parent grid (parent is the row, parent.parent is the content, parent.parent.parent is the grid)
+        // Continue for the parent grid (parent is the row, parent.parent is the content, parent.parent.parent is the grid)
         try {
-            this.cleanNode(node.parentNode.parentNode.parentNode);
+            this.cleanGrid(grid.parentNode.parentNode.parentNode);
         } catch (e) {
-            // This can happen for many reasons:
-            // - a parentNode is null => TypeError
-            // - the final parentNode has no "getAttribute" (the xml root document) => TypeError
-            // - the final parentNode is not a "grid" => InvalidType
-            //
-            // We can silently ignore these reasons
+            if (e instanceof TypeError || e instanceof this.Exceptions.InvalidType) {
+                // We siliently ignore these exceptions. This can happen for many reasons:
+                // - a parentNode is null => TypeError
+                // - the final parentNode has no "getAttribute" (the xml root document) => TypeError
+                // - the final parentNode is not a "grid" => InvalidType
+            } else {
+                // other cases, throw the original exception
+                throw(e);
+            }
         }
     },
 
