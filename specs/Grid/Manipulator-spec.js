@@ -646,4 +646,103 @@ describe("Manipulator", function() {
 
     });
 
+    it("should return the neareset grid", function() {
+        var grid = Manipulator.createBaseGrid('foo', 5);
+        var row = Manipulator.addRow(grid);
+        var gridCell = Manipulator.addCell(row, "grid");
+        var gridContent = gridCell.querySelector(':scope > content');
+        var subRow = Manipulator.addRow(gridCell);
+        var contentCell = Manipulator.addCell(subRow, "module");
+        var content = contentCell.querySelector(':scope > content');
+
+        // test each node in our tree
+        expect(Manipulator.getNearestGrid(content)).toBe(gridCell);
+        expect(Manipulator.getNearestGrid(content, true)).toBe(gridCell);
+
+        expect(Manipulator.getNearestGrid(contentCell)).toBe(gridCell);
+        expect(Manipulator.getNearestGrid(contentCell, true)).toBe(gridCell);
+
+        expect(Manipulator.getNearestGrid(subRow)).toBe(gridCell);
+        expect(Manipulator.getNearestGrid(subRow, true)).toBe(gridCell);
+
+        expect(Manipulator.getNearestGrid(gridContent)).toBe(gridCell);
+        expect(Manipulator.getNearestGrid(gridContent, true)).toBe(gridCell);
+
+        expect(Manipulator.getNearestGrid(gridCell)).toBe(grid);
+        expect(Manipulator.getNearestGrid(gridCell, true)).toBe(gridCell);
+
+        expect(Manipulator.getNearestGrid(row)).toBe(grid);
+        expect(Manipulator.getNearestGrid(row, true)).toBe(grid);
+
+        expect(Manipulator.getNearestGrid(grid)).toBe(null);
+        expect(Manipulator.getNearestGrid(grid, true)).toBe(grid);
+
+        // test a detached node
+        subRow.removeChild(contentCell);
+        expect(Manipulator.getNearestGrid(contentCell)).toBe(null);
+    });
+
+    it("should move a content to a placeholder", function() {
+        var grid = Manipulator.XMLStringToXMLGrid(
+            '<grid name="foo" space="5px" type="mainGrid">' +
+                '<content>' +
+                    '<rows>' +
+                        '<cells type="module">' +
+                            '<content id="mod1"/>' +
+                        '</cells>' +
+                        '<cells type="module">' +
+                            '<content id="mod2"/>' +
+                        '</cells>' +
+                    '</rows>' +
+                    '<rows>' +
+                        '<cells type="module">' +
+                            '<content id="mod3"/>' +
+                        '</cells>' +
+                    '</rows>' +
+                '</content>' +
+            '</grid>');
+
+        var content = grid.querySelector('content[id=mod1]');
+        Manipulator.addPlaceholders(grid);
+        var destination = grid.querySelector('content[id=mod3]').parentNode.nextSibling;
+        Manipulator.moveContentToPlaceholder(content, destination);
+        Manipulator.removePlaceholders(grid);
+
+        var expected = Manipulator.XMLStringToXMLGrid(
+            '<grid name="foo" space="5px" type="mainGrid">' +
+                '<content>' +
+                    '<rows>' +
+                        '<cells type="module">' +
+                            '<content id="mod2"/>' +
+                        '</cells>' +
+                    '</rows>' +
+                    '<rows>' +
+                        '<cells type="module">' +
+                            '<content id="mod3"/>' +
+                        '</cells>' +
+                        '<cells type="module">' +
+                            '<content id="mod1"/>' +
+                        '</cells>' +
+                    '</rows>' +
+                '</content>' +
+            '</grid>');
+        expect(grid).toEqualXML(expected);
+
+        // cannot move to a non placeholder cell
+        expect(function() {
+            Manipulator.moveContentToPlaceholder(content, grid.querySelector('content[id=mod2]').parentNode);
+        }).toThrowError(Manipulator.Exceptions.InvalidType, "Cannot move content in cell of type <module>. It must be <placeholder>");
+
+        // test with a detached module
+        Manipulator.removePlaceholders(grid);
+        var parentGrid = Manipulator.getNearestGrid(content);
+        content.parentNode.removeChild(content);
+        Manipulator.cleanGrid(parentGrid);
+        Manipulator.addPlaceholders(grid);
+        var destination = grid.querySelector('content[id=mod3]').parentNode.nextSibling;
+        Manipulator.moveContentToPlaceholder(content, destination);
+        Manipulator.removePlaceholders(grid);
+        expect(grid).toEqualXML(expected);
+    });
+
 });

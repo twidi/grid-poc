@@ -446,7 +446,70 @@ var Manipulator = {
         _(grid.querySelectorAll('[type=placeholder]')).forEach(function(node) {
             node.removeAttribute('type');
         });
-    }
+    },
+
+    /**
+     * Return the nearest grid (or mainGrid) for the given node
+     *
+     * @param  {XML} node - The grid node (can be a row, cell, content...) for which we want the grid
+     * @param {boolean} includeCurrent - If we test the given node if it's a grid and return it if True
+     *
+     * @return {XML} - The found grid node, or null if none found (may not happen)
+     */
+    getNearestGrid: function(node, includeCurrent) {
+        if (!includeCurrent) {
+            node = node.parentNode;
+        }
+        while (true) {
+            // no node to test (given node or an absent parent), stop here
+            if (!node) {
+                return null;
+            }
+            // check if type is grid/mainGrid
+            var nodeType = node.getAttribute ? node.getAttribute('type') : null;
+            if (nodeType && this.reGrid.test(nodeType)) {
+                return node;
+            }
+            // continue with the parentNode
+            node = node.parentNode;
+        };
+    },
+
+    /**
+     * Move a content node (module) to a placeholder
+     *
+     * @param  {XML} contentNode - The content node to move
+     * @param  {XML} placeholderCell - The cell placeholder in which to move the content
+     *
+     * @return {} - Reurns nothing
+     *
+     * @throws {module:Grid~Manipulator.Exceptions.InvalidType} If the placeholder cell is not a placeholder (type "placeholder")
+     */
+    moveContentToPlaceholder: function(contentNode, placeholderCell) {
+        var placeholderType = placeholderCell.getAttribute('type');
+        if (placeholderType != 'placeholder') {
+            throw new this.Exceptions.InvalidType("Cannot move content in cell of type <" + placeholderType + ">. It must be <placeholder>");
+        }
+
+        // remove the existing placeholder content
+        var placeholderContent = placeholderCell.querySelector(':scope > content');
+        if (placeholderContent) {
+            placeholderCell.removeChild(placeholderContent);
+        }
+
+        // save actual content parent to "clean" it after the move
+        var contentParentNode = this.getNearestGrid(contentNode);
+
+        // actually move the content in the placeholder
+        placeholderCell.appendChild(contentNode);
+        placeholderCell.setAttribute('type', 'module');
+
+        // clean the old parent node if any
+        if (contentParentNode) {
+            this.cleanGrid(contentParentNode);
+        }
+
+    },
 
 };
 
@@ -456,5 +519,4 @@ _(Manipulator.Exceptions).forEach(function(exceptionClass) {
     exceptionClass.prototype.constructor = exceptionClass;
 });
 
-window.Manipulator = Manipulator;
 module.exports = Manipulator;
