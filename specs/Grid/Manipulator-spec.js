@@ -757,4 +757,44 @@ describe("Manipulator", function() {
         expect(node).toEqualXML(expected);
     });
 
+    it("should allow the full workflow of a drag'n'drop", function() {
+        // first we create a simple grid
+        var grid = Manipulator.createBaseGrid('foo', 5);
+        // get a module from somewhere to insert
+        var content1 = Manipulator.createModuleNode({_path: 'test.module.1'});
+        // go in "design" mode
+        Manipulator.addPlaceholders(grid);
+        // add the module in the only placeholder cell
+        Manipulator.moveContentToPlaceholder(content1, grid.querySelector('cells[type=placeholder]'));
+        // reset the placeholders with the new grid
+        Manipulator.cleanPlaceholders(grid);
+        // get another module from somewhere to insert
+        var content2 = Manipulator.createModuleNode({_path: 'test.module.2'});
+        // add it to the last placeholder row
+        Manipulator.moveContentToPlaceholder(content2, grid.querySelector(':scope > content > rows[type=placeholder] > cells[type=placeholder]'));
+        // reset the placeholders with the new grid
+        Manipulator.cleanPlaceholders(grid);
+        // now move the first content on the right of the second one
+        Manipulator.moveContentToPlaceholder(content1, content2.parentNode.nextSibling);
+        // finally exit the design mode
+        Manipulator.removePlaceholders(grid);
+
+        // we should have both contents in the only row
+        var expected = 
+            '<grid name="foo" space="5px" type="mainGrid">' +
+                '<content>' +
+                    '<rows>' +
+                        '<cells type="module">' +
+                            '<content path="test.module.2"/>' +
+                        '</cells>' +
+                        '<cells type="module">' +
+                            '<content path="test.module.1"/>' +
+                        '</cells>' +
+                    '</rows>' +
+                '</content>' +
+            '</grid>';
+
+        expect(grid).toEqualXML(expected);
+    })
+
 });
