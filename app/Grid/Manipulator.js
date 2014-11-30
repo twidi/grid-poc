@@ -72,11 +72,15 @@ var Manipulator = {
      * Convert a Grid in JSON format to its XML representation
      *
      * @param {JSON} JSONGrid - The JSON Grid to represent in XML
+     * @param {string} [nodeName] - The name of the container node. "grid" by default
      *
      * @returns {XML} - The XML representation of the JSON Grid
      */
-    JSONGridToXML: function(JSONGrid) {
-        return JXON.unbuild({grid: JSONGrid}).documentElement;
+    JSONGridToXML: function(JSONGrid, nodeName) {
+        if (!nodeName) { nodeName = 'grid'; }
+        var j = {};
+        j[nodeName] = JSONGrid;
+        return JXON.unbuild(j).documentElement;
     },
 
     /**
@@ -100,11 +104,12 @@ var Manipulator = {
      * Render a Grid in JSON format to its stringified XML representation
      *
      * @param {JSON} JSONGrid - The JSON Grid to represent in a stringified XML
+     * @param {string} [nodeName] - The name of the container node. "grid" by default
      *
      * @returns {string} - The stringified XML representation of the JSON Grid
      */
-    JSONGridToXMLString: function(JSONGrid) {
-        return this.XMLGridToXMLString(this.JSONGridToXML(JSONGrid));
+    JSONGridToXMLString: function(JSONGrid, nodeName) {
+        return this.XMLGridToXMLString(this.JSONGridToXML(JSONGrid, nodeName));
     },
 
     /**
@@ -154,7 +159,7 @@ var Manipulator = {
             _space: (space || 5) + 'px',
             _type: 'mainGrid',
             content: {}
-        });
+        }, 'grid');
     },
 
     /**
