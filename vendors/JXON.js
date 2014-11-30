@@ -35,7 +35,7 @@ var JXON = new (function () {
     if (rIsNull.test(sValue)) { return null; }
     if (rIsBool.test(sValue)) { return sValue.toLowerCase() === "true"; }
     if (isFinite(sValue)) { return parseFloat(sValue); }
-    if (isFinite(Date.parse(sValue))) { return new Date(sValue); }
+    // if (isFinite(Date.parse(sValue))) { return new Date(sValue); }  // commented for now, we dont use date and "Q.U.Z.1" matches!
     return sValue;
   }
 
