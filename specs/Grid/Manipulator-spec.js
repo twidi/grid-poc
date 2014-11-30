@@ -745,4 +745,16 @@ describe("Manipulator", function() {
         expect(grid).toEqualXML(expected);
     });
 
+    it("should create a module node with simple keys/values pairs", function() {
+        var j = {
+            _foo: 1,
+            _bar: "B.A.R",
+        }
+        var node = Manipulator.createModuleNode(j);
+
+        var expected = '<content foo="1" bar="B.A.R"/>';
+
+        expect(node).toEqualXML(expected);
+    });
+
 });

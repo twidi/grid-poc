@@ -292,6 +292,19 @@ var Manipulator = {
                 content.parentNode.removeChild(content);
                 somethingRemoved = true;
             });
+
+            // remove rows having only placeholders cells (and more than one: the other ones used to
+            // hold real cells not here anymore)
+            _(contentNode.querySelectorAll('rows:not([type=placeholder])')).forEach(function(row) {
+                var nbPlaceholderCells = row.querySelectorAll(':scope > cells[type=placeholder]').length;
+                if (nbPlaceholderCells > 1) {
+                    var nbCells = row.querySelectorAll(':scope > cells').length;
+                    if (nbCells == nbPlaceholderCells) {
+                        row.parentNode.removeChild(row);
+                    }
+                }
+            });
+
         }
 
         // reload contentNode if emptyed below
@@ -425,7 +438,7 @@ var Manipulator = {
     /**
      * Remove all existing placeholders, except ones with a module
      *
-     * @param  {XML} grid The grid in whitch to remove the placeholders
+     * @param  {XML} grid The grid in witch to remove the placeholders
      *
      * @returns {} - Returns nothing
      *
@@ -451,6 +464,18 @@ var Manipulator = {
         _(grid.querySelectorAll('[type=placeholder]')).forEach(function(node) {
             node.removeAttribute('type');
         });
+    },
+
+    /**
+     * Clean existing placeholders to be in a valid state. Usefull to call after adding/removing a module
+     *
+     * @param  {XML} grid The grid for witch to clean the placeholders
+     *
+     * @returns {} - Returns nothing
+     */
+    cleanPlaceholders: function(grid) {
+        this.removePlaceholders(grid);
+        this.addPlaceholders(grid);
     },
 
     /**
@@ -515,6 +540,19 @@ var Manipulator = {
         }
 
     },
+
+    /**
+     * Create the "content" XML node to use as a module (in a <cells type=module>)
+     *
+     * @param  {JSON} params - The params of the module, to be converted in XML.
+     * It should be a single level object with keys prefixed with "_", with string or numbers.
+     * There is no validation for now but only these keys are guaranteed to be restored as is.
+     *
+     * @return {XML} - The XML content node
+     */
+    createModuleNode: function(params) {
+        return this.JSONGridToXML(params, 'content');
+    }
 
 };
 
