@@ -1,11 +1,10 @@
-/** @module Grid */
-
 var JXON = require('../../vendors/JXON.js');
 var _ = require('lodash');
 
 /**
  * Manipulates grid data
  * @namespace
+ * @memberOf module:Grid
  *
  */
 var Manipulator = {
@@ -171,8 +170,8 @@ var Manipulator = {
      *
      * @returns {XML} - The added row
      *
-     * @throws {module:Grid~Manipulator.Exceptions.Inconsistency} If "beforeRow" is given but the node is not yet a grid
-     * @throws {module:Grid~Manipulator.Exceptions.Inconsistency} If "beforeRow" is not in the content of the "node"
+     * @throws {module:Grid.Manipulator.Exceptions.Inconsistency} If "beforeRow" is given but the node is not yet a grid
+     * @throws {module:Grid.Manipulator.Exceptions.Inconsistency} If "beforeRow" is not in the content of the "node"
      */
     addRow: function(node, beforeRow) {
         // we insert the row in the content node
@@ -223,8 +222,8 @@ var Manipulator = {
      *
      * @returns {XML} - The added cell (XML), with the type and a content.
      *
-     * @throws {module:Grid~Manipulator.Exceptions.InvalidType} If the given "type" is not "grid" or "module"
-     * @throws {module:Grid~Manipulator.Exceptions.Inconsistency} If "beforeCell" is not in the "row"
+     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the given "type" is not "grid" or "module"
+     * @throws {module:Grid.Manipulator.Exceptions.Inconsistency} If "beforeCell" is not in the "row"
      */
     addCell: function(row, type, beforeCell, contentNode) {
         if (!this.reType.test(type)) {
@@ -260,7 +259,7 @@ var Manipulator = {
      *
      * @returns {} - Returns nothing
      *
-     * @throws {module:Grid~Manipulator.Exceptions.InvalidType} If the grid is not a grid (type nor "grid" nor "mainGrid")
+     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a grid (type nor "grid" nor "mainGrid")
      */
     cleanGrid: function(grid) {
         nodeType = grid.getAttribute('type');
@@ -371,7 +370,7 @@ var Manipulator = {
      *
      * @returns {} - Returns nothing
      *
-     * @throws {module:Grid~Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
+     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
      */
     addPlaceholders: function(grid) {
         nodeType = grid.getAttribute('type');
@@ -389,7 +388,7 @@ var Manipulator = {
      *
      * @returns {} - Returns nothing
      *
-     * @throws {module:Grid~Manipulator.Exceptions.InvalidType} If the grid is not a grid (type nor "grid" nor "mainGrid")
+     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a grid (type nor "grid" nor "mainGrid")
      *
      * @private
      */
@@ -442,7 +441,7 @@ var Manipulator = {
      *
      * @returns {} - Returns nothing
      *
-     * @throws {module:Grid~Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
+     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
      */
     removePlaceholders: function(grid) {
         nodeType = grid.getAttribute('type');
@@ -513,7 +512,7 @@ var Manipulator = {
      *
      * @return {} - Reurns nothing
      *
-     * @throws {module:Grid~Manipulator.Exceptions.InvalidType} If the placeholder cell is not a placeholder (type "placeholder")
+     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the placeholder cell is not a placeholder (type "placeholder")
      */
     moveContentToPlaceholder: function(contentNode, placeholderCell) {
         var placeholderType = placeholderCell.getAttribute('type');
