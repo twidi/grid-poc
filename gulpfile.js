@@ -23,7 +23,6 @@ var requireify = require('requireify');
 var dependencies = [
 	'react',
   'react-addons',
-  'flux-react'
 ];
 
 

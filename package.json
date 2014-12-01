@@ -29,7 +29,7 @@
     "requireify": "~0.2.1"
   },
   "dependencies": {
-    "flux-react": "^2.4.1",
+    "flux-react": "twidi/flux-react#no-deep-cloning",
     "react": "^0.12.0",
     "xmldom": "~0.1.19",
     "lodash": "~2.4.1"
