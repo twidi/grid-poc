@@ -1,6 +1,6 @@
 var _ = require('lodash');
 
-var JXON = require('../../vendors/JXON.js');
+var JXON = require('jxon');
 
 
 /**

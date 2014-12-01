@@ -23,7 +23,7 @@ var requireify = require('requireify');
 var dependencies = [
 	'react',
   'react-addons',
-];
+].concat(glob.sync('./vendors/**/*.js'));
 
 
 var browserifyTask = function (options) {
