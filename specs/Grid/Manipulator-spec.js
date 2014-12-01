@@ -1,5 +1,7 @@
-var Manipulator = require('./../../app/Grid/Manipulator.js');
 var _ = require('lodash');
+
+var Manipulator = require('./../../app/Grid/Manipulator.js');
+
 
 var customMatchers = {
     toEqualXML: function(util, customEqualityTesters) {
@@ -24,7 +26,7 @@ var customMatchers = {
     }
 };
 
-describe("Manipulator", function() {
+describe("Grid.Manipulator", function() {
 
     beforeEach(function() {
     jasmine.addMatchers(customMatchers);

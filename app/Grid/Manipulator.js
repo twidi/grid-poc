@@ -1,5 +1,7 @@
-var JXON = require('../../vendors/JXON.js');
 var _ = require('lodash');
+
+var JXON = require('../../vendors/JXON.js');
+
 
 /**
  * Manipulates grid data
@@ -14,6 +16,7 @@ var Manipulator = {
     /**
      * Exceptions for the Manipulator module
      * @namespace
+     * @summary Exceptions available in Grid.Manipulator.Exceptions
      *
      */
     Exceptions: {
