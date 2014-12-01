@@ -30,7 +30,7 @@ var Manipulator = {
          * @property {string} name - The name of the exception: "InvalidType"
          * @property {string} message - The message passed when the exception was raised, or a default value
          */
-        InvalidType: function(message) {
+        InvalidType: function InvalidType(message) {
             this.name = 'InvalidType';
             this.message = message || 'Invalid type detected';
         },
@@ -45,7 +45,7 @@ var Manipulator = {
          * @property {string} name - The name of the exception: "Inconsistency"
          * @property {string} message - The message passed when the exception was raised, or a default value
          */
-        Inconsistency: function (message) {
+        Inconsistency: function Inconsistency(message) {
             this.name = 'Inconsistency';
             this.message = message || 'Inconsistency detected';
         }
@@ -559,9 +559,10 @@ var Manipulator = {
 };
 
 // Exceptions must be based on the Error class
-_(Manipulator.Exceptions).forEach(function(exceptionClass) {
+_(Manipulator.Exceptions).forEach(function(exceptionClass, exceptionName) {
     exceptionClass.prototype = new Error();
     exceptionClass.prototype.constructor = exceptionClass;
+    exceptionClass.displayName = exceptionName;
 });
 
 module.exports = Manipulator;
