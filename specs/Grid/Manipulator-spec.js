@@ -2,34 +2,13 @@ var _ = require('lodash');
 
 var Manipulator = require('./../../app/Grid/Manipulator.js');
 
+var customMatchers = require('./custom-matchers.js');
 
-var customMatchers = {
-    toEqualXML: function(util, customEqualityTesters) {
-        return {
-            compare: function(actual, expected) {
-                if (!_.isString(actual)) {
-                    actual = Manipulator.XMLGridToXMLString(actual);
-                }
-                if (!_.isString(expected)) {
-                    expected = Manipulator.XMLGridToXMLString(expected);
-                }
-                var result = {};
-                result.pass = util.equals(actual, expected);
-                if (result.pass) {
-                    result.message = "XML is the one wanted";
-                } else {
-                    result.message = "XML is not the one wanted. Actual VS expected:\n" + actual + "\n" + expected;
-                }
-                return result;
-            }
-        };
-    }
-};
 
 describe("Grid.Manipulator", function() {
 
     beforeEach(function() {
-    jasmine.addMatchers(customMatchers);
+        jasmine.addMatchers(customMatchers);
     });
 
     it("should convert Json to Xml and vice-versa", function() {
