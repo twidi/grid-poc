@@ -83,7 +83,7 @@ var Private = {
             throw new this.Exceptions.GridDoesNotExist("There is already a grid the name <" + name + ">");
         }
         this.emitChange();
-        this.emit('added');
+        this.emit('add', name);
     },
 
     /**
