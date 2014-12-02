@@ -102,8 +102,6 @@ var Private = {
 
     exports: Store,
 
-    Exceptions: Store.Exceptions,
-
 };
 
 
