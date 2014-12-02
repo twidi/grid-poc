@@ -50,6 +50,19 @@ var Store = {
             throw new this.Exceptions.GridDoesNotExist("No grid with the name <" + name + ">");
         }
     },
+
+    /**
+     * Remove all the grids
+     *
+     * @private
+     *
+     * @returns {} - Returns nothing
+     */
+    __removeAllGrids: function() {
+        for (var gridName in this.grids) {
+            delete this.grids[gridName];
+        }
+    },
 };
 
 
@@ -72,8 +85,9 @@ var Private = {
 
 
     /**
-     * It's an action, should be called via Grid.Actions.addGrid
-     * @see module:Grid.Actions.addGrid
+     * Add a grid to the list of grids.
+     * It's an action, should be called via
+     * {@link module:Grid.Actions.enterDesignMode Grid.Actions.addGrid}
      */
     addGrid: function(grid) {
         var name = grid.getAttribute('name');
@@ -82,24 +96,61 @@ var Private = {
         } else {
             throw new this.Exceptions.GridDoesNotExist("There is already a grid the name <" + name + ">");
         }
+        /**
+         * Event fired when the store grid is updated
+         *
+         * @event module:Grid.Store#change
+         */
         this.emitChange();
-        this.emit('add', name);
+        /**
+         * Event fired when a grid is added to the Grid store
+         *
+         * @event module:Grid.Store#addGrid
+         *
+         * @property {string} name - The name of the added Grid
+         */
+        this.emit('addGrid', name);
     },
 
     /**
-     * It's an action, should be called via {@link module:Grid.Actions.enterDesignMode Grid.Actions.enterDesignMode}
+     * Set design mode for the given grid.
+     * It's an action, should be called via
+     * {@link module:Grid.Actions.enterDesignMode Grid.Actions.enterDesignMode}
      */
     enterDesignMode: function(name) {
+        var grid = this.getGrid(name);
+        Manipulator.addPlaceholders(grid);
+        this.emitChange();
+        /**
+         * Event fired when a grid enters design mode
+         *
+         * @event module:Grid.Store#enterDesignMode
+         *
+         * @property {string} name - The name of the updated grid
+         */
+        this.emit('enterDesignMode', name);
     },
 
     /**
-     * It's an action, should be called via Grid.Actions.exitDesignMode
-     * @see module:Grid.Actions.exitDesignMode
+     * Exit design mode for the given grid.
+     * It's an action, should be called via
+     * {@link module:Grid.Actions.enterDesignMode Grid.Actions.exitDesignMode}
      */
     exitDesignMode: function(name) {
-
+        var grid = this.getGrid(name);
+        Manipulator.removePlaceholders(grid);
+        this.emitChange();
+        /**
+         * Event fired when a grid exits design mode
+         *
+         * @event module:Grid.Store#exitDesignMode
+         *
+         * @property {string} name - The name of the updated grid
+         */
+        this.emit('exitDesignMode', name);
     },
 
+    // add the public interface
     exports: Store,
 
 };
