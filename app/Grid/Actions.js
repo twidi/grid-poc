@@ -8,7 +8,7 @@ var flux = require('flux-react');
  * @memberOf module:Grid
  *
  */
-var actions = {
+var Actions = {
     // Here are just definitions of functions. There are really created by the
     // "flux.createActions" call
 
@@ -41,4 +41,4 @@ var actions = {
     exitDesignMode: function(name) {},
 };
 
-module.exports = flux.createActions(_.keys(actions));
+module.exports = flux.createActions(_.keys(Actions));

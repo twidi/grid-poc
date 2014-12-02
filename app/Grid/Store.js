@@ -1,7 +1,7 @@
 var _ = require('lodash');
 var flux = require('flux-react');
 
-var actions = require('./actions.js');
+var Actions = require('./Actions.js');
 var Manipulator = require('./Manipulator.js');
 
 
@@ -68,12 +68,12 @@ var Private = {
      */
     grids: {},
 
-    actions: _.values(actions),
+    actions: _.values(Actions),
 
 
     /**
-     * It's an action, should be called via Grid.actions.addGrid
-     * @see module:Grid.actions.addGrid
+     * It's an action, should be called via Grid.Actions.addGrid
+     * @see module:Grid.Actions.addGrid
      */
     addGrid: function(grid) {
         var name = grid.getAttribute('name');
@@ -87,14 +87,14 @@ var Private = {
     },
 
     /**
-     * It's an action, should be called via {@link module:Grid.actions.enterDesignMode Grid.actions.enterDesignMode}
+     * It's an action, should be called via {@link module:Grid.Actions.enterDesignMode Grid.Actions.enterDesignMode}
      */
     enterDesignMode: function(name) {
     },
 
     /**
-     * It's an action, should be called via Grid.actions.exitDesignMode
-     * @see module:Grid.actions.exitDesignMode
+     * It's an action, should be called via Grid.Actions.exitDesignMode
+     * @see module:Grid.Actions.exitDesignMode
      */
     exitDesignMode: function(name) {
 
