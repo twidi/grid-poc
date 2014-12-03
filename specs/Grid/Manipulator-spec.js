@@ -456,8 +456,13 @@ describe("Grid.Manipulator", function() {
 
         Manipulator.addPlaceholders(grid);
 
+        // cannot add placeholders again
+        expect(function() {
+            Manipulator.addPlaceholders(grid);
+        }).toThrowError(Manipulator.Exceptions.InvalidState);
+
         var expectedWithPlaceholders =
-            '<grid name="foo" space="5px" type="mainGrid">' +
+            '<grid name="foo" space="5px" type="mainGrid" hasPlaceholders="true">' +
                 '<content>' +
                     '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
                 '</content>' +
@@ -466,6 +471,11 @@ describe("Grid.Manipulator", function() {
 
         Manipulator.removePlaceholders(grid);
         expect(grid).toEqualXML(expected);
+
+        // cannot remove placeholders again
+        expect(function() {
+            Manipulator.removePlaceholders(grid);
+        }).toThrowError(Manipulator.Exceptions.InvalidState);
 
         // do it wth a grid with one row/one cell
         var expected =
@@ -482,7 +492,7 @@ describe("Grid.Manipulator", function() {
         Manipulator.addPlaceholders(grid);
 
         var expectedWithPlaceholders =
-            '<grid name="foo" space="5px" type="mainGrid">' +
+            '<grid name="foo" space="5px" type="mainGrid" hasPlaceholders="true">' +
                 '<content>' +
                     '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
                     '<rows>' +
@@ -529,7 +539,7 @@ describe("Grid.Manipulator", function() {
         Manipulator.addPlaceholders(grid);
 
         var expectedWithPlaceholders =
-            '<grid name="foo" space="5px" type="mainGrid">' +
+            '<grid name="foo" space="5px" type="mainGrid" hasPlaceholders="true">' +
                 '<content>' +
                     '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
                     '<rows>' +
@@ -716,7 +726,6 @@ describe("Grid.Manipulator", function() {
         }).toThrowError(Manipulator.Exceptions.InvalidType, "Cannot move content in cell of type <module>. It must be <placeholder>");
 
         // test with a detached module
-        Manipulator.removePlaceholders(grid);
         var parentGrid = Manipulator.getNearestGrid(content);
         content.parentNode.removeChild(content);
         Manipulator.cleanGrid(parentGrid);

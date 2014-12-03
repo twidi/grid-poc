@@ -125,7 +125,7 @@ describe("Grid.Actions", function() {
 
                     // check if the grid has placeholders
                     var expected =
-                        '<grid name="foo" space="5px" type="mainGrid">' +
+                        '<grid name="foo" space="5px" type="mainGrid" hasPlaceholders="true">' +
                             '<content>' +
                                 '<rows type="placeholder">' +
                                     '<cells type="placeholder">' +

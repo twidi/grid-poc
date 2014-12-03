@@ -48,7 +48,22 @@ var Manipulator = {
         Inconsistency: function Inconsistency(message) {
             this.name = 'Inconsistency';
             this.message = message || 'Inconsistency detected';
-        }
+        },
+
+        /**
+         * Exception raised when a the state of something is not the one expected
+         * This is a subclass of "Error"
+         * @class
+         *
+         * @param {string} [message] - The raised message
+         *
+         * @property {string} name - The name of the exception: "InvalidState"
+         * @property {string} message - The message passed when the exception was raised, or a default value
+         */
+        InvalidState: function InvalidState(message) {
+            this.name = 'InvalidState';
+            this.message = message || 'Invalid state detected';
+        },
     },
 
     /**
@@ -265,7 +280,7 @@ var Manipulator = {
      * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a grid (type nor "grid" nor "mainGrid")
      */
     cleanGrid: function(grid) {
-        nodeType = grid.getAttribute('type');
+        var nodeType = grid.getAttribute('type');
         if (!this.reGrid.test(nodeType)) {
             throw new this.Exceptions.InvalidType("Cannot clean node of type <" + nodeType + ">. Should be <grid> or <mainGrid>");
         }
@@ -368,19 +383,25 @@ var Manipulator = {
 
     /**
      * Add all placeholders in the given grid
+     * Add a "hasPlaceholders" attribute (set to "true") on the main grid node.
      *
      * @param {XML} grid - The grid to insert placeholders in
      *
      * @returns {} - Returns nothing
      *
      * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
+     * @throws {module:Grid.Manipulator.Exceptions.InvalidState} If the grid already has placeholders
      */
     addPlaceholders: function(grid) {
-        nodeType = grid.getAttribute('type');
+        var nodeType = grid.getAttribute('type');
         if (nodeType != 'mainGrid') {
             throw new this.Exceptions.InvalidType("Cannot add placeholders in grid of type <" + nodeType + ">. Should be <mainGrid>");
         }
+        if (grid.getAttribute('hasPlaceholders')) {
+            throw new this.Exceptions.InvalidState("Cannot add placeholders on a grid which already have them");
+        }
         this._addRowsPlaceholders(grid);
+        grid.setAttribute('hasPlaceholders', true);
     },
 
     /**
@@ -396,7 +417,7 @@ var Manipulator = {
      * @private
      */
     _addRowsPlaceholders: function(grid) {
-        nodeType = grid.getAttribute('type');
+        var nodeType = grid.getAttribute('type');
         if (!this.reGrid.test(nodeType)) {
             throw new this.Exceptions.InvalidType("Cannot add rows placeholders in node of type <" + nodeType + ">. Should be <grid> or <mainGrid>");
         }
@@ -438,18 +459,23 @@ var Manipulator = {
     },
 
     /**
-     * Remove all existing placeholders, except ones with a module
+     * Remove all existing placeholders, except ones with a module.
+     * Remove the "hasPlaceholders" attribute on the main grid node.
      *
      * @param  {XML} grid The grid in witch to remove the placeholders
      *
      * @returns {} - Returns nothing
      *
      * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
+     * @throws {module:Grid.Manipulator.Exceptions.InvalidState} If the grid doesn't have any placeholders
      */
     removePlaceholders: function(grid) {
-        nodeType = grid.getAttribute('type');
+        var nodeType = grid.getAttribute('type');
         if (nodeType != 'mainGrid') {
             throw new this.Exceptions.InvalidType("Cannot remove placeholders in grid of type <" + nodeType + ">. Should be <mainGrid>");
+        }
+        if (!grid.getAttribute('hasPlaceholders')) {
+            throw new this.Exceptions.InvalidState("Cannot remove placeholders on a grid which doesn't have any");
         }
 
         // remove each placeholders rows except ones with a module in
@@ -466,6 +492,8 @@ var Manipulator = {
         _(grid.querySelectorAll('[type=placeholder]')).forEach(function(node) {
             node.removeAttribute('type');
         });
+
+        grid.removeAttribute('hasPlaceholders');
     },
 
     /**
