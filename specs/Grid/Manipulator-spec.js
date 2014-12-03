@@ -11,6 +11,7 @@ describe("Grid.Manipulator", function() {
         jasmine.addMatchers(customMatchers);
     });
 
+
     it("should convert Json to Xml and vice-versa", function() {
         var j = {
             _param1: 1,

@@ -13,6 +13,7 @@ describe("Grid.Actions", function() {
         Store.__removeAllGrids();
     });
 
+
     it("should add a grid", function(done) {
         // will increment this for each callback called, should be 2 at the end
         var callbacksCalled = 0;
@@ -46,7 +47,7 @@ describe("Grid.Actions", function() {
             setTimeout(function() {
                 // clean the listeners
                 Store.removeChangeListener(onStateChange);
-                Store.removeListener('addGrid', onAddGrid);
+                Store.off('addGrid', onAddGrid);
 
                 // check if the callback were called
                 expect(callbacksCalled).toEqual(2);
@@ -111,7 +112,7 @@ describe("Grid.Actions", function() {
                 setTimeout(function() {
                     // clean the listeners
                     Store.removeChangeListener(onStateChange);
-                    Store.removeListener('enterDesignMode', onEnterDesignMode);
+                    Store.off('enterDesignMode', onEnterDesignMode);
 
                     // check if the callback were called
                     expect(callbacksCalled).toEqual(2);
@@ -187,7 +188,7 @@ describe("Grid.Actions", function() {
                 setTimeout(function() {
                     // clean the listeners
                     Store.removeChangeListener(onStateChange);
-                    Store.removeListener('exitDesignMode', onExitDesignMode);
+                    Store.off('exitDesignMode', onExitDesignMode);
 
                     // check if the callback were called
                     expect(callbacksCalled).toEqual(2);
