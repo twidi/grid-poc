@@ -17,6 +17,8 @@ var jasminePhantomJs = require('gulp-jasmine2-phantomjs');
 var jsdoc = require('gulp-jsdoc');
 var jsx = require('gulp-jsx');
 var requireify = require('requireify');
+var print = require('gulp-print');
+var rename = require('gulp-rename');
 
 // External dependencies you do not want to rebundle while developing,
 // but include in your application deployment
@@ -235,7 +237,9 @@ gulp.task('doc', function() {
     var docTemplate = {
       path: "node_modules/jaguarjs-jsdoc/"
     };
-    gulp.src("./app/**/*.js")
+    gulp.src(["./app/**/*.jsx", "./app/**/*.js"])
+        .pipe(gulpif(/.jsx/, rename({suffix: '.jsx', extname: '.js'})))
         .pipe(jsx())
+        .pipe(gulpif(/.jsx/, gulp.dest('./dist-doc')))
         .pipe(jsdoc(docDir, docTemplate));
 });

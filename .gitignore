@@ -13,3 +13,4 @@ dist/*.js
 
 # Ignore doc directory
 /doc/
+/dist-doc/
