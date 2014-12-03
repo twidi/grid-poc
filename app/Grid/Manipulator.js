@@ -582,8 +582,18 @@ var Manipulator = {
      */
     createModuleNode: function(params) {
         return this.JSONGridToXML(params, 'content');
-    }
+    },
 
+    /**
+     * Set an unique ID on the given node and each of if sub nodes (whole tree)
+     *
+     * @returns {} - Returns nothing
+     */
+    setIds: function(node) {
+        _(_.toArray(node.querySelectorAll('*')).concat([node])).forEach(function(subnode) {
+            subnode.setAttribute('id', _.uniqueId(subnode.tagName + '-'));
+        });
+    },
 };
 
 // Exceptions must be based on the Error class

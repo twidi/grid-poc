@@ -4,6 +4,8 @@ var React = require('react');
 var Actions = require('./../Actions.js');
 var Store = require('./../Store.js');
 
+var GridMixin = require('./GridMixin.jsx');
+
 
 /**
  * Grid component
@@ -12,6 +14,7 @@ var Store = require('./../Store.js');
  *
  */
 var Grid = {
+    mixins: [GridMixin],
 
     /**
      * Update the grid when the given name is the one in props

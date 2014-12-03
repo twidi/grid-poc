@@ -786,6 +786,56 @@ describe("Grid.Manipulator", function() {
             '</grid>';
 
         expect(grid).toEqualXML(expected);
-    })
+    });
+
+    it("should set an ID on each node", function() {
+        // we mock the uniqueId function of lodash to know the value to expect
+        spyOn(_, "uniqueId").and.callFake(function(prefix) {
+            return prefix + 123;
+        });
+
+        var grid = Manipulator.XMLStringToXMLGrid(
+            '<grid name="foo" space="5px" type="mainGrid">' +
+                '<content>' +
+                    '<rows>' +
+                        '<cells type="module"><content/></cells>' +
+                        '<cells type="grid">' +
+                            '<content>' +
+                                '<rows>' +
+                                    '<cells type="module"><content/></cells>' +
+                                '</rows>' +
+                            '</content>' +
+                        '</cells>' +
+                    '</rows>' +
+                    '<rows>' +
+                        '<cells type="module"><content/></cells>' +
+                    '</rows>' +
+                '</content>' +
+            '</grid>');
+
+        Manipulator.setIds(grid);
+
+        var expected =
+            '<grid name="foo" space="5px" type="mainGrid" id="grid-123">' +
+                '<content id="content-123">' +
+                    '<rows id="rows-123">' +
+                        '<cells type="module" id="cells-123"><content id="content-123"/></cells>' +
+                        '<cells type="grid" id="cells-123">' +
+                            '<content id="content-123">' +
+                                '<rows id="rows-123">' +
+                                    '<cells type="module" id="cells-123"><content id="content-123"/></cells>' +
+                                '</rows>' +
+                            '</content>' +
+                        '</cells>' +
+                    '</rows>' +
+                    '<rows id="rows-123">' +
+                        '<cells type="module" id="cells-123"><content id="content-123"/></cells>' +
+                    '</rows>' +
+                '</content>' +
+            '</grid>';
+
+        expect(grid).toEqualXML(expected);
+
+    });
 
 });
