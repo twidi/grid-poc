@@ -105,11 +105,11 @@ var Private = {
         /**
          * Event fired when a grid is added to the Grid store
          *
-         * @event module:Grid.Store#addGrid
+         * @event module:Grid.Store#grid.add
          *
          * @property {string} name - The name of the added Grid
          */
-        this.emit('addGrid', name);
+        this.emit('grid.add', name);
     },
 
     /**
@@ -124,11 +124,11 @@ var Private = {
         /**
          * Event fired when a grid enters design mode
          *
-         * @event module:Grid.Store#enterDesignMode
+         * @event module:Grid.Store#grid.designMode.enter
          *
          * @property {string} name - The name of the updated grid
          */
-        this.emit('enterDesignMode', name);
+        this.emit('grid.designMode.enter', name);
     },
 
     /**
@@ -143,11 +143,11 @@ var Private = {
         /**
          * Event fired when a grid exits design mode
          *
-         * @event module:Grid.Store#exitDesignMode
+         * @event module:Grid.Store#grid.designMode.exit
          *
          * @property {string} name - The name of the updated grid
          */
-        this.emit('exitDesignMode', name);
+        this.emit('grid.designMode.exit', name);
     },
 
     // add the public interface

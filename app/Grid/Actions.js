@@ -20,7 +20,7 @@ var Actions = {
      * @param {XML} grid - The grid to add to the list
      *
      * @fires module:Grid.Store#change
-     * @fires module:Grid.Store#addGrid
+     * @fires module:Grid.Store#grid.add
      */
     addGrid: function(grid) {},
 
@@ -32,7 +32,7 @@ var Actions = {
      * @param {string} name - The name of the grid for witch we want to enter the design mode
      *
      * @fires module:Grid.Store#change
-     * @fires module:Grid.Store#enterDesignMode
+     * @fires module:Grid.Store#grid.designMode.enter
      */
     enterDesignMode: function(name) {},
 
@@ -45,7 +45,7 @@ var Actions = {
      * @param {string} name - The name of the grid for witch we want to exit the design mode
      *
      * @fires module:Grid.Store#change
-     * @fires module:Grid.Store#exitDesignMode
+     * @fires module:Grid.Store#grid.designMode.exit
      */
     exitDesignMode: function(name) {},
 };

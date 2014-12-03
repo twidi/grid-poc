@@ -17,10 +17,10 @@ var App = React.createClass({
         };
     },
     componentWillMount: function () {
-        Store.on('addGrid', this.onGridAdded);
+        Store.on('grid.add', this.onGridAdded);
     },
     componentWillUnmount: function () {
-        Store.off('addGrid', this.onGridAdded);
+        Store.off('grid.add', this.onGridAdded);
     },
 
     onGridAdded: function(gridName) {
@@ -30,7 +30,6 @@ var App = React.createClass({
     },
 
     initGrid: function() {
-        console.log('initgrid');
         var grid = Manipulator.createBaseGrid('Test grid', 5);
         Actions.addGrid(grid);
     },

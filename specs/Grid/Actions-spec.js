@@ -35,7 +35,7 @@ describe("Grid.Actions", function() {
 
         // add some listeners
         Store.addChangeListener(onStateChange);
-        Store.on('addGrid', onAddGrid);
+        Store.on('grid.add', onAddGrid);
 
         try {
 
@@ -100,7 +100,7 @@ describe("Grid.Actions", function() {
 
             // add some listeners
             Store.addChangeListener(onStateChange);
-            Store.on('enterDesignMode', onEnterDesignMode);
+            Store.on('grid.designMode.enter', onEnterDesignMode);
 
             try {
 
@@ -176,7 +176,7 @@ describe("Grid.Actions", function() {
 
             // add some listeners
             Store.addChangeListener(onStateChange);
-            Store.on('exitDesignMode', onExitDesignMode);
+            Store.on('grid.designMode.exit', onExitDesignMode);
 
             try {
 

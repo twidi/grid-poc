@@ -152,7 +152,7 @@ var Manipulator = {
     },
 
     /**
-     * Return a deep clone of the given grid. Nothinf is shared between the clones.
+     * Return a deep clone of the given grid. Nothing is shared between the clones.
      *
      * @param  {XML} grid - The grid to clone
      *
