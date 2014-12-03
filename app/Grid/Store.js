@@ -32,23 +32,60 @@ var Store = {
         GridDoesNotExist: function GridDoesNotExist(message) {
             this.message = message || 'Grid does not exist';
         },
+        /**
+         * Exception raised when a node does not exist
+         * This is a subclass of "Error"
+         * @class
+         *
+         * @param {string} [message] - The raised message
+         *
+         * @property {string} name - The name of the exception: "NodeDoesNotExist"
+         * @property {string} message - The message passed when the exception was raised, or a default value
+         */
+        NodeDoesNotExist: function NodeDoesNotExist(message) {
+            this.message = message || 'Node does not exist';
+        },
     },
 
     /**
      * Get a grid from the store by its name
      *
-     * @param  {string} name - Name of the grid to get
+     * @param  {string} gridName - Name of the grid to get
      *
      * @return {XML} - The wanted XML grid
      *
      * @throws {module:Grid.Store.Exceptions.GridDoesNotExist} If the given name does not match an existing grid name
      */
-    getGrid: function(name) {
-        if (_.has(this.grids, name)) {
-            return this.grids[name];
+    getGrid: function(gridName) {
+        if (_.has(this.grids, gridName)) {
+            return this.grids[gridName];
         } else {
-            throw new this.Exceptions.GridDoesNotExist("No grid with the name <" + name + ">");
+            throw new this.Exceptions.GridDoesNotExist("No grid with the name <" + gridName + ">");
         }
+    },
+
+    /**
+     * Get a node from the store by the grid name and the node id.
+     * It may be the grid root node
+     *
+     * @param  {string} gridName - Name of the grid to get
+     * @param  {string} nodeId - Id of the grid node to get
+     *
+     * @return {XML} - The wanted XML node
+     *
+     * @throws {module:Grid.Store.Exceptions.GridDoesNotExist} If the given name does not match an existing grid name
+     * @throws {module:Grid.Store.Exceptions.NodeDoesNotExist} If the given id does not match an existing node id
+     */
+    getGridNode: function(gridName, nodeId) {
+        var grid = this.getGrid(gridName);
+        if (grid.getAttribute('id') == nodeId) {
+            return grid;
+        }
+        var node = grid.querySelector('#' + nodeId);
+        if (!node) {
+            throw new this.Exceptions.NodeDoesNotExist("No node with the ID <" + nodeId + ">");
+        }
+        return node;
     },
 
     /**

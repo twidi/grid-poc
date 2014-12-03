@@ -26,7 +26,7 @@ describe("Grid.Actions", function() {
             callbacksCalled++;
         };
 
-        var  onAddGrid = function(gridName) {
+        var onAddGrid = function(gridName) {
             callbacksCalled++;
             addedGridName = gridName;
         };
@@ -85,7 +85,7 @@ describe("Grid.Actions", function() {
             callbacksCalled++;
         };
 
-        var  onEnterDesignMode = function(gridName) {
+        var onEnterDesignMode = function(gridName) {
             callbacksCalled++;
             updatedGridName = gridName;
         };
@@ -158,7 +158,7 @@ describe("Grid.Actions", function() {
             callbacksCalled++;
         };
 
-        var  onExitDesignMode = function(gridName) {
+        var onExitDesignMode = function(gridName) {
             callbacksCalled++;
             updatedGridName = gridName;
         };
