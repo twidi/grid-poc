@@ -43,13 +43,13 @@ describe("Grid.Components.Grid", function() {
 
     it("should change when toggling design mode", function(done) {
         var gridComponent = TestUtils.renderIntoDocument(Grid({grid: gridFoo}));;
-        expect(gridComponent.getDOMNode().innerText).toMatch(/I am NOT in design mode/);
+        expect(gridComponent.getDOMNode().textContent).toMatch(/I am NOT in design mode/);
 
         gridComponent.toggleDesignMode();
 
         // give some time to re-render
         setTimeout(function() {
-            expect(gridComponent.getDOMNode().innerText).toMatch(/I am in design mode/);
+            expect(gridComponent.getDOMNode().textContent).toMatch(/I am in design mode/);
             done();
         }, 0.01);
     });

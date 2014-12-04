@@ -34,6 +34,7 @@ var Grid = {
 
     /**
      * Update the grid when the given name is the one in props
+     * It is called on some events on the store after an update of a grid.
      */
     updateIfSelf: function (name) {
         if (name != this.state.gridName) { return; }
