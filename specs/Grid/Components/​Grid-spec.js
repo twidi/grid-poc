@@ -9,40 +9,40 @@ var Grid = require('./../../../app/Grid/Components/Grid.jsx');
 
 describe("Grid.Components.Grid", function() {
 
+    // main grid defined in beforeEach
+    var gridFoo;
+
     beforeEach(function(done) {
         // we want to start each test with a fresh list of grids
         Store.__removeAllGrids();
 
         // we add a grid "foo"
-        var grid = Manipulator.createBaseGrid('foo', 5);
-        Actions.addGrid(grid);
+        gridFoo = Manipulator.createBaseGrid('foo', 5);
+        Actions.addGrid(gridFoo);
 
         setTimeout(function() {
             done();
         }, 0.01);
     });
 
-    it("should have grid name", function() {
-        var gridComponent = TestUtils.renderIntoDocument(Grid({name: 'foo'}));;
-        expect(gridComponent.props.name).toEqual('foo');
+    it("should have a grid", function() {
+        var gridComponent = TestUtils.renderIntoDocument(Grid({grid: gridFoo}));
+        expect(gridComponent.props.grid).toBe(gridFoo);
     });
 
-    it("should get a grid from the store", function() {
-        var gridComponent = TestUtils.renderIntoDocument(Grid({name: 'foo'}));
-        var expectedGrid = Store.getGrid('foo');
-        var grid = gridComponent.getGrid();
-        expect(grid).toBe(expectedGrid);
+    it("should have a grid name", function() {
+        var gridComponent = TestUtils.renderIntoDocument(Grid({grid: gridFoo}));;
+        expect(gridComponent.state.gridName).toEqual('foo');
     });
 
     it("should know if it's in design mode", function() {
-        var gridComponent = TestUtils.renderIntoDocument(Grid({name: 'foo'}));
-        var grid = gridComponent.getGrid();
-        Manipulator.addPlaceholders(grid);
+        var gridComponent = TestUtils.renderIntoDocument(Grid({grid: gridFoo}));;
+        Manipulator.addPlaceholders(gridFoo);
         expect(gridComponent.designMode()).toBe(true);
     });
 
     it("should change when toggling design mode", function(done) {
-        var gridComponent = TestUtils.renderIntoDocument(Grid({name: 'foo'}));
+        var gridComponent = TestUtils.renderIntoDocument(Grid({grid: gridFoo}));;
         expect(gridComponent.getDOMNode().innerText).toMatch(/I am NOT in design mode/);
 
         gridComponent.toggleDesignMode();

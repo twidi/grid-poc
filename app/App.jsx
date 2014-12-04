@@ -36,7 +36,7 @@ var App = React.createClass({
 
     render: function() {
         if (this.state.gridName) {
-            return <Grid name={this.state.gridName}/>
+            return <Grid grid={Store.getGrid(this.state.gridName)}/>
         } else {
             return <button onClick={this.initGrid}>Initialize the grid</button>
         }
