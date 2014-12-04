@@ -586,11 +586,12 @@ var Manipulator = {
 
     /**
      * Set an unique ID on the given node and each of if sub nodes (whole tree)
+     * Don't update nodes that already have an ID
      *
      * @returns {} - Returns nothing
      */
     setIds: function(node) {
-        _(_.toArray(node.querySelectorAll('*')).concat([node])).forEach(function(subnode) {
+        _(_.toArray(node.querySelectorAll('*:not([id])')).concat([node])).forEach(function(subnode) {
             subnode.setAttribute('id', _.uniqueId(subnode.tagName + '-'));
         });
     },

@@ -836,6 +836,21 @@ describe("Grid.Manipulator", function() {
 
         expect(grid).toEqualXML(expected);
 
+        // check that existing ids are not changed
+        var grid = Manipulator.XMLStringToXMLGrid(
+            '<grid name="foo" space="5px" type="mainGrid">' +
+                '<content id="foobar"/>' +
+            '</grid>');
+
+        Manipulator.setIds(grid);
+
+        var expected =
+            '<grid name="foo" space="5px" type="mainGrid" id="grid-123">' +
+                '<content id="foobar"/>' +
+            '</grid>';
+
+        expect(grid).toEqualXML(expected);
+
     });
 
 });
