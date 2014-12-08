@@ -591,7 +591,11 @@ var Manipulator = {
      * @returns {} - Returns nothing
      */
     setIds: function(node) {
-        _(_.toArray(node.querySelectorAll('*:not([id])')).concat([node])).forEach(function(subnode) {
+        var nodes = _.toArray(node.querySelectorAll('*:not([id])'));
+        if (!node.getAttribute('id')) {
+            nodes.unshift(node);
+        }
+        _(nodes).forEach(function(subnode) {
             subnode.setAttribute('id', _.uniqueId(subnode.tagName + '-'));
         });
     },

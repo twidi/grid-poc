@@ -3,12 +3,17 @@ var _ = require('lodash');
 var Manipulator = require('./../../app/Grid/Manipulator.js');
 
 var customMatchers = require('./custom-matchers.js');
+var Utils = require('../Utils.js');
 
 
 describe("Grid.Manipulator", function() {
+    var uniqueIdMock;
 
     beforeEach(function() {
         jasmine.addMatchers(customMatchers);
+
+        // we mock the uniqueId function of lodash to know the value to expect
+        uniqueIdMock = Utils.mockUniqueId()
     });
 
 
@@ -789,10 +794,6 @@ describe("Grid.Manipulator", function() {
     });
 
     it("should set an ID on each node", function() {
-        // we mock the uniqueId function of lodash to know the value to expect
-        spyOn(_, "uniqueId").and.callFake(function(prefix) {
-            return prefix + 123;
-        });
 
         var grid = Manipulator.XMLStringToXMLGrid(
             '<grid name="foo" space="5px" type="mainGrid">' +
@@ -816,20 +817,20 @@ describe("Grid.Manipulator", function() {
         Manipulator.setIds(grid);
 
         var expected =
-            '<grid name="foo" space="5px" type="mainGrid" id="grid-123">' +
-                '<content id="content-123">' +
-                    '<rows id="rows-123">' +
-                        '<cells type="module" id="cells-123"><content id="content-123"/></cells>' +
-                        '<cells type="grid" id="cells-123">' +
-                            '<content id="content-123">' +
-                                '<rows id="rows-123">' +
-                                    '<cells type="module" id="cells-123"><content id="content-123"/></cells>' +
+            '<grid name="foo" space="5px" type="mainGrid" id="grid-1">' +
+                '<content id="content-2">' +
+                    '<rows id="rows-3">' +
+                        '<cells type="module" id="cells-4"><content id="content-5"/></cells>' +
+                        '<cells type="grid" id="cells-6">' +
+                            '<content id="content-7">' +
+                                '<rows id="rows-8">' +
+                                    '<cells type="module" id="cells-9"><content id="content-10"/></cells>' +
                                 '</rows>' +
                             '</content>' +
                         '</cells>' +
                     '</rows>' +
-                    '<rows id="rows-123">' +
-                        '<cells type="module" id="cells-123"><content id="content-123"/></cells>' +
+                    '<rows id="rows-11">' +
+                        '<cells type="module" id="cells-12"><content id="content-13"/></cells>' +
                     '</rows>' +
                 '</content>' +
             '</grid>';
@@ -842,10 +843,11 @@ describe("Grid.Manipulator", function() {
                 '<content id="foobar"/>' +
             '</grid>');
 
+        uniqueIdMock.reset();
         Manipulator.setIds(grid);
 
         var expected =
-            '<grid name="foo" space="5px" type="mainGrid" id="grid-123">' +
+            '<grid name="foo" space="5px" type="mainGrid" id="grid-1">' +
                 '<content id="foobar"/>' +
             '</grid>';
 
