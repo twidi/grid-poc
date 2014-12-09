@@ -29,4 +29,4 @@ var SubGrid = {
     }
 };
 
-module.exports = React.createClass(SubGrid);
+module.exports = SubGrid = React.createClass(SubGrid);

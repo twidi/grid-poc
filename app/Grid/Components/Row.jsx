@@ -62,4 +62,4 @@ var Row = {
 
 };
 
-module.exports = React.createClass(Row);
+module.exports = Row = React.createClass(Row);

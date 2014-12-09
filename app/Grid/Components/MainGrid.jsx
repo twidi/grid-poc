@@ -103,4 +103,4 @@ var MainGrid = {
 
 };
 
-module.exports = React.createClass(MainGrid);
+module.exports = MainGrid = React.createClass(MainGrid);

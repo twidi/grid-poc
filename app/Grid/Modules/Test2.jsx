@@ -7,5 +7,5 @@ var Test2 = {
     }
 };
 
-module.exports = React.createClass(Test2);
+module.exports = Test2 = React.createClass(Test2);
 

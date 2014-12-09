@@ -26,6 +26,9 @@ describe("Grid.Components.Row", function() {
         // we mock the uniqueId function of lodash to know the value to expect
         uniqueIdMock = Utils.mockUniqueId();
 
+        // reset the modules cache for every test
+        componentUtils.clearModulesCache();
+
         // we add a grid with some content
         testGrid = componentUtils.makeTestGrid();
         gridRow = testGrid.querySelector('rows');
@@ -34,17 +37,20 @@ describe("Grid.Components.Row", function() {
     });
 
     it("should access its main grid", function() {
-        var component = TestUtils.renderIntoDocument(Row({node: gridRow}));
+        var element = React.createElement(Row, {node: gridRow});
+        var component = TestUtils.renderIntoDocument(element);
         expect(component.getGrid()).toBe(testGrid);
     });
 
     it("should get its id", function() {
-        var component = TestUtils.renderIntoDocument(Row({node: gridRow}));
+        var element = React.createElement(Row, {node: gridRow});
+        var component = TestUtils.renderIntoDocument(element);
         expect(component.getNodeId()).toBe(gridRow.getAttribute('id'));
     });
 
     it("should be able to get its grid cells", function() {
-        var component = TestUtils.renderIntoDocument(Row({node: gridRow}));
+        var element = React.createElement(Row, {node: gridRow});
+        var component = TestUtils.renderIntoDocument(element);
         var cells =component.getCells();
         var expectedCells = _.toArray(gridRow.querySelectorAll(':scope > cells'));
         expect(cells).toEqual(expectedCells);
@@ -55,16 +61,19 @@ describe("Grid.Components.Row", function() {
         Manipulator.setIds(testGrid);
 
         gridRow = testGrid.querySelector('rows[type=placeholder]');
-        var component = TestUtils.renderIntoDocument(Row({node: gridRow}));
+        var element = React.createElement(Row, {node: gridRow});
+        var component = TestUtils.renderIntoDocument(element);
         expect(component.isPlaceholder()).toBe(true);
 
         gridRow = testGrid.querySelector('rows:not([type=placeholder])');
-        var component = TestUtils.renderIntoDocument(Row({node: gridRow}));
+        var element = React.createElement(Row, {node: gridRow});
+        var component = TestUtils.renderIntoDocument(element);
         expect(component.isPlaceholder()).toBe(false);
     });
 
     it("should be able to render its cells", function() {
-        var component = TestUtils.renderIntoDocument(Row({node: gridRow}));
+        var element = React.createElement(Row, {node: gridRow});
+        var component = TestUtils.renderIntoDocument(element);
         var cells = component.renderCells();
         expect(cells.length).toEqual(2);
         _(cells).forEach(function(cell) {
@@ -73,7 +82,8 @@ describe("Grid.Components.Row", function() {
     });
 
     it("should render sub components", function() {
-        var component = TestUtils.renderIntoDocument(Row({node: gridRow}));
+        var element = React.createElement(Row, {node: gridRow});
+        var component = TestUtils.renderIntoDocument(element);
         expect(componentUtils.countRows(component)).toEqual(3);  // including self
         expect(componentUtils.countModules(component)).toEqual(3);
         expect(componentUtils.countSubGrids(component)).toEqual(1);

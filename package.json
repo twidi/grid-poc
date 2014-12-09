@@ -27,7 +27,8 @@
     "jaguarjs-jsdoc": "twidi/jaguarjs-jsdoc#twidi-current",
     "requireify": "~0.2.1",
     "gulp-rename": "~1.2.0",
-    "gulp-print": "~1.1.0"
+    "gulp-print": "~1.1.0",
+    "jasmine-react": "twidi/jasmine-react"
   },
   "dependencies": {
     "flux-react": "twidi/flux-react#no-deep-cloning",
@@ -35,6 +36,7 @@
     "xmldom": "~0.1.19",
     "lodash": "~2.4.1",
     "jxon": "twidi/jxon#twidi-current",
-    "scopedQuerySelectorShim": "twidi/scopedQuerySelectorShim"
+    "scopedQuerySelectorShim": "twidi/scopedQuerySelectorShim",
+    "json-stable-stringify": "~1.0.0"
   }
 }

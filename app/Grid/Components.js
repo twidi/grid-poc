@@ -1,10 +1,3 @@
-var Cell = require('./Components/Cell.jsx');
-var MainGrid = require('./Components/MainGrid.jsx');
-var Mixins = require('./Components/Mixins.js');
-var Row = require('./Components/Row.jsx');
-var SubGrid = require('./Components/SubGrid.jsx');
-
-
 /**
  * Grid react components
  * @namespace
@@ -12,11 +5,11 @@ var SubGrid = require('./Components/SubGrid.jsx');
  * @summary Grid react components
  */
 var Components = {
-    Cell: Cell,
-    MainGrid: MainGrid,
-    Mixins: Mixins,
-    Row: Row,
-    SubGrid: SubGrid,
+    Cell: require('./Components/Cell.jsx'),
+    MainGrid: require('./Components/MainGrid.jsx'),
+    Mixins: require('./Components/Mixins.js'),
+    Row: require('./Components/Row.jsx'),
+    SubGrid: require('./Components/SubGrid.jsx'),
 };
 
 module.exports = Components;

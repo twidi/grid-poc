@@ -26,6 +26,9 @@ describe("Grid.Components.MainGrid", function() {
         // we mock the uniqueId function of lodash to know the value to expect
         uniqueIdMock = Utils.mockUniqueId();
 
+        // reset the modules cache for every test
+        componentUtils.clearModulesCache();
+
         // we add a grid with some content
         testGrid = componentUtils.makeTestGrid();
 
@@ -34,34 +37,40 @@ describe("Grid.Components.MainGrid", function() {
 
     it("should have a grid", function() {
         var grid = Store.getGrid('Test grid');
-        var component = TestUtils.renderIntoDocument(MainGrid({node: testGrid}));
+        var element = React.createElement(MainGrid, {node: testGrid});
+        var component = TestUtils.renderIntoDocument(element);
         expect(component.props.node).toBe(testGrid);
     });
 
     it("should have a grid name", function() {
-        var component = TestUtils.renderIntoDocument(MainGrid({node: testGrid}));;
+        var element = React.createElement(MainGrid, {node: testGrid});
+        var component = TestUtils.renderIntoDocument(element);
         expect(component.state.gridName).toEqual('Test grid');
     });
 
     it("should access its own grid as the main grid", function() {
-        var component = TestUtils.renderIntoDocument(MainGrid({node: testGrid}));;
+        var element = React.createElement(MainGrid, {node: testGrid});
+        var component = TestUtils.renderIntoDocument(element);
         expect(component.getGrid()).toBe(testGrid);
     });
 
     it("should get its id", function() {
-        var component = TestUtils.renderIntoDocument(MainGrid({node: testGrid}));;
+        var element = React.createElement(MainGrid, {node: testGrid});
+        var component = TestUtils.renderIntoDocument(element);
         expect(component.getNodeId()).toBe(testGrid.getAttribute('id'));
     });
 
     it("should be able to get its grid rows", function() {
-        var component = TestUtils.renderIntoDocument(MainGrid({node: testGrid}));;
+        var element = React.createElement(MainGrid, {node: testGrid});
+        var component = TestUtils.renderIntoDocument(element);
         var rows =component.getRows();
         var expectedRows = _.toArray(testGrid.querySelectorAll(':scope > content > rows'));
         expect(rows).toEqual(expectedRows);
     });
 
     it("should be able to render its rows", function() {
-        var component = TestUtils.renderIntoDocument(MainGrid({node: testGrid}));;
+        var element = React.createElement(MainGrid, {node: testGrid});
+        var component = TestUtils.renderIntoDocument(element);
         var rows = component.renderRows();
         expect(rows.length).toEqual(2);
         _(rows).forEach(function(row) {
@@ -73,19 +82,22 @@ describe("Grid.Components.MainGrid", function() {
         Manipulator.addPlaceholders(testGrid);
         Manipulator.setIds(testGrid);
 
-        var component = TestUtils.renderIntoDocument(MainGrid({node: testGrid}));;
+var element = React.createElement(MainGrid, {node: testGrid});
+        var component = TestUtils.renderIntoDocument(element);
         expect(component.inDesignMode()).toBe(true);
     });
 
     it("should render sub components", function() {
-        var component = TestUtils.renderIntoDocument(MainGrid({node: testGrid}));;
+        var element = React.createElement(MainGrid, {node: testGrid});
+        var component = TestUtils.renderIntoDocument(element);
         expect(componentUtils.countRows(component)).toEqual(4);
         expect(componentUtils.countModules(component)).toEqual(6);
         expect(componentUtils.countSubGrids(component)).toEqual(1);
     });
 
     it("should change when toggling design mode", function(done) {
-        var component = TestUtils.renderIntoDocument(MainGrid({node: testGrid}));;
+        var element = React.createElement(MainGrid, {node: testGrid});
+        var component = TestUtils.renderIntoDocument(element);
         expect(component.getDOMNode().textContent).toMatch(/I am NOT in design mode/);
 
         spyOn(component, 'forceUpdate').and.callThrough();

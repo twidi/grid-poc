@@ -1,7 +1,3 @@
-var Grid = require('./Mixins/Grid.jsx');
-var Node = require('./Mixins/Node.jsx');
-
-
 /**
  * Grid component mixins
  * @namespace
@@ -9,8 +5,8 @@ var Node = require('./Mixins/Node.jsx');
  * @summary Different mixins for Grid components
  */
 var Mixins = {
-    Grid: Grid,
-    Node: Node,
+    Grid: require('./Mixins/Grid.jsx'),
+    Node: require('./Mixins/Node.jsx'),
 };
 
 module.exports = Mixins;

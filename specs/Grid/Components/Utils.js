@@ -50,7 +50,7 @@ var componentUtils = {
     },
     countModules: function(component) {
         try {
-            return this.getTextContent(component).match(/Module: /g).length;
+            return this.getTextContent(component).match(/Module./g).length;
         } catch(e) {
             return 0;
         };
@@ -68,6 +68,11 @@ var componentUtils = {
         } catch(e) {
             return 0;
         };
+    },
+
+    clearModulesCache: function() {
+        var Cell = require('../../../app/Grid/Components/Cell.jsx');
+        Cell._modulesHolderCache = {};
     },
 }
 

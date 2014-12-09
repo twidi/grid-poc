@@ -24,6 +24,9 @@ describe("Grid.Components.SubGrid", function() {
         // we mock the uniqueId function of lodash to know the value to expect
         uniqueIdMock = Utils.mockUniqueId();
 
+        // reset the modules cache for every test
+        componentUtils.clearModulesCache();
+
         // we add a grid with some content
         testGrid = componentUtils.makeTestGrid();
         subGrid = testGrid.querySelector('cells[type=grid]');
@@ -32,24 +35,28 @@ describe("Grid.Components.SubGrid", function() {
     });
 
     it("should access its main grid", function() {
-        var component = TestUtils.renderIntoDocument(SubGrid({node: subGrid}));
+        var element = React.createElement(SubGrid, {node: subGrid});
+        var component = TestUtils.renderIntoDocument(element);
         expect(component.getGrid()).toBe(testGrid);
     });
 
     it("should get its id", function() {
-        var component = TestUtils.renderIntoDocument(SubGrid({node: subGrid}));
+        var element = React.createElement(SubGrid, {node: subGrid});
+        var component = TestUtils.renderIntoDocument(element);
         expect(component.getNodeId()).toBe(subGrid.getAttribute('id'));
     });
 
     it("should be able to get its grid rows", function() {
-        var component = TestUtils.renderIntoDocument(SubGrid({node: subGrid}));
+        var element = React.createElement(SubGrid, {node: subGrid});
+        var component = TestUtils.renderIntoDocument(element);
         var rows =component.getRows();
         var expectedRows = _.toArray(subGrid.querySelectorAll(':scope > content > rows'));
         expect(rows).toEqual(expectedRows);
     });
 
     it("should be able to render its rows", function() {
-        var component = TestUtils.renderIntoDocument(SubGrid({node: subGrid}));
+        var element = React.createElement(SubGrid, {node: subGrid});
+        var component = TestUtils.renderIntoDocument(element);
         var rows = component.renderRows();
         expect(rows.length).toEqual(2);
         _(rows).forEach(function(row) {
@@ -58,7 +65,8 @@ describe("Grid.Components.SubGrid", function() {
     });
 
     it("should render sub components", function() {
-        var component = TestUtils.renderIntoDocument(SubGrid({node: subGrid}));
+        var element = React.createElement(SubGrid, {node: subGrid});
+        var component = TestUtils.renderIntoDocument(element);
         expect(componentUtils.countRows(component)).toEqual(2);
         expect(componentUtils.countModules(component)).toEqual(2);
         expect(componentUtils.countSubGrids(component)).toEqual(1);  // self!
