@@ -8,22 +8,22 @@ var componentUtils = {
             '<grid name="Test grid" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<rows>' +
-                        '<cells type="module"><content path="path.to.module.1"/></cells>' +
+                        '<cells type="module"><content component="Module.Test1" text="test 1-1"/></cells>' +
                         '<cells type="grid">' +
                             '<content>' +
                                 '<rows>' +
-                                    '<cells type="module"><content path="path.to.module.2"/></cells>' +
+                                    '<cells type="module"><content component="Module.Test2" text="test 2-1"/></cells>' +
                                 '</rows>' +
                                 '<rows>' +
-                                    '<cells type="module"><content path="path.to.module.3"/></cells>' +
+                                    '<cells type="module"><content component="Module.Test1" text="test 1-2"/></cells>' +
                                 '</rows>' +
                             '</content>' +
                         '</cells>' +
                     '</rows>' +
                     '<rows>' +
-                        '<cells type="module"><content path="path.to.module.4"/></cells>' +
-                        '<cells type="module"><content path="path.to.module.5"/></cells>' +
-                        '<cells type="module"><content path="path.to.module.6"/></cells>' +
+                        '<cells type="module"><content component="Module.Test1" text="test 1-3"/></cells>' +
+                        '<cells type="module"><content component="Module.Test2" text="test 2-2"/></cells>' +
+                        '<cells type="module"><content component="Module.Test2" text="test 2-3"/></cells>' +
                     '</rows>' +
                 '</content>' +
             '</grid>');
@@ -35,19 +35,39 @@ var componentUtils = {
     },
 
     countRows: function(component) {
-        return this.getTextContent(component).match(/Row with cells/g).length;
+        try {
+            return this.getTextContent(component).match(/Row with cells/g).length;
+        } catch(e) {
+            return 0;
+        };
     },
     countSubGrids: function(component) {
-        return this.getTextContent(component).match(/Subgrid:/g).length;
+        try {
+            return this.getTextContent(component).match(/Subgrid:/g).length;
+        } catch(e) {
+            return 0;
+        };
     },
     countModules: function(component) {
-        return this.getTextContent(component).match(/module\.\.\./g).length;
+        try {
+            return this.getTextContent(component).match(/Module: /g).length;
+        } catch(e) {
+            return 0;
+        };
     },
     countRowPlaceholders: function(component) {
-        return this.getTextContent(component).match(/Row \(placeholder\)/g).length;
+        try {
+            return this.getTextContent(component).match(/Row \(placeholder\)/g).length;
+        } catch(e) {
+            return 0;
+        };
     },
     countCellPlaceholders: function(component) {
-        return this.getTextContent(component).match(/\(cell placeholder\)/g).length;
+        try {
+            return this.getTextContent(component).match(/\(cell placeholder\)/g).length;
+        } catch(e) {
+            return 0;
+        };
     },
 }
 
