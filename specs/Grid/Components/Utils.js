@@ -1,36 +1,10 @@
-/** @jsx React.DOM */
-var React = require('react/addons');  // react + addons
-
-var flux = require('flux-react');
-
-var Actions = require('./Grid/Actions.js');
-var Manipulator = require('./Grid/Manipulator.js');
-var Store = require('./Grid/Store.js');
-
-var MainGrid = require('./Grid/Components/MainGrid.jsx');
+var Actions = require('../../../app/Grid/Actions.js');
+var Manipulator = require('../../../app/Grid/Manipulator.js');
 
 
-var App = React.createClass({
-    getInitialState: function () {
-        return {
-            gridName: null,
-        };
-    },
-    componentWillMount: function () {
-        Store.on('grid.add', this.onGridAdded);
-    },
-    componentWillUnmount: function () {
-        Store.off('grid.add', this.onGridAdded);
-    },
-
-    onGridAdded: function(gridName) {
-        this.setState({
-            gridName: gridName
-        })
-    },
-
-    initGrid: function() {
-        var grid = Manipulator.XMLStringToXMLGrid(
+var componentUtils = {
+    makeTestGrid: function() {
+        var testGrid = Manipulator.XMLStringToXMLGrid(
             '<grid name="Test grid" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<rows>' +
@@ -54,22 +28,31 @@ var App = React.createClass({
                 '</content>' +
             '</grid>');
 
-        Manipulator.setIds(grid);
-        Actions.addGrid(grid);
+        Actions.addGrid(testGrid);
+        Manipulator.setIds(testGrid);
+
+        return testGrid;
     },
 
-    getGrid: function() {
-        return Store.getGrid(this.state.gridName);
+    countRows: function(component) {
+        return this.getTextContent(component).match(/Row with cells/g).length;
     },
-
-    render: function() {
-        if (this.state.gridName) {
-            return <MainGrid node={this.getGrid()}/>
-        } else {
-            return <button onClick={this.initGrid}>Initialize the grid</button>
-        }
+    countSubGrids: function(component) {
+        return this.getTextContent(component).match(/Subgrid:/g).length;
     },
+    countModules: function(component) {
+        return this.getTextContent(component).match(/module\.\.\./g).length;
+    },
+    countRowPlaceholders: function(component) {
+        return this.getTextContent(component).match(/Row \(placeholder\)/g).length;
+    },
+    countCellPlaceholders: function(component) {
+        return this.getTextContent(component).match(/\(cell placeholder\)/g).length;
+    },
+}
 
-});
+componentUtils.getTextContent = function(component) {
+    return component.getDOMNode().textContent;
+};
 
-module.exports = App;
+module.exports = componentUtils;

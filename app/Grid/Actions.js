@@ -6,7 +6,7 @@ var flux = require('flux-react');
  * Grid store actions
  * @namespace
  * @memberOf module:Grid
- *
+ * @summary Grid store actions
  */
 var Actions = {
     // Here are just definitions of functions. There are really created by the

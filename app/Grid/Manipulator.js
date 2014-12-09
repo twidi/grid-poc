@@ -7,7 +7,7 @@ var JXON = require('jxon');
  * Manipulates grid data
  * @namespace
  * @memberOf module:Grid
- *
+ * @summary Manipulates grid data
  */
 var Manipulator = {
     XMLSerializer: new XMLSerializer(),
@@ -24,6 +24,7 @@ var Manipulator = {
          * Exception raised when a type is invalid
          * This is a subclass of "Error"
          * @class
+         * @summary Exception raised when a type is invalid
          *
          * @param {string} [message] - The raised message
          *
@@ -39,6 +40,7 @@ var Manipulator = {
          * Exception raised when an inconsistency occurs
          * This is a subclass of "Error"
          * @class
+         * @summary Exception raised when an inconsistency occurs
          *
          * @param {string} [message] - The raised message
          *
@@ -54,6 +56,7 @@ var Manipulator = {
          * Exception raised when a the state of something is not the one expected
          * This is a subclass of "Error"
          * @class
+         * @summary Exception raised when a the state of something is not the one expected
          *
          * @param {string} [message] - The raised message
          *

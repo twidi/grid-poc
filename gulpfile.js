@@ -24,7 +24,6 @@ var rename = require('gulp-rename');
 // but include in your application deployment
 var dependencies = [
 	'react',
-  'react-addons',
 ].concat(glob.sync('./vendors/**/*.js'));
 
 
@@ -113,11 +112,11 @@ var browserifyTask = function (options) {
     }
     rebundleTests();
 
-    // Remove react-addons when deploying, as it is only for
+    // Remove some modules when deploying, as it is only for
     // testing
-    if (!options.development) {
-      dependencies.splice(dependencies.indexOf('react-addons'), 1);
-    }
+    // if (!options.development) {
+    //   dependencies.splice(dependencies.indexOf('a-module'), 1);
+    // }
 
     if (options.vendors) {
 

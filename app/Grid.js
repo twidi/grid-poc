@@ -1,4 +1,5 @@
 var Actions = require('./Grid/Actions.js');
+var Components = require('./Grid/Components.js');
 var Manipulator = require('./Grid/Manipulator.js');
 var Store = require('./Grid/Store.js');
 

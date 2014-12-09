@@ -1,14 +1,20 @@
-var Actions = require('./../../app/Grid/Actions.js');
-var Manipulator = require('./../../app/Grid/Manipulator.js');
-var Store = require('./../../app/Grid/Store.js');
+var Actions = require('../../app/Grid/Actions.js');
+var Manipulator = require('../../app/Grid/Manipulator.js');
+var Store = require('../../app/Grid/Store.js');
 
 var customMatchers = require('./custom-matchers.js');
+var Utils = require('../Utils.js');
 
 
 describe("Grid.Actions", function() {
+    var uniqueIdMock;
 
     beforeEach(function() {
         jasmine.addMatchers(customMatchers);
+
+        // we mock the uniqueId function of lodash to know the value to expect
+        uniqueIdMock = Utils.mockUniqueId();
+
         // we want to start each test with a fresh list of grids
         Store.__removeAllGrids();
     });
@@ -60,8 +66,8 @@ describe("Grid.Actions", function() {
 
                 // and if it is valid
                 var expected =
-                    '<grid name="foo" space="5px" type="mainGrid">' +
-                        '<content/>' +
+                    '<grid name="foo" space="5px" type="mainGrid" id="grid-1">' +
+                        '<content id="content-2"/>' +
                     '</grid>';
                 expect(grid).toEqualXML(expected);
 
@@ -125,11 +131,11 @@ describe("Grid.Actions", function() {
 
                     // check if the grid has placeholders
                     var expected =
-                        '<grid name="foo" space="5px" type="mainGrid" hasPlaceholders="true">' +
-                            '<content>' +
-                                '<rows type="placeholder">' +
-                                    '<cells type="placeholder">' +
-                                        '<content/>' +
+                        '<grid name="foo" space="5px" type="mainGrid" id="grid-1" hasPlaceholders="true">' +
+                            '<content id="content-2">' +
+                                '<rows type="placeholder" id="rows-3">' +
+                                    '<cells type="placeholder" id="cells-4">' +
+                                        '<content id="content-5"/>' +
                                     '</cells>' +
                                 '</rows>' +
                             '</content>' +
@@ -201,8 +207,8 @@ describe("Grid.Actions", function() {
 
                     // check if the grid has placeholders
                     var expected =
-                        '<grid name="foo" space="5px" type="mainGrid">' +
-                            '<content/>' +
+                        '<grid name="foo" space="5px" type="mainGrid" id="grid-1">' +
+                            '<content id="content-2"/>' +
                         '</grid>';
                     expect(grid).toEqualXML(expected);
 

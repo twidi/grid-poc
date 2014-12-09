@@ -6,10 +6,10 @@ var Manipulator = require('./Manipulator.js');
 
 
 /**
- * Store grids. This is the public interface
+ * The Grid store. This is the public interface
  * @namespace
  * @memberOf module:Grid
- *
+ * @summary The Grid store
  */
 var Store = {
 
@@ -23,6 +23,7 @@ var Store = {
          * Exception raised when a grid does not exist
          * This is a subclass of "Error"
          * @class
+         * @summary Exception raised when a grid does not exist
          *
          * @param {string} [message] - The raised message
          *
@@ -36,6 +37,7 @@ var Store = {
          * Exception raised when a node does not exist
          * This is a subclass of "Error"
          * @class
+         * @summary Exception raised when a node does not exist
          *
          * @param {string} [message] - The raised message
          *
@@ -48,7 +50,7 @@ var Store = {
     },
 
     /**
-     * Get a grid from the store by its name
+     * Get a grid from the store by its name. All nodes are ensured to have an ID.
      *
      * @param  {string} gridName - Name of the grid to get
      *
@@ -58,10 +60,12 @@ var Store = {
      */
     getGrid: function(gridName) {
         if (_.has(this.grids, gridName)) {
-            return this.grids[gridName];
+            var grid = this.grids[gridName];
         } else {
             throw new this.Exceptions.GridDoesNotExist("No grid with the name <" + gridName + ">");
         }
+        Manipulator.setIds(grid);
+        return grid;
     },
 
     /**
@@ -76,7 +80,7 @@ var Store = {
      * @throws {module:Grid.Store.Exceptions.GridDoesNotExist} If the given name does not match an existing grid name
      * @throws {module:Grid.Store.Exceptions.NodeDoesNotExist} If the given id does not match an existing node id
      */
-    getGridNode: function(gridName, nodeId) {
+    getGridNodeById: function(gridName, nodeId) {
         var grid = this.getGrid(gridName);
         if (grid.getAttribute('id') == nodeId) {
             return grid;
@@ -86,6 +90,24 @@ var Store = {
             throw new this.Exceptions.NodeDoesNotExist("No node with the ID <" + nodeId + ">");
         }
         return node;
+    },
+
+    /**
+     * Return the id attribute of the given node
+     * @param  {XML} node - The XML node for which we want the id
+     * @return {string} - The id attribute of the node
+     */
+    getNodeId: function(node) {
+        return node.getAttribute('id');
+    },
+
+    /**
+     * Return the main grid for the given node
+     * @param  {XML} node - The XML node for which we want the grid
+     * @return {XML} - The main grid of the node
+     */
+    getMainGrid: function(node) {
+        return node.ownerDocument.documentElement;
     },
 
     /**
@@ -157,6 +179,7 @@ var Private = {
     enterDesignMode: function(name) {
         var grid = this.getGrid(name);
         Manipulator.addPlaceholders(grid);
+        Manipulator.setIds(grid);
         this.emitChange();
         /**
          * Event fired when a grid enters design mode
@@ -176,6 +199,7 @@ var Private = {
     exitDesignMode: function(name) {
         var grid = this.getGrid(name);
         Manipulator.removePlaceholders(grid);
+        Manipulator.setIds(grid);
         this.emitChange();
         /**
          * Event fired when a grid exits design mode

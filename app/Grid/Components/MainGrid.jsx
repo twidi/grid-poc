@@ -1,24 +1,36 @@
 /** @jsx React.DOM */
-var React = require('react');
+var _ = require('lodash');
+var React = require('react/addons');  // react + addons
 
-var Actions = require('./../Actions.js');
-var Store = require('./../Store.js');
+var Actions = require('../Actions.js');
+var Store = require('../Store.js');
+
+var GridMixin = require('./Mixins/Grid.jsx');
+var NodeMixin = require('./Mixins/Node.jsx');
 
 
 /**
- * Grid component
+ * MainGrid component, composed of rows. Can enter/exit designMode
  * @namespace
  * @memberOf module:Grid.Components
- *
+ * @summary The MainGrid component
+ * @mixes module:Grid.Components.Mixins.NodeMixin
+ * @mixes module:Grid.Components.Mixins.GridMixin
  */
-var Grid = {
+
+var MainGrid = {
+    mixins: [
+        NodeMixin,
+        GridMixin,
+    ],
+
     /**
      * When the component is created, set the gridName in the state based on the
      * grid from the props
      */
     getInitialState: function() {
         return {
-            gridName: this.props.grid.getAttribute('name'),
+            gridName: this.props.node.getAttribute('name'),
         }
     },
 
@@ -28,7 +40,7 @@ var Grid = {
      */
     componentWillReceiveProps: function(nextProps) {
         this.setState({
-            gridName: nextProps.grid.getAttribute('name'),
+            gridName: nextProps.node.getAttribute('name'),
         });
     },
 
@@ -63,15 +75,15 @@ var Grid = {
      *
      * @return {boolean} - True if the grid is in design mode, else False
      */
-    designMode: function() {
-        return !!this.props.grid.getAttribute('hasPlaceholders');
+    inDesignMode: function() {
+        return !!this.props.node.getAttribute('hasPlaceholders');
     },
 
     /**
      * Enter or exit the design mode of the grid depending of its current status
      */
     toggleDesignMode: function() {
-        if (this.designMode()) {
+        if (this.inDesignMode()) {
             Actions.exitDesignMode(this.state.gridName);
         } else {
             Actions.enterDesignMode(this.state.gridName);
@@ -83,11 +95,12 @@ var Grid = {
      */
     render: function() {
         return <div>
-            <div>Hi! I am a grid named "{this.state.gridName}". I am {this.designMode()?"in":"NOT in"} design mode</div>
+            <div>Hi! I am a grid named "{this.state.gridName}". I am {this.inDesignMode()?"in":"NOT in"} design mode</div>
             <button onClick={this.toggleDesignMode}>Change design mode</button>
-        </div>
+            <ul>{this.renderRows()}</ul>
+        </div>;
     }
 
 };
 
-module.exports = React.createClass(Grid);
+module.exports = React.createClass(MainGrid);

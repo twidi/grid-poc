@@ -1,6 +1,6 @@
 var _ = require('lodash');
 
-var Manipulator = require('./../../app/Grid/Manipulator.js');
+var Manipulator = require('../../app/Grid/Manipulator.js');
 
 var customMatchers = require('./custom-matchers.js');
 var Utils = require('../Utils.js');
@@ -13,7 +13,7 @@ describe("Grid.Manipulator", function() {
         jasmine.addMatchers(customMatchers);
 
         // we mock the uniqueId function of lodash to know the value to expect
-        uniqueIdMock = Utils.mockUniqueId()
+        uniqueIdMock = Utils.mockUniqueId();
     });
 
 
