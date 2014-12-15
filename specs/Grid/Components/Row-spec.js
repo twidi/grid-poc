@@ -71,6 +71,26 @@ describe("Grid.Components.Row", function() {
         expect(component.isPlaceholder()).toBe(false);
     });
 
+    it("should render a row", function() {
+        var element = React.createElement(Row, {node: gridRow});
+        var component = TestUtils.renderIntoDocument(element);
+        var domNode = component.getDOMNode();
+        expect(domNode.tagName).toEqual('DIV');
+        expect(domNode.classList.contains('grid-row')).toBe(true);
+        expect(domNode.classList.contains('grid-row-placeholder')).toBe(false);
+    });
+
+    it("should render a placeholder", function() {
+        Manipulator.addPlaceholders(testGrid);
+        var placeholderGridRow = testGrid.querySelector('rows[type=placeholder]');
+        var element = React.createElement(Row, {node: placeholderGridRow});
+        var component = TestUtils.renderIntoDocument(element);
+        var domNode = component.getDOMNode();
+        expect(domNode.tagName).toEqual('DIV');
+        expect(domNode.classList.contains('grid-row')).toBe(true);
+        expect(domNode.classList.contains('grid-row-placeholder')).toBe(true);
+    });
+
     it("should be able to render its cells", function() {
         var element = React.createElement(Row, {node: gridRow});
         var component = TestUtils.renderIntoDocument(element);

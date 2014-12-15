@@ -1,5 +1,11 @@
+var React = require('react/addons');  // react + addons
+var TestUtils = React.addons.TestUtils;
+
 var Actions = require('../../../app/Grid/Actions.js');
 var Manipulator = require('../../../app/Grid/Manipulator.js');
+
+var Row = require('../../../app/Grid/Components/Row.jsx');
+var SubGrid = require('../../../app/Grid/Components/SubGrid.jsx');
 
 
 var componentUtils = {
@@ -36,35 +42,35 @@ var componentUtils = {
 
     countRows: function(component) {
         try {
-            return this.getTextContent(component).match(/Row with cells/g).length;
+            return TestUtils.scryRenderedComponentsWithType(component, Row).length;
         } catch(e) {
             return 0;
         };
     },
     countSubGrids: function(component) {
         try {
-            return this.getTextContent(component).match(/Subgrid:/g).length;
+            return TestUtils.scryRenderedComponentsWithType(component, SubGrid).length;
         } catch(e) {
             return 0;
         };
     },
     countModules: function(component) {
         try {
-            return this.getTextContent(component).match(/Module./g).length;
+            return TestUtils.scryRenderedDOMComponentsWithClass(component, 'grid-cell-module').length;
         } catch(e) {
             return 0;
         };
     },
     countRowPlaceholders: function(component) {
         try {
-            return this.getTextContent(component).match(/Row \(placeholder\)/g).length;
+            return TestUtils.scryRenderedDOMComponentsWithClass(component, 'grid-row-placeholder').length;
         } catch(e) {
             return 0;
         };
     },
     countCellPlaceholders: function(component) {
         try {
-            return this.getTextContent(component).match(/\(cell placeholder\)/g).length;
+            return TestUtils.scryRenderedDOMComponentsWithClass(component, 'grid-cell-placeholder').length;
         } catch(e) {
             return 0;
         };

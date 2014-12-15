@@ -13,6 +13,15 @@ var Store = require('../../Store.js');
 var Node = {
 
     /**
+     * Get the type of the current XML Grid cell
+     * @return {string} Either "mainGrid", or "placeholder" or nothing for a row,
+     * or "grid", "module" or "placeholder" for a cell
+     */
+    getType: function() {
+        return this.props.node.getAttribute('type');
+    },
+
+    /**
      * Get the ID of the current node
      *
      * @return {string} The ID of the node

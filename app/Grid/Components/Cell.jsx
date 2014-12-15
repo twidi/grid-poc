@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 var _ = require('lodash');
 var React = require('react/addons');  // react + addons
+var cx = React.addons.classSet;
 var stringify = require('json-stable-stringify');
 
 var Actions = require('../Actions.js');
@@ -28,36 +29,67 @@ var Cell = {
     },
 
     /**
-     * Get the type of the current XML Grid cell
-     * @return {string} Either "grid", "module" or "placeholder"
-     */
-    getType: function() {
-        return this.props.node.getAttribute('type');
-    },
-
-    /**
-     * Tell if the cell is a placeholder
-     * @return {Boolean} true if a placeholder
+     * Tell if the cell is a "module" cell
+     * @return {Boolean} - true if a "module" cell
      */
     isPlaceholder: function() {
         return this.getType() == 'placeholder';
     },
 
     /**
+     * Tell if the cell is a placeholder cell
+     *
+     * @return {Boolean} - true if a placeholder cell
+     */
+    isSubGrid: function() {
+        return this.getType() == 'grid';
+    },
+
+    /**
+     * Tell if the cell is a "grid" cell (subgrid)
+     *
+     * @return {Boolean} - true if a "grid" cell (subgrid)
+     */
+    isModule: function() {
+        return this.getType() == 'module';
+    },
+
+    /**
      * Render the cell as a SubGrid component
+     *
      * @return {module:Grid.Components.SubGrid} - The rendered {@link module:Grid.Components.SubGrid SubGrid} component
      */
     renderAsSubGrid: function() {
         var SubGrid = require('./SubGrid.jsx');
-         return <SubGrid node={this.props.node} />
+        return <SubGrid node={this.props.node} />
     },
 
     /**
-     * Render the cell as a module
-     * @return ??
+     * Return the classes to use when rendering the current cell (only if module or placeholder)
+     *
+     * @return {React.addons.classSet}
+     *
+     * One or more of these classes:
+     *
+     * - `grid-cell`: in all cases
+     * - `grid-cell-placeholder`: if it's a cell placeholder
+     * - `grid-cell-module`: if it's a module
+     *
      */
-    renderAsModule: function() {
-        return <div/>
+    getCellClasses: function() {
+        return classes = cx({
+            'grid-cell': true,
+            'grid-cell-placeholder': this.isPlaceholder(),
+            'grid-cell-module': this.isModule(),
+        });
+    },
+
+    /**
+     * Render the cell as a standalone component: a empty div that, if it's a module, will hold
+     * the real module component (not directly rendered)
+     */
+    renderAsCell: function() {
+        return <div className={this.getCellClasses()}/>
     },
 
     /**
@@ -167,13 +199,10 @@ var Cell = {
      * Render the cell depending on its type
      */
     render: function() {
-        switch(this.getType()) {
-            case 'grid': 
-                return <li>{this.renderAsSubGrid()}</li>;
-            case 'module': 
-                return <li>{this.renderAsModule()}</li>;
-            case 'placeholder':
-                return <li>(cell placeholder)</li>;
+        if (this.getType() == 'grid') {
+            return this.renderAsSubGrid();
+        } else {
+            return this.renderAsCell();
         }
     }
 

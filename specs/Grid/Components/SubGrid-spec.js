@@ -64,6 +64,15 @@ describe("Grid.Components.SubGrid", function() {
         });
     });
 
+    it("should render a grid", function() {
+        var element = React.createElement(SubGrid, {node: subGrid});
+        var component = TestUtils.renderIntoDocument(element);
+        var domNode = component.getDOMNode();
+        expect(domNode.tagName).toEqual('DIV');
+        expect(domNode.classList.contains('grid')).toBe(true);
+        expect(domNode.classList.contains('grid-main')).toBe(false);
+    });
+
     it("should render sub components", function() {
         var element = React.createElement(SubGrid, {node: subGrid});
         var component = TestUtils.renderIntoDocument(element);

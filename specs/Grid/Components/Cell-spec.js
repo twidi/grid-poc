@@ -91,8 +91,23 @@ describe("Grid.Components.Cell", function() {
     it("should render a module", function() {
         var element = React.createElement(Cell, {node: moduleGridCell});
         var component = TestUtils.renderIntoDocument(element);
-        var result = component.renderAsModule();
-        expect(TestUtils.isElementOfType(result, React.DOM.div)).toBe(true);
+        var domNode = component.getDOMNode();
+        expect(domNode.tagName).toEqual('DIV');
+        expect(domNode.classList.contains('grid-cell')).toBe(true);
+        expect(domNode.classList.contains('grid-cell-module')).toBe(true);
+        expect(domNode.classList.contains('grid-cell-placeholder')).toBe(false);
+    });
+
+    it("should render a placeholder", function() {
+        Manipulator.addPlaceholders(testGrid);
+        var placeholderGridCell = testGrid.querySelector('cells[type=placeholder]');
+        var element = React.createElement(Cell, {node: placeholderGridCell});
+        var component = TestUtils.renderIntoDocument(element);
+        var domNode = component.getDOMNode();
+        expect(domNode.tagName).toEqual('DIV');
+        expect(domNode.classList.contains('grid-cell')).toBe(true);
+        expect(domNode.classList.contains('grid-cell-module')).toBe(false);
+        expect(domNode.classList.contains('grid-cell-placeholder')).toBe(true);
     });
 
     it("should attach the module component after beeing mounted", function(done) {

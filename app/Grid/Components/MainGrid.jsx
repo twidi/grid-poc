@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 var _ = require('lodash');
 var React = require('react/addons');  // react + addons
+var cx = React.addons.classSet;
 
 var Actions = require('../Actions.js');
 var Store = require('../Store.js');
@@ -31,7 +32,7 @@ var MainGrid = {
     getInitialState: function() {
         return {
             gridName: this.props.node.getAttribute('name'),
-        }
+        };
     },
 
     /**
@@ -91,13 +92,32 @@ var MainGrid = {
     },
 
     /**
+     * Return the classes to use when rendering the container of the current main grid
+     *
+     * @return {React.addons.classSet}
+     *
+     * One or more of these classes:
+     *
+     * - `grid-container`: in all cases
+     * - `grid-container-design-mode`: if the grid is in design mode
+     */
+    getContainerClasses: function() {
+        return cx({
+            'grid-container': true,
+            'grid-container-design-mode': this.inDesignMode(),
+        });
+    },
+
+    /**
      * Will render the component
      */
     render: function() {
-        return <div>
-            <div>Hi! I am a grid named "{this.state.gridName}". I am {this.inDesignMode()?"in":"NOT in"} design mode</div>
-            <button onClick={this.toggleDesignMode}>Change design mode</button>
-            <ul>{this.renderRows()}</ul>
+        return <div className={this.getContainerClasses()}>
+            <nav className="grid-toolbar">
+                <label>{this.state.gridName}</label>
+                <button onClick={this.toggleDesignMode}>Change design mode</button>
+            </nav>
+            {this.renderGrid()}
         </div>;
     }
 

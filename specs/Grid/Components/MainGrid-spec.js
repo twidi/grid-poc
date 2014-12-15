@@ -68,6 +68,21 @@ describe("Grid.Components.MainGrid", function() {
         expect(rows).toEqual(expectedRows);
     });
 
+    it("should render a grid", function() {
+        var element = React.createElement(MainGrid, {node: testGrid});
+        var component = TestUtils.renderIntoDocument(element);
+        var domNode = component.getDOMNode();
+        expect(domNode.tagName).toEqual('DIV');
+        expect(domNode.classList.contains('grid-container')).toBe(true);
+        expect(domNode.childNodes.length).toEqual(2);
+        var navDomNode = domNode.childNodes[0];
+        expect(navDomNode.tagName).toEqual('NAV');
+        expect(navDomNode.classList.contains('grid-toolbar')).toBe(true);
+        var gridDomNode = domNode.childNodes[1];
+        expect(gridDomNode.classList.contains('grid')).toBe(true);
+        expect(gridDomNode.classList.contains('grid-main')).toBe(true);
+    });
+
     it("should be able to render its rows", function() {
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = TestUtils.renderIntoDocument(element);
@@ -82,7 +97,7 @@ describe("Grid.Components.MainGrid", function() {
         Manipulator.addPlaceholders(testGrid);
         Manipulator.setIds(testGrid);
 
-var element = React.createElement(MainGrid, {node: testGrid});
+        var element = React.createElement(MainGrid, {node: testGrid});
         var component = TestUtils.renderIntoDocument(element);
         expect(component.inDesignMode()).toBe(true);
     });
@@ -98,7 +113,7 @@ var element = React.createElement(MainGrid, {node: testGrid});
     it("should change when toggling design mode", function(done) {
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = TestUtils.renderIntoDocument(element);
-        expect(component.getDOMNode().textContent).toMatch(/I am NOT in design mode/);
+        expect(component.getDOMNode().classList.contains('grid-container-design-mode')).toBe(false);
 
         spyOn(component, 'forceUpdate').and.callThrough();
         component.toggleDesignMode();
@@ -108,8 +123,7 @@ var element = React.createElement(MainGrid, {node: testGrid});
             expect(component.forceUpdate).toHaveBeenCalled();
             expect(component.forceUpdate.calls.count()).toEqual(1);
 
-            var textContent = component.getDOMNode().textContent
-            expect(textContent).toMatch(/I am in design mode/);
+        expect(component.getDOMNode().classList.contains('grid-container-design-mode')).toBe(true);
 
             // should have placeholders
             // 4 (before each row) + 2 (end of each grid) + 6 ("module") * 2 (per module)

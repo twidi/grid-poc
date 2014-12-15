@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 var _ = require('lodash');
 var React = require('react/addons');  // react + addons
+var cx = React.addons.classSet;
 
 var Actions = require('../Actions.js');
 var Store = require('../Store.js');
@@ -22,7 +23,8 @@ var Row = {
 
     /**
      * Tell if the row is a placeholder
-     * @return {Boolean} true if a placeholder
+     *
+     * @return {Boolean} - true if a placeholder
      */
     isPlaceholder: function() {
         return this.props.node.getAttribute('type') == 'placeholder';
@@ -30,6 +32,7 @@ var Row = {
 
     /**
      * Get all the cells of the row
+     *
      * @return {array} - An array of XML grid cells
      */
     getCells: function() {
@@ -37,8 +40,9 @@ var Row = {
     },
 
     /**
-     * Render each cell as {@link module:Grid.Components.Cell Cell} components
+     * Return a list of all the cells, rendered
      *
+     * @return {module:Grid.Components.Cell[]} - An array of {@link module:Grid.Components.Cell Cell} components
      */
     renderCells: function() {
         var Cell = require('./Cell.jsx');
@@ -49,15 +53,31 @@ var Row = {
     },
 
     /**
-     * Render the component mainly by calling renderCells
+     * Return the classes to use when rendering the current row.
+     *
+     * @return {React.addons.classSet}
+     *
+     * One or more of these classes:
+     *
+     * - `grid-row`: in all cases
+     * - `grid-row-placeholder`: if it's a row placeholder
+     *
+     */
+    getRowClasses: function() {
+        return cx({
+            'grid-row': true,
+            'grid-row-placeholder': this.isPlaceholder(),
+        });
+    },
+
+    /**
+     * Render the component
+     *
+     * @returns {div} - A div with classes defined by `getRowClasses`, containing
+     * cells returned by `renderCells`
      */
     render: function() {
-        return <li>Row{this.isPlaceholder()?' (placeholder)':''} with cells:
-            <ul>
-                {this.renderCells()}
-            </ul>
-        </li>
-
+        return <div className={this.getRowClasses()}>{this.renderCells()}</div>
     }
 
 };

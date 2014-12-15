@@ -25,7 +25,7 @@ var SubGrid = {
      * Render the component mainly by calling renderRows
      */
     render: function() {
-        return <div>Subgrid: <ul>{this.renderRows()}</ul></div>
+        return this.renderGrid();
     }
 };
 
