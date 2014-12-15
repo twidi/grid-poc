@@ -58,8 +58,9 @@ var browserifyTask = function (options) {
     console.log('Building APP bundle');
     appBundler.bundle()
       .on('error', gutil.log)
-      .pipe(source('main.js'))
+      .pipe(source('main.jsx'))
       .pipe(gulpif(!options.development, streamify(uglify())))
+      .pipe(gulpif(/\.jsx$/, rename({extname: '.js'})))
       .pipe(gulp.dest(options.dest))
       .pipe(gulpif(options.live_update, livereload()))
       .pipe(notify(function () {
@@ -176,7 +177,7 @@ gulp.task('default', function () {
     development: true,
     live_update: true,
     vendors: false,
-    src: './app/main.js',
+    src: './app/main.jsx',
     dest: './build'
   });
 
@@ -194,7 +195,7 @@ gulp.task('vendors', function() {
     development: true,
     live_update: false,
     vendors: true,
-    src: './app/main.js',
+    src: './app/main.jsx',
     dest: './build'
   });
 
@@ -212,7 +213,7 @@ gulp.task('deploy', function () {
     development: false,
     live_update: false,
     vendors: true,
-    src: './app/main.js',
+    src: './app/main.jsx',
     dest: './dist'
   });
 
@@ -237,8 +238,8 @@ gulp.task('doc', function() {
       path: "node_modules/jaguarjs-jsdoc/"
     };
     gulp.src(["./app/**/*.jsx", "./app/**/*.js"])
-        .pipe(gulpif(/.jsx/, rename({suffix: '.jsx', extname: '.js'})))
+        .pipe(gulpif(/\.jsx$/, rename({suffix: '.jsx', extname: '.js'})))
         .pipe(jsx())
-        .pipe(gulpif(/.jsx/, gulp.dest('./dist-doc')))
+        .pipe(gulpif(/\.jsx\.js$/, gulp.dest('./dist-doc')))
         .pipe(jsdoc(docDir, docTemplate));
 });
