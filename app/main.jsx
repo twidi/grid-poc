@@ -3,5 +3,4 @@ var React = require('react/addons');  // react + addons
 
 var App = require('./App.jsx');
 
-
-React.render(<App/>, document.body);
+React.render(<App/>, document.getElementById('app'));
