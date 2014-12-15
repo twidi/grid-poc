@@ -112,13 +112,18 @@ var element = React.createElement(MainGrid, {node: testGrid});
             expect(textContent).toMatch(/I am in design mode/);
 
             // should have placeholders
-            expect(componentUtils.countRowPlaceholders(component)).toEqual(6);
-            expect(componentUtils.countCellPlaceholders(component)).toEqual(17);
+            // 4 (before each row) + 2 (end of each grid) + 6 ("module") * 2 (per module)
+            expect(componentUtils.countRowPlaceholders(component)).toEqual(18);
+            // 6 (1 for each rowPH except module) + 7 (before each cell) + 4 (end of each row) + 6 ("module") * 4 (per module)
+            expect(componentUtils.countCellPlaceholders(component)).toEqual(41);
 
-            // should still have same number of default components
-            expect(componentUtils.countRows(component)).toEqual(4);
+            // should have more components, as modules are wrapped in subgrids
+            // 4 original rows + 18 placeholders + 6 ("module") * 1 (per module)
+            expect(componentUtils.countRows(component)).toEqual(28);
+            // 6 original modules
             expect(componentUtils.countModules(component)).toEqual(6);
-            expect(componentUtils.countSubGrids(component)).toEqual(1);
+            // 1 original + 6 ("module") * 1 (per module)
+            expect(componentUtils.countSubGrids(component)).toEqual(7);
 
             done();
         }, 0.01);

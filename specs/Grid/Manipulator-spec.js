@@ -496,13 +496,26 @@ describe("Grid.Manipulator", function() {
 
         Manipulator.addPlaceholders(grid);
 
+        var moduleCellReplacedByPlaceholders =
+            '<cells type="grid">' +
+                '<content>' +
+                    '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
+                    '<rows>' +
+                        '<cells type="placeholder"><content/></cells>' +
+                        '<cells type="module"><content/></cells>' +
+                        '<cells type="placeholder"><content/></cells>' +
+                    '</rows>' +
+                    '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
+                '</content>' +
+            '</cells>';
+
         var expectedWithPlaceholders =
             '<grid name="foo" space="5px" type="mainGrid" hasPlaceholders="true">' +
                 '<content>' +
                     '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
                     '<rows>' +
                         '<cells type="placeholder"><content/></cells>' +
-                        '<cells type="module"><content/></cells>' +
+                        moduleCellReplacedByPlaceholders +
                         '<cells type="placeholder"><content/></cells>' +
                     '</rows>' +
                     '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
@@ -549,9 +562,9 @@ describe("Grid.Manipulator", function() {
                     '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
                     '<rows>' +
                         '<cells type="placeholder"><content/></cells>' +
-                        '<cells type="module"><content/></cells>' +
+                        moduleCellReplacedByPlaceholders +
                         '<cells type="placeholder"><content/></cells>' +
-                        '<cells type="module"><content/></cells>' +
+                        moduleCellReplacedByPlaceholders +
                         '<cells type="placeholder"><content/></cells>' +
                     '</rows>' +
                     '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
@@ -562,22 +575,22 @@ describe("Grid.Manipulator", function() {
                                 '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
                                 '<rows>' +
                                     '<cells type="placeholder"><content/></cells>' +
-                                    '<cells type="module"><content/></cells>' +
+                                    moduleCellReplacedByPlaceholders +
                                     '<cells type="placeholder"><content/></cells>' +
-                                    '<cells type="module"><content/></cells>' +
+                                    moduleCellReplacedByPlaceholders +
                                     '<cells type="placeholder"><content/></cells>' +
                                 '</rows>' +
                                 '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
                                 '<rows>' +
                                     '<cells type="placeholder"><content/></cells>' +
-                                    '<cells type="module"><content/></cells>' +
+                                    moduleCellReplacedByPlaceholders +
                                     '<cells type="placeholder"><content/></cells>' +
                                 '</rows>' +
                                 '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
                             '</content>' +
                         '</cells>' +
                         '<cells type="placeholder"><content/></cells>' +
-                        '<cells type="module"><content/></cells>' +
+                        moduleCellReplacedByPlaceholders +
                         '<cells type="placeholder"><content/></cells>' +
                     '</rows>' +
                     '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
@@ -599,7 +612,7 @@ describe("Grid.Manipulator", function() {
         Manipulator.addPlaceholders(grid);
 
         // add a module in a placeholder cell (in the second row (our first original one), last cell (a placeholder))
-        var cell = grid.querySelector('rows:nth-child(2) > cells:last-child');
+        var cell = grid.querySelector(':scope > content > rows:nth-child(2) > cells:last-child');
         cell.setAttribute('type', 'module');
         cell.setAttribute('was', 'placeholder');
 
@@ -620,7 +633,8 @@ describe("Grid.Manipulator", function() {
         // do it again but set the module in a cell placeholder within a row placeholder
 
         Manipulator.addPlaceholders(grid);
-        var cell = grid.querySelector('rows:last-child > cells');
+
+        var cell = grid.querySelector(':scope > content > rows:last-child > cells');
         cell.setAttribute('type', 'module');
         cell.setAttribute('was', 'placeholder, too');
 
