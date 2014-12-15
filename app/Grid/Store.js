@@ -9,21 +9,18 @@ var Manipulator = require('./Manipulator.js');
  * The Grid store. This is the public interface
  * @namespace
  * @memberOf module:Grid
- * @summary The Grid store
  */
 var Store = {
 
     /**
      * Exceptions for the Store module
      * @namespace
-     * @summary Exceptions available in Grid.Store.Exceptions
      */
     Exceptions: {
         /**
          * Exception raised when a grid does not exist
          * This is a subclass of "Error"
          * @class
-         * @summary Exception raised when a grid does not exist
          *
          * @param {string} [message] - The raised message
          *
@@ -37,7 +34,6 @@ var Store = {
          * Exception raised when a node does not exist
          * This is a subclass of "Error"
          * @class
-         * @summary Exception raised when a node does not exist
          *
          * @param {string} [message] - The raised message
          *
@@ -126,9 +122,8 @@ var Store = {
 
 
 /**
- * Store grids. Everything can only be accessed inside the Store itself
+ * Private interface of the Store module. Everything can only be accessed inside the Store itself
  * @namespace
- * @summary The Store private members
  * @memberOf module:Grid.Store
  * @inner
  *

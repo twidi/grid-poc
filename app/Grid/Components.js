@@ -2,7 +2,6 @@
  * Grid react components
  * @namespace
  * @memberOf module:Grid
- * @summary Grid react components
  */
 var Components = {
     Cell: require('./Components/Cell.jsx'),

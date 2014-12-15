@@ -235,11 +235,20 @@ gulp.task('test', function () {
 gulp.task('doc', function() {
     var docDir = 'doc';
     var docTemplate = {
-      path: "node_modules/jaguarjs-jsdoc/"
+      path: "node_modules/jaguarjs-jsdoc/",
+      applicationName: "Grid POC",
+    };
+    var docInfos = {
+      name: "Grid POC",
+      description: "Whole documentation about the JS part of this Grid POC",
+      plugins: [
+        '../../../jsdoc/plugins/summarize.js',
+        'plugins/markdown.js'
+      ]
     };
     gulp.src(["./app/**/*.jsx", "./app/**/*.js"])
         .pipe(gulpif(/\.jsx$/, rename({suffix: '.jsx', extname: '.js'})))
         .pipe(jsx())
         .pipe(gulpif(/\.jsx\.js$/, gulp.dest('./dist-doc')))
-        .pipe(jsdoc(docDir, docTemplate));
+        .pipe(jsdoc(docDir, docTemplate, docInfos));
 });
