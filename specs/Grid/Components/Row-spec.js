@@ -82,6 +82,7 @@ describe("Grid.Components.Row", function() {
 
     it("should render a placeholder", function() {
         Manipulator.addPlaceholders(testGrid);
+        Manipulator.setIds(testGrid);
         var placeholderGridRow = testGrid.querySelector('rows[type=placeholder]');
         var element = React.createElement(Row, {node: placeholderGridRow});
         var component = TestUtils.renderIntoDocument(element);

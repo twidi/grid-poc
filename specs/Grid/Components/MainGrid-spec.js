@@ -123,7 +123,7 @@ describe("Grid.Components.MainGrid", function() {
             expect(component.forceUpdate).toHaveBeenCalled();
             expect(component.forceUpdate.calls.count()).toEqual(1);
 
-        expect(component.getDOMNode().classList.contains('grid-container-design-mode')).toBe(true);
+            expect(component.getDOMNode().classList.contains('grid-container-design-mode')).toBe(true);
 
             // should have placeholders
             // 4 (before each row) + 2 (end of each grid) + 6 ("module") * 2 (per module)

@@ -8,6 +8,8 @@ var Utils = require('../Utils.js');
 
 describe("Grid.Actions", function() {
     var uniqueIdMock;
+    var defaultHoveringDelay = Store.__private.hoveringDelay;
+    var hoveringDelay = 10;
 
     beforeEach(function() {
         jasmine.addMatchers(customMatchers);
@@ -17,46 +19,45 @@ describe("Grid.Actions", function() {
 
         // we want to start each test with a fresh list of grids
         Store.__removeAllGrids();
+
+        // short hovering delay in tests
+        Store.__private.hoveringDelay = hoveringDelay - 2;
+
+    });
+
+    afterEach(function() {
+        // restore hovering delay
+        Store.__private.hoveringDelay = defaultHoveringDelay;
     });
 
 
     it("should add a grid", function(done) {
-        // will increment this for each callback called, should be 2 at the end
-        var callbacksCalled = 0;
+        // will set this to True when the callback is called
+        var callbackCalled = false;
         // will store the grid name received via the "add" event
         var addedGridName;
-        // to check the grid at the end
-        var grid;
 
-        var onStateChange = function() {
-            callbacksCalled++;
-        };
-
-        var onAddGrid = function(gridName) {
-            callbacksCalled++;
+        var callback = function(gridName) {
+            callbackCalled = true;
             addedGridName = gridName;
         };
 
         var grid = Manipulator.createBaseGrid('foo', 5);
 
-        // add some listeners
-        Store.addChangeListener(onStateChange);
-        Store.on('grid.add', onAddGrid);
+        // listen to the tested event
+        Store.on('grid.add', callback);
 
         try {
-
             Actions.addGrid(grid);
-
         } finally {
 
             // give some time to let the callbacks to be called
             setTimeout(function() {
-                // clean the listeners
-                Store.removeChangeListener(onStateChange);
-                Store.off('addGrid', onAddGrid);
+                // clean the listener
+                Store.off('addGrid', callback);
 
                 // check if the callback were called
-                expect(callbacksCalled).toEqual(2);
+                expect(callbackCalled).toBe(true);
                 expect(addedGridName, 'foo');
 
                 // check if we really have the new grid
@@ -80,19 +81,13 @@ describe("Grid.Actions", function() {
     });
 
     it("should enter design mode", function(done) {
-        // will increment this for each callback called, should be 2 at the end
-        var callbacksCalled = 0;
-        // will store the grid name received via the "add" event
+        // will set this to True when the callback is called
+        var callbackCalled = false;
+        // will store the grid name received via the tested event
         var updatedGridName;
-        // to check the grid at the end
-        var grid;
 
-        var onStateChange = function() {
-            callbacksCalled++;
-        };
-
-        var onEnterDesignMode = function(gridName) {
-            callbacksCalled++;
+        var callback = function(gridName) {
+            callbackCalled = true;
             updatedGridName = gridName;
         };
 
@@ -100,47 +95,199 @@ describe("Grid.Actions", function() {
         var grid = Manipulator.createBaseGrid('foo', 5);
         Actions.addGrid(grid);
 
-        // give some time to let the grid to be added
-        setTimeout(function() {
-            var grid = Store.getGrid('foo');
+        // listen to the tested event
+        Store.on('grid.designMode.enter', callback);
 
-            // add some listeners
-            Store.addChangeListener(onStateChange);
-            Store.on('grid.designMode.enter', onEnterDesignMode);
+        try {
+            Actions.enterDesignMode('foo');
+        } finally {
+
+            // give some time to let the callbacks to be called
+            setTimeout(function() {
+                // clean the listener
+                Store.off('grid.designMode.enter', callback);
+
+                // check if the callback were called
+                expect(callbackCalled).toBe(true);
+                expect(updatedGridName, 'foo');
+
+                // check the new designMode step
+                expect(Store.getDesignModeStep('foo')).toEqual('enabled');
+
+                // check if the grid is still the same
+                var expected =
+                    '<grid name="foo" space="5px" type="mainGrid" id="grid-1">' +
+                        '<content id="content-2"/>' +
+                    '</grid>';
+                expect(grid).toEqualXML(expected);
+
+                // tell jasmine we're done
+                done();
+
+            }, 0.01);
+
+        }
+    });
+
+
+    it("should start dragging", function(done) {
+        // will set this to True when the callback is called
+        var callbackCalled = false;
+        // will store the grid name received via the tested event
+        var updatedGridName;
+
+        var callback = function(gridName) {
+            callbackCalled = true;
+            updatedGridName = gridName;
+        };
+
+        // add a grid to work on
+        var grid = Manipulator.XMLStringToXMLGrid(
+            '<grid name="foo" space="5px" type="mainGrid">' +
+                '<content>' +
+                    '<rows>' +
+                        '<cells type="module"><content/></cells>' +
+                        '<cells type="module"><content/></cells>' +
+                    '</rows>' +
+                '</content>' +
+            '</grid>');
+        Manipulator.setIds(grid);
+        Store.__private.addGrid(grid);
+
+        // force it to be in design mode
+        Store.__private.grids['foo'].designModeStep = 'enabled'
+
+        // listen to the tested event
+        Store.on('grid.designMode.dragging.start', callback);
+
+        try {
+
+            Actions.startDragging('foo', grid.querySelector('#cells-4'));
+
+        } finally {
+
+            // give some time to let the callbacks to be called
+            setTimeout(function() {
+                var newGrid = Store.getGrid('foo');
+
+                // clean the listener
+                Store.off('grid.designMode.dragging.start', callback);
+
+                // check if the callback were called
+                expect(callbackCalled).toBe(true);
+                expect(updatedGridName, 'foo');
+
+                // check the new designMode step
+                expect(Store.getDesignModeStep('foo')).toEqual('dragging');
+
+                // check if the grid the dragged cell removed, and has placeholders
+                var expected =
+                    '<grid name="foo" space="5px" type="mainGrid" id="grid-1" hasPlaceholders="true">' +
+                        '<content id="content-2">' +
+                            '<rows type="placeholder" id="rows-8"><cells type="placeholder" id="cells-9"><content id="content-10"/></cells></rows>' +
+                            '<rows id="rows-3">' +
+                                '<cells type="placeholder" id="cells-11"><content id="content-12"/></cells>' +
+                                '<cells type="grid" id="cells-6">' +
+                                    '<content id="content-13">' +
+                                        '<rows type="placeholder" id="rows-14">' +
+                                            '<cells type="placeholder" id="cells-15"><content id="content-16"/></cells>' +
+                                        '</rows>' +
+                                        '<rows id="rows-17">' +
+                                            '<cells type="placeholder" id="cells-18"><content id="content-19"/></cells>' +
+                                            '<cells type="module" id="cells-20"><content id="content-7"/></cells>' +
+                                            '<cells type="placeholder" id="cells-21"><content id="content-22"/></cells>' +
+                                        '</rows>' +
+                                        '<rows type="placeholder" id="rows-23">' +
+                                            '<cells type="placeholder" id="cells-24"><content id="content-25"/></cells>' +
+                                        '</rows>' +
+                                    '</content>' +
+                                '</cells>' +
+                                '<cells type="placeholder" id="cells-26"><content id="content-27"/></cells>' +
+                            '</rows>' +
+                            '<rows type="placeholder" id="rows-28"><cells type="placeholder" id="cells-29"><content id="content-30"/></cells></rows>' +
+                        '</content>' +
+                    '</grid>';
+                expect(newGrid).toEqualXML(expected);
+
+                // tell jasmine we're done
+                done();
+
+            }, 0.01);
+
+        }
+    });
+
+
+    it("should cancel dragging", function(done) {
+        // will set this to True when the callback is called
+        var callbackCalled = false;
+        // will store the grid name received via the tested event
+        var updatedGridName;
+
+        var callback = function(gridName) {
+            callbackCalled = true;
+            updatedGridName = gridName;
+        };
+
+        // add a grid to work on
+        var grid = Manipulator.XMLStringToXMLGrid(
+            '<grid name="foo" space="5px" type="mainGrid">' +
+                '<content>' +
+                    '<rows>' +
+                        '<cells type="module"><content/></cells>' +
+                        '<cells type="module"><content/></cells>' +
+                    '</rows>' +
+                '</content>' +
+            '</grid>');
+        Manipulator.setIds(grid);
+        Store.__private.addGrid(grid);
+
+        // force it to be in design mode
+        Store.__private.grids['foo'].designModeStep = 'enabled';
+
+        // go to dragging mode
+        Actions.startDragging('foo', grid.querySelector('#cells-4'));
+
+        // leave some time the go in dragging mode
+        setTimeout(function() {
+
+            // listen to the tested event
+            Store.on('grid.designMode.dragging.stop', callback);
 
             try {
 
-                Actions.enterDesignMode('foo');
+                Actions.cancelDragging('foo', grid.querySelector('#cells-4'));
 
             } finally {
 
+
                 // give some time to let the callbacks to be called
                 setTimeout(function() {
-                    // clean the listeners
-                    Store.removeChangeListener(onStateChange);
-                    Store.off('enterDesignMode', onEnterDesignMode);
+                    var newGrid = Store.getGrid('foo');
+                    // it should be the original grid
+                    expect(newGrid).toBe(grid);
+
+                    // clean the listener
+                    Store.off('grid.designMode.dragging.stop', callback);
 
                     // check if the callback were called
-                    expect(callbacksCalled).toEqual(2);
+                    expect(callbackCalled).toBe(true);
                     expect(updatedGridName, 'foo');
 
-                    // check if we really have the new grid
-                    expect(function() {
-                        var grid = Store.getGrid('foo');
-                    }).not.toThrowError(Store.Exceptions.GridDoesNotExist);
+                    // check the new designMode step
+                    expect(Store.getDesignModeStep('foo')).toEqual('enabled');
 
-                    // check if the grid has placeholders
+                    // check if the grid is the original one
                     var expected =
-                        '<grid name="foo" space="5px" type="mainGrid" id="grid-1" hasPlaceholders="true">' +
+                        '<grid name="foo" space="5px" type="mainGrid" id="grid-1">' +
                             '<content id="content-2">' +
-                                '<rows type="placeholder" id="rows-3">' +
-                                    '<cells type="placeholder" id="cells-4">' +
-                                        '<content id="content-5"/>' +
-                                    '</cells>' +
+                                '<rows id="rows-3">' +
+                                    '<cells type="module" id="cells-4"><content id="content-5"/></cells>' +
+                                    '<cells type="module" id="cells-6"><content id="content-7"/></cells>' +
                                 '</rows>' +
                             '</content>' +
                         '</grid>';
-                    expect(grid).toEqualXML(expected);
+                    expect(newGrid).toEqualXML(expected);
 
                     // tell jasmine we're done
                     done();
@@ -149,76 +296,428 @@ describe("Grid.Actions", function() {
 
             }
         }, 0.01);
+
     });
 
-
-    it("should exit design mode", function(done) {
-        // will increment this for each callback called, should be 2 at the end
-        var callbacksCalled = 0;
-        // will store the grid name received via the "add" event
+    it("should start hovering then stay", function(done) {
+        // will set this to True when the callback is called
+        var callbackCalled = false;
+        // will store the grid name received via the tested event
         var updatedGridName;
-        // to check the grid at the end
-        var grid;
 
-        var onStateChange = function() {
-            callbacksCalled++;
-        };
-
-        var onExitDesignMode = function(gridName) {
-            callbacksCalled++;
+        var callback = function(gridName) {
+            callbackCalled = true;
             updatedGridName = gridName;
         };
 
+        // we'll check if stay-hovering is called
+        spyOn(Store.__private, 'stayHovering').and.callThrough();
+
         // add a grid to work on
-        var grid = Manipulator.createBaseGrid('foo', 5);
-        Actions.addGrid(grid);
+        var grid = Manipulator.XMLStringToXMLGrid(
+            '<grid name="foo" space="5px" type="mainGrid">' +
+                '<content>' +
+                    '<rows>' +
+                        '<cells type="module"><content/></cells>' +
+                        '<cells type="module"><content/></cells>' +
+                    '</rows>' +
+                '</content>' +
+            '</grid>');
+        Manipulator.setIds(grid);
+        Store.__private.addGrid(grid);
 
-        // give some time to let the grid to be added
+        // force it to be in design mode
+        Store.__private.grids['foo'].designModeStep = 'enabled';
+
+        // go to dragging mode
+        Actions.startDragging('foo', grid.querySelector('#cells-4'));
+
+        // leave some time the go in dragging mode
         setTimeout(function() {
-            var grid = Store.getGrid('foo');
 
-            // force it to be in design mode
-            Manipulator.addPlaceholders(grid);
-
-            // add some listeners
-            Store.addChangeListener(onStateChange);
-            Store.on('grid.designMode.exit', onExitDesignMode);
+            // listen to the tested event
+            Store.on('grid.designMode.hovering.start', callback);
 
             try {
 
-                Actions.exitDesignMode('foo');
+                Actions.startHovering('foo', Store.getGrid('foo').querySelector('#cells-29'));
 
             } finally {
 
                 // give some time to let the callbacks to be called
                 setTimeout(function() {
-                    // clean the listeners
-                    Store.removeChangeListener(onStateChange);
-                    Store.off('exitDesignMode', onExitDesignMode);
+                    var newGrid = Store.getGrid('foo');
+
+                    // clean the listener
+                    Store.off('grid.designMode.hovering.start', callback);
 
                     // check if the callback were called
-                    expect(callbacksCalled).toEqual(2);
+                    expect(callbackCalled).toBe(true);
                     expect(updatedGridName, 'foo');
 
-                    // check if we really have the new grid
-                    expect(function() {
-                        var grid = Store.getGrid('foo');
-                    }).not.toThrowError(Store.Exceptions.GridDoesNotExist);
+                    // check the new designMode step
+                    expect(Store.getDesignModeStep('foo')).toEqual('prehovering');
 
-                    // check if the grid has placeholders
+                    // we should not be in "stay" mode yet
+                    expect(Store.__private.stayHovering).not.toHaveBeenCalled();
+
+                    // check if the grid the dragged cell removed, and has placeholders
                     var expected =
-                        '<grid name="foo" space="5px" type="mainGrid" id="grid-1">' +
-                            '<content id="content-2"/>' +
+                        '<grid name="foo" space="5px" type="mainGrid" id="grid-1" hasPlaceholders="true">' +
+                            '<content id="content-2">' +
+                                '<rows type="placeholder" id="rows-8"><cells type="placeholder" id="cells-9"><content id="content-10"/></cells></rows>' +
+                                '<rows id="rows-3">' +
+                                    '<cells type="placeholder" id="cells-11"><content id="content-12"/></cells>' +
+                                    '<cells type="grid" id="cells-6">' +
+                                        '<content id="content-13">' +
+                                            '<rows type="placeholder" id="rows-14">' +
+                                                '<cells type="placeholder" id="cells-15"><content id="content-16"/></cells>' +
+                                            '</rows>' +
+                                            '<rows id="rows-17">' +
+                                                '<cells type="placeholder" id="cells-18"><content id="content-19"/></cells>' +
+                                                '<cells type="module" id="cells-20"><content id="content-7"/></cells>' +
+                                                '<cells type="placeholder" id="cells-21"><content id="content-22"/></cells>' +
+                                            '</rows>' +
+                                            '<rows type="placeholder" id="rows-23">' +
+                                                '<cells type="placeholder" id="cells-24"><content id="content-25"/></cells>' +
+                                            '</rows>' +
+                                        '</content>' +
+                                    '</cells>' +
+                                    '<cells type="placeholder" id="cells-26"><content id="content-27"/></cells>' +
+                                '</rows>' +
+                                '<rows type="placeholder" id="rows-28"><cells type="placeholder" id="cells-29"><content id="content-30"/></cells></rows>' +
+                            '</content>' +
                         '</grid>';
-                    expect(grid).toEqualXML(expected);
+                    expect(newGrid).toEqualXML(expected);
 
-                    // tell jasmine we're done
-                    done();
+                    // now we'll check the "stay-hovering" status
+                    callbackCalled = false;
+                    updatedGridName = null;
+
+                    Store.on('grid.designMode.hovering.stay', callback);
+
+                    // wait to enter in real hovering mode
+                    setTimeout(function() {
+                        var newGrid = Store.getGrid('foo');
+
+                        // clean the listener
+                        Store.off('grid.designMode.hovering.stay', callback);
+
+                        // check if the callback were called
+                        expect(callbackCalled).toBe(true);
+                        expect(updatedGridName, 'foo');
+
+                        expect(Store.getDesignModeStep('foo')).toEqual('hovering');
+
+                        // we should be in "stay" mode
+                        expect(Store.__private.stayHovering).toHaveBeenCalled();
+
+                        // check if the grid the dragged cell moved
+                        var expected =
+                            '<grid name="foo" space="5px" type="mainGrid" id="grid-1">' +
+                                '<content id="content-2">' +
+                                    '<rows id="rows-3">' +
+                                        '<cells type="module" id="cells-6"><content id="content-7"/></cells>' +
+                                    '</rows>' +
+                                    '<rows id="rows-28">' +
+                                        '<cells type="module" id="cells-29"><content id="content-5"/></cells>' +
+                                    '</rows>' +
+                                '</content>' +
+                            '</grid>';
+                        expect(newGrid).toEqualXML(expected);
+
+                        // tell jasmine we're done
+                        done();
+
+                    }, hoveringDelay);
 
                 }, 0.01);
 
             }
         }, 0.01);
     });
+
+
+    var itShouldStopHovering = function(text, delay, stayCalled) {
+
+        it(text, function(done) {
+            // will set this to True when the callback is called
+            var callbackCalled = false;
+            // will store the grid name received via the tested event
+            var updatedGridName;
+
+            var callback = function(gridName) {
+                callbackCalled = true;
+                updatedGridName = gridName;
+            };
+
+            // we'll check if stay-hovering is called
+            spyOn(Store.__private, 'stayHovering').and.callThrough();
+
+            // add a grid to work on
+            var grid = Manipulator.XMLStringToXMLGrid(
+                '<grid name="foo" space="5px" type="mainGrid">' +
+                    '<content>' +
+                        '<rows>' +
+                            '<cells type="module"><content/></cells>' +
+                            '<cells type="module"><content/></cells>' +
+                        '</rows>' +
+                    '</content>' +
+                '</grid>');
+            Manipulator.setIds(grid);
+            Store.__private.addGrid(grid);
+
+            // force it to be in design mode
+            Store.__private.grids['foo'].designModeStep = 'enabled';
+
+            // go to dragging mode
+            Actions.startDragging('foo', grid.querySelector('#cells-4'));
+
+            // leave some time the go in dragging mode
+            setTimeout(function() {
+                // keep a reference of the grid in dragging mode to compare to it later
+                var dragGrid = Store.getGrid('foo');
+
+                // go to hovering mode
+                Actions.startHovering('foo', Store.getGrid('foo').querySelector('#cells-29'));
+
+                // leave some time the go in hovering mode
+                setTimeout(function() {
+
+                    if (stayCalled) {
+                        expect(Store.__private.stayHovering).toHaveBeenCalled();
+                    } else {
+                        expect(Store.__private.stayHovering).not.toHaveBeenCalled();
+                    }
+
+                    // listen to the tested event
+                    Store.on('grid.designMode.hovering.stop', callback);
+
+                    try {
+
+                        Actions.stopHovering('foo');
+
+                    } finally {
+
+                        // give some time to let the callbacks to be called
+                        setTimeout(function() {
+                            var newGrid = Store.getGrid('foo');
+                            // it should be the grid in dragging mode
+                            expect(newGrid).toBe(dragGrid);
+
+                            // clean the listener
+                            Store.off('grid.designMode.hovering.stop', callback);
+
+                            // check if the callback were called
+                            expect(callbackCalled).toBe(true);
+                            expect(updatedGridName, 'foo');
+
+                            // check the new designMode step
+                            expect(Store.getDesignModeStep('foo')).toEqual('dragging');
+
+                            // check if the grid the dragged cell removed, and has placeholders
+                            var expected =
+                                '<grid name="foo" space="5px" type="mainGrid" id="grid-1" hasPlaceholders="true">' +
+                                    '<content id="content-2">' +
+                                        '<rows type="placeholder" id="rows-8"><cells type="placeholder" id="cells-9"><content id="content-10"/></cells></rows>' +
+                                        '<rows id="rows-3">' +
+                                            '<cells type="placeholder" id="cells-11"><content id="content-12"/></cells>' +
+                                            '<cells type="grid" id="cells-6">' +
+                                                '<content id="content-13">' +
+                                                    '<rows type="placeholder" id="rows-14">' +
+                                                        '<cells type="placeholder" id="cells-15"><content id="content-16"/></cells>' +
+                                                    '</rows>' +
+                                                    '<rows id="rows-17">' +
+                                                        '<cells type="placeholder" id="cells-18"><content id="content-19"/></cells>' +
+                                                        '<cells type="module" id="cells-20"><content id="content-7"/></cells>' +
+                                                        '<cells type="placeholder" id="cells-21"><content id="content-22"/></cells>' +
+                                                    '</rows>' +
+                                                    '<rows type="placeholder" id="rows-23">' +
+                                                        '<cells type="placeholder" id="cells-24"><content id="content-25"/></cells>' +
+                                                    '</rows>' +
+                                                '</content>' +
+                                            '</cells>' +
+                                            '<cells type="placeholder" id="cells-26"><content id="content-27"/></cells>' +
+                                        '</rows>' +
+                                        '<rows type="placeholder" id="rows-28"><cells type="placeholder" id="cells-29"><content id="content-30"/></cells></rows>' +
+                                    '</content>' +
+                                '</grid>';
+                            expect(newGrid).toEqualXML(expected);
+
+                            // tell jasmine we're done
+                            done();
+
+                        }, 0.01);
+
+                    }
+                }, delay);
+
+            }, 0.01);
+
+        });
+
+    };
+
+    itShouldStopHovering("should stop hovering when pre-hovering", 0.01, false);
+    itShouldStopHovering("should stop hovering when real (stay) hovering", hoveringDelay, true);
+
+    var itShouldDrop = function(text, delay, stayCalled) {
+
+        it(text, function(done) {
+            // will set this to True when the callback is called
+            var callbackCalled = false;
+            // will store the grid name received via the tested event
+            var updatedGridName;
+
+            var callback = function(gridName) {
+                callbackCalled = true;
+                updatedGridName = gridName;
+            };
+
+            // we'll check if stay-hovering is called
+            spyOn(Store.__private, 'stayHovering').and.callThrough();
+
+            // add a grid to work on
+            var grid = Manipulator.XMLStringToXMLGrid(
+                '<grid name="foo" space="5px" type="mainGrid">' +
+                    '<content>' +
+                        '<rows>' +
+                            '<cells type="module"><content/></cells>' +
+                            '<cells type="module"><content/></cells>' +
+                        '</rows>' +
+                    '</content>' +
+                '</grid>');
+            Manipulator.setIds(grid);
+            Store.__private.addGrid(grid);
+
+            // force it to be in design mode
+            Store.__private.grids['foo'].designModeStep = 'enabled';
+
+            // go to dragging mode
+            Actions.startDragging('foo', grid.querySelector('#cells-4'));
+
+            // leave some time the go in dragging mode
+            setTimeout(function() {
+
+                // go to hovering mode
+                Actions.startHovering('foo', Store.getGrid('foo').querySelector('#cells-29'));
+
+                // listen to the tested event
+                Store.on('grid.designMode.drop', callback);
+
+                // leave some time the go in hovering mode
+                setTimeout(function() {
+
+                    if (stayCalled) {
+                        expect(Store.__private.stayHovering).toHaveBeenCalled();
+                    } else {
+                        expect(Store.__private.stayHovering).not.toHaveBeenCalled();
+                    }
+
+                    try {
+
+                        Actions.drop('foo', Store.getGrid('foo').querySelector('#cells-29'));
+
+                    } finally {
+
+                        // give some time to let the callbacks to be called
+                        setTimeout(function() {
+                            var newGrid = Store.getGrid('foo');
+
+                            // clean the listener
+                            Store.off('grid.designMode.drop', callback);
+
+                            // check if the callback were called
+                            expect(callbackCalled).toBe(true);
+                            expect(updatedGridName, 'foo');
+
+                            // check the new designMode step
+                            expect(Store.getDesignModeStep('foo')).toEqual('enabled');
+
+                            // check if the grid the dragged cell moved
+                            var expected =
+                                '<grid name="foo" space="5px" type="mainGrid" id="grid-1">' +
+                                    '<content id="content-2">' +
+                                        '<rows id="rows-3">' +
+                                            '<cells type="module" id="cells-6"><content id="content-7"/></cells>' +
+                                        '</rows>' +
+                                        '<rows id="rows-28">' +
+                                            '<cells type="module" id="cells-29"><content id="content-5"/></cells>' +
+                                        '</rows>' +
+                                    '</content>' +
+                                '</grid>';
+                            expect(newGrid).toEqualXML(expected);
+
+                            // tell jasmine we're done
+                            done();
+
+                        }, 0.01);
+
+                    }
+                }, delay);
+            }, 0.01);
+
+        });
+
+    };
+
+    itShouldDrop("should drop module in placeholder when pre-hovering", 0.01, false);
+    itShouldDrop("should drop module in placeholder when real (stay) hovering", hoveringDelay, true);
+
+    it("should exit design mode", function(done) {
+        // will set this to True when the callback is called
+        var callbackCalled = false;
+        // will store the grid name received via the tested event
+        var updatedGridName;
+
+
+        var callback = function(gridName) {
+            callbackCalled = true;
+            updatedGridName = gridName;
+        };
+
+        // add a grid to work on
+        var grid = Manipulator.createBaseGrid('foo', 5);
+        Store.__private.addGrid(grid);
+
+        // force it to be in design mode
+        Store.__private.grids['foo'].designModeStep = 'enabled'
+
+        // listen to the tested event
+        Store.on('grid.designMode.exit', callback);
+
+        try {
+
+            Actions.exitDesignMode('foo');
+
+        } finally {
+
+            // give some time to let the callbacks to be called
+            setTimeout(function() {
+                // clean the listener
+                Store.off('grid.designMode.exit', callback);
+
+                // check if the callback were called
+                expect(callbackCalled).toBe(true);
+                expect(updatedGridName, 'foo');
+
+                // check the new designMode step
+                expect(Store.getDesignModeStep('foo')).toEqual('disabled');
+
+                // check if the grid has no placeholders
+                var expected =
+                    '<grid name="foo" space="5px" type="mainGrid" id="grid-1">' +
+                        '<content id="content-2"/>' +
+                    '</grid>';
+                expect(grid).toEqualXML(expected);
+
+                // tell jasmine we're done
+                done();
+
+            }, 0.01);
+
+        }
+    });
+
 
 });

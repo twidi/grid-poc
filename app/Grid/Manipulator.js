@@ -428,6 +428,17 @@ var Manipulator = {
 
 
     /**
+     * Tel if the grid has placeholders
+     *
+     * @param {XML} grid - The grid to test
+     *
+     * @return {Boolean} - true if the grid has placeholders
+     */
+    hasPlaceholders: function(grid) {
+        return grid.getAttribute('hasPlaceholders');
+    },
+
+    /**
      * Add all placeholders in the given grid
      * Add a "hasPlaceholders" attribute (set to "true") on the main grid node.
      *
@@ -443,7 +454,7 @@ var Manipulator = {
         if (nodeType != 'mainGrid') {
             throw new this.Exceptions.InvalidType("Cannot add placeholders in grid of type <" + nodeType + ">. Should be <mainGrid>");
         }
-        if (grid.getAttribute('hasPlaceholders')) {
+        if (this.hasPlaceholders(grid)) {
             throw new this.Exceptions.InvalidState("Cannot add placeholders on a grid which already have them");
         }
         this._addRowsPlaceholders(grid);
@@ -527,7 +538,7 @@ var Manipulator = {
         if (nodeType != 'mainGrid') {
             throw new this.Exceptions.InvalidType("Cannot remove placeholders in grid of type <" + nodeType + ">. Should be <mainGrid>");
         }
-        if (!grid.getAttribute('hasPlaceholders')) {
+        if (!this.hasPlaceholders(grid)) {
             throw new this.Exceptions.InvalidState("Cannot remove placeholders on a grid which doesn't have any");
         }
 
@@ -591,6 +602,27 @@ var Manipulator = {
             // continue with the parentNode
             node = node.parentNode;
         };
+    },
+
+    /**
+     * Remove a content node from its grid
+     *
+     * @param  {XML} contentNode - The "content" node we want to remove
+     * @param {boolean} [dontClean] - Do not try to clean the parent grid node
+     */
+    removeContentNode: function(contentNode, dontClean) {
+        // save actual grid parent to "clean" it after the move
+        var gridNode = dontClean ? null : this.getNearestGrid(contentNode);
+
+        // remove the node from the grid
+        if (contentNode.parentNode) {
+            contentNode.parentNode.removeChild(contentNode);
+        }
+
+        // now clean the old parent that may be empty now
+        if (gridNode) {
+            this.cleanGrid(gridNode);
+        }
     },
 
     /**
