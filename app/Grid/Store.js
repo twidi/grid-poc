@@ -111,7 +111,9 @@ var Store = {
 
     /**
      * Return the id attribute of the given node
+     *
      * @param  {XML} node - The XML node for which we want the id
+     *
      * @return {string} - The id attribute of the node
      */
     getNodeId: function(node) {
@@ -120,7 +122,9 @@ var Store = {
 
     /**
      * Return the main grid for the given node
+     *
      * @param  {XML} node - The XML node for which we want the grid
+     *
      * @return {XML} - The main grid of the node
      */
     getMainGrid: function(node) {
@@ -172,12 +176,13 @@ var Private = {
     /**
      * All stored grids, by name, each entry having:
      * @type {Object}
+     * @property {string} name - The name of the grid
      * @property {XML} grid - The XML grid
      * @property {string} designModeStep - The current design mode step for this grid
      *
-     * @property {Object} backup - Some backups of previous states needed during the drag and drop process
-     * @property {Object} backup.dragging - The grid before starting the dragging process
-     * @property {Object} backup.hovering - The grid after starting the dragging process, before hovering on a placeholder
+     * @property {Object} backups - Some backups of previous states needed during the drag and drop process
+     * @property {Object} backups.dragging - The grid before starting the dragging process
+     * @property {Object} backups.hovering - The grid after starting the dragging process, before hovering on a placeholder
      *
      * @property {Object} nodes - References to some node that are manipulated throug the drag and drop process
      * @property {Object} nodes.dragging - The node currently being dragged
@@ -272,10 +277,12 @@ var Private = {
             throw new this.Exceptions.GridDoesNotExist("There is already a grid the name <" + name + ">");
         }
         this.grids[name] = {
+            name: name,
             grid: grid,
             designModeStep: 'disabled',
             backups: {},
             nodes: {},
+            timeout: null,
         };
         /**
          * Event fired when a grid is added to the Grid store

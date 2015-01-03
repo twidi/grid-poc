@@ -30,6 +30,15 @@ describe("Grid.Store", function() {
 
         setTimeout(function() {
             expect(Store.getGrid('foo')).toBe(grid);
+
+            var gridEntry = Store.__private.getGridEntry('foo');
+            expect(gridEntry.name).toEqual('foo');
+            expect(gridEntry.designModeStep).toEqual('disabled');
+            expect(gridEntry.backups).toEqual({});
+            expect(gridEntry.nodes).toEqual({});
+            expect(gridEntry.timeout).toBe(null);
+
+
             done();
         });
     });
