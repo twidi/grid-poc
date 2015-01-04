@@ -2,53 +2,129 @@
 var _ = require('lodash');
 var React = require('react/addons');  // react + addons
 var cx = React.addons.classSet;
-var stringify = require('json-stable-stringify');
 
 var Actions = require('../Actions.js');
 var Modules = require('../Modules.js');
 var Store = require('../Store.js');
 
+var ModulesCache = require('./ModulesCache.js');
+
+var ModuleHolder = require('./ModuleHolder.jsx')
+var NodesHolderMixin = require('./Mixins/NodesHolder.jsx');
 var NodeMixin = require('./Mixins/Node.jsx');
 
 
 /**
  * Cell component, a cell of a row. Can be a "grid" or a "module"
+ *
+ * This react component has a special behavior when its type is "module": in this
+ * case it will have no react child at all, but they will be attached by
+ * {@link module:Grid.Components.Mixins.NodesHolder NodesHolderMixin},
+ * ie detaching/attaching the child before/after mounting/updating, and the child
+ * will be rendered in its own react root.
+ *
+ * In design mode, the child will be a {@link module:Grid.Components.ModuleHolder ModuleHolder}
+ * component, used as a base to drag the module on the grid. It's separated from
+ * the cell because the cell will be removed in drag mode, and the dragged object
+ * must exists in the dom for a proper drag and drop process.
+ *
+ * In non-design mode, the child will be a module component. It's separated from
+ * the cell to avoid, at all cost, triggering a rendering when the grid is updated,
+ * beacause modules can be heavy (in design mode, it's the module holder that
+ * hold the module, the same way)
+ *
+ * The module holders node, and the modules ones, are managed by the
+ * {@link module:Grid.Components.ModulesCache ModulesCache} module
+ *
  * @namespace
+ *
  * @memberOf module:Grid.Components
+ *
  * @summary The Cell component, a cell of a row
- * @mixes module:Grid.Components.Mixins.NodeMixin
+ *
+ * @mixes module:Grid.Components.Mixins.Node
+ * @mixes module:Grid.Components.Mixins.NodesHolder
  */
 var Cell = {
+
     mixins: [
-        NodeMixin
+        NodeMixin,
+        NodesHolderMixin,
     ],
 
-    statics: {
-        moduleHolderClassName: 'moduleHolder',
-        _modulesHolderCache: {},
+
+    /**
+     * Two types of nodes that can be attached to the current react component
+     * dom node (managed by {@link module:Grid.Components.Mixins.NodesHolder NodesHolderMixin}):
+     * - a module
+     * - a {@link module:Grid.Components.ModuleHolder module holder}
+     *
+     * Only one on them will be attached at a moment. See `getExternalNode` to
+     * see in which conditions.
+     *
+     * @type {Array}
+     */
+    externalNodesClassNames: [
+        ModulesCache.moduleContainerClassName,
+        ModulesCache.holderContainerClassName,
+    ],
+
+
+    /**
+     * Tell {@link module:Grid.Components.Mixins.NodesHolder NodesHolderMixin}
+     * that we only want to handle external nodes if the cell is a module.
+     *
+     * @return {boolean} - `true` if a module, or `false`
+     */
+    canHoldExternalNodes: function() {
+        return this.isModule();
     },
 
     /**
-     * Tell if the cell is a "module" cell
-     * @return {Boolean} - true if a "module" cell
+     * Return a node to be attached by {@link module:Grid.Components.Mixins.NodesHolder NodesHolderMixin}:
+     *
+     * - a {@link module:Grid.Components.ModuleHolder module holder} if we are in design mode
+     * - a module, directly, if we are NOT in design mode
+     *
+     * The nodes are returned by the {@link module:Grid.Components.ModulesCache ModulesCache} module.
+     *
+     * @param  {string} className - The class name of the dom node to return
+     * @return {DomNode} - Either the module dom node, or the holder one.
+     */
+    getExternalNode: function(className) {
+        // will attach module only if not in design mode
+        if (className == ModulesCache.moduleContainerClassName && !this.isInDesignMode()) {
+            return ModulesCache.getModuleComponent(this);
+        }
+
+        // will attach module holder only if in design mode
+        if (className == ModulesCache.holderContainerClassName && this.isInDesignMode()) {
+            return ModulesCache.getHolderComponent(this);
+        }
+    },
+
+    /**
+     * Tell if the cell is a placeholder cell
+     *
+     * @return {Boolean} - `true` if a placeholder cell
      */
     isPlaceholder: function() {
         return this.getType() == 'placeholder';
     },
 
     /**
-     * Tell if the cell is a placeholder cell
+     * Tell if the cell is a "grid" cell (subgrid)
      *
-     * @return {Boolean} - true if a placeholder cell
+     * @return {Boolean} - `true` if a "grid" cell (subgrid)
      */
     isSubGrid: function() {
         return this.getType() == 'grid';
     },
 
     /**
-     * Tell if the cell is a "grid" cell (subgrid)
+     * Tell if the cell is a "module" cell
      *
-     * @return {Boolean} - true if a "grid" cell (subgrid)
+     * @return {Boolean} - `true` if a "module" cell
      */
     isModule: function() {
         return this.getType() == 'module';
@@ -61,7 +137,7 @@ var Cell = {
      */
     renderAsSubGrid: function() {
         var SubGrid = require('./SubGrid.jsx');
-        return <SubGrid node={this.props.node} />
+        return <SubGrid node={this.state.node} />
     },
 
     /**
@@ -74,126 +150,31 @@ var Cell = {
      * - `grid-cell`: in all cases
      * - `grid-cell-placeholder`: if it's a cell placeholder
      * - `grid-cell-module`: if it's a module
+     * - `grid-cell-module-design-node`: if it's a module, in design mode
+     * - `grid-cell-module-design-mode-step-*`: if it's a module, in design mode, in design mode, depending of the current step
      *
      */
     getCellClasses: function() {
-        return classes = cx({
+        var isInDesignMode = this.isInDesignMode();
+        var isModule = this.isModule();
+        var classes = {
             'grid-cell': true,
             'grid-cell-placeholder': this.isPlaceholder(),
-            'grid-cell-module': this.isModule(),
-        });
+            'grid-cell-module': isModule,
+            'grid-cell-module-design-node': (isModule && isInDesignMode),
+        };
+        classes['grid-cell-module-design-mode-step-' + this.getDesignModeStep()] = (isModule && isInDesignMode);
+        return cx(classes);
     },
 
     /**
      * Render the cell as a standalone component: a empty div that, if it's a module, will hold
-     * the real module component (not directly rendered)
+     * the real module component (not directly rendered), via {@link module:Grid.Components.Mixins.NodesHolder NodesHolderMixin}
      */
     renderAsCell: function() {
         return <div className={this.getCellClasses()}/>
     },
 
-    /**
-     * Will return a standalone div holding the module component for the current cell.
-     * This module is rendered and tied to a non-react div, and is cached (based
-     * on its set of attributes), so there is only one
-     * To be displayed the div must be added to the dom node of the cell.
-     *
-     * @return {ReactComponent} - The div holding the rendered react component
-     */
-    getModuleComponent: function() {
-        // it's where the module information are
-        var contentNode = this.props.node.querySelector(':scope > content');
-
-        // get all attributes of the content node, to use as props for the
-        // module component
-        var attributes = _.reduce(
-                            contentNode.attributes,
-                            function(r, a) { r[a.name] = a.value; return r; }, {}
-                        );
-
-        // compute the cache key of the module component by using 
-        var key = stringify(attributes);
-        if (typeof Cell._modulesHolderCache[key] === 'undefined') {
-            // will be something like "Modules.foo"
-            var componentPath = contentNode.getAttribute('component');
-            // Remove the "Modules." part, as they are all hold in the Modules module
-            var modulePath = componentPath.split('.').splice(1).join('/');
-            // create a react *element* for the wanted module, with the content
-            // attritutes as props
-            var element = React.createElement(Modules[modulePath], attributes);
-            // will hold the rendered module component
-            var holder = document.createElement('div');
-            // render the module component once for all
-            var component = React.render(element, holder);
-            holder.className = Cell.moduleHolderClassName;
-            holder.key = key;
-            // and save the rendered module component in the cache
-            Cell._modulesHolderCache[key] = holder;
-        }
-
-        // returs the rendered module component from the cache
-        return Cell._modulesHolderCache[key];
-    },
-
-
-    /**
-     * Will attach the module component for the current cell to its dom node
-     */
-    attachModule: function() {
-        this.module = this.getModuleComponent();
-        this.getDOMNode().appendChild(this.module);
-    },
-
-    /**
-     * Will attach the module component for the current cell from its dom node
-     */
-    detachModule: function() {
-        var domNode = this.getDOMNode();
-        var moduleNode = domNode.querySelector(':scope > .' + Cell.moduleHolderClassName)
-        if (moduleNode) {
-            domNode.removeChild(moduleNode);
-        }
-    },
-
-    /**
-     * If the cell is a module, attach the module component to the cell dom node
-     * when the cell is rendered in the dom for the first time
-     */
-    componentDidMount: function() {
-        if (this.getType() == 'module') {
-            this.attachModule();
-        }
-    },
-
-    /**
-     * If the cell is a module, detach the module component to the cell dom node
-     * when the cell is to be removed from the dom
-     */
-    componentWillUnmount: function() {
-        if (this.getType() == 'module') {
-            this.detachModule();
-        }
-    },
-
-    /**
-     * If the cell is a module, detach the module component to the cell dom node
-     * when the rendering of the cell is to be updated
-     */
-    componentWillUpdate: function() {
-        if (this.getType() == 'module') {
-            this.detachModule();
-        }
-    },
-
-    /**
-     * If the cell is a module, attach the module component to the cell dom node
-     * when the rendering of the cell is updated in the dom
-     */
-    componentDidUpdate: function() {
-        if (this.getType() == 'module') {
-            this.attachModule();
-        }
-    },
 
     /**
      * Render the cell depending on its type

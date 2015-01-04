@@ -11,8 +11,8 @@ var NodeMixin = require('./Mixins/Node.jsx');
  * @namespace
  * @memberOf module:Grid.Components
  * @summary The SubGrid component, inside a cell
- * @mixes module:Grid.Components.Mixins.NodeMixin
- * @mixes module:Grid.Components.Mixins.GridMixin
+ * @mixes module:Grid.Components.Mixins.Node
+ * @mixes module:Grid.Components.Mixins.Grid
  */
 
 var SubGrid = {

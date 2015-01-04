@@ -14,7 +14,7 @@ var NodeMixin = require('./Mixins/Node.jsx');
  * @namespace
  * @memberOf module:Grid.Components
  * @summary The Row component, a row of a grid
- * @mixes module:Grid.Components.Mixins.NodeMixin
+ * @mixes module:Grid.Components.Mixins.Node
  */
 var Row = {
     mixins: [
@@ -27,7 +27,7 @@ var Row = {
      * @return {Boolean} - true if a placeholder
      */
     isPlaceholder: function() {
-        return this.props.node.getAttribute('type') == 'placeholder';
+        return this.state.node.getAttribute('type') == 'placeholder';
     },
 
     /**
@@ -36,7 +36,7 @@ var Row = {
      * @return {array} - An array of XML grid cells
      */
     getCells: function() {
-        return _.toArray(this.props.node.querySelectorAll(':scope > cells'));
+        return _.toArray(this.state.node.querySelectorAll(':scope > cells'));
     },
 
     /**

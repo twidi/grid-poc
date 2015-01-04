@@ -1,10 +1,16 @@
 /** @jsx React.DOM */
 var React = require('react/addons');  // react + addons
 
+var ModuleMixin = require('./Mixins/Module.jsx');
+
 
 var Test1 = {
-    render: function() {
-        return <div>Module.Test1: {this.props.text}</div>
+    mixins: [
+        ModuleMixin,
+    ],
+
+    renderModule: function() {
+        return 'Module.Test1: ' + this.props.text;
     }
 };
 

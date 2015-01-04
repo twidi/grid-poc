@@ -132,6 +132,17 @@ var Store = {
     },
 
     /**
+     * Return the name of the main grid
+     *
+     * @param  {XML} node - The XML node for which we want the grid
+     *
+     * @return {string} - The name of the main grid
+     */
+    getMainGridName: function(node) {
+        return this.getMainGrid(node).getAttribute('name');
+    },
+
+    /**
      * Get the design mode step for a grid from the store by its name.
      *
      * @param  {string} gridName - Name of the grid for which we want the design mode step

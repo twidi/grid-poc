@@ -29,7 +29,7 @@ var Grid = {
      * @return {array} - An array of XML grid rows
      */
     getRows: function() {
-        return _.toArray(this.props.node.querySelectorAll(':scope > content > rows'));
+        return _.toArray(this.state.node.querySelectorAll(':scope > content > rows'));
     },
 
     /**

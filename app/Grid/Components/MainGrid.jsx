@@ -15,8 +15,8 @@ var NodeMixin = require('./Mixins/Node.jsx');
  * @namespace
  * @memberOf module:Grid.Components
  * @summary The MainGrid component
- * @mixes module:Grid.Components.Mixins.NodeMixin
- * @mixes module:Grid.Components.Mixins.GridMixin
+ * @mixes module:Grid.Components.Mixins.Node
+ * @mixes module:Grid.Components.Mixins.Grid
  */
 
 var MainGrid = {
@@ -27,22 +27,26 @@ var MainGrid = {
 
     /**
      * When the component is created, set the gridName in the state based on the
-     * grid from the props
+     * grid from the props, to be able to update it later
      */
     getInitialState: function() {
         return {
+            // we don't have `this.state.node` yet
             gridName: this.props.node.getAttribute('name'),
         };
     },
 
     /**
      * When the component props are updated, set the gridName in the state based
-     * on the grid from the new props
+     * on the grid from the new props, to be able to update it later
      */
     componentWillReceiveProps: function(nextProps) {
-        this.setState({
-            gridName: nextProps.node.getAttribute('name'),
-        });
+        var newName = nextProps.node.getAttribute('name');
+        if (newName != this.state.gridName) {
+            this.setState({
+                gridName: newName,
+            });
+        }
     },
 
     /**
@@ -51,7 +55,14 @@ var MainGrid = {
      */
     updateIfSelf: function (name) {
         if (name != this.state.gridName) { return; }
-        this.forceUpdate();
+
+        var actualGrid = Store.getGrid(this.state.gridName);
+
+        if (actualGrid != this.state.node) {
+            this.setState({node: actualGrid});
+        } else {
+            this.forceUpdate();
+        }
     },
 
     /**
@@ -59,7 +70,7 @@ var MainGrid = {
      * store that impact the component
      */
     componentWillMount: function () {
-        Store.on('grid.designMode.*', this.updateIfSelf)
+        Store.on('grid.designMode.**', this.updateIfSelf)
     },
 
     /**
@@ -67,24 +78,14 @@ var MainGrid = {
      * changes of the store that impact the component
      */
     componentWillUnmount: function () {
-        Store.off('grid.designMode.*', this.updateIfSelf)
-    },
-
-
-    /**
-     * Get the design mode status of this component
-     *
-     * @return {boolean} - True if the grid is in design mode, else False
-     */
-    inDesignMode: function() {
-        return !!this.props.node.getAttribute('hasPlaceholders');
+        Store.off('grid.designMode.**', this.updateIfSelf)
     },
 
     /**
      * Enter or exit the design mode of the grid depending of its current status
      */
     toggleDesignMode: function() {
-        if (this.inDesignMode()) {
+        if (this.isInDesignMode()) {
             Actions.exitDesignMode(this.state.gridName);
         } else {
             Actions.enterDesignMode(this.state.gridName);
@@ -100,12 +101,16 @@ var MainGrid = {
      *
      * - `grid-container`: in all cases
      * - `grid-container-design-mode`: if the grid is in design mode
+     * - `grid-container-design-mode-step-*`: if the grid is in design mode, depending of the current step
      */
     getContainerClasses: function() {
-        return cx({
+        var inDesignMode = this.isInDesignMode();
+        var classes = {
             'grid-container': true,
-            'grid-container-design-mode': this.inDesignMode(),
-        });
+            'grid-container-design-mode': inDesignMode,
+        };
+        classes['grid-container-design-mode-step-' + this.getDesignModeStep()] = inDesignMode;
+        return cx(classes);
     },
 
     /**
@@ -115,7 +120,7 @@ var MainGrid = {
         return <div className={this.getContainerClasses()}>
             <nav className="grid-toolbar">
                 <label>{this.state.gridName}</label>
-                <button onClick={this.toggleDesignMode}>Change design mode</button>
+                <button onClick={this.toggleDesignMode}>{this.isInDesignMode() ? "Exit" : "Enter"} design mode</button>
             </nav>
             {this.renderGrid()}
         </div>;
