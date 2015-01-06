@@ -58,7 +58,7 @@ describe("Grid.Actions", function() {
 
                 // check if the callback were called
                 expect(callbackCalled).toBe(true);
-                expect(addedGridName, 'foo');
+                expect(addedGridName).toEqual('foo');
 
                 // check if we really have the new grid
                 expect(function() {
@@ -109,7 +109,7 @@ describe("Grid.Actions", function() {
 
                 // check if the callback were called
                 expect(callbackCalled).toBe(true);
-                expect(updatedGridName, 'foo');
+                expect(updatedGridName).toEqual('foo');
 
                 // check the new designMode step
                 expect(Store.getDesignModeStep('foo')).toEqual('enabled');
@@ -175,7 +175,7 @@ describe("Grid.Actions", function() {
 
                 // check if the callback were called
                 expect(callbackCalled).toBe(true);
-                expect(updatedGridName, 'foo');
+                expect(updatedGridName).toEqual('foo');
 
                 // check the new designMode step
                 expect(Store.getDesignModeStep('foo')).toEqual('dragging');
@@ -272,7 +272,7 @@ describe("Grid.Actions", function() {
 
                     // check if the callback were called
                     expect(callbackCalled).toBe(true);
-                    expect(updatedGridName, 'foo');
+                    expect(updatedGridName).toEqual('foo');
 
                     // check the new designMode step
                     expect(Store.getDesignModeStep('foo')).toEqual('enabled');
@@ -353,7 +353,7 @@ describe("Grid.Actions", function() {
 
                     // check if the callback were called
                     expect(callbackCalled).toBe(true);
-                    expect(updatedGridName, 'foo');
+                    expect(updatedGridName).toEqual('foo');
 
                     // check the new designMode step
                     expect(Store.getDesignModeStep('foo')).toEqual('prehovering');
@@ -405,7 +405,7 @@ describe("Grid.Actions", function() {
 
                         // check if the callback were called
                         expect(callbackCalled).toBe(true);
-                        expect(updatedGridName, 'foo');
+                        expect(updatedGridName).toEqual('foo');
 
                         expect(Store.getDesignModeStep('foo')).toEqual('hovering');
 
@@ -510,7 +510,7 @@ describe("Grid.Actions", function() {
 
                             // check if the callback were called
                             expect(callbackCalled).toBe(true);
-                            expect(updatedGridName, 'foo');
+                            expect(updatedGridName).toEqual('foo');
 
                             // check the new designMode step
                             expect(Store.getDesignModeStep('foo')).toEqual('dragging');
@@ -629,7 +629,7 @@ describe("Grid.Actions", function() {
 
                             // check if the callback were called
                             expect(callbackCalled).toBe(true);
-                            expect(updatedGridName, 'foo');
+                            expect(updatedGridName).toEqual('foo');
 
                             // check the new designMode step
                             expect(Store.getDesignModeStep('foo')).toEqual('enabled');
@@ -699,7 +699,7 @@ describe("Grid.Actions", function() {
 
                 // check if the callback were called
                 expect(callbackCalled).toBe(true);
-                expect(updatedGridName, 'foo');
+                expect(updatedGridName).toEqual('foo');
 
                 // check the new designMode step
                 expect(Store.getDesignModeStep('foo')).toEqual('disabled');

@@ -50,6 +50,21 @@ var ModulesCache = {
 
 
     /**
+     * Extract attributes from a xml node and return them in an object form
+     *
+     * (transforms [{name: xx, value:yy}, {name: ww, value:zz}] in {xx: yy, ww: zz})
+     *
+     * @param  {XMLNode} xmlNode - The xml node from which we want to extract attributes
+     * @return {object}  - The object with all attributes
+     */
+    _extractAttributes: function(xmlNode) {
+        return _.reduce(
+            xmlNode.attributes,
+            function(r, a) { r[a.name] = a.value; return r; }, {}
+        );
+    },
+
+    /**
      * Will return from the `_cache` entry, all the needed elements to be used
      * by `getModuleComponent` and `getHolderComponent`.
      *
@@ -102,13 +117,9 @@ var ModulesCache = {
 
             // get all attributes of the content node, to use as props for the
             // module component
-            // (transforms [{name: xx, value:yy}, {name: ww, value:zz}] in {xx: yy, ww: zz})
-            attributes = _.reduce(
-                            contentNode.attributes,
-                            function(r, a) { r[a.name] = a.value; return r; }, {}
-                        );
+            attributes = this._extractAttributes(contentNode);
 
-            // compute the cache key of the module component by using 
+            // compute the cache key of the module component by using
             key = stringify(attributes);
         }
 
@@ -201,6 +212,26 @@ var ModulesCache = {
     },
 
     /**
+     * Compute new props for the given react props, comparing to the cache
+     *
+     * @param  {object} cache - The cache entry having the more recent props we want
+     * @param  {object} source - An object of the react component props
+     *
+     * @return {object} - Object having the new props
+     *
+     * @private
+     */
+    _getNewHolderProps: function(cache, props) {
+        var newProps = {};
+        for (var key in props) {
+            if (typeof cache[key] === 'undefined') { continue; }
+            if (props[key] == cache[key]) { continue; }
+            newProps[key] = cache[key];
+        }
+        return newProps;
+    },
+
+    /**
      * Get a module holder component based on a cell or a key.
      *
      * It's really a detached dom node in which is rendered a
@@ -228,6 +259,11 @@ var ModulesCache = {
         var cache = this._getFromCache(cell, key);
 
         if (typeof cache.holderComponent === 'undefined') {
+            // the component does not exist in cache, so we create it
+
+            // update element props if needed
+            var newProps = this._getNewHolderProps(cache, cache.holderElement.props);
+            _.extend(cache.holderElement.props, newProps);
 
             // will hold the rendered module component
             cache.holderParent = document.createElement('div');
@@ -236,20 +272,19 @@ var ModulesCache = {
             // render the module component once for all
             cache.holderComponent = React.render(cache.holderElement, cache.holderParent);
 
-        }
-
-        // if the cache exists, update the props of the holder
-        var component = cache.holderComponent;
-        var newProps = {};
-        for (var key in component.props) {
-            if (typeof cache[key] === 'undefined') { continue; }
-            if (component.props[key] == cache[key]) { continue; }
-            newProps[key] = cache[key];
-        }
-        if (_.size(newProps)) {
-            component.setProps(newProps);
         } else {
-            component.forceUpdate();
+            // if the component exists in cache, update its props
+            var component = cache.holderComponent;
+            var newProps = this._getNewHolderProps(cache, component.props);
+            if (_.size(newProps)) {
+                // we have new props, so we apply them, the component will be re-rendered
+                component.setProps(newProps);
+            } else {
+                // no new props, but ask for a rerender if the the module is not inside the component
+                if (!component.getDOMNode().querySelector(':scope > .' + this.moduleContainerClassName)) {
+                    component.forceUpdate();
+                }
+            }
         }
 
         return cache.holderParent;

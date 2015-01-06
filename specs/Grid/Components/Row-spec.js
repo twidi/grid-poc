@@ -36,21 +36,49 @@ describe("Grid.Components.Row", function() {
         setTimeout(done, 0.01);
     });
 
+    afterEach(function() {
+        componentUtils.unmountAllComponents();
+    });
+
     it("should access its main grid", function() {
         var element = React.createElement(Row, {node: gridRow});
-        var component = TestUtils.renderIntoDocument(element);
+        var component = componentUtils.renderIntoDocument(element);
         expect(component.getGrid()).toBe(testGrid);
     });
 
     it("should get its id", function() {
         var element = React.createElement(Row, {node: gridRow});
-        var component = TestUtils.renderIntoDocument(element);
+        var component = componentUtils.renderIntoDocument(element);
         expect(component.getNodeId()).toBe(gridRow.getAttribute('id'));
+    });
+
+    it("should get the main grid name", function() {
+        var element = React.createElement(Row, {node: gridRow});
+        var component = componentUtils.renderIntoDocument(element);
+        expect(component.getGridName()).toEqual('Test grid');
+    });
+
+    it("should get the design mode step", function() {
+        var element = React.createElement(Row, {node: gridRow});
+        var component = componentUtils.renderIntoDocument(element);
+        expect(component.getDesignModeStep()).toEqual('disabled');
+
+        Store.__private.setDesignModeStep('Test grid', 'enabled');
+        expect(component.getDesignModeStep()).toEqual('enabled');
+    });
+
+    it("should know if it's in design mode", function() {
+        var element = React.createElement(Row, {node: gridRow});
+        var component = componentUtils.renderIntoDocument(element);
+        expect(component.isInDesignMode()).toBe(false);
+
+        Store.__private.setDesignModeStep('Test grid', 'enabled');
+        expect(component.isInDesignMode()).toBe(true);
     });
 
     it("should be able to get its grid cells", function() {
         var element = React.createElement(Row, {node: gridRow});
-        var component = TestUtils.renderIntoDocument(element);
+        var component = componentUtils.renderIntoDocument(element);
         var cells =component.getCells();
         var expectedCells = _.toArray(gridRow.querySelectorAll(':scope > cells'));
         expect(cells).toEqual(expectedCells);
@@ -62,18 +90,18 @@ describe("Grid.Components.Row", function() {
 
         gridRow = testGrid.querySelector('rows[type=placeholder]');
         var element = React.createElement(Row, {node: gridRow});
-        var component = TestUtils.renderIntoDocument(element);
+        var component = componentUtils.renderIntoDocument(element);
         expect(component.isPlaceholder()).toBe(true);
 
         gridRow = testGrid.querySelector('rows:not([type=placeholder])');
         var element = React.createElement(Row, {node: gridRow});
-        var component = TestUtils.renderIntoDocument(element);
+        var component = componentUtils.renderIntoDocument(element);
         expect(component.isPlaceholder()).toBe(false);
     });
 
     it("should render a row", function() {
         var element = React.createElement(Row, {node: gridRow});
-        var component = TestUtils.renderIntoDocument(element);
+        var component = componentUtils.renderIntoDocument(element);
         var domNode = component.getDOMNode();
         expect(domNode.tagName).toEqual('DIV');
         expect(domNode.classList.contains('grid-row')).toBe(true);
@@ -85,7 +113,7 @@ describe("Grid.Components.Row", function() {
         Manipulator.setIds(testGrid);
         var placeholderGridRow = testGrid.querySelector('rows[type=placeholder]');
         var element = React.createElement(Row, {node: placeholderGridRow});
-        var component = TestUtils.renderIntoDocument(element);
+        var component = componentUtils.renderIntoDocument(element);
         var domNode = component.getDOMNode();
         expect(domNode.tagName).toEqual('DIV');
         expect(domNode.classList.contains('grid-row')).toBe(true);
@@ -94,7 +122,7 @@ describe("Grid.Components.Row", function() {
 
     it("should be able to render its cells", function() {
         var element = React.createElement(Row, {node: gridRow});
-        var component = TestUtils.renderIntoDocument(element);
+        var component = componentUtils.renderIntoDocument(element);
         var cells = component.renderCells();
         expect(cells.length).toEqual(2);
         _(cells).forEach(function(cell) {
@@ -104,7 +132,7 @@ describe("Grid.Components.Row", function() {
 
     it("should render sub components", function() {
         var element = React.createElement(Row, {node: gridRow});
-        var component = TestUtils.renderIntoDocument(element);
+        var component = componentUtils.renderIntoDocument(element);
         expect(componentUtils.countRows(component)).toEqual(3);  // including self
         expect(componentUtils.countModules(component)).toEqual(3);
         expect(componentUtils.countSubGrids(component)).toEqual(1);

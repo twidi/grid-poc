@@ -35,34 +35,62 @@ describe("Grid.Components.MainGrid", function() {
         setTimeout(done, 0.01);
     });
 
+    afterEach(function() {
+        componentUtils.unmountAllComponents();
+    });
+
     it("should have a grid", function() {
         var grid = Store.getGrid('Test grid');
         var element = React.createElement(MainGrid, {node: testGrid});
-        var component = TestUtils.renderIntoDocument(element);
+        var component = componentUtils.renderIntoDocument(element);
         expect(component.props.node).toBe(testGrid);
     });
 
     it("should have a grid name", function() {
         var element = React.createElement(MainGrid, {node: testGrid});
-        var component = TestUtils.renderIntoDocument(element);
+        var component = componentUtils.renderIntoDocument(element);
         expect(component.state.gridName).toEqual('Test grid');
     });
 
     it("should access its own grid as the main grid", function() {
         var element = React.createElement(MainGrid, {node: testGrid});
-        var component = TestUtils.renderIntoDocument(element);
+        var component = componentUtils.renderIntoDocument(element);
         expect(component.getGrid()).toBe(testGrid);
     });
 
     it("should get its id", function() {
         var element = React.createElement(MainGrid, {node: testGrid});
-        var component = TestUtils.renderIntoDocument(element);
+        var component = componentUtils.renderIntoDocument(element);
         expect(component.getNodeId()).toBe(testGrid.getAttribute('id'));
+    });
+
+    it("should get the main grid name", function() {
+        var element = React.createElement(MainGrid, {node: testGrid});
+        var component = componentUtils.renderIntoDocument(element);
+        expect(component.getGridName()).toEqual('Test grid');
+    });
+
+    it("should get the design mode step", function() {
+        var element = React.createElement(MainGrid, {node: testGrid});
+        var component = componentUtils.renderIntoDocument(element);
+        expect(component.getDesignModeStep()).toEqual('disabled');
+
+        Store.__private.setDesignModeStep('Test grid', 'enabled');
+        expect(component.getDesignModeStep()).toEqual('enabled');
+    });
+
+    it("should know if it's in design mode", function() {
+        var element = React.createElement(MainGrid, {node: testGrid});
+        var component = componentUtils.renderIntoDocument(element);
+        expect(component.isInDesignMode()).toBe(false);
+
+        Store.__private.setDesignModeStep('Test grid', 'enabled');
+        expect(component.isInDesignMode()).toBe(true);
     });
 
     it("should be able to get its grid rows", function() {
         var element = React.createElement(MainGrid, {node: testGrid});
-        var component = TestUtils.renderIntoDocument(element);
+        var component = componentUtils.renderIntoDocument(element);
         var rows =component.getRows();
         var expectedRows = _.toArray(testGrid.querySelectorAll(':scope > content > rows'));
         expect(rows).toEqual(expectedRows);
@@ -70,7 +98,7 @@ describe("Grid.Components.MainGrid", function() {
 
     it("should render a grid", function() {
         var element = React.createElement(MainGrid, {node: testGrid});
-        var component = TestUtils.renderIntoDocument(element);
+        var component = componentUtils.renderIntoDocument(element);
         var domNode = component.getDOMNode();
         expect(domNode.tagName).toEqual('DIV');
         expect(domNode.classList.contains('grid-container')).toBe(true);
@@ -85,7 +113,7 @@ describe("Grid.Components.MainGrid", function() {
 
     it("should be able to render its rows", function() {
         var element = React.createElement(MainGrid, {node: testGrid});
-        var component = TestUtils.renderIntoDocument(element);
+        var component = componentUtils.renderIntoDocument(element);
         var rows = component.renderRows();
         expect(rows.length).toEqual(2);
         _(rows).forEach(function(row) {
@@ -93,18 +121,9 @@ describe("Grid.Components.MainGrid", function() {
         });
     });
 
-    it("should know if it's in design mode", function() {
-        Manipulator.addPlaceholders(testGrid);
-        Manipulator.setIds(testGrid);
-
-        var element = React.createElement(MainGrid, {node: testGrid});
-        var component = TestUtils.renderIntoDocument(element);
-        expect(component.inDesignMode()).toBe(true);
-    });
-
     it("should render sub components", function() {
         var element = React.createElement(MainGrid, {node: testGrid});
-        var component = TestUtils.renderIntoDocument(element);
+        var component = componentUtils.renderIntoDocument(element);
         expect(componentUtils.countRows(component)).toEqual(4);
         expect(componentUtils.countModules(component)).toEqual(6);
         expect(componentUtils.countSubGrids(component)).toEqual(1);
@@ -112,7 +131,7 @@ describe("Grid.Components.MainGrid", function() {
 
     it("should change when toggling design mode", function(done) {
         var element = React.createElement(MainGrid, {node: testGrid});
-        var component = TestUtils.renderIntoDocument(element);
+        var component = componentUtils.renderIntoDocument(element);
         expect(component.getDOMNode().classList.contains('grid-container-design-mode')).toBe(false);
 
         spyOn(component, 'forceUpdate').and.callThrough();
@@ -125,21 +144,55 @@ describe("Grid.Components.MainGrid", function() {
 
             expect(component.getDOMNode().classList.contains('grid-container-design-mode')).toBe(true);
 
-            // should have placeholders
-            // 4 (before each row) + 2 (end of each grid) + 6 ("module") * 2 (per module)
-            expect(componentUtils.countRowPlaceholders(component)).toEqual(18);
-            // 6 (1 for each rowPH except module) + 7 (before each cell) + 4 (end of each row) + 6 ("module") * 4 (per module)
-            expect(componentUtils.countCellPlaceholders(component)).toEqual(41);
-
-            // should have more components, as modules are wrapped in subgrids
-            // 4 original rows + 18 placeholders + 6 ("module") * 1 (per module)
-            expect(componentUtils.countRows(component)).toEqual(28);
-            // 6 original modules
+            // should still have the same number of sub components
+            expect(componentUtils.countRows(component)).toEqual(4);
             expect(componentUtils.countModules(component)).toEqual(6);
-            // 1 original + 6 ("module") * 1 (per module)
-            expect(componentUtils.countSubGrids(component)).toEqual(7);
+            expect(componentUtils.countSubGrids(component)).toEqual(1);
 
             done();
+        }, 0.01);
+    });
+
+    it("should have placeholders when going in dragging mode", function(done) {
+        var element = React.createElement(MainGrid, {node: testGrid});
+        var component = componentUtils.renderIntoDocument(element);
+        expect(component.getDOMNode().classList.contains('grid-container-design-mode')).toBe(false);
+
+        component.toggleDesignMode();
+
+        // give some time to re-render
+        setTimeout(function() {
+
+            spyOn(component, 'forceUpdate').and.callThrough();
+
+            // simulate going to dragging mode
+            Store.__private.changeDesignModeStep('Test grid', 'dragging');
+            Store.__private.emit('grid.designMode.dragging.start', 'Test grid');
+
+            // give some time to re-render
+            setTimeout(function() {
+                expect(component.forceUpdate).toHaveBeenCalled();
+                expect(component.forceUpdate.calls.count()).toEqual(1);
+
+                expect(component.getDOMNode().classList.contains('grid-container-design-mode')).toBe(true);
+
+                // should have placeholders
+                // 4 (before each row) + 2 (end of each grid) + 6 ("module") * 2 (per module)
+                expect(componentUtils.countRowPlaceholders(component)).toEqual(18);
+                // 6 (1 for each rowPH except module) + 7 (before each cell) + 4 (end of each row) + 6 ("module") * 4 (per module)
+                expect(componentUtils.countCellPlaceholders(component)).toEqual(41);
+
+                // should have more components, as modules are wrapped in subgrids
+                // 4 original rows + 18 placeholders + 6 ("module") * 1 (per module)
+                expect(componentUtils.countRows(component)).toEqual(28);
+                // 6 original modules
+                expect(componentUtils.countModules(component)).toEqual(6);
+                // 1 original + 6 ("module") * 1 (per module)
+                expect(componentUtils.countSubGrids(component)).toEqual(7);
+
+                done();
+            }, 0.01);
+
         }, 0.01);
     });
 });

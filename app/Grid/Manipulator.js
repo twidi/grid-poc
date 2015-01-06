@@ -435,7 +435,7 @@ var Manipulator = {
      * @return {Boolean} - true if the grid has placeholders
      */
     hasPlaceholders: function(grid) {
-        return grid.getAttribute('hasPlaceholders');
+        return !!grid.getAttribute('hasPlaceholders');
     },
 
     /**

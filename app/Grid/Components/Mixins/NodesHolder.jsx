@@ -78,8 +78,10 @@ var NodesHolder = {
 
     /**
      * Will attach some dom nodes to the actual react dom node
+     *
+     * @private
      */
-    attachExternalNodes: function() {
+    _attachExternalNodes: function() {
         if (this.canHoldExternalNodes()) {
             var domNode = this.getDOMNode();
 
@@ -87,57 +89,88 @@ var NodesHolder = {
                 var className = this.externalNodesClassNames[i];
                 var externalNode = this.getExternalNode(className);
                 if (externalNode) {
-                    if (!externalNode.classList.contains(className)) {
-                        externalNode.add(className);
-                    }
-                    domNode.appendChild(externalNode);
+                    this._attachExternalNode(externalNode, className, domNode);
                 }
             }
         }
     },
 
     /**
-     * Will detach some dom nodes from the actual react dom node
+     * Will attach a dom node, forcing the given class name, to the given parent node.
+     *
+     * If the parentNode if not given, `this.getDOMNode()` will be used;
+     *
+     * @param  {DomNode} domNode - The dom node to add
+     * @param  {string} className - The class name to force the dom node to add to have
+     * @param  {DomNode} [parentNode] - The dom node holding the one to add
+     *
+     * @private
      */
-    detachExternalNodes: function() {
+    _attachExternalNode: function(domNode, className, parentNode) {
+        if (!domNode.classList.contains(className)) {
+            domNode.add(className);
+        }
+        (parentNode || this.getDOMNode()).appendChild(domNode);
+    },
+
+    /**
+     * Will detach some dom nodes from the actual react dom node
+     *
+     * @private
+     */
+    _detachExternalNodes: function() {
         if (this.canHoldExternalNodes()) {
             var domNode = this.getDOMNode();
-
             for (var i = this.externalNodesClassNames.length - 1; i >= 0; i--) {
-                var externalNode = domNode.querySelector(':scope > .' + this.externalNodesClassNames[i]);
+                var className = this.externalNodesClassNames[i];
+                var externalNode = domNode.querySelector(':scope > .' + className);
                 if (externalNode) {
-                    domNode.removeChild(externalNode);
+                    this._detachExternalNode(externalNode, domNode);
                 }
             }
         }
+    },
+
+    /**
+     * Will detach a dom node having the given class name, from the given dom node.
+     *
+     * If the domNode if not given, `this.getDOMNode()` will be used;
+     *
+     * @param  {string} domNode - The dom node to remove
+     * @param  {DomNode} [parentNode] - The dom node holding the one to remove
+     *
+     * @private
+     */
+    _detachExternalNode: function(domNode, parentNode) {
+        (parentNode || this.getDOMNode()).removeChild(domNode);
     },
 
     /**
      * Detach external nodes before unmounting the react component
      */
     componentWillUnmount: function() {
-        this.detachExternalNodes();
+        this._detachExternalNodes();
     },
 
     /**
      * Attach external nodes after mounting the react component
      */
     componentDidMount: function() {
-        this.attachExternalNodes();
+        this._attachExternalNodes();
     },
 
     /**
      * Detach external nodes before updating the react component
      */
     componentWillUpdate: function() {
-        this.detachExternalNodes();
+        this._detachExternalNodes();
     },
 
     /**
      * Attach external nodes after updating the react component
      */
     componentDidUpdate: function() {
-        this.attachExternalNodes();
+        this._attachExternalNodes();
     },
 
 };

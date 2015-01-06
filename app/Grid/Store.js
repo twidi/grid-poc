@@ -364,7 +364,7 @@ var Private = {
         }
 
         if (!_.contains(this.designModeValidSteps[currentStep], step)) {
-            throw new this.Exceptions.InvalidDesignModeStep("The given design mode step <" + step + "> is not valid step to go after the current one which is < " + currentStep + ">");
+            throw new this.Exceptions.InvalidDesignModeStep("The given design mode step <" + step + "> is not valid step to go after the current one which is <" + currentStep + ">");
         }
 
         if (!dontManageGrid) {
@@ -434,9 +434,11 @@ var Private = {
      */
     restoreGrid: function(gridName, backupName) {
         var backup = this.grids[gridName].backups[backupName];
-        this.grids[gridName].grid = backup;
-        this.clearBackupedGrid(gridName, backupName);
-        return this.grids[gridName].grid
+        if (backup) {
+            this.grids[gridName].grid = backup;
+            this.clearBackupedGrid(gridName, backupName);
+            return this.grids[gridName].grid
+        }
     },
 
     /**

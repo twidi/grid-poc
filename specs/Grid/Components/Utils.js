@@ -9,6 +9,8 @@ var SubGrid = require('../../../app/Grid/Components/SubGrid.jsx');
 
 
 var componentUtils = {
+    _componentsCache: [],
+
     makeTestGrid: function() {
         var testGrid = Manipulator.XMLStringToXMLGrid(
             '<grid name="Test grid" space="5px" type="mainGrid">' +
@@ -77,13 +79,44 @@ var componentUtils = {
     },
 
     clearModulesCache: function() {
-        var Cell = require('../../../app/Grid/Components/Cell.jsx');
-        Cell._modulesHolderCache = {};
+        var ModulesCache = require('../../../app/Grid/Components/ModulesCache.js');
+        ModulesCache._cache ={};
     },
-}
 
-componentUtils.getTextContent = function(component) {
-    return component.getDOMNode().textContent;
+    getTextContent: function(component) {
+        return component.getDOMNode().textContent;
+    },
+
+    renderIntoDocument: function(element) {
+        var component = TestUtils.renderIntoDocument(element);
+        this._componentsCache.push(component);
+        return component;
+    },
+
+    unmountComponent: function(component){
+        // used in unmountAllComponents, it's a copy of the same function in 
+        // jasmine-react, but we cannot use it as it seems that we have in this
+        // case many React instances that doesn't share mounted components
+        if(component.isMounted()){
+            return React.unmountComponentAtNode(component.getDOMNode().parentNode);
+        } else {
+            return false;
+        }
+    },
+
+    unmountAllComponents: function() {
+        for (var i = this._componentsCache.length - 1; i >= 0; i--) {
+            var component = this._componentsCache[i];
+            try {
+                this.unmountComponent(component);
+            } catch(e) {
+                console.log('Unable to unmount component', component, e);
+            }
+        };
+        this._componentsCache = [];
+    },
+
 };
+
 
 module.exports = componentUtils;

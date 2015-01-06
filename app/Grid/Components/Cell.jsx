@@ -89,9 +89,13 @@ var Cell = {
      * The nodes are returned by the {@link module:Grid.Components.ModulesCache ModulesCache} module.
      *
      * @param  {string} className - The class name of the dom node to return
-     * @return {DomNode} - Either the module dom node, or the holder one.
+     * @return {DomNode} - Either the module dom node, or the holder one, or nothing if it's not a module
      */
     getExternalNode: function(className) {
+        // don't return anything if it's not a module (this shouldn't be necessary because
+        // the check is done in `canHoldExternalNodes` which is called before, but...)
+        if (!this.isModule()) { return; }
+
         // will attach module only if not in design mode
         if (className == ModulesCache.moduleContainerClassName && !this.isInDesignMode()) {
             return ModulesCache.getModuleComponent(this);
@@ -150,8 +154,8 @@ var Cell = {
      * - `grid-cell`: in all cases
      * - `grid-cell-placeholder`: if it's a cell placeholder
      * - `grid-cell-module`: if it's a module
-     * - `grid-cell-module-design-node`: if it's a module, in design mode
-     * - `grid-cell-module-design-mode-step-*`: if it's a module, in design mode, in design mode, depending of the current step
+     * - `grid-cell-module-design-mode`: if it's a module, in design mode
+     * - `grid-cell-module-design-mode-step-*`: if it's a module, depending of the current design mode step (even if disabled)
      *
      */
     getCellClasses: function() {
@@ -161,9 +165,9 @@ var Cell = {
             'grid-cell': true,
             'grid-cell-placeholder': this.isPlaceholder(),
             'grid-cell-module': isModule,
-            'grid-cell-module-design-node': (isModule && isInDesignMode),
+            'grid-cell-module-design-mode': (isModule && isInDesignMode),
         };
-        classes['grid-cell-module-design-mode-step-' + this.getDesignModeStep()] = (isModule && isInDesignMode);
+        classes['grid-cell-module-design-mode-step-' + this.getDesignModeStep()] = isModule;
         return cx(classes);
     },
 
@@ -174,7 +178,6 @@ var Cell = {
     renderAsCell: function() {
         return <div className={this.getCellClasses()}/>
     },
-
 
     /**
      * Render the cell depending on its type
