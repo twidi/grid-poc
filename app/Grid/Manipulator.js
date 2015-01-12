@@ -373,12 +373,17 @@ var Manipulator = {
                         grid.setAttribute('type', nodeType);
                         grid.removeChild(contentNode);
                         grid.appendChild(cells[0].querySelector(':scope > content'));
+                        contentNode = null;
                     }
                     rows = null;
                     cells = null;
                 }
 
-                // we have only one row, but with it only one grid cell, so we replace our row by the cell ones
+                if (!contentNode) {
+                    contentNode = grid.querySelector(':scope > content');
+                }
+
+                // we have only one row, but within it only one grid cell, so we replace our row by the cell ones
                 if (!rows) {
                     rows = contentNode.querySelectorAll(':scope > rows');
                 }
@@ -387,7 +392,6 @@ var Manipulator = {
                         cells = rows[0].querySelectorAll(':scope > cells');
                     }
                     if (cells.length == 1 && cells[0].getAttribute('type') == 'grid') {
-                        var contentNode = grid.querySelector(':scope > content');
                         // add all sub rows to the current grid
                         _(cells[0].querySelectorAll(':scope > content > rows')).forEach(function(cellRow) {
                             contentNode.appendChild(cellRow);
