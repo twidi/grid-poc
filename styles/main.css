@@ -81,6 +81,10 @@ html, body, #app, .grid-container {
         max-width: none;
     }
 
+.module-holder {
+    cursor: move;
+}
+
 .module-holder, .module-container, .module-holder-container {
     flex: 1;
     display: flex;
@@ -89,6 +93,7 @@ html, body, #app, .grid-container {
 .module {
     position: relative;
     flex: 1;
+    background: white;
 }
 
 .module-cover {
@@ -106,3 +111,8 @@ html, body, #app, .grid-container {
         opacity: 0.5;
         background: white;
     }
+
+
+.grid-cell-placeholder-prehovering {
+    background: #ccc;
+}

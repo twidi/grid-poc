@@ -23,12 +23,12 @@
     "vinyl-source-stream": "^0.1.1",
     "watchify": "^2.1.1",
     "gulp-jsdoc": "~0.1.4",
-    "gulp-jsx": "~0.5.0",
     "jaguarjs-jsdoc": "twidi/jaguarjs-jsdoc#twidi-current",
     "requireify": "~0.2.1",
     "gulp-rename": "~1.2.0",
     "gulp-print": "~1.1.0",
-    "jasmine-react": "twidi/jasmine-react"
+    "jasmine-react": "twidi/jasmine-react",
+    "gulp-react": "~2.0.0"
   },
   "dependencies": {
     "flux-react": "twidi/flux-react#no-deep-cloning",

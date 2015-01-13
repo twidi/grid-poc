@@ -155,6 +155,58 @@ var Store = {
     },
 
     /**
+     * Tell if the given grid is in dragging mode (a module cell is currently dragged by the user)
+     *
+     * @param  {string} gridName - Name of the grid for which we want to know if it is in dragging mode
+     *
+     * @return {Boolean} - `true` if the grid is in dragging mode, else `false`
+     */
+    isDragging: function(gridName) {
+        var draggingNode = this.grids[gridName].nodes.dragging;
+        return !!draggingNode;
+    },
+
+    /**
+     * Tell if the given cell is the one currently dragged on the given grid
+     *
+     * @param  {string} gridName - Name of the grid for which we want to do the check
+     * @param  {XML}  cell - The cell we want to check if it's the currently dragged one
+     *
+     * @return {Boolean} - `true` if the cell is the currently dragged one,or `false`
+     */
+    isDraggingCell: function(gridName, cell) {
+        var draggingNode = this.grids[gridName].nodes.dragging;
+        if (!draggingNode) { return false; }
+        return draggingNode.getAttribute('id') == cell.querySelector(':scope > content').getAttribute('id');
+    },
+
+    /**
+     * Tell if the given grid is in hovering mode (a module cell is currently hover a placeholder)
+     *
+     * @param  {string} gridName - Name of the grid for which we want to know if it is in hovering mode
+     *
+     * @return {Boolean} - `true` if the grid is in hovering mode, else `false`
+     */
+    isHovering: function(gridName) {
+        var hoveringNode = this.grids[gridName].nodes.hovering;
+        return !!hoveringNode;
+    },
+
+    /**
+     * Tell if the given placeholder is the one currently hovered on the given grid
+     *
+     * @param  {string} gridName - Name of the grid for which we want to do the check
+     * @param  {XML}  placeholder - The placeholder we want to check if it's the currently hovered one
+     *
+     * @return {Boolean} - `true` if the placeholder is the currently hovered one,or `false`
+     */
+    isHoveringPlaceholder: function(gridName, placeholder) {
+        var hoveringNode = this.grids[gridName].nodes.hovering;
+        if (!hoveringNode) { return false; }
+        return hoveringNode.getAttribute('id') == placeholder.getAttribute('id');
+    },
+
+    /**
      * Remove all the grids
      *
      * @private
@@ -400,14 +452,21 @@ var Private = {
      * @param  {string} gridName - The grid name to check
      * @param  {XML} [node] - The node to check
      *
+     * @returns {XML} - The node, eventually updated to be the actual one in the grid
+     *
      * @throws {module:Grid.Store.Exceptions.GridDoesNotExist} If the given name does not match an existing grid name
      * @throws {module:Grid.Store.Exceptions.Inconsistency} If the given node does not belongs to the grid
      */
     checkConsistency: function(gridName, node) {
         var grid = this.getGrid(gridName);
-        if (node && this.getMainGrid(node) != grid) {
-            throw new this.Exceptions.Inconsistency("The given cell is not contained in the grid <" + gridName + ">");
+        if (node) {
+            try {
+                var actualNode = this.getSameNodeInActualGrid(gridName, node);
+            } catch(e) {
+                throw new this.Exceptions.Inconsistency("The given cell is not contained in the grid <" + gridName + ">");
+            }
         }
+        return node;
     },
 
     /**
@@ -550,26 +609,36 @@ var Private = {
      * {@link module:Grid.Actions.startDragging Grid.Actions.startDragging}
      */
     startDragging: function(gridName, moduleCell) {
-        this.checkConsistency(gridName, moduleCell);
+        try {
+            moduleCell = this.checkConsistency(gridName, moduleCell);
 
-        // make a backup copy of the grid without placeholders
-        this.backupGrid(gridName, 'dragging');
+            // make a backup copy of the grid without placeholders
+            this.backupGrid(gridName, 'dragging');
 
-        // use cell from the new grid
-        moduleCell = this.getSameNodeInActualGrid(gridName, moduleCell);
+            // use cell from the new grid
+            moduleCell = this.getSameNodeInActualGrid(gridName, moduleCell);
 
-        // remove the cell from the grid
-        var contentNode = moduleCell.querySelector(':scope > content');
-        Manipulator.removeContentNode(contentNode);
+            // remove the cell from the grid
+            var contentNode = moduleCell.querySelector(':scope > content');
+            Manipulator.removeContentNode(contentNode);
 
-        // save the cell as the dragging one for this grid
-        this.saveNode(gridName, contentNode, 'dragging');
+            // save the cell as the dragging one for this grid
+            this.saveNode(gridName, contentNode, 'dragging');
 
-        // set design step do "dragging"
-        this.changeDesignModeStep(gridName, 'dragging');
+            // set design step do "dragging"
+            this.changeDesignModeStep(gridName, 'dragging');
 
-        // emit events
-        this.emit('grid.designMode.dragging.start', gridName);
+            // emit events
+            this.emit('grid.designMode.dragging.start', gridName);
+
+        } catch(e) {
+            // we had an error, restore to the previous state
+            this.restoreGrid(gridName, 'dragging');
+            this.clearSavedNode('dragging');
+            if (this.getDesignModeStep(gridName) == 'dragging') {
+                this.changeDesignModeStep(gridName, 'enabled');
+            }
+        }
     },
 
     /**
@@ -605,7 +674,22 @@ var Private = {
      * {@link module:Grid.Actions.startHovering Grid.Actions.startHovering}
      */
     startHovering: function(gridName, placeholderCell) {
-        this.checkConsistency(gridName, placeholderCell);
+        placeholderCell = this.checkConsistency(gridName, placeholderCell);
+
+        var currentHovering = this.getSavedNode(gridName, 'hovering');
+
+        // we already have an hovering cell...
+        if (currentHovering){
+           // do nothing if existing hovering is the same
+            if (currentHovering == placeholderCell) {
+                return;
+            }
+            // if other than the actual, cancel the hovering
+            this.stopHovering(gridName);
+        }
+
+        // stop the existing delay to go in real hovering mode
+        this.clearHoveringTimeout(gridName);
 
         // save the cell as the hovering one for this grid
         this.saveNode(gridName, placeholderCell, 'hovering');
@@ -634,6 +718,11 @@ var Private = {
 
         // stop the delay to go in real hovering mode
         this.clearHoveringTimeout(gridName);
+
+        // stop if we're not in pre-hovering mode (the timeout should have been killed, but...)
+        if (this.getDesignModeStep(gridName) != 'prehovering') {
+            return;
+        }
 
         // make a backup copy of the grid with placeholders
         this.backupGrid(gridName, 'hovering');
@@ -686,19 +775,44 @@ var Private = {
      * It's an action, should be called via
      * {@link module:Grid.Actions.drop Grid.Actions.drop}
      */
-    drop: function(gridName) {
-        this.checkConsistency(gridName);
-
+    drop: function(gridName, placeholderCell) {
         // stop the delay to go in real hovering mode
         this.clearHoveringTimeout(gridName);
 
+        // ensure that placeholderCell belongs to the correct grid
+        if (placeholderCell) {
+            placeholderCell = this.getSameNodeInActualGrid(gridName, placeholderCell);
+        }
+
+        // retrieve the currently hovered placeholder
+        var existingPlaceholderCell = this.getSavedNode(gridName, 'hovering');
+
+        // if there is an existing placeholder, but the one given differs, use the one given
+        if (placeholderCell && placeholderCell != existingPlaceholderCell) {
+            this.startHovering(gridName, placeholderCell);
+        } else {
+            placeholderCell = existingPlaceholderCell;
+            this.checkConsistency(gridName);
+        }
+
+        var designModeStep = this.getDesignModeStep(gridName);
+
+        // cancel drop if we are back in dragging mode (we may have dropped after
+        // exiting a placeholder)
+        if (designModeStep == 'dragging') {
+            this.cancelDragging(gridName);
+            return;
+        }
+
         // attach the dragged module to the placeholder if we were in dragging mode
         // it happens it the drop came before the stay-hoveringTimeout
-        if (this.getDesignModeStep(gridName) == 'prehovering') {
+        if (designModeStep == 'prehovering') {
             var draggedContent = this.getSavedNode(gridName, 'dragging', true);
-            var placeholderCell = this.getSavedNode(gridName, 'hovering');
             Manipulator.moveContentToPlaceholder(draggedContent, placeholderCell);
         }
+
+        // make a copy of the grid to ensure its different to trigger react rendering
+        this.grids[gridName].grid = Manipulator.clone(this.grids[gridName].grid);
 
         // set design step to "enabled"
         this.changeDesignModeStep(gridName, 'enabled');

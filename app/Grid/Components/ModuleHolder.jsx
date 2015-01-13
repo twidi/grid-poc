@@ -1,11 +1,14 @@
 /** @jsx React.DOM */
 var _ = require('lodash');
 var React = require('react/addons');  // react + addons
+var cx = React.addons.classSet;
 var stringify = require('json-stable-stringify');
 
-
 var Actions = require('../Actions.js');
+var Store = require('../Store.js');
+
 var ModulesCache = require('./ModulesCache.js');
+
 var NodesHolderMixin = require('./Mixins/NodesHolder.jsx');
 
 
@@ -66,28 +69,58 @@ var ModuleHolder = {
 
     /**
      * Call {@link module:Grid.Actions.startDragging startDragging} action when the drags of
-     * the dom node starts
+     * the dom node starts.
      *
      * @param  {event} event - The dragStart event
      */
     onDragStart: function(event) {
         Actions.startDragging(this.props.gridName, this.props.gridCell);
+        event.dataTransfer.setData('application/x-grid-module', this.props.gridName);
+        event.dataTransfer.effectAllowed = 'move';
     },
+
+    /**
+     * Called when the dragged module leave this holder. It happens when the
+     * placeholder is replaced by the holder after a certain amount of time
+     * (when designModeStep goes from `prehovering` to `hovering)
+     *
+     * It calls {@link module:Grid.Actions.stopHovering stopHovering}
+     *
+     * @param  {event} event - The dragLeave event
+     */
+    onDragLeave: function(event) {
+        Actions.stopHovering(this.props.gridName);
+    },
+
 
     /**
      * Render the module holder, as a simple div with drag attributes/events, and
      * as a child, a div used as a cover over the module (attached via
-     * {@link module:Grid.Components.Mixins.NodesHolder NodesHolderMixin}) to 
+     * {@link module:Grid.Components.Mixins.NodesHolder NodesHolderMixin}) to
      * drag the dom node without any risk of interacting with the module content
      */
     render: function() {
+        var attrs = {};
+
+        if (Store.getDesignModeStep(this.props.gridName) == 'enabled') {
+            // design mode activated, we can activate dragging
+            attrs.draggable = true;
+            attrs.onDragStart = this.onDragStart;
+
+        } else if (Store.isDraggingCell(this.props.gridName, this.props.gridCell)) {
+
+            // we are in design mode, at least dragging, but as the placeholder
+            // we'll hover will be replaced by the module holder, we'll have to
+            // leave the holder to tell the store that we left the placeholder
+            attrs.onDragLeave = this.onDragLeave;
+        }
+
         return <div className='module-holder'
-                    draggable='true'
-                    onDragStart={this.onDragStart}>
+                    {...attrs}>
                     <div className="module-cover"/>
                 </div>;
     }
 
-}
+};
 
 module.exports = ModuleHolder = React.createClass(ModuleHolder);

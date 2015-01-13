@@ -77,7 +77,7 @@ var Actions = {
      * @param {XML} placeholderCell - The "placeholder" cell where we the module is hover
      *
      * @fires module:Grid.Store#"grid.designMode.hovering.start"
-     * @fires module:Grid.Store#"grid.designMode.hovering.stay" (after a delay)
+     * @fires module:Grid.Store#"grid.designMode.hovering.stay"
      */
     startHovering: function(gridName, placeholderCell) {},
 
@@ -98,10 +98,12 @@ var Actions = {
      * @type {function}
      *
      * @param {string} gridName - The name of the grid for witch we want to start dragging
+     * @param {XML} [placeholderCell] - The "placeholder" cell we want the dragging cell 
+     * to be dropped on. If defined, will replace the one saved in the store.
      *
      * @fires module:Grid.Store#"grid.designMode.drop"
      */
-    drop: function(gridName) {},
+    drop: function(gridName, placeholderCell) {},
 };
 
 module.exports = flux.createActions(_.keys(Actions));

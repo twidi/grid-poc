@@ -6,8 +6,6 @@ var React = require('react/addons');  // react + addons
  * A mixin to be used by components that want to attach an external dom node to
  * their react one.
  *
- * The 
- *
  * Each component using this mixin should provide the two methods below:
  *
  *  - `canHoldExternalNodes`
@@ -82,15 +80,14 @@ var NodesHolder = {
      * @private
      */
     _attachExternalNodes: function() {
-        if (this.canHoldExternalNodes()) {
-            var domNode = this.getDOMNode();
+        if (!this.canHoldExternalNodes()) { return; }
+        var domNode = this.getDOMNode();
 
-            for (var i = 0; i < this.externalNodesClassNames.length; i++) {
-                var className = this.externalNodesClassNames[i];
-                var externalNode = this.getExternalNode(className);
-                if (externalNode) {
-                    this._attachExternalNode(externalNode, className, domNode);
-                }
+        for (var i = 0; i < this.externalNodesClassNames.length; i++) {
+            var className = this.externalNodesClassNames[i];
+            var externalNode = this.getExternalNode(className);
+            if (externalNode) {
+                this._attachExternalNode(externalNode, className, domNode);
             }
         }
     },
@@ -119,17 +116,17 @@ var NodesHolder = {
      * @private
      */
     _detachExternalNodes: function() {
-        if (this.canHoldExternalNodes()) {
-            var domNode = this.getDOMNode();
-            for (var i = this.externalNodesClassNames.length - 1; i >= 0; i--) {
-                var className = this.externalNodesClassNames[i];
-                var externalNode = domNode.querySelector(':scope > .' + className);
-                if (externalNode) {
-                    this._detachExternalNode(externalNode, domNode);
-                }
+        if (!this.canHoldExternalNodes()) { return; }
+        var domNode = this.getDOMNode();
+        for (var i = this.externalNodesClassNames.length - 1; i >= 0; i--) {
+            var className = this.externalNodesClassNames[i];
+            var externalNode = domNode.querySelector(':scope > .' + className);
+            if (externalNode) {
+                this._detachExternalNode(externalNode, domNode);
             }
         }
     },
+
 
     /**
      * Will detach a dom node having the given class name, from the given dom node.

@@ -15,7 +15,7 @@ var glob = require('glob');
 var livereload = require('gulp-livereload');
 var jasminePhantomJs = require('gulp-jasmine2-phantomjs');
 var jsdoc = require('gulp-jsdoc');
-var jsx = require('gulp-jsx');
+var reacttransform = require('gulp-react');
 var requireify = require('requireify');
 var print = require('gulp-print');
 var rename = require('gulp-rename');
@@ -248,7 +248,7 @@ gulp.task('doc', function() {
     };
     gulp.src(["./app/**/*.jsx", "./app/**/*.js"])
         .pipe(gulpif(/\.jsx$/, rename({suffix: '.jsx', extname: '.js'})))
-        .pipe(jsx())
+        .pipe(reacttransform({harmony: true}))
         .pipe(gulpif(/\.jsx\.js$/, gulp.dest('./dist-doc')))
         .pipe(jsdoc(docDir, docTemplate, docInfos));
 });

@@ -4,7 +4,6 @@ var React = require('react/addons');  // react + addons
 var cx = React.addons.classSet;
 
 var Actions = require('../Actions.js');
-var Modules = require('../Modules.js');
 var Store = require('../Store.js');
 
 var ModulesCache = require('./ModulesCache.js');
@@ -12,6 +11,7 @@ var ModulesCache = require('./ModulesCache.js');
 var ModuleHolder = require('./ModuleHolder.jsx')
 var NodesHolderMixin = require('./Mixins/NodesHolder.jsx');
 var NodeMixin = require('./Mixins/Node.jsx');
+var Placeholder = require('./Placeholder.jsx');
 
 
 /**
@@ -145,7 +145,7 @@ var Cell = {
     },
 
     /**
-     * Return the classes to use when rendering the current cell (only if module or placeholder)
+     * Return the classes to use when rendering the current module cell
      *
      * @return {React.addons.classSet}
      *
@@ -158,7 +158,7 @@ var Cell = {
      * - `grid-cell-module-design-mode-step-*`: if it's a module, depending of the current design mode step (even if disabled)
      *
      */
-    getCellClasses: function() {
+    getModuleCellClasses: function() {
         var isInDesignMode = this.isInDesignMode();
         var isModule = this.isModule();
         var classes = {
@@ -175,18 +175,31 @@ var Cell = {
      * Render the cell as a standalone component: a empty div that, if it's a module, will hold
      * the real module component (not directly rendered), via {@link module:Grid.Components.Mixins.NodesHolder NodesHolderMixin}
      */
-    renderAsCell: function() {
-        return <div className={this.getCellClasses()}/>
+    renderAsModule: function() {
+        return <div className={this.getModuleCellClasses()}/>
+    },
+
+    /**
+     * Render the cell as a {@link module:Grid.Components.Placeholder Placeholder component}
+     */
+    renderAsPlaceholder: function() {
+        return <Placeholder node={this.state.node} />;
     },
 
     /**
      * Render the cell depending on its type
      */
     render: function() {
-        if (this.getType() == 'grid') {
-            return this.renderAsSubGrid();
-        } else {
-            return this.renderAsCell();
+        switch(this.getType()) {
+            case 'grid':
+                return this.renderAsSubGrid();
+                break;
+            case 'placeholder':
+                return this.renderAsPlaceholder();
+                break;
+            case 'module':
+                return this.renderAsModule();
+                break;
         }
     }
 
