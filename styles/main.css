@@ -35,6 +35,12 @@ html, body, #app, .grid-container {
     flex: 1;
     position: relative;
 }
+
+    .grid-container-with-placeholders .grid {
+        padding-top: 1px;
+        padding-left: 1px;
+    }
+
     .grid .grid {
         padding: 0;
     }
@@ -49,7 +55,10 @@ html, body, #app, .grid-container {
     .grid .grid .grid-row:last-child {
         margin-bottom: 0;
     }
-    .grid-container-design-mode-step-dragging .grid-row:not(.grid-row-placeholder) {
+    .grid-container-with-placeholders .grid-row {
+        margin-bottom: 1px;
+    }
+    .grid-container-with-placeholders .grid-row:not(.grid-row-placeholder) {
         min-height: 60px;
         min-width: 60px;
         flex: 1 0 60px;
@@ -60,6 +69,9 @@ html, body, #app, .grid-container {
     margin-right: 8px;
     position: relative;
 }
+    .grid-container-with-placeholders .grid-cell {
+        margin-right: 1px;
+    }
 
 .grid-cell-module {
     overflow: auto;
@@ -93,10 +105,11 @@ html, body, #app, .grid-container {
     }
 
 .grid-last-level-with-placeholders {
-    margin-right: 8px;
+    margin-right: 1px;
     min-width: 60px;
     min-height: 60px;
     flex: 1 0 60px;
+    outline: dashed white 1px;
 }
 
     .grid-last-level-with-placeholders > .grid-row {
@@ -114,11 +127,11 @@ html, body, #app, .grid-container {
     }
         .grid-last-level-with-placeholders > .grid-row-placeholder:first-child {
             top: 0;
-            left: 20px;
+            left: 21px;
         }
         .grid-last-level-with-placeholders > .grid-row-placeholder:last-child {
             bottom: 0;
-            right: 20px;
+            right: 21px;
         }
         .grid-last-level-with-placeholders > .grid-row:not(.grid-row-placeholder) {
             position: relative;
@@ -131,11 +144,11 @@ html, body, #app, .grid-container {
             }
             .grid-last-level-with-placeholders > .grid-row:not(.grid-row-placeholder) > .grid-cell-placeholder:first-child {
                 left: 0;
-                bottom: 20px;
+                bottom: 21px;
             }
             .grid-last-level-with-placeholders > .grid-row:not(.grid-row-placeholder) > .grid-cell-placeholder:last-child {
                 right: 0;
-                top: 20px;
+                top: 21px;
             }
 
 
