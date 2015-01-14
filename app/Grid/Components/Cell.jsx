@@ -154,20 +154,14 @@ var Cell = {
      * - `grid-cell`: in all cases
      * - `grid-cell-placeholder`: if it's a cell placeholder
      * - `grid-cell-module`: if it's a module
-     * - `grid-cell-module-design-mode`: if it's a module, in design mode
-     * - `grid-cell-module-design-mode-step-*`: if it's a module, depending of the current design mode step (even if disabled)
      *
      */
     getModuleCellClasses: function() {
-        var isInDesignMode = this.isInDesignMode();
-        var isModule = this.isModule();
         var classes = {
             'grid-cell': true,
             'grid-cell-placeholder': this.isPlaceholder(),
-            'grid-cell-module': isModule,
-            'grid-cell-module-design-mode': (isModule && isInDesignMode),
+            'grid-cell-module': this.isModule(),
         };
-        classes['grid-cell-module-design-mode-step-' + this.getDesignModeStep()] = isModule;
         return cx(classes);
     },
 

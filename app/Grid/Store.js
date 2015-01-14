@@ -207,6 +207,29 @@ var Store = {
     },
 
     /**
+     * Tell if the given node contains a subgrid.
+     *
+     * @param  {XML} node - The XML node to check for sub grids
+     *
+     * @return {Boolean} - `true` if the node contains at least one subgrid, or `false`
+     */
+    containsSubGrid: function(node) {
+        return !!node.querySelector('cells[type=grid]');
+    },
+
+    /**
+     * Tell if the grid has placeholders
+     *
+     * @param  {string} gridName - Name of the grid for which we want to know if it has placeholders
+     *
+     * @return {Boolean} - `true` if the grid has placeholders, else `false`
+     */
+    hasPlaceholders: function(gridName) {
+        var grid = this.getGrid(gridName);
+        return Manipulator.hasPlaceholders(grid);
+    },
+
+    /**
      * Remove all the grids
      *
      * @private

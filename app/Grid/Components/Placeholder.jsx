@@ -149,17 +149,14 @@ var Placeholder = {
      * - `grid-cell`: in all cases
      * - `grid-cell-placeholder`: in all cases
      * - `grid-cell-placeholder-prehovering`: if in "prehovering" mode, and it's the hovered placeholder
-     * - `grid-cell-placeholder-design-mode-step-*`: depending of the current design mode step
      *
      */
     getClasses: function() {
-        var designModeStep = this.getDesignModeStep();
         var classes = {
             'grid-cell': true,
             'grid-cell-placeholder': true,
         };
-        classes['grid-cell-placeholder-prehovering'] = (designModeStep == 'prehovering' && Store.isHoveringPlaceholder(this.getGridName(), this.state.node));
-        classes['grid-cell-placeholder-design-mode-step-' + designModeStep] = true;
+        classes['grid-cell-placeholder-prehovering'] = (this.getDesignModeStep() == 'prehovering' && Store.isHoveringPlaceholder(this.getGridName(), this.state.node));
         return cx(classes);
     },
 

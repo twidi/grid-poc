@@ -33,6 +33,7 @@ html, body, #app, .grid-container {
     display: flex;
     flex-direction: column;
     flex: 1;
+    position: relative;
 }
     .grid .grid {
         padding: 0;
@@ -47,6 +48,11 @@ html, body, #app, .grid-container {
 }
     .grid .grid .grid-row:last-child {
         margin-bottom: 0;
+    }
+    .grid-container-design-mode-step-dragging .grid-row:not(.grid-row-placeholder) {
+        min-height: 60px;
+        min-width: 60px;
+        flex: 1 0 60px;
     }
 
 .grid-cell {
@@ -70,9 +76,7 @@ html, body, #app, .grid-container {
 }
 .grid-cell-placeholder {
     padding: 0;
-    border: solid #f0f0f0 1px;
-    background: #f3f3f3;
-    transition: border-color 0.35s;
+    background: rgba(0, 0, 0, 0.1);
     width: 20px;
     flex: none;
 }
@@ -80,6 +84,57 @@ html, body, #app, .grid-container {
         flex: 1;
         max-width: none;
     }
+
+    .grid-cell-placeholder-prehovering {
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+.grid-last-level-with-placeholders {
+    margin-right: 8px;
+    min-width: 60px;
+    min-height: 60px;
+    flex: 1 0 60px;
+}
+
+    .grid-last-level-with-placeholders > .grid-row {
+        margin: 0;
+    }
+    .grid-last-level-with-placeholders .grid-cell {
+        margin: 0;
+    }
+
+    .grid-last-level-with-placeholders > .grid-row-placeholder {
+        position: absolute;
+        left: 0;
+        right: 0;
+        z-index: 2;
+    }
+        .grid-last-level-with-placeholders > .grid-row-placeholder:first-child {
+            top: 0;
+            left: 20px;
+        }
+        .grid-last-level-with-placeholders > .grid-row-placeholder:last-child {
+            bottom: 0;
+            right: 20px;
+        }
+        .grid-last-level-with-placeholders > .grid-row:not(.grid-row-placeholder) {
+            position: relative;
+        }
+            .grid-last-level-with-placeholders > .grid-row:not(.grid-row-placeholder) > .grid-cell-placeholder {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                z-index: 2;
+            }
+            .grid-last-level-with-placeholders > .grid-row:not(.grid-row-placeholder) > .grid-cell-placeholder:first-child {
+                left: 0;
+                bottom: 20px;
+            }
+            .grid-last-level-with-placeholders > .grid-row:not(.grid-row-placeholder) > .grid-cell-placeholder:last-child {
+                right: 0;
+                top: 20px;
+            }
+
 
 .module-holder {
     cursor: move;
@@ -110,9 +165,6 @@ html, body, #app, .grid-container {
         z-index: 1000;
         opacity: 0.5;
         background: white;
+        z-index: 1;
     }
 
-
-.grid-cell-placeholder-prehovering {
-    background: #ccc;
-}

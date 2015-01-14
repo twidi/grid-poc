@@ -52,14 +52,17 @@ var Grid = {
      *
      * One or more of these classes:
      *
-     * - **grid**: in all cases
-     * - **grid-main**: if it's the main grid
+     * - `grid`: in all cases
+     * - `grid-main`: if it's the main grid
+     * - `grid-last-level-with-placeholders`: if the grid does not contain any sub grid, and we have placeholders
      */
     getGridClasses: function() {
-        return cx({
+        var classes = {
             'grid': true,
             'grid-main': this.isMainGrid(),
-        });
+            'grid-last-level-with-placeholders': !Store.containsSubGrid(this.state.node) && Store.hasPlaceholders(this.getGridName()),
+        };
+        return cx(classes);
     },
 
     /**
