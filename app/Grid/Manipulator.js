@@ -484,6 +484,12 @@ var Manipulator = {
             throw new this.Exceptions.InvalidType("Cannot add rows placeholders in node of type <" + nodeType + ">. Should be <grid> or <mainGrid>");
         }
 
+        if (!dontWrapModules) {
+            // if we are on the maingrid and we have only one module inside, don't add placeholders
+            // inside the module as we already have ones around it
+            dontWrapModules = grid.getAttribute('type') == 'mainGrid' && grid.querySelectorAll('cells[type=module]').length <= 1;
+        }
+
         var contentNode = grid.querySelector(':scope > content');
         // add a row before each one in the list
         _(contentNode.querySelectorAll(':scope > rows:not([type=placeholder])')).forEach(function(row) {
@@ -512,8 +518,18 @@ var Manipulator = {
      */
     _addCellsPlaceholders: function(row, dontWrapModules) {
         // add a cell before each one in the list
-        _(row.querySelectorAll(':scope > cells:not([type=placeholder])')).forEach(function(cell) {
-            Manipulator.addCell(row, 'placeholder', cell);
+        var cells = row.querySelectorAll(':scope > cells:not([type=placeholder])');
+
+        // If there only one module cell in this row, we won't add placeholderrs on the left and the
+        // right, because we'll already have one on the module.
+        // We do not apply this rule for a row that was only created to add placeholders around a module
+        // (ie if dontWrapModules is true ), to keep placeholders on all sides of the module
+        var onlyOneModuleCell = cells.length == 1 && cells[0].getAttribute('type') == 'module' && !dontWrapModules;
+
+        _(cells).forEach(function(cell) {
+            if (!onlyOneModuleCell) {
+                Manipulator.addCell(row, 'placeholder', cell);
+            }
             if (!dontWrapModules) {
                 var type = cell.getAttribute('type');
                 if (type == 'module') {
@@ -522,8 +538,11 @@ var Manipulator = {
                 Manipulator._addRowsPlaceholders(cell, type == 'module');
             }
         });
+
         // and one at the end
-        Manipulator.addCell(row, 'placeholder');
+        if (!onlyOneModuleCell) {
+            Manipulator.addCell(row, 'placeholder');
+        }
     },
 
     /**
@@ -606,6 +625,17 @@ var Manipulator = {
             // continue with the parentNode
             node = node.parentNode;
         };
+    },
+
+    /**
+     * Tell if the given node contains a subgrid.
+     *
+     * @param  {XML} node - The XML node to check for sub grids
+     *
+     * @return {Boolean} - `true` if the node contains at least one subgrid, or `false`
+     */
+    containsSubGrid: function(node) {
+        return !!node.querySelector('cells[type=grid]');
     },
 
     /**

@@ -214,7 +214,7 @@ var Store = {
      * @return {Boolean} - `true` if the node contains at least one subgrid, or `false`
      */
     containsSubGrid: function(node) {
-        return !!node.querySelector('cells[type=grid]');
+        return Manipulator.containsSubGrid(node);
     },
 
     /**
