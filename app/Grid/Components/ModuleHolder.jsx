@@ -89,8 +89,14 @@ var ModuleHolder = {
      * @param  {event} event - The dragLeave event
      */
     onDragLeave: function(event) {
-        Actions.stopHovering(this.props.gridName);
+        // in case of fake drop, the dragleave event may occur just before, so w'ill wait a little
+        setTimeout(function() {
+            if (Store.getDesignModeStep(this.props.gridName) == 'hovering') {
+                Actions.stopHovering(this.props.gridName);
+            }
+        }.bind(this), 200);
     },
+
 
 
     /**
