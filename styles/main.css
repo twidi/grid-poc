@@ -46,6 +46,10 @@ html, body, #app, .grid-container {
     }
 
 
+.grid-container-with-placeholders .grid-main {
+    background: white;
+}
+
 .grid-row {
     display: flex;
     flex-direction: row;
@@ -91,17 +95,23 @@ html, body, #app, .grid-container {
 }
 .grid-cell-placeholder {
     padding: 0;
-    background: rgba(0, 0, 0, 0.1);
+    background: #009688;
+    opacity: 0.3;
     width: 20px;
     flex: none;
 }
+
     .grid-cell-placeholder:first-child:last-child {
         flex: 1;
         max-width: none;
     }
 
+    .grid-cell-placeholder-surround {
+        background: #8bc34a;
+    }
+
     .grid-cell-placeholder-prehovering {
-        background: rgba(0, 0, 0, 0.2);
+        opacity: 0.5;
     }
 
 .grid-last-level-with-placeholders {

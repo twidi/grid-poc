@@ -178,33 +178,31 @@ var Manipulator = {
     },
 
     /**
-     * Convert a grid of type "module" in a grid of type "grid", which will have
-     * one row, and inside this row, a cell with the content of the original cell.
+     * Surround a cell, of any type, by a grid which will have one row, and
+     * inside this row, a cell with the content of the original cell.
      *
-     * @param  {XML} node The node we want to convert
+     * The given cell is transformed in a one of type "grid", and its content
+     * will be moved in the inside cell
+     *
+     * @param  {XML} cell The cell we want to convert
      *
      * @return {} - Returns nothing
-     *
-     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the type of the given "node" is not "module"
      */
-    convertModuleCellToGridCell: function(node) {
-        var type = node.getAttribute('type');
-        if (type != 'module') {
-            throw new this.Exceptions.InvalidType("Cannot convert cell of type <" + type + ">into a grid.. Should be <module>");
-        }
+    surroundCellWithGrid: function(cell) {
+        var type = cell.getAttribute('type');
 
-        var contentNode = node.querySelector(':scope > content');
+        var contentNode = cell.querySelector(':scope > content');
 
-        // remove the node from its parent to move it into the future new cell
-        node.removeChild(contentNode);
-        // transform the current node into a grid one
-        node.setAttribute('type', 'grid');
-        var newContentNode = node.ownerDocument.createElement('content');
-        node.appendChild(newContentNode);
-        // add a row to hold the cell with old node data
-        var cellRow = this.addRow(node);
-        // add the cell to hold the old node data
-        var cell = this.addCell(cellRow, type, null, contentNode);
+        // remove the cell content from the cell to move it into the future new cell
+        cell.removeChild(contentNode);
+        // transform the current cell into a grid one
+        cell.setAttribute('type', 'grid');
+        var newContentNode = cell.ownerDocument.createElement('content');
+        cell.appendChild(newContentNode);
+        // add a row to hold the old cell content
+        var cellRow = this.addRow(cell);
+        // add the cell to hold the old cell content
+        this.addCell(cellRow, type, null, contentNode);
     },
 
     /**
@@ -227,7 +225,7 @@ var Manipulator = {
             if (beforeRow) {
                 throw new this.Exceptions.Inconsistency("Cannot insert before a row if there is no row");
             }
-            this.convertModuleCellToGridCell(node);
+            this.surroundCellWithGrid(node);
         }
 
         // we insert the row in the content node
@@ -461,7 +459,12 @@ var Manipulator = {
         if (this.hasPlaceholders(grid)) {
             throw new this.Exceptions.InvalidState("Cannot add placeholders on a grid which already have them");
         }
-        this._addRowsPlaceholders(grid);
+
+        // count the number of modules. If at max 1, we won't add placeholders on modules
+        var atMaxOneModule = grid.querySelectorAll('cells[type=module]').length <= 1
+
+        this._addRowsPlaceholders(grid, false, atMaxOneModule);
+
         grid.setAttribute('hasPlaceholders', true);
     },
 
@@ -478,30 +481,25 @@ var Manipulator = {
      *
      * @private
      */
-    _addRowsPlaceholders: function(grid, dontWrapModules) {
+    _addRowsPlaceholders: function(grid, surround, noModulePlaceholders) {
         var nodeType = grid.getAttribute('type');
         if (!this.reGrid.test(nodeType)) {
             throw new this.Exceptions.InvalidType("Cannot add rows placeholders in node of type <" + nodeType + ">. Should be <grid> or <mainGrid>");
         }
 
-        if (!dontWrapModules) {
-            // if we are on the maingrid and we have only one module inside, don't add placeholders
-            // inside the module as we already have ones around it
-            dontWrapModules = grid.getAttribute('type') == 'mainGrid' && grid.querySelectorAll('cells[type=module]').length <= 1;
-        }
-
         var contentNode = grid.querySelector(':scope > content');
-        // add a row before each one in the list
         _(contentNode.querySelectorAll(':scope > rows:not([type=placeholder])')).forEach(function(row) {
+            // add a row before each one in the list
             var placeholder = Manipulator.addRow(grid, row);
             placeholder.setAttribute('type', 'placeholder');
-            Manipulator._addCellsPlaceholders(placeholder);
-            Manipulator._addCellsPlaceholders(row, dontWrapModules);
+            Manipulator._addCellsPlaceholders(placeholder, surround);
+            // and add placeholders for cell in the row
+            Manipulator._addCellsPlaceholders(row, surround, noModulePlaceholders);
         });
-        // add a row at the end
+        // add add a row placeholder at the end
         var placeholder = Manipulator.addRow(grid);
         placeholder.setAttribute('type', 'placeholder');
-        Manipulator._addCellsPlaceholders(placeholder);
+        Manipulator._addCellsPlaceholders(placeholder, surround);
     },
 
     /**
@@ -516,32 +514,55 @@ var Manipulator = {
      *
     * @private
      */
-    _addCellsPlaceholders: function(row, dontWrapModules) {
-        // add a cell before each one in the list
+    _addCellsPlaceholders: function(row, surround, noModulePlaceholders) {
+        // check if the cell has a grid around it 
+        var surrounded = row.parentNode.parentNode.getAttribute('surround');
+
         var cells = row.querySelectorAll(':scope > cells:not([type=placeholder])');
 
-        // If there only one module cell in this row, we won't add placeholderrs on the left and the
-        // right, because we'll already have one on the module.
-        // We do not apply this rule for a row that was only created to add placeholders around a module
-        // (ie if dontWrapModules is true ), to keep placeholders on all sides of the module
-        var onlyOneModuleCell = cells.length == 1 && cells[0].getAttribute('type') == 'module' && !dontWrapModules;
+        /*
+        If there only one module cell in this row, we won't add placeholderrs on the left and the
+        right, because we'll already have ones on the module.
+        We only apply this rule if the module was not just surrounded by a grid, to apply
+        it to the surrounded grid that will be created to surround our module
 
+        We do not apply this rule for a row that was only created to add placeholders around a module
+        (ie if surrounded is true ), to keep placeholders on all sides of the module
+
+        We also don't apply this rule if we're asked not to add placeholders on modules, to keep
+        placeholders around
+        */
+        var onlyOneModuleCell = cells.length == 1
+                             && cells[0].getAttribute('type') == 'module'
+                             && !surrounded
+                             && !noModulePlaceholders;
+
+        // loop on each cell to add a placeholder before, and inside if it's a grid
         _(cells).forEach(function(cell) {
+            var placeholder;
+            var cellType = cell.getAttribute('type');
+
+            // add a cell before each one in the list
             if (!onlyOneModuleCell) {
-                Manipulator.addCell(row, 'placeholder', cell);
+                var placeholder = Manipulator.addCell(row, 'placeholder', cell);
+                if (surround) { placeholder.setAttribute('surround', 1); }
             }
-            if (!dontWrapModules) {
-                var type = cell.getAttribute('type');
-                if (type == 'module') {
-                    Manipulator.convertModuleCellToGridCell(cell);
-                }
-                Manipulator._addRowsPlaceholders(cell, type == 'module');
+
+            var newSurround = false;
+            if (!surrounded && !(noModulePlaceholders && cell.getAttribute('type') == 'module')) {
+                Manipulator.surroundCellWithGrid(cell);  // will change the cell type
+                cell.setAttribute('surround', 1);
+                newSurround = true;
+            }
+            if (cell.getAttribute('type') == 'grid') {
+                Manipulator._addRowsPlaceholders(cell, newSurround, noModulePlaceholders);
             }
         });
 
-        // and one at the end
+        // and add a placeholder at the end
         if (!onlyOneModuleCell) {
-            Manipulator.addCell(row, 'placeholder');
+            var placeholder = Manipulator.addCell(row, 'placeholder');
+            if (surround) { placeholder.setAttribute('surround', 1); }
         }
     },
 
@@ -583,6 +604,11 @@ var Manipulator = {
         // clean all module cells
         _(grid.querySelectorAll('cells[type=grid]')).forEach(function(cell) {
             Manipulator.cleanGrid(cell);
+        });
+
+        // remove all 'surround' attributes
+        _(grid.querySelectorAll('cell[surround]')).forEach(function(cell) {
+            cell.removeAttribute('surround');
         });
 
         grid.removeAttribute('hasPlaceholders');

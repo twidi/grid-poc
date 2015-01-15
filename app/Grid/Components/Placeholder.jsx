@@ -148,6 +148,7 @@ var Placeholder = {
      *
      * - `grid-cell`: in all cases
      * - `grid-cell-placeholder`: in all cases
+     * - `grid-cell-placeholder-surround`: if the node as the `surround` attribute (placeholder that will use half it's grid content for the drag/drop module)
      * - `grid-cell-placeholder-prehovering`: if in "prehovering" mode, and it's the hovered placeholder
      *
      */
@@ -155,6 +156,7 @@ var Placeholder = {
         var classes = {
             'grid-cell': true,
             'grid-cell-placeholder': true,
+            'grid-cell-placeholder-surround': this.state.node.hasAttribute('surround'),
         };
         classes['grid-cell-placeholder-prehovering'] = (this.getDesignModeStep() == 'prehovering' && Store.isHoveringPlaceholder(this.getGridName(), this.state.node));
         return cx(classes);
