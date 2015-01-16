@@ -63,9 +63,9 @@ html, body, #app, .grid-container {
         margin-bottom: 1px;
     }
     .grid-container-with-placeholders .grid-row:not(.grid-row-placeholder) {
-        min-height: 60px;
-        min-width: 60px;
-        flex: 1 0 60px;
+        min-height: 35px;
+        min-width: 35px;
+        flex: 1 0 35px;
     }
 
 .grid-cell {
@@ -93,14 +93,14 @@ html, body, #app, .grid-container {
     }
 
 .grid-row-placeholder {
-    height: 20px;
+    height: 15px;
     flex: none;
 }
 .grid-cell-placeholder {
     padding: 0;
     background: #009688;
     opacity: 0.3;
-    width: 20px;
+    width: 15px;
     flex: none;
 }
 
@@ -119,9 +119,9 @@ html, body, #app, .grid-container {
 
 .grid-last-level-with-placeholders {
     margin-right: 1px;
-    min-width: 60px;
-    min-height: 60px;
-    flex: 1 0 60px;
+    min-width: 35px;
+    min-height: 35px;
+    flex: 1 0 35px;
     outline: dashed white 1px;
 }
 
@@ -140,11 +140,11 @@ html, body, #app, .grid-container {
     }
         .grid-last-level-with-placeholders > .grid-row-placeholder:first-child {
             top: 0;
-            left: 21px;
+            left: 16px;
         }
         .grid-last-level-with-placeholders > .grid-row-placeholder:last-child {
             bottom: 0;
-            right: 21px;
+            right: 16px;
         }
         .grid-last-level-with-placeholders > .grid-row:not(.grid-row-placeholder) {
             position: relative;
@@ -157,11 +157,11 @@ html, body, #app, .grid-container {
             }
             .grid-last-level-with-placeholders > .grid-row:not(.grid-row-placeholder) > .grid-cell-placeholder:first-child {
                 left: 0;
-                bottom: 21px;
+                bottom: 16px;
             }
             .grid-last-level-with-placeholders > .grid-row:not(.grid-row-placeholder) > .grid-cell-placeholder:last-child {
                 right: 0;
-                top: 21px;
+                top: 16px;
             }
 
 
