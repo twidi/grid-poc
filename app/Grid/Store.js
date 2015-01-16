@@ -699,6 +699,8 @@ var Private = {
     startHovering: function(gridName, placeholderCell) {
         placeholderCell = this.checkConsistency(gridName, placeholderCell);
 
+        if (!placeholderCell) { return; }
+
         var currentHovering = this.getSavedNode(gridName, 'hovering');
 
         // we already have an hovering cell...

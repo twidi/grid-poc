@@ -132,7 +132,7 @@ describe("Grid.Manipulator", function() {
         // transform a non-grid node (we have to create a cell for that)
         grid = Manipulator.createBaseGrid('foo', 5);
         row = Manipulator.addRow(grid);
-        var cell = Manipulator.addCell(row, 'module');
+        var cell = Manipulator.addCell(row, null, 'module');
         cell.setAttribute('foo', 'bar');
         cell.querySelector(':scope > content').setAttribute('bar', 'baz');
         var expected =
@@ -184,7 +184,7 @@ describe("Grid.Manipulator", function() {
         expect(grid).toEqualXML(expected);
 
         // add a module cell and add a row asking to set it before another
-        var cell = Manipulator.addCell(row1, 'module');
+        var cell = Manipulator.addCell(row1, null, 'module');
 
         // this should fail
         expect(function() {
@@ -228,7 +228,7 @@ describe("Grid.Manipulator", function() {
         var row = Manipulator.addRow(grid);
 
         // with an empty cells list
-        Manipulator.addCell(row, 'grid');
+        Manipulator.addCell(row, null, 'grid');
         var expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
@@ -242,7 +242,7 @@ describe("Grid.Manipulator", function() {
         expect(grid).toEqualXML(expected);
 
         // with a cells list with one cell
-        var cell = Manipulator.addCell(row, 'grid');
+        var cell = Manipulator.addCell(row, null, 'grid');
         var expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
@@ -277,7 +277,7 @@ describe("Grid.Manipulator", function() {
 
         // shouldn't be able to add cell with an invalid type
         expect(function() {
-            Manipulator.addCell(row, 'foo')
+            Manipulator.addCell(row, null, 'foo')
         }).toThrowError(Manipulator.Exceptions.InvalidType, "Cannot add cell of type <foo>. Should be <grid> or <module>");
 
     });
@@ -285,11 +285,11 @@ describe("Grid.Manipulator", function() {
     it("should add a cell before another one", function() {
         var grid = Manipulator.createBaseGrid('foo', 5);
         var row = Manipulator.addRow(grid);
-        var cell1 = Manipulator.addCell(row, 'module');
+        var cell1 = Manipulator.addCell(row, null, 'module');
         cell1.setAttribute('created', 'first');
 
         // add a cell before the first one
-        var cell2 = Manipulator.addCell(row, 'module', cell1);
+        var cell2 = Manipulator.addCell(row, cell1, 'module');
         cell2.setAttribute('inserted', 'before');
 
         var expected =
@@ -305,16 +305,16 @@ describe("Grid.Manipulator", function() {
 
         // add a new sub level of cells to try to insert cell before one at another level
         var subRow = Manipulator.addRow(cell1);
-        var subCell1 = Manipulator.addCell(subRow, 'module');
+        var subCell1 = Manipulator.addCell(subRow, null, 'module');
         subCell1.setAttribute('created', 'first (sub-cell)');
 
         // this should fail
         expect(function() {
-            Manipulator.addCell(subRow, 'module', cell2);
+            Manipulator.addCell(subRow, cell2, 'module');
         }).toThrowError(Manipulator.Exceptions.Inconsistency, "The 'beforeCell' must be a child of 'row'");
 
         // now a working test but at a sublevel, to be sure
-        var subCell2 = Manipulator.addCell(subRow, 'module', subCell1);
+        var subCell2 = Manipulator.addCell(subRow, subCell1, 'module');
         subCell2.setAttribute('inserted', 'before (sub-cell)');
 
         var expected =
@@ -343,20 +343,20 @@ describe("Grid.Manipulator", function() {
     it("should create a full grid", function() {
         var grid = Manipulator.createBaseGrid('foo', 5);
         var row1 = Manipulator.addRow(grid);
-            var cell1 = Manipulator.addCell(row1, 'grid');
+            var cell1 = Manipulator.addCell(row1, null, 'grid');
                 var row = Manipulator.addRow(cell1);
-                    var cell2 = Manipulator.addCell(row, 'module');
+                    var cell2 = Manipulator.addCell(row, null, 'module');
                     cell2.querySelector(':scope > content').setAttribute('path', 'path.to.module1');
-                    var cell3 = Manipulator.addCell(row, 'module');
+                    var cell3 = Manipulator.addCell(row, null, 'module');
                     cell3.querySelector(':scope > content').setAttribute('path', 'path.to.module2');
                 var row3 = Manipulator.addRow(cell1);
-                    var cell4 = Manipulator.addCell(row3, 'module');
+                    var cell4 = Manipulator.addCell(row3, null, 'module');
                     cell4.querySelector(':scope > content').setAttribute('path', 'path.to.module3');
-                    var cell5 = Manipulator.addCell(row3, 'grid');
+                    var cell5 = Manipulator.addCell(row3, null, 'grid');
                         var row4 = Manipulator.addRow(cell5);
-                            var cell6 = Manipulator.addCell(row4, 'module')
+                            var cell6 = Manipulator.addCell(row4, null, 'module')
                             cell6.querySelector(':scope > content').setAttribute('path', 'path.to.module4');
-            var cell7 = Manipulator.addCell(row1, 'grid');
+            var cell7 = Manipulator.addCell(row1, null, 'grid');
 
             var expected =
                 '<grid name="foo" space="5px" type="mainGrid">' +
@@ -607,7 +607,7 @@ describe("Grid.Manipulator", function() {
     it("should not clean placeholder with a module", function() {
         var grid = Manipulator.createBaseGrid('foo');
         var row = Manipulator.addRow(grid);
-        Manipulator.addCell(row, "module");
+        Manipulator.addCell(row, null, 'module');
 
         Manipulator.addPlaceholders(grid);
 
@@ -660,10 +660,10 @@ describe("Grid.Manipulator", function() {
     it("should return the neareset grid", function() {
         var grid = Manipulator.createBaseGrid('foo', 5);
         var row = Manipulator.addRow(grid);
-        var gridCell = Manipulator.addCell(row, "grid");
+        var gridCell = Manipulator.addCell(row, null, 'grid');
         var gridContent = gridCell.querySelector(':scope > content');
         var subRow = Manipulator.addRow(gridCell);
-        var contentCell = Manipulator.addCell(subRow, "module");
+        var contentCell = Manipulator.addCell(subRow, null, 'module');
         var content = contentCell.querySelector(':scope > content');
 
         // test each node in our tree

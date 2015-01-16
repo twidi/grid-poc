@@ -341,7 +341,7 @@ describe("Grid.Store", function() {
 
             // create a new grid, but not yet in the store
             var grid2 = Manipulator.createBaseGrid('bar', 5);
-            var node2 = Manipulator.addCell(Manipulator.addRow(grid2), 'module');
+            var node2 = Manipulator.addCell(Manipulator.addRow(grid2), null, 'module');
 
             expect(function() {
                 Store.__private.checkConsistency('bar');

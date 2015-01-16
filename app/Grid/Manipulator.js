@@ -186,23 +186,27 @@ var Manipulator = {
      *
      * @param  {XML} cell The cell we want to convert
      *
-     * @return {} - Returns nothing
+     * @return {XML} - The inner cell
      */
     surroundCellWithGrid: function(cell) {
         var type = cell.getAttribute('type');
+
+        // new types of both cells (existing, and new one inside)
+        var mainCellType = type == 'module' ? 'grid' : type;
+        var innerCellType = type == 'module'  ? 'module' : 'grid';
 
         var contentNode = cell.querySelector(':scope > content');
 
         // remove the cell content from the cell to move it into the future new cell
         cell.removeChild(contentNode);
         // transform the current cell into a grid one
-        cell.setAttribute('type', 'grid');
+        cell.setAttribute('type', mainCellType);
         var newContentNode = cell.ownerDocument.createElement('content');
         cell.appendChild(newContentNode);
         // add a row to hold the old cell content
         var cellRow = this.addRow(cell);
         // add the cell to hold the old cell content
-        this.addCell(cellRow, type, null, contentNode);
+        return this.addCell(cellRow, null, innerCellType, contentNode);
     },
 
     /**
@@ -211,13 +215,14 @@ var Manipulator = {
      *
      * @param {XML} node - The XML grid node on which to add a row (should contain a "type", which must be "mainGrid" or "grid")
      * @param {XML} [beforeRow] - The XML node of a row, on the given node, where to insert the new row before. If not given, the new row is added at the end. Cannot be used if the current type of the node is not "grid".
+     * @param {string} [type] - If defined, the value of the "type" attribute to set on the row
      *
      * @returns {XML} - The added row
      *
      * @throws {module:Grid.Manipulator.Exceptions.Inconsistency} If "beforeRow" is given but the node is not yet a grid
      * @throws {module:Grid.Manipulator.Exceptions.Inconsistency} If "beforeRow" is not in the content of the "node"
      */
-    addRow: function(node, beforeRow) {
+    addRow: function(node, beforeRow, type) {
         /* If this is not a grid node, create a first row this the actual
          * content in a cell */
         if (!this.reGrid.test(node.getAttribute('type'))) {
@@ -240,6 +245,10 @@ var Manipulator = {
         } else {
             contentNode.appendChild(row);
         }
+
+        if (type) {
+            row.setAttribute('type', type);
+        }
         return row;
     },
 
@@ -249,17 +258,17 @@ var Manipulator = {
      * Add a cell to the given XML grid row. Update the row in place.
      *
      * @param {XML} row - The XML grid row on which to add a cell
+     * @param {XML} [beforeCell] - The XML node of a cell, on the given row, where to insert the new cell before. If not given, the new cell is added at the end.
      * @param {string} type - The type of cell to add: "grid" or "module"
      * @param {XML} [contentNode] - The XML "content" node to insert in the cell.
      *     If not given, a new empty "content" node will be created.
-     * @param {XML} [beforeCell] - The XML node of a cell, on the given row, where to insert the new cell before. If not given, the new cell is added at the end.
      *
      * @returns {XML} - The added cell (XML), with the type and a content.
      *
      * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the given "type" is not "grid" or "module"
      * @throws {module:Grid.Manipulator.Exceptions.Inconsistency} If "beforeCell" is not in the "row"
      */
-    addCell: function(row, type, beforeCell, contentNode) {
+    addCell: function(row, beforeCell, type, contentNode) {
         if (!this.reType.test(type)) {
             throw new this.Exceptions.InvalidType("Cannot add cell of type <" + type + ">. Should be <grid> or <module>");
         }
@@ -463,108 +472,100 @@ var Manipulator = {
         // count the number of modules. If at max 1, we won't add placeholders on modules
         var atMaxOneModule = grid.querySelectorAll('cells[type=module]').length <= 1
 
-        this._addRowsPlaceholders(grid, false, atMaxOneModule);
+        this._addPlaceholders(grid);
 
         grid.setAttribute('hasPlaceholders', true);
     },
 
     /**
-     * Add rows placeholders around each row in the given grid
-     * (each row will have an empty placeholder cell)
+     * Add all needed placeholders in the given grid
      *
-     * @param {XML} grid - The grid to insert placeholders in
-     * @param {boolean} [dontWrapModules] - Set to true to avoid wrapping"module" cells with "grid" cells
-     *
-     * @returns {} - Returns nothing
-     *
-     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a grid (type nor "grid" nor "mainGrid")
-     *
-     * @private
+     * @param {XML} grid - The grid on which to add placeholders
      */
-    _addRowsPlaceholders: function(grid, surround, noModulePlaceholders) {
-        var nodeType = grid.getAttribute('type');
-        if (!this.reGrid.test(nodeType)) {
-            throw new this.Exceptions.InvalidType("Cannot add rows placeholders in node of type <" + nodeType + ">. Should be <grid> or <mainGrid>");
+    _addPlaceholders: function(grid) {
+        var placeholder, grids, row, rows, cell, cells, subGrid, modules,
+            isSurround, displayLeftRightPlaceholders;
+
+        // surround all grid, including current if it matches
+        var grids = grid.parentNode.querySelectorAll('grid, cells[type=grid]');
+        for (var i = 0; i < grids.length; i++) {
+            subGrid = grids[i];
+
+            // surround the grid if it has more than one row
+            if (subGrid.querySelectorAll(':scope > content > rows').length > 1) {
+                this.surroundCellWithGrid(subGrid);
+                subGrid.setAttribute('surround', 1);
+            }
         }
 
-        var contentNode = grid.querySelector(':scope > content');
-        _(contentNode.querySelectorAll(':scope > rows:not([type=placeholder])')).forEach(function(row) {
-            // add a row before each one in the list
-            var placeholder = Manipulator.addRow(grid, row);
-            placeholder.setAttribute('type', 'placeholder');
-            Manipulator._addCellsPlaceholders(placeholder, surround);
-            // and add placeholders for cell in the row
-            Manipulator._addCellsPlaceholders(row, surround, noModulePlaceholders);
-        });
-        // add add a row placeholder at the end
-        var placeholder = Manipulator.addRow(grid);
-        placeholder.setAttribute('type', 'placeholder');
-        Manipulator._addCellsPlaceholders(placeholder, surround);
-    },
-
-    /**
-     * Add cells placeholders around each cell in the given row
-     * Each "module" cell will be converted in a "grid" cell
-     * Then each existing "grid" cell will be populated with row placeholders
-     *
-     * @param {XML} row - The row to insert placeholders in
-     * @param {boolean} [dontWrapModules] - Set to true to avoid wrapping"module" cells with "grid" cells
-     *
-     * @returns {} - Returns nothing
-     *
-    * @private
-     */
-    _addCellsPlaceholders: function(row, surround, noModulePlaceholders) {
-        // check if the cell has a grid around it 
-        var surrounded = row.parentNode.parentNode.getAttribute('surround');
-
-        var cells = row.querySelectorAll(':scope > cells:not([type=placeholder])');
-
-        /*
-        If there only one module cell in this row, we won't add placeholderrs on the left and the
-        right, because we'll already have ones on the module.
-        We only apply this rule if the module was not just surrounded by a grid, to apply
-        it to the surrounded grid that will be created to surround our module
-
-        We do not apply this rule for a row that was only created to add placeholders around a module
-        (ie if surrounded is true ), to keep placeholders on all sides of the module
-
-        We also don't apply this rule if we're asked not to add placeholders on modules, to keep
-        placeholders around
-        */
-        var onlyOneModuleCell = cells.length == 1
-                             && cells[0].getAttribute('type') == 'module'
-                             && !surrounded
-                             && !noModulePlaceholders;
-
-        // loop on each cell to add a placeholder before, and inside if it's a grid
-        _(cells).forEach(function(cell) {
-            var placeholder;
-            var cellType = cell.getAttribute('type');
-
-            // add a cell before each one in the list
-            if (!onlyOneModuleCell) {
-                var placeholder = Manipulator.addCell(row, 'placeholder', cell);
-                if (surround) { placeholder.setAttribute('surround', 1); }
+        // surround all modules if more than one in the grid
+        modules = grid.querySelectorAll('cells[type=module]');
+        if (modules.length > 1) {
+            for (var j = 0; j < modules.length; j++) {
+                this.surroundCellWithGrid(modules[j]);
+                modules[j].setAttribute('surround', 1);
             }
-
-            var newSurround = false;
-            if (!surrounded && !(noModulePlaceholders && cell.getAttribute('type') == 'module')) {
-                Manipulator.surroundCellWithGrid(cell);  // will change the cell type
-                cell.setAttribute('surround', 1);
-                newSurround = true;
-            }
-            if (cell.getAttribute('type') == 'grid') {
-                Manipulator._addRowsPlaceholders(cell, newSurround, noModulePlaceholders);
-            }
-        });
-
-        // and add a placeholder at the end
-        if (!onlyOneModuleCell) {
-            var placeholder = Manipulator.addCell(row, 'placeholder');
-            if (surround) { placeholder.setAttribute('surround', 1); }
         }
-    },
+
+        // add cells placeholders on each row
+        var rows = grid.querySelectorAll('rows');
+        for (var m = 0; m < rows.length; m++) {
+            row = rows[m];
+            cells = row.querySelectorAll(':scope > cells');
+
+            // is the row on a grid here only to surround an other one ?
+            isSurround = row.parentNode.parentNode.hasAttribute('surround');
+
+            // if only one cell, which is a grid, and only one module inside, no need to add
+            // left/rights placeholders because ones around the module will do the job
+            displayLeftRightPlaceholders = !(cells.length == 1
+                                          && cells[0].getAttribute('type') == 'grid'
+                                          && row.querySelectorAll('cells[type=module]').length==1);
+
+            // add a cell placeholders before each cell
+            for (var n = 0; n < cells.length; n++) {
+                // if it's the first cell and we don't want one on the left/right, do nothing
+                if (n > 0 || displayLeftRightPlaceholders) {
+                    var cell = cells[n];
+                    placeholder = Manipulator.addCell(row, cell, 'placeholder');
+                    if (isSurround) { placeholder.setAttribute('surround', 1); }
+                }
+            }
+            // add a cell placeholder after the last cell, except if we don't want one on the left/right
+            if (displayLeftRightPlaceholders) {
+                placeholder = Manipulator.addCell(row, null, 'placeholder');
+                if (isSurround) { placeholder.setAttribute('surround', 1); }
+            }
+        };
+
+        // add row placeholders on each grid
+        var grids = grid.parentNode.querySelectorAll('grid, cells[type=grid]');
+        for (var k = 0; k < grids.length; k++) {
+            var subGrid = grids[k];
+            rows = subGrid.querySelectorAll(':scope > content > rows');
+
+            // is the cell on a grid here only to surround an other one ?
+            isSurround = subGrid.hasAttribute('surround');
+
+            // add a row placeholder before each row
+            for (var l = 0; l < rows.length; l++) {
+                var row = rows[l];
+                placeholder = Manipulator.addCell(
+                    Manipulator.addRow(subGrid, row, 'placeholder')
+                    , null, 'placeholder'
+                );
+                if (isSurround) { placeholder.setAttribute('surround', 1); }
+            };
+
+            // add a row placeholder after the last row
+            placeholder = Manipulator.addCell(
+                Manipulator.addRow(subGrid, null, 'placeholder')
+                , null, 'placeholder'
+            );
+            if (isSurround) { placeholder.setAttribute('surround', 1); }
+        }
+
+   },
 
     /**
      * Remove all existing placeholders, except ones with a module.
@@ -607,9 +608,10 @@ var Manipulator = {
         });
 
         // remove all 'surround' attributes
-        _(grid.querySelectorAll('cell[surround]')).forEach(function(cell) {
+        _(grid.querySelectorAll('[surround]')).forEach(function(cell) {
             cell.removeAttribute('surround');
         });
+        grid.removeAttribute('surround');
 
         grid.removeAttribute('hasPlaceholders');
     },
