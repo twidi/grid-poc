@@ -177,18 +177,18 @@ describe("Grid.Components.MainGrid", function() {
                 expect(component.getDOMNode().classList.contains('grid-container-design-mode')).toBe(true);
 
                 // should have placeholders
-                // 4 (before each row) + 2 (end of each grid) + 6 ("module") * 2 (per module)
-                expect(componentUtils.countRowPlaceholders(component)).toEqual(18);
-                // 6 (1 for each rowPH except module) + 7 (before each cell) + 4 (end of each row) + 6 ("module") * 4 (per module)
-                expect(componentUtils.countCellPlaceholders(component)).toEqual(41);
+                // 4 (before each row) + 2 (end of each grid) + 6 ("module") * 2 (per module) + 2 (wrap maingrid) + 2 (wrap subgrid)
+                expect(componentUtils.countRowPlaceholders(component)).toEqual(22);
+                // 6 (1 for each rowPH except module) + 7 (before each cell) + 4 (end of each row) + 6 ("module") * 4 (per module) +  2 (wrap maingrid) + 2 (wrap subgrid)
+                expect(componentUtils.countCellPlaceholders(component)).toEqual(45);
 
                 // should have more components, as modules are wrapped in subgrids
-                // 4 original rows + 18 placeholders + 6 ("module") * 1 (per module)
-                expect(componentUtils.countRows(component)).toEqual(28);
+                // 4 original rows + 22 placeholders + 6 ("module") * 1 (per module) + 1 (wrap maingrid) + 1 (wrap subgrid)
+                expect(componentUtils.countRows(component)).toEqual(34);
                 // 6 original modules
                 expect(componentUtils.countModules(component)).toEqual(6);
-                // 1 original + 6 ("module") * 1 (per module)
-                expect(componentUtils.countSubGrids(component)).toEqual(7);
+                // 1 wrap arround main grid 1 original + 1 wrap arround original + 6 ("module") * 1 (per module)
+                expect(componentUtils.countSubGrids(component)).toEqual(9);
 
                 done();
             }, 0.01);

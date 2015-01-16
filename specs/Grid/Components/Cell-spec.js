@@ -130,9 +130,6 @@ describe("Grid.Components.Cell", function() {
         expect(domNode.classList.contains('grid-cell')).toBe(true);
         expect(domNode.classList.contains('grid-cell-module')).toBe(true);
         expect(domNode.classList.contains('grid-cell-placeholder')).toBe(false);
-        expect(domNode.classList.contains('grid-cell-module-design-mode')).toBe(false);
-        expect(domNode.classList.contains('grid-cell-module-design-mode-step-disabled')).toBe(true);
-        expect(domNode.classList.contains('grid-cell-module-design-mode-step-enabled')).toBe(false);
 
         var moduleContainer = domNode.children[0];
         expect(moduleContainer.tagName).toEqual('DIV');
@@ -152,9 +149,6 @@ describe("Grid.Components.Cell", function() {
         expect(domNode.classList.contains('grid-cell')).toBe(true);
         expect(domNode.classList.contains('grid-cell-module')).toBe(true);
         expect(domNode.classList.contains('grid-cell-placeholder')).toBe(false);
-        expect(domNode.classList.contains('grid-cell-module-design-mode')).toBe(true);
-        expect(domNode.classList.contains('grid-cell-module-design-mode-step-disabled')).toBe(false);
-        expect(domNode.classList.contains('grid-cell-module-design-mode-step-enabled')).toBe(true);
 
         var moduleContainer = domNode.children[0];
         expect(moduleContainer.tagName).toEqual('DIV');

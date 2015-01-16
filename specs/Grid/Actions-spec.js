@@ -182,31 +182,20 @@ describe("Grid.Actions", function() {
 
                 // check if the grid the dragged cell removed, and has placeholders
                 var expected =
-                    '<grid name="foo" space="5px" type="mainGrid" id="grid-1" hasPlaceholders="true">' +
+                     '<grid name="foo" space="5px" type="mainGrid" id="grid-1" hasPlaceholders="true">' +
                         '<content id="content-2">' +
                             '<rows type="placeholder" id="rows-8"><cells type="placeholder" id="cells-9"><content id="content-10"/></cells></rows>' +
                             '<rows id="rows-3">' +
                                 '<cells type="placeholder" id="cells-11"><content id="content-12"/></cells>' +
-                                '<cells type="grid" id="cells-6">' +
-                                    '<content id="content-13">' +
-                                        '<rows type="placeholder" id="rows-14">' +
-                                            '<cells type="placeholder" id="cells-15"><content id="content-16"/></cells>' +
-                                        '</rows>' +
-                                        '<rows id="rows-17">' +
-                                            '<cells type="placeholder" id="cells-18"><content id="content-19"/></cells>' +
-                                            '<cells type="module" id="cells-20"><content id="content-7"/></cells>' +
-                                            '<cells type="placeholder" id="cells-21"><content id="content-22"/></cells>' +
-                                        '</rows>' +
-                                        '<rows type="placeholder" id="rows-23">' +
-                                            '<cells type="placeholder" id="cells-24"><content id="content-25"/></cells>' +
-                                        '</rows>' +
-                                    '</content>' +
+                                '<cells type="module" id="cells-6">' +
+                                    '<content id="content-7"/>' +
                                 '</cells>' +
-                                '<cells type="placeholder" id="cells-26"><content id="content-27"/></cells>' +
+                                '<cells type="placeholder" id="cells-13"><content id="content-14"/></cells>' +
                             '</rows>' +
-                            '<rows type="placeholder" id="rows-28"><cells type="placeholder" id="cells-29"><content id="content-30"/></cells></rows>' +
+                            '<rows type="placeholder" id="rows-15"><cells type="placeholder" id="cells-16"><content id="content-17"/></cells></rows>' +
                         '</content>' +
                     '</grid>';
+
                 expect(newGrid).toEqualXML(expected);
 
                 // tell jasmine we're done
@@ -340,7 +329,7 @@ describe("Grid.Actions", function() {
 
             try {
 
-                Actions.startHovering('foo', Store.getGrid('foo').querySelector('#cells-29'));
+                Actions.startHovering('foo', Store.getGrid('foo').querySelector('#cells-16'));
 
             } finally {
 
@@ -368,24 +357,12 @@ describe("Grid.Actions", function() {
                                 '<rows type="placeholder" id="rows-8"><cells type="placeholder" id="cells-9"><content id="content-10"/></cells></rows>' +
                                 '<rows id="rows-3">' +
                                     '<cells type="placeholder" id="cells-11"><content id="content-12"/></cells>' +
-                                    '<cells type="grid" id="cells-6">' +
-                                        '<content id="content-13">' +
-                                            '<rows type="placeholder" id="rows-14">' +
-                                                '<cells type="placeholder" id="cells-15"><content id="content-16"/></cells>' +
-                                            '</rows>' +
-                                            '<rows id="rows-17">' +
-                                                '<cells type="placeholder" id="cells-18"><content id="content-19"/></cells>' +
-                                                '<cells type="module" id="cells-20"><content id="content-7"/></cells>' +
-                                                '<cells type="placeholder" id="cells-21"><content id="content-22"/></cells>' +
-                                            '</rows>' +
-                                            '<rows type="placeholder" id="rows-23">' +
-                                                '<cells type="placeholder" id="cells-24"><content id="content-25"/></cells>' +
-                                            '</rows>' +
-                                        '</content>' +
+                                    '<cells type="module" id="cells-6">' +
+                                        '<content id="content-7"/>' +
                                     '</cells>' +
-                                    '<cells type="placeholder" id="cells-26"><content id="content-27"/></cells>' +
+                                    '<cells type="placeholder" id="cells-13"><content id="content-14"/></cells>' +
                                 '</rows>' +
-                                '<rows type="placeholder" id="rows-28"><cells type="placeholder" id="cells-29"><content id="content-30"/></cells></rows>' +
+                                '<rows type="placeholder" id="rows-15"><cells type="placeholder" id="cells-16"><content id="content-17"/></cells></rows>' +
                             '</content>' +
                         '</grid>';
                     expect(newGrid).toEqualXML(expected);
@@ -419,8 +396,8 @@ describe("Grid.Actions", function() {
                                     '<rows id="rows-3">' +
                                         '<cells type="module" id="cells-6"><content id="content-7"/></cells>' +
                                     '</rows>' +
-                                    '<rows id="rows-28">' +
-                                        '<cells type="module" id="cells-29"><content id="content-5"/></cells>' +
+                                    '<rows id="rows-15">' +
+                                        '<cells type="module" id="cells-16"><content id="content-5"/></cells>' +
                                     '</rows>' +
                                 '</content>' +
                             '</grid>';
@@ -479,7 +456,7 @@ describe("Grid.Actions", function() {
                 var dragGrid = Store.getGrid('foo');
 
                 // go to hovering mode
-                Actions.startHovering('foo', Store.getGrid('foo').querySelector('#cells-29'));
+                Actions.startHovering('foo', Store.getGrid('foo').querySelector('#cells-16'));
 
                 // leave some time the go in hovering mode
                 setTimeout(function() {
@@ -522,24 +499,12 @@ describe("Grid.Actions", function() {
                                         '<rows type="placeholder" id="rows-8"><cells type="placeholder" id="cells-9"><content id="content-10"/></cells></rows>' +
                                         '<rows id="rows-3">' +
                                             '<cells type="placeholder" id="cells-11"><content id="content-12"/></cells>' +
-                                            '<cells type="grid" id="cells-6">' +
-                                                '<content id="content-13">' +
-                                                    '<rows type="placeholder" id="rows-14">' +
-                                                        '<cells type="placeholder" id="cells-15"><content id="content-16"/></cells>' +
-                                                    '</rows>' +
-                                                    '<rows id="rows-17">' +
-                                                        '<cells type="placeholder" id="cells-18"><content id="content-19"/></cells>' +
-                                                        '<cells type="module" id="cells-20"><content id="content-7"/></cells>' +
-                                                        '<cells type="placeholder" id="cells-21"><content id="content-22"/></cells>' +
-                                                    '</rows>' +
-                                                    '<rows type="placeholder" id="rows-23">' +
-                                                        '<cells type="placeholder" id="cells-24"><content id="content-25"/></cells>' +
-                                                    '</rows>' +
-                                                '</content>' +
+                                            '<cells type="module" id="cells-6">' +
+                                                '<content id="content-7"/>' +
                                             '</cells>' +
-                                            '<cells type="placeholder" id="cells-26"><content id="content-27"/></cells>' +
+                                            '<cells type="placeholder" id="cells-13"><content id="content-14"/></cells>' +
                                         '</rows>' +
-                                        '<rows type="placeholder" id="rows-28"><cells type="placeholder" id="cells-29"><content id="content-30"/></cells></rows>' +
+                                        '<rows type="placeholder" id="rows-15"><cells type="placeholder" id="cells-16"><content id="content-17"/></cells></rows>' +
                                     '</content>' +
                                 '</grid>';
                             expect(newGrid).toEqualXML(expected);
@@ -616,7 +581,7 @@ describe("Grid.Actions", function() {
 
                     try {
 
-                        Actions.drop('foo', Store.getGrid('foo').querySelector('#cells-29'));
+                        Actions.drop('foo', Store.getGrid('foo').querySelector('#cells-16'));
 
                     } finally {
 
@@ -641,8 +606,8 @@ describe("Grid.Actions", function() {
                                         '<rows id="rows-3">' +
                                             '<cells type="module" id="cells-6"><content id="content-7"/></cells>' +
                                         '</rows>' +
-                                        '<rows id="rows-28">' +
-                                            '<cells type="module" id="cells-29"><content id="content-5"/></cells>' +
+                                        '<rows id="rows-15">' +
+                                            '<cells type="module" id="cells-16"><content id="content-5"/></cells>' +
                                         '</rows>' +
                                     '</content>' +
                                 '</grid>';

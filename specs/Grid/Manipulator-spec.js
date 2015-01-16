@@ -496,26 +496,15 @@ describe("Grid.Manipulator", function() {
 
         Manipulator.addPlaceholders(grid);
 
-        var moduleCellReplacedByPlaceholders =
-            '<cells type="grid">' +
-                '<content>' +
-                    '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
-                    '<rows>' +
-                        '<cells type="placeholder"><content/></cells>' +
-                        '<cells type="module"><content/></cells>' +
-                        '<cells type="placeholder"><content/></cells>' +
-                    '</rows>' +
-                    '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
-                '</content>' +
-            '</cells>';
-
         var expectedWithPlaceholders =
             '<grid name="foo" space="5px" type="mainGrid" hasPlaceholders="true">' +
                 '<content>' +
                     '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
                     '<rows>' +
                         '<cells type="placeholder"><content/></cells>' +
-                        moduleCellReplacedByPlaceholders +
+                        '<cells type="module">' +
+                            '<content/>' +
+                        '</cells>' +
                         '<cells type="placeholder"><content/></cells>' +
                     '</rows>' +
                     '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
@@ -556,20 +545,25 @@ describe("Grid.Manipulator", function() {
 
         Manipulator.addPlaceholders(grid);
 
-        var expectedWithPlaceholders =
-            '<grid name="foo" space="5px" type="mainGrid" hasPlaceholders="true">' +
+        var moduleCellReplacedByPlaceholders =
+            '<cells type="grid" surround="1">' +
                 '<content>' +
-                    '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
+                    '<rows type="placeholder"><cells type="placeholder" surround="1"><content/></cells></rows>' +
                     '<rows>' +
-                        '<cells type="placeholder"><content/></cells>' +
-                        moduleCellReplacedByPlaceholders +
-                        '<cells type="placeholder"><content/></cells>' +
-                        moduleCellReplacedByPlaceholders +
-                        '<cells type="placeholder"><content/></cells>' +
+                        '<cells type="placeholder" surround="1"><content/></cells>' +
+                        '<cells type="module"><content/></cells>' +
+                        '<cells type="placeholder" surround="1"><content/></cells>' +
                     '</rows>' +
-                    '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
+                    '<rows type="placeholder"><cells type="placeholder" surround="1"><content/></cells></rows>' +
+                '</content>' +
+            '</cells>';
+
+        var expectedWithPlaceholders =
+            '<grid name="foo" space="5px" type="mainGrid" surround="1" hasPlaceholders="true">' +
+                '<content>' +
+                    '<rows type="placeholder"><cells type="placeholder" surround="1"><content/></cells></rows>' +
                     '<rows>' +
-                        '<cells type="placeholder"><content/></cells>' +
+                        '<cells type="placeholder" surround="1"><content/></cells>' +
                         '<cells type="grid">' +
                             '<content>' +
                                 '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
@@ -583,17 +577,43 @@ describe("Grid.Manipulator", function() {
                                 '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
                                 '<rows>' +
                                     '<cells type="placeholder"><content/></cells>' +
+                                    '<cells type="grid" surround="1">' +
+                                        '<content>' +
+                                            '<rows type="placeholder"><cells type="placeholder" surround="1"><content/></cells></rows>' +
+                                            '<rows>' +
+                                                '<cells type="placeholder" surround="1"><content/></cells>' +
+                                                '<cells type="grid">' +
+                                                    '<content>' +
+                                                        '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
+                                                        '<rows>' +
+                                                            '<cells type="placeholder"><content/></cells>' +
+                                                            moduleCellReplacedByPlaceholders +
+                                                            '<cells type="placeholder"><content/></cells>' +
+                                                            moduleCellReplacedByPlaceholders +
+                                                            '<cells type="placeholder"><content/></cells>' +
+                                                        '</rows>' +
+                                                        '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
+                                                        '<rows>' +
+                                                            moduleCellReplacedByPlaceholders +
+                                                        '</rows>' +
+                                                        '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
+                                                    '</content>' +
+                                                '</cells>' +
+                                                '<cells type="placeholder" surround="1"><content/></cells>' +
+                                            '</rows>' +
+                                            '<rows type="placeholder"><cells type="placeholder" surround="1"><content/></cells></rows>' +
+                                        '</content>' +
+                                    '</cells>' +
+                                    '<cells type="placeholder"><content/></cells>' +
                                     moduleCellReplacedByPlaceholders +
                                     '<cells type="placeholder"><content/></cells>' +
                                 '</rows>' +
                                 '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
                             '</content>' +
                         '</cells>' +
-                        '<cells type="placeholder"><content/></cells>' +
-                        moduleCellReplacedByPlaceholders +
-                        '<cells type="placeholder"><content/></cells>' +
+                        '<cells type="placeholder" surround="1"><content/></cells>' +
                     '</rows>' +
-                    '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
+                    '<rows type="placeholder"><cells type="placeholder" surround="1"><content/></cells></rows>' +
                 '</content>' +
             '</grid>';
 
@@ -601,7 +621,6 @@ describe("Grid.Manipulator", function() {
 
         Manipulator.removePlaceholders(grid);
         expect(grid).toEqualXML(expected);
-
     });
 
     it("should not clean placeholder with a module", function() {

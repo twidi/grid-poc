@@ -189,7 +189,7 @@ describe("Grid.Components.ModuleHolder", function() {
         Store.on('grid.designMode.dragging.start', callback);
 
         // simulate the startDrag event
-        React.addons.TestUtils.Simulate.dragStart(component.getDOMNode());
+        React.addons.TestUtils.Simulate.dragStart(component.getDOMNode(), {dataTransfer: {setData: function(){}}});
 
         // leave some time to render the component
         setTimeout(function() {
