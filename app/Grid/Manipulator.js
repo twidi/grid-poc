@@ -469,20 +469,6 @@ var Manipulator = {
             throw new this.Exceptions.InvalidState("Cannot add placeholders on a grid which already have them");
         }
 
-        // count the number of modules. If at max 1, we won't add placeholders on modules
-        var atMaxOneModule = grid.querySelectorAll('cells[type=module]').length <= 1
-
-        this._addPlaceholders(grid);
-
-        grid.setAttribute('hasPlaceholders', true);
-    },
-
-    /**
-     * Add all needed placeholders in the given grid
-     *
-     * @param {XML} grid - The grid on which to add placeholders
-     */
-    _addPlaceholders: function(grid) {
         var placeholder, grids, row, rows, cell, cells, subGrid, modules,
             isSurround, displayLeftRightPlaceholders;
 
@@ -565,6 +551,8 @@ var Manipulator = {
             if (isSurround) { placeholder.setAttribute('surround', 1); }
         }
 
+        // finally mark the grid
+        grid.setAttribute('hasPlaceholders', true);
    },
 
     /**
