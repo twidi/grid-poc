@@ -608,6 +608,12 @@ var Private = {
     setHoveringTimeout: function(gridName) {
         this.clearHoveringTimeout(gridName);
         this.getGridEntry(gridName).hoveringTimeout = setTimeout(_.bind(function() {
+            try {
+                // the grid may not exist anymore
+                this.checkConsistency(gridName);
+            } catch(e) {
+                return;
+            }
             this.stayHovering(gridName);
         }, this), this.hoveringDelay);
     },
@@ -706,7 +712,8 @@ var Private = {
         // we already have an hovering cell...
         if (currentHovering){
            // do nothing if existing hovering is the same
-            if (currentHovering == placeholderCell) {
+            if (currentHovering == placeholderCell
+                    || currentHovering.getAttribute('id') == placeholderCell.getAttribute('id')) {
                 return;
             }
             // if other than the actual, cancel the hovering
@@ -815,6 +822,8 @@ var Private = {
         // if there is an existing placeholder, but the one given differs, use the one given
         if (placeholderCell && placeholderCell != existingPlaceholderCell) {
             this.startHovering(gridName, placeholderCell);
+            // but don't go in stayHovering mode
+            this.clearHoveringTimeout(gridName);
         } else {
             placeholderCell = existingPlaceholderCell;
             this.checkConsistency(gridName);
@@ -826,6 +835,9 @@ var Private = {
         // exiting a placeholder)
         if (designModeStep == 'dragging') {
             this.cancelDragging(gridName);
+            // should not be needed, but just in case, we are not sure in which order events will come
+            this.clearBackupedGrid(gridName, 'hovering');
+            this.clearSavedNode(gridName, 'hovering');
             return;
         }
 
@@ -870,6 +882,8 @@ _(Store.Exceptions).forEach(function(exceptionClass, exceptionName) {
 
 
 Store = flux.createStore(Private);
+
+Store.__private = Private;
 
 // exceptions must be accessible via the private api too
 Private.Exceptions = Store.Exceptions;

@@ -108,12 +108,12 @@ describe("Grid.Manipulator", function() {
         expect(grid).toEqualXML(expected);
 
         // with a rows list with one row
-        var row = Manipulator.addRow(grid);
+        var row = Manipulator.addRow(grid, null, 'foo');
         var expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<rows/>' +
-                    '<rows/>' +
+                    '<rows type="foo"/>' +
                 '</content>' +
             '</grid>';
         expect(grid).toEqualXML(expected);
@@ -124,7 +124,7 @@ describe("Grid.Manipulator", function() {
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<rows/>' +
-                    '<rows foo="bar"/>' +
+                    '<rows type="foo" foo="bar"/>' +
                 '</content>' +
             '</grid>';
         expect(grid).toEqualXML(expected);
@@ -400,7 +400,7 @@ describe("Grid.Manipulator", function() {
                                     '<cells type="grid" id="c2">' +
                                         '<content>' +
                                             '<rows id="r3">' +
-                                                '<cells type="grid" toclean="1" id="c3">' +
+                                                '<cells type="grid" toclean="1" surround="1" id="c3">' +
                                                     '<content>' +
                                                         '<rows id="r4">' +
                                                             '<cells type="module" id="c4">' +
@@ -449,6 +449,29 @@ describe("Grid.Manipulator", function() {
 
         expect(grid).toEqualXML(expected);
 
+    });
+
+    it("should tell if it contains a subgrid", function() {
+        var grid = Manipulator.createBaseGrid('foo');
+        expect(Manipulator.containsSubGrid(grid)).toBe(false);
+
+        var row = Manipulator.addRow(grid);
+        Manipulator.addCell(row, null, 'module');
+        expect(Manipulator.containsSubGrid(grid)).toBe(false);
+
+        var subGrid = Manipulator.addCell(row, null, 'grid');
+        expect(Manipulator.containsSubGrid(grid)).toBe(true);
+        expect(Manipulator.containsSubGrid(subGrid)).toBe(false);
+
+        row = Manipulator.addRow(subGrid);
+        Manipulator.addCell(row, null, 'module');
+        expect(Manipulator.containsSubGrid(grid)).toBe(true);
+        expect(Manipulator.containsSubGrid(subGrid)).toBe(false);
+
+        var subSubGrid = Manipulator.addCell(row, null, 'grid');
+        expect(Manipulator.containsSubGrid(grid)).toBe(true);
+        expect(Manipulator.containsSubGrid(subGrid)).toBe(true);
+        expect(Manipulator.containsSubGrid(subSubGrid)).toBe(false);
     });
 
     it("should manage placeholders", function() {

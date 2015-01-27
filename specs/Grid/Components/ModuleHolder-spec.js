@@ -70,11 +70,16 @@ describe("Grid.Components.ModuleHolder", function() {
     };
 
     it("should render a component with a cover and a module", function(done) {
+        jasmineReact.spyOnClass(ModuleHolder, 'getRenderAttrs').and.callThrough();
+
         var element = createCacheEntry().holderElement;
         var component = componentUtils.renderIntoDocument(element);
 
         // leave some time to render the component
         setTimeout(function() {
+
+            expect(jasmineReact.classPrototype(ModuleHolder).getRenderAttrs).toHaveBeenCalled();
+
             var domNode = component.getDOMNode();
             expect(domNode.className).toEqual('module-holder');
             expect(domNode.children[0].tagName).toEqual('DIV');
@@ -85,6 +90,34 @@ describe("Grid.Components.ModuleHolder", function() {
             expect(domNode.children[1].children[0].className).toEqual('module');
             done();
         }, 0.01);
+    });
+
+    it("should make the dom node draggable in design mode", function() {
+        var element = createCacheEntry().holderElement;
+        var component = componentUtils.renderIntoDocument(element);
+
+        // dragging is only valid in design mode
+        Store.__private.setDesignModeStep('Test grid', 'enabled');
+
+        var attrs = component.getRenderAttrs();
+
+        expect(_.size(attrs)).toEqual(2);
+        expect(attrs['draggable']).toBe(true);
+        expect(attrs['onDragStart']).toBe(component.onDragStart);
+    });
+
+    it("should handle the dragleave event if in dragging mode", function() {
+        var element = createCacheEntry().holderElement;
+        var component = componentUtils.renderIntoDocument(element);
+
+        // make the cell the dragging one
+        Store.__private.setDesignModeStep('Test grid', 'dragging');
+        Store.__private.grids['Test grid'].nodes.dragging = moduleGridCell.querySelector(':scope > content');
+
+        var attrs = component.getRenderAttrs();
+
+        expect(_.size(attrs)).toEqual(1);
+        expect(attrs['onDragLeave']).toBe(component.onDragLeave);
     });
 
 
@@ -189,7 +222,7 @@ describe("Grid.Components.ModuleHolder", function() {
         Store.on('grid.designMode.dragging.start', callback);
 
         // simulate the startDrag event
-        React.addons.TestUtils.Simulate.dragStart(component.getDOMNode(), {dataTransfer: {setData: function(){}}});
+        componentUtils.simulateDragEvent(component.getDOMNode(), 'dragStart');
 
         // leave some time to render the component
         setTimeout(function() {
@@ -203,6 +236,57 @@ describe("Grid.Components.ModuleHolder", function() {
             done();
 
         }, 0.01);
+    });
+
+    it("should stop hovering when leaving the holder", function(done) {
+        // when the holder stay a "long time" on a placeholder, the grid goes
+        // in "stayhovering" mode and the placeholder is replaced by the holder
+        // itself, so moving the mouse out of the holder should stop the hovering
+        // stuff
+
+        Store.__private.setDesignModeStep('Test grid', 'hovering');
+        Store.__private.grids['Test grid'].nodes.dragging = moduleGridCell.querySelector(':scope > content');
+
+        var element = createCacheEntry().holderElement;
+        var component = componentUtils.renderIntoDocument(element);
+
+        // will set this to True when the callback is called
+        var callbackCalled = false;
+        // will store the grid name received via the tested event
+        var updatedGridName;
+
+        var callback = function(gridName) {
+            callbackCalled = true;
+            updatedGridName = gridName;
+        };
+
+        // listen to the tested event
+        Store.on('grid.designMode.hovering.stop', callback);
+
+        var oldTimeout = component.dragLeaveTimeout;
+        component.dragLeaveTimeout = 0;
+
+        // simulate the startDrag event
+        componentUtils.simulateDragEvent(component.getDOMNode(), 'dragLeave');
+
+        // leave some time to render the component
+        setTimeout(function() {
+
+            try {
+                // stop listening
+                Store.off('grid.designMode.hovering.stop', callback);
+
+                // check if the callback were called
+                expect(callbackCalled).toBe(true);
+                expect(updatedGridName).toEqual('Test grid');
+
+                done();
+
+            } finally {
+                component.dragLeaveTimeout = oldTimeout;
+            }
+
+        }, 300); // minimal delay for the settimeout function in onDragLeave, don't know why
     });
 
 });

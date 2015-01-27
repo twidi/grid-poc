@@ -116,6 +116,10 @@ var componentUtils = {
         this._componentsCache = [];
     },
 
+    simulateDragEvent: function(domNode, eventName, setDataFunction) {
+        React.addons.TestUtils.Simulate[eventName](domNode, {dataTransfer: {setData: setDataFunction || function(){} }});
+    },
+
 };
 
 

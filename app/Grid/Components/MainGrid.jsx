@@ -101,7 +101,7 @@ var MainGrid = {
             // a `fakedragend` event
 
             this.deactivateDropDetection();
-            document.dispatchEvent(new Event('fakedragend'));
+            this.emitFakeDragEnd();
 
 
         } else if (eventName == 'grid.designMode.exit' ) {
@@ -159,14 +159,11 @@ var MainGrid = {
      */
     onDocumentDetectDrop: function(event) {
         if (Store.isDragging(this.state.gridName)) {
-
-            if (event.target.classList.contains('grid-cell-placeholder')) {
-                var fakeDropEvent = new Event('fakedrop', {view: window, bubbles: true, target: event.target, });
-                event.target.dispatchEvent(fakeDropEvent);
-                return;
+            if (event.target && event.target.classList && event.target.classList.contains('grid-cell-placeholder')) {
+                this.emitFakeDrop(event.target);
+            } else {
+                this.applyDrop();
             }
-
-            this.applyDrop();
         }
     },
 
@@ -183,6 +180,26 @@ var MainGrid = {
     },
 
     /**
+     * Emit on fake drop event on the given placeholder node.
+     *
+     * It will be handled on the placeholder as a real drop on itself.
+     *
+     * @param  {DomNode} placeholderNode - The placeholder dom node
+     */
+    emitFakeDrop: function(placeholderNode) {
+        var fakeDropEvent = new Event('fakedrop', {view: window, bubbles: true, target: placeholderNode, });
+        placeholderNode.dispatchEvent(fakeDropEvent);
+    },
+
+    /**
+     * Emit a fake drag end event on the document, to tell the world that the whole
+     * drag and drop operation is finished
+     */
+    emitFakeDragEnd: function() {
+        document.dispatchEvent(new Event('fakedragend'));
+    },
+
+    /**
      * Called by `onDocumentDetectDrop` and `onDocumentDrop`, it will:
      *
      * - stop the drop detection
@@ -191,7 +208,7 @@ var MainGrid = {
      */
     applyDrop: function() {
         this.deactivateDropDetection();
-        document.dispatchEvent(new Event('fakedragend'));
+        this.emitFakeDragEnd();
         Actions.drop(this.state.gridName);
     },
 
@@ -213,7 +230,7 @@ var MainGrid = {
         // hack to pass the original event to onDesignModeChange
         var self = this;
         this.__onDesignModeChange = this.__onDesignModeChange || function(gridName) {
-            // this is the eventEmitter server, with `event`, the triggered event
+            // `this` is the eventEmitter server, with `event`, the triggered event
             self.onDesignModeChange(this.event, gridName);
         }
         Store.on('grid.designMode.**', this.__onDesignModeChange);
@@ -226,6 +243,7 @@ var MainGrid = {
     componentWillUnmount: function () {
         // this.__onDesignModeChange was defined in componentWillMount
         Store.off('grid.designMode.**', this.__onDesignModeChange);
+        this.deactivateDropDetection();
     },
 
     /**

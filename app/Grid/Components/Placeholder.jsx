@@ -126,7 +126,8 @@ var Placeholder = {
         if (Store.isDragging(this.getGridName()) && event.target == this.getDOMNode()) {
             this.deactivateDropDetection();
             document.dispatchEvent(new Event('fakedragend'));
-            Actions.drop(this.getGridName(), this.state.node);        }
+            Actions.drop(this.getGridName(), this.state.node);
+        }
     },
 
     /**

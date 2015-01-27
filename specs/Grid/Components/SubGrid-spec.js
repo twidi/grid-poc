@@ -2,6 +2,8 @@ var _ = require('lodash');
 var React = require('react/addons');  // react + addons
 var TestUtils = React.addons.TestUtils;
 
+var Manipulator = require('../../../app/Grid/Manipulator.js');
+
 var Row = require('../../../app/Grid/Components/Row.jsx');
 var Store = require('../../../app/Grid/Store.js');
 var SubGrid = require('../../../app/Grid/Components/SubGrid.jsx');
@@ -99,6 +101,19 @@ describe("Grid.Components.SubGrid", function() {
         expect(domNode.tagName).toEqual('DIV');
         expect(domNode.classList.contains('grid')).toBe(true);
         expect(domNode.classList.contains('grid-main')).toBe(false);
+        expect(domNode.classList.contains('grid-last-level-with-placeholders')).toBe(false);
+    });
+
+    it("should have a specific class when its the deapest grid", function() {
+        Manipulator.addPlaceholders(testGrid);
+        subGrid = testGrid.querySelector('cells[type=grid] cells[type=grid]');
+        var element = React.createElement(SubGrid, {node: subGrid});
+        var component = componentUtils.renderIntoDocument(element);
+        var domNode = component.getDOMNode();
+        expect(domNode.tagName).toEqual('DIV');
+        expect(domNode.classList.contains('grid')).toBe(true);
+        expect(domNode.classList.contains('grid-main')).toBe(false);
+        expect(domNode.classList.contains('grid-last-level-with-placeholders')).toBe(true);
     });
 
     it("should render sub components", function() {

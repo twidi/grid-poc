@@ -28,7 +28,7 @@ var DocumentEvents = {
      *
      * @return {function} - The wanted function, bound to this
      */
-    documentEvent: function(methodName) {
+    boundMethod: function(methodName) {
         // object to  hold cached bounded function
         // cannot be defined in the mixin if we want to have each instance to have
         // its own entry
@@ -73,7 +73,7 @@ var DocumentEvents = {
      * @param {string} methodName - The name of the method of `this` to call when the event is fired
      */
     addDocumentListener: function(eventName, methodName) {
-        document.addEventListener(eventName, this.documentEvent(methodName));
+        document.addEventListener(eventName, this.boundMethod(methodName));
     },
 
 
@@ -84,7 +84,7 @@ var DocumentEvents = {
      * @param {string} methodName - The name of the method of `this` to stop calling call when the event is fired
      */
     removeDocumentListener: function(eventName, methodName) {
-        document.removeEventListener(eventName, this.documentEvent(methodName));
+        document.removeEventListener(eventName, this.boundMethod(methodName));
     },
 
 

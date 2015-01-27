@@ -31,7 +31,7 @@ describe("Grid.Store", function() {
                 '</content>' +
             '</grid>');
         Manipulator.setIds(grid);
-        Actions.addGrid(grid);
+        Store.__private.addGrid(grid);
         return grid;
     };
 
@@ -60,15 +60,10 @@ describe("Grid.Store", function() {
         });
     });
 
-    it("should return a node by its id", function(done) {
+    it("should return a node by its id", function() {
         var grid = createSimpleGrid();
-
-        setTimeout(function() {
-            _(_.toArray(grid.querySelectorAll('*')).concat([grid])).forEach(function(node) {
-                expect(Store.getGridNodeById('foo', node.getAttribute('id'))).toBe(node);
-            });
-
-            done();
+        _(_.toArray(grid.querySelectorAll('*')).concat([grid])).forEach(function(node) {
+            expect(Store.getGridNodeById('foo', node.getAttribute('id'))).toBe(node);
         });
 
     });
@@ -103,6 +98,85 @@ describe("Grid.Store", function() {
         expect(Store.getDesignModeStep('foo')).toBe('disabled');
     });
 
+    it("should tell if the grid is in dragging mode", function() {
+        var grid = createSimpleGrid();
+        expect(Store.isDragging('foo')).toBe(false);
+        // it's in dragging mode if there is a node currently dragged
+        Store.__private.grids['foo'].nodes.dragging = true;
+        expect(Store.isDragging('foo')).toBe(true);
+    });
+
+    it("should tell if it's the dragging cell", function() {
+        var grid = createSimpleGrid();
+
+        var row  = grid.querySelector('rows');
+        var cell = grid.querySelector('cells[type=module]');
+        var otherCell = Manipulator.addCell(row, null, 'module');
+
+        expect(Store.isDraggingCell('foo', cell)).toBe(false);
+
+        // it's the content that is saved
+        Store.__private.grids['foo'].nodes.dragging = cell.querySelector(':scope > content');
+        expect(Store.isDraggingCell('foo', cell)).toBe(true);
+
+        // check another cell
+        expect(Store.isDraggingCell('foo', otherCell)).toBe(false);
+    });
+
+    it("should tell if the grid is in hovering mode", function() {
+        var grid = createSimpleGrid();
+        expect(Store.isHovering('foo')).toBe(false);
+        // it's in dragging mode if there is a node currently hovered
+        Store.__private.grids['foo'].nodes.hovering = true;
+        expect(Store.isHovering('foo')).toBe(true);
+    });
+
+    it("should tell if it's the hovering cell", function() {
+        var grid = createSimpleGrid();
+
+        var row  = grid.querySelector('rows');
+        var cell = grid.querySelector('cells[type=module]');
+        var otherCell = Manipulator.addCell(row, null, 'module');
+
+        expect(Store.isHoveringPlaceholder('foo', cell)).toBe(false);
+
+        Store.__private.grids['foo'].nodes.hovering = cell;
+        expect(Store.isHoveringPlaceholder('foo', cell)).toBe(true);
+
+        // check another cell
+        expect(Store.isHoveringPlaceholder('foo', otherCell)).toBe(false);
+    });
+
+    it("should tell if a grid has a subgrid", function() {
+        var grid = Manipulator.createBaseGrid('foo');
+        Store.__private.addGrid(grid);
+        expect(Store.containsSubGrid(grid)).toBe(false);
+
+        var row = Manipulator.addRow(grid);
+        Manipulator.addCell(row, null, 'module');
+        expect(Store.containsSubGrid(grid)).toBe(false);
+
+        var subGrid = Manipulator.addCell(row, null, 'grid');
+        expect(Store.containsSubGrid(grid)).toBe(true);
+        expect(Store.containsSubGrid(subGrid)).toBe(false);
+
+        row = Manipulator.addRow(subGrid);
+        Manipulator.addCell(row, null, 'module');
+        expect(Store.containsSubGrid(grid)).toBe(true);
+        expect(Store.containsSubGrid(subGrid)).toBe(false);
+
+        var subSubGrid = Manipulator.addCell(row, null, 'grid');
+        expect(Store.containsSubGrid(grid)).toBe(true);
+        expect(Store.containsSubGrid(subGrid)).toBe(true);
+        expect(Store.containsSubGrid(subSubGrid)).toBe(false);
+    });
+
+    it("should tell if the grid has placeholders", function() {
+        var grid = createSimpleGrid();
+        expect(Store.hasPlaceholders('foo')).toBe(false);
+        Manipulator.addPlaceholders(grid);
+        expect(Store.hasPlaceholders('foo')).toBe(true);
+    });
 
     describe('Private api', function() {
         it("should return a grid entry", function() {

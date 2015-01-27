@@ -159,7 +159,6 @@ var Cell = {
     getModuleCellClasses: function() {
         var classes = {
             'grid-cell': true,
-            'grid-cell-placeholder': this.isPlaceholder(),
             'grid-cell-module': this.isModule(),
             'grid-cell-module-dragging': Store.isDraggingCell(this.getGridName(), this.state.node),
         };
