@@ -68,13 +68,20 @@ var Manipulator = {
      * Nodes types that can directly accept rows
      * @type {RegExp}
      */
-    reGrid: /^(mainGrid|grid)$/,
+    reGridType: /^(mainGrid|grid)$/,
 
     /**
      * Allowed types of cell
      * @type {RegExp}
      */
-    reType: /^(module|grid|placeholder)$/,
+    reCellType: /^(module|grid|placeholder)$/,
+
+
+    /**
+     * Allowed types of resizers
+     * @type {RegExp}
+     */
+    reResizerType: /^(vertic|horizont)al$/,
 
     /**
      * RegExp to match XML nodes that will always be converted as array in JSON
@@ -225,7 +232,7 @@ var Manipulator = {
     addRow: function(node, beforeRow, type) {
         /* If this is not a grid node, create a first row this the actual
          * content in a cell */
-        if (!this.reGrid.test(node.getAttribute('type'))) {
+        if (!this.reGridType.test(node.getAttribute('type'))) {
             // not compatible when we ask for inserting the new row before a new one
             if (beforeRow) {
                 throw new this.Exceptions.Inconsistency("Cannot insert before a row if there is no row");
@@ -269,7 +276,7 @@ var Manipulator = {
      * @throws {module:Grid.Manipulator.Exceptions.Inconsistency} If "beforeCell" is not in the "row"
      */
     addCell: function(row, beforeCell, type, contentNode) {
-        if (!this.reType.test(type)) {
+        if (!this.reCellType.test(type)) {
             throw new this.Exceptions.InvalidType("Cannot add cell of type <" + type + ">. Should be <grid> or <module>");
         }
         var cell = row.ownerDocument.createElement('cells');
@@ -306,7 +313,7 @@ var Manipulator = {
      */
     cleanGrid: function(grid) {
         var nodeType = grid.getAttribute('type');
-        if (!this.reGrid.test(nodeType)) {
+        if (!this.reGridType.test(nodeType)) {
             throw new this.Exceptions.InvalidType("Cannot clean node of type <" + nodeType + ">. Should be <grid> or <mainGrid>");
         }
 
@@ -405,7 +412,7 @@ var Manipulator = {
                         });
                         // our original row is now empty, we can remove it
                         contentNode.removeChild(rows[0]);
-                    } else if (this.reGrid.test(nodeType)) {  // maybe it's a module now
+                    } else if (this.reGridType.test(nodeType)) {  // maybe it's a module now
                         // only one row but many cells... maybe we are the only child of our parent row ?
                         var parentRow = grid.parentNode;
                         if (parentRow && parentRow.querySelectorAll(':scope > cells').length == 1) {
@@ -437,7 +444,6 @@ var Manipulator = {
         }
     },
 
-
     /**
      * Tel if the grid has placeholders
      *
@@ -458,7 +464,7 @@ var Manipulator = {
      * @returns {} - Returns nothing
      *
      * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
-     * @throws {module:Grid.Manipulator.Exceptions.InvalidState} If the grid already has placeholders
+     * @throws {module:Grid.Manipulator.Exceptions.InvalidState} If the grid already has placeholders or resizers
      */
     addPlaceholders: function(grid) {
         var nodeType = grid.getAttribute('type');
@@ -467,6 +473,9 @@ var Manipulator = {
         }
         if (this.hasPlaceholders(grid)) {
             throw new this.Exceptions.InvalidState("Cannot add placeholders on a grid which already have them");
+        }
+        if (this.hasResizers(grid)) {
+            throw new this.Exceptions.InvalidState("Cannot add resizers on a grid which already have placeholders");
         }
 
         var placeholder, grids, row, rows, cell, cells, subGrid, modules,
@@ -564,7 +573,7 @@ var Manipulator = {
      * @returns {} - Returns nothing
      *
      * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
-     * @throws {module:Grid.Manipulator.Exceptions.InvalidState} If the grid doesn't have any placeholders
+     * @throws {module:Grid.Manipulator.Exceptions.InvalidState} If the grid isn't marked as having placeholders
      */
     removePlaceholders: function(grid) {
         var nodeType = grid.getAttribute('type');
@@ -635,7 +644,7 @@ var Manipulator = {
             }
             // check if type is grid/mainGrid
             var nodeType = node.getAttribute ? node.getAttribute('type') : null;
-            if (nodeType && this.reGrid.test(nodeType)) {
+            if (nodeType && this.reGridType.test(nodeType)) {
                 return node;
             }
             // continue with the parentNode
@@ -738,6 +747,119 @@ var Manipulator = {
         _(nodes).forEach(function(subnode) {
             subnode.setAttribute('id', _.uniqueId(subnode.tagName + '-'));
         });
+    },
+
+
+    /**
+     * Tel if the grid has resizers
+     *
+     * @param {XML} grid - The grid to test
+     *
+     * @return {Boolean} - true if the grid has resizers
+     */
+    hasResizers: function(grid) {
+        return !!grid.getAttribute('hasResizers');
+    },
+
+    /**
+     * Add all resizers in the given grid
+     * Add a "hasResizers" attribute (set to "true") on the main grid node.
+     *
+     * @param {XML} grid - The grid to insert resizers in
+     *
+     * @returns {} - Returns nothing
+     *
+     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
+     * @throws {module:Grid.Manipulator.Exceptions.InvalidState} If the grid already has resizers or placeholders
+     */
+    addResizers: function(grid) {
+        var nodeType = grid.getAttribute('type');
+        if (nodeType != 'mainGrid') {
+            throw new this.Exceptions.InvalidType("Cannot add resizers in grid of type <" + nodeType + ">. Should be <mainGrid>");
+        }
+        if (this.hasResizers(grid)) {
+            throw new this.Exceptions.InvalidState("Cannot add resizers on a grid which already have them");
+        }
+        if (this.hasPlaceholders(grid)) {
+            throw new this.Exceptions.InvalidState("Cannot add resizers on a grid which already have placeholders");
+        }
+
+        var rows, cells, resizer;
+
+        // add a resizer between each row of a grid
+        var grids = grid.parentNode.querySelectorAll('grid, cells[type=grid]');
+        for (var i = 0; i < grids.length; i++) {
+            // add a horizontal resizer before each row, except before the first one
+            rows = grids[i].querySelectorAll(':scope > content > rows');
+            for (var j = 0; j < rows.length; j++) {
+                if (j) { Manipulator.addResizer(rows[j]); }
+                // add a vertical resizer before each row, except before the first one
+                cells = rows[j].querySelectorAll(':scope > cells');
+                for (var k = 1; k < cells.length; k++) {
+                    Manipulator.addResizer(cells[k]);
+                }
+            }
+        }
+
+        // finally mark the grid
+        grid.setAttribute('hasResizers', true);
+    },
+
+    /**
+     * Add a resizer before the given XML grid row or cell
+     *
+     * @param {XML} beforeNode - The node (row or cell) of the grid before which to add the resizer
+     * @param {string} type - The type of placeholder to add: "vertical" or "horizontal"
+     *
+     * @returns {XML} - The added resizer (XML), with the type.
+     *
+     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the given node is not a row neither a cell
+     * @throws {module:Grid.Manipulator.Exceptions.Inconsistency} If the given node is the first child
+     */
+    addResizer: function(beforeNode) {
+        var nodeType = beforeNode.tagName;
+        var resizerType;
+        if (nodeType == 'rows') {
+            resizerType = 'horizontal';
+        } else if (nodeType == 'cells') {
+            resizerType = 'vertical';
+        } else {
+            throw new this.Exceptions.InvalidType("Cannot add a resizer before a node of type <" + nodeType + ">. Should be a <rows> or a <cells>");
+        }
+        if (beforeNode == beforeNode.parentNode.firstChild) {
+            throw new this.Exceptions.Inconsistency("Cannot add a resizer before the first node");
+        }
+        var resizer = beforeNode.ownerDocument.createElement('resizer');
+        resizer.setAttribute('type', resizerType);
+        beforeNode.parentNode.insertBefore(resizer, beforeNode);
+        return resizer;
+    },
+    /**
+     * Remove all existing resizers
+     * Remove the "hasResizers" attribute on the main grid node.
+     *
+     * @param  {XML} grid The grid in witch to remove the resizers
+     *
+     * @returns {} - Returns nothing
+     *
+     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
+     * @throws {module:Grid.Manipulator.Exceptions.InvalidState} If the grid isn't marked as having resizers
+     */
+    removeResizers: function(grid) {
+        var nodeType = grid.getAttribute('type');
+        if (nodeType != 'mainGrid') {
+            throw new this.Exceptions.InvalidType("Cannot remove resizers in grid of type <" + nodeType + ">. Should be <mainGrid>");
+        }
+        if (!this.hasResizers(grid)) {
+            throw new this.Exceptions.InvalidState("Cannot remove resizers on a grid which doesn't have any");
+        }
+
+        // remove each resizers
+        _(grid.querySelectorAll('resizer')).forEach(function(resizer) {
+            resizer.parentNode.removeChild(resizer);
+        });
+
+        grid.removeAttribute('hasResizers');
     },
 };
 

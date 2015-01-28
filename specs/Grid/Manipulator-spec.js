@@ -911,4 +911,100 @@ describe("Grid.Manipulator", function() {
 
     });
 
+    it("should add a resizer", function() {
+        var grid = Manipulator.createBaseGrid('foo', 5);
+        var row1 = Manipulator.addRow(grid);
+        var row2 = Manipulator.addRow(grid);
+        var row3 = Manipulator.addRow(grid);
+        var cell1 = Manipulator.addCell(row1, null, 'module');
+        var cell2 = Manipulator.addCell(row1, null, 'grid');
+        var cell3 = Manipulator.addCell(row1, null, 'module');
+
+        // fail before first row
+        expect(function() {
+            Manipulator.addResizer(row1);
+        }).toThrowError(Manipulator.Exceptions.Inconsistency, "Cannot add a resizer before the first node");
+
+        // ok before the second one
+        Manipulator.addResizer(row2);
+        expect(row2.previousSibling.tagName).toEqual('resizer');
+        expect(row2.parentNode.children.length).toEqual(4);
+
+        // ok before the last one
+        Manipulator.addResizer(row3);
+        expect(row3.previousSibling.tagName).toEqual('resizer');
+        expect(row3.parentNode.children.length).toEqual(5);
+
+        // fail before first cell
+        expect(function() {
+            Manipulator.addResizer(cell1);
+        }).toThrowError(Manipulator.Exceptions.Inconsistency, "Cannot add a resizer before the first node");
+
+        // ok before the second one
+        Manipulator.addResizer(cell2);
+        expect(cell2.previousSibling.tagName).toEqual('resizer');
+        expect(cell2.parentNode.children.length).toEqual(4);
+
+        // ok before the last one
+        Manipulator.addResizer(cell3);
+        expect(cell3.previousSibling.tagName).toEqual('resizer');
+        expect(cell3.parentNode.children.length).toEqual(5);
+
+    });
+
+    it("should add all resizers in a grid", function() {
+        var grid = Manipulator.XMLStringToXMLGrid(
+            '<grid name="foo" space="5px" type="mainGrid">' +
+                '<content>' +
+                    '<rows>' +
+                        '<cells type="module"><content/></cells>' +
+                        '<cells type="grid">' +
+                            '<content>' +
+                                '<rows></rows>' +
+                                '<rows>' +
+                                    '<cells type="module"><content/></cells>' +
+                                    '<cells type="module"><content/></cells>' +
+                                '</rows>' +
+                            '</content>' +
+                        '</cells>' +
+                        '<cells type="module"><content/></cells>' +
+                    '</rows>' +
+                    '<rows></rows>' +
+                    '<rows></rows>' +
+                '</content>' +
+            '</grid>');
+
+        Manipulator.addResizers(grid);
+
+        var expected = 
+            '<grid name="foo" space="5px" type="mainGrid" hasResizers="true">' +
+                '<content>' +
+                    '<rows>' +
+                        '<cells type="module"><content/></cells>' +
+                        '<resizer type="vertical"/>' +
+                        '<cells type="grid">' +
+                            '<content>' +
+                                '<rows/>' +
+                                '<resizer type="horizontal"/>' +
+                                '<rows>' +
+                                    '<cells type="module"><content/></cells>' +
+                                    '<resizer type="vertical"/>' +
+                                    '<cells type="module"><content/></cells>' +
+                                '</rows>' +
+                            '</content>' +
+                        '</cells>' +
+                        '<resizer type="vertical"/>' +
+                        '<cells type="module"><content/></cells>' +
+                    '</rows>' +
+                    '<resizer type="horizontal"/>' +
+                    '<rows/>' +
+                    '<resizer type="horizontal"/>' +
+                    '<rows/>' +
+                '</content>' +
+            '</grid>';
+
+        expect(grid).toEqualXML(expected);
+
+    });
+
 });
