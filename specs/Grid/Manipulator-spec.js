@@ -16,53 +16,6 @@ describe("Grid.Manipulator", function() {
         uniqueIdMock = Utils.mockUniqueId();
     });
 
-
-    it("should convert Json to Xml and vice-versa", function() {
-        var j = {
-            _param1: 1,
-            _param2: 2,
-            child: {
-                _childParam: 3,
-                subChild: {
-                    _subChildParam: 4
-                }
-            },
-            childs: [
-                {
-                    _childs1Param: 5
-                },
-                {
-                    _childs2Param: 6
-                },
-                {
-                    _childs3Param: 7,
-                    subChild: {
-                        _subChildParam: 8
-                    }
-                }
-            ]
-        };
-
-        var s = Manipulator.JSONGridToXMLString(j);
-        expect(s).toEqual(
-            '<grid param1="1" param2="2">' +
-                '<child childParam="3">' +
-                    '<subChild subChildParam="4"/>' +
-                '</child>' +
-                '<childs childs1Param="5"/>' +
-                '<childs childs2Param="6"/>' +
-                '<childs childs3Param="7">' +
-                    '<subChild subChildParam="8"/>' +
-                '</childs>' +
-            '</grid>'
-        );
-
-        var root = Manipulator.JSONGridToXML(j);
-        var j2 = Manipulator.XMLGridToJSON(root);
-        expect(j2).toEqual(j);
-
-    });
-
     it("should clone a grid", function() {
         var grid = Manipulator.XMLStringToXMLGrid(
             '<grid name="foo" space="5px" type="mainGrid">' +
@@ -799,8 +752,8 @@ describe("Grid.Manipulator", function() {
 
     it("should create a module node with simple keys/values pairs", function() {
         var j = {
-            _foo: 1,
-            _bar: "B.A.R",
+            foo: 1,
+            bar: "B.A.R",
         }
         var node = Manipulator.createModuleNode(j);
 
@@ -813,7 +766,7 @@ describe("Grid.Manipulator", function() {
         // first we create a simple grid
         var grid = Manipulator.createBaseGrid('foo', 5);
         // get a module from somewhere to insert
-        var content1 = Manipulator.createModuleNode({_path: 'test.module.1'});
+        var content1 = Manipulator.createModuleNode({path: 'test.module.1'});
         // go in "design" mode
         Manipulator.addPlaceholders(grid);
         // add the module in the only placeholder cell
@@ -821,7 +774,7 @@ describe("Grid.Manipulator", function() {
         // reset the placeholders with the new grid
         Manipulator.cleanPlaceholders(grid);
         // get another module from somewhere to insert
-        var content2 = Manipulator.createModuleNode({_path: 'test.module.2'});
+        var content2 = Manipulator.createModuleNode({path: 'test.module.2'});
         // add it to the last placeholder row
         Manipulator.moveContentToPlaceholder(content2, grid.querySelector(':scope > content > rows[type=placeholder] > cells[type=placeholder]'));
         // reset the placeholders with the new grid

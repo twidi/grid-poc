@@ -84,57 +84,6 @@ var Manipulator = {
     reResizerType: /^(vertic|horizont)al$/,
 
     /**
-     * RegExp to match XML nodes that will always be converted as array in JSON
-     * @type {RegExp}
-     * @private
-     */
-    _reXMLNodesAsArray: /^(rows|cells)$/,
-
-    /**
-     * Convert a Grid in JSON format to its XML representation
-     *
-     * @param {JSON} JSONGrid - The JSON Grid to represent in XML
-     * @param {string} [nodeName] - The name of the container node. "grid" by default
-     *
-     * @returns {XML} - The XML representation of the JSON Grid
-     */
-    JSONGridToXML: function(JSONGrid, nodeName) {
-        if (!nodeName) { nodeName = 'grid'; }
-        var j = {};
-        j[nodeName] = JSONGrid;
-        return JXON.unbuild(j).documentElement;
-    },
-
-    /**
-     * Convert a Grid in XML format to its JSON representation
-     *
-     * @param {XML} XMLGrid - The XML Grid to represent in JSON
-     *
-     * @returns {JSON} - The JSON representation of the XML Grid
-     */
-    XMLGridToJSON: function(XMLGrid) {
-        return JXON.build(
-            XMLGrid,
-            2,  // verbosity set to 2 to convert empty nodes in {} instead of "true"
-            null,
-            null,
-            this._reXMLNodesAsArray // regexp of nodes to always transform as arrays
-        );
-    },
-
-    /**
-     * Render a Grid in JSON format to its stringified XML representation
-     *
-     * @param {JSON} JSONGrid - The JSON Grid to represent in a stringified XML
-     * @param {string} [nodeName] - The name of the container node. "grid" by default
-     *
-     * @returns {string} - The stringified XML representation of the JSON Grid
-     */
-    JSONGridToXMLString: function(JSONGrid, nodeName) {
-        return this.XMLGridToXMLString(this.JSONGridToXML(JSONGrid, nodeName));
-    },
-
-    /**
      * Convert a Grid in XML format to its stringified representation
      *
      * @param {XML} XMLGrid - The XML Grid to represent in in a stringified XML
@@ -176,12 +125,11 @@ var Manipulator = {
      * @returns {XML} - The XML version of the new created grid
      */
     createBaseGrid: function(name, space) {
-        return this.JSONGridToXML({
-            _name: name,
-            _space: (space || 5) + 'px',
-            _type: 'mainGrid',
-            content: {}
-        }, 'grid');
+        var grid = this.XMLStringToXMLGrid('<grid><content/></grid>');
+        grid.setAttribute('name', name);
+        grid.setAttribute('space', (space || 5) + 'px');
+        grid.setAttribute('type', 'mainGrid');
+        return grid;
     },
 
     /**
@@ -305,7 +253,7 @@ var Manipulator = {
      * this cell into the current grid
      * All this is done recursively by calling the same method for the parent grid
      *
-     * @param  {XML} grid - The JSON grid node to clean
+     * @param  {XML} grid - The XML grid node to clean
      *
      * @returns {} - Returns nothing
      *
@@ -724,13 +672,17 @@ var Manipulator = {
      * Create the "content" XML node to use as a module (in a <cells type=module>)
      *
      * @param  {JSON} params - The params of the module, to be converted in XML.
-     * It should be a single level object with keys prefixed with "_", with string or numbers.
+     * It should be a single level object with only string or numbers.
      * There is no validation for now but only these keys are guaranteed to be restored as is.
      *
      * @return {XML} - The XML content node
      */
     createModuleNode: function(params) {
-        return this.JSONGridToXML(params, 'content');
+        var node = this.XMLStringToXMLGrid('<content/>');
+        for (key in params) {
+            node.setAttribute(key, params[key]);
+        }
+        return node
     },
 
     /**
