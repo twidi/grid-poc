@@ -268,6 +268,7 @@ var MainGrid = {
      * - `grid-container-design-mode`: if the grid is in design mode
      * - `grid-container-design-mode-step-*`: if the grid is in design mode, depending of the current step
      * - `grid-container-with-placeholders`: if the grid has placeholders
+     * - `grid-container-with-placeholders`: if the grid has resizers
      */
     getContainerClasses: function() {
         var inDesignMode = this.isInDesignMode();
@@ -275,6 +276,7 @@ var MainGrid = {
             'grid-container': true,
             'grid-container-design-mode': inDesignMode,
             'grid-container-with-placeholders': Store.hasPlaceholders(this.getGridName()),
+            'grid-container-with-resizers': Store.hasResizers(this.getGridName()),
         };
         classes['grid-container-design-mode-step-' + this.getDesignModeStep()] = inDesignMode;
         return cx(classes);

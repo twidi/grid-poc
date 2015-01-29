@@ -48,8 +48,23 @@ html, body, #app, .grid-container {
         .grid-container-with-placeholders .grid-main .grid:not(:last-child) {
             margin-right: 1px;
         }
+        .grid-container-with-resizers .grid-main .grid {
+            margin-right: 0;
+        }
 
 
+.grid-resizer {
+    background: #009688;
+    flex: 0 0 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    z-index: 2;
+}
+    .grid-resizer-horizontal {
+        cursor: row-resize;
+    }
+    .grid-resizer-vertical {
+        cursor: col-resize;
+    }
 
 .grid-row {
     display: flex;
@@ -70,6 +85,9 @@ html, body, #app, .grid-container {
         flex: 1 0 35px;
     }
 
+    .grid-container-with-resizers .grid-row {
+        margin-bottom: 0;
+    }
 
 .grid-cell {
     padding: 10px;
@@ -81,6 +99,9 @@ html, body, #app, .grid-container {
     }
     .grid-container-with-placeholders .grid-cell:not(:last-child) {
         margin-right: 1px;
+    }
+    .grid-container-with-resizers .grid-cell {
+        margin-right: 0;
     }
 
 .grid-cell-module {

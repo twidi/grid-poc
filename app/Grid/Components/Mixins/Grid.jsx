@@ -26,22 +26,28 @@ var Grid = {
     /**
      * Get all the rows of the grid
      *
-     * @return {array} - An array of XML grid rows
+     * @return {array} - An array of XML grid rows, including resizers
      */
     getRows: function() {
-        return _.toArray(this.state.node.querySelectorAll(':scope > content > row'));
+        return _.toArray(this.state.node.querySelectorAll(':scope > content > row, :scope > content > resizer'));
     },
 
     /**
-     * Return a list of all the rows, rendered
+     * Return a list of all the rows, including resizers, rendered
      *
      * @return {module:Grid.Components.Row[]} - An array of {@link module:Grid.Components.Row Row} components
      */
     renderRows: function() {
+        var Resizer = require('../Resizer.jsx');
         var Row = require('../Row.jsx');
 
         return _.map(this.getRows(), function(row){
-            return <Row node={row} key={Store.getNodeId(row)}/>;
+            var type = row.tagName;
+            if (type == 'row') {
+                return <Row node={row} key={Store.getNodeId(row)}/>;
+            } else if (type == 'resizer') {
+                return <Resizer node={row} key={Store.getNodeId(row)}/>;
+            }
         }, this);
     },
 
@@ -72,7 +78,7 @@ var Grid = {
      * Render the grid component
      *
      * @returns {div} - A div with classes defined by `getGridClasses`, containing
-     * rows returned by `renderRows`
+     * rows, including resizers, returned by `renderRows`
      */
     renderGrid: function() {
         return <div className={this.getGridClasses()}>{this.renderRows()}</div>

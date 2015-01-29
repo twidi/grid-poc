@@ -178,6 +178,13 @@ describe("Grid.Store", function() {
         expect(Store.hasPlaceholders('foo')).toBe(true);
     });
 
+    it("should tell if the grid has resizers", function() {
+        var grid = createSimpleGrid();
+        expect(Store.hasResizers('foo')).toBe(false);
+        Manipulator.addResizers(grid);
+        expect(Store.hasResizers('foo')).toBe(true);
+    });
+
     describe('Private api', function() {
         it("should return a grid entry", function() {
             var grid = createSimpleGrid();
@@ -280,101 +287,210 @@ describe("Grid.Store", function() {
             });
         });
 
-        it("should manage placeholders when changing design mode step", function() {
-            var grid = createSimpleGrid();
+        describe("it should add placeholders if missing when changing design mode step", function() {
+            // allowed changes that should end with placeholders
+            var tests = {
+                'enabled': ['dragging'],
+                'dragging': ['prehovering'],
+                'prehovering': ['dragging'],
+                'hovering': ['dragging']
+            };
 
-            var stepsBeforeDragging = ['enabled', 'prehovering', 'hovering'];
-            var stepsAfterDragging = ['enabled', 'prehovering'];
+            _.each(tests, function(steps, initialStep) {
+                steps.forEach(function(step) {
+                    it("should add/keep them from `" + initialStep + "` to `" + step + "`", function(){
+                        var grid = createSimpleGrid();
 
-            spyOn(Manipulator, "addPlaceholders").and.callThrough();
-            spyOn(Manipulator, "removePlaceholders").and.callThrough();
+                        spyOn(Manipulator, 'addPlaceholders').and.callThrough();
+                        spyOn(Manipulator, 'removePlaceholders').and.callThrough();
 
-            // check steps that can go to dragging mode
-            ['enabled', 'prehovering', 'hovering'].forEach(function(step) {
-                // reset placeholders
-                if (Manipulator.hasPlaceholders(grid)) {
-                    Manipulator.removePlaceholders(grid);
-                }
+                        // test going from `initialStep` asking to not change the grid
+                        Store.__private.setDesignModeStep('foo', initialStep);
+                        Store.__private.changeDesignModeStep('foo', step, true);
 
-                // reset call counters
-                Manipulator.addPlaceholders.calls.reset();
-                Manipulator.removePlaceholders.calls.reset();
+                        expect(Manipulator.hasPlaceholders(grid)).toBe(false, 'dontManageGrid=true');
+                        expect(Manipulator.addPlaceholders.calls.count()).toEqual(0, 'dontManageGrid=true');
+                        expect(Manipulator.removePlaceholders.calls.count()).toEqual(0, 'dontManageGrid=true');
 
-                // test going to dragging asking to not change the grid
-                Store.__private.setDesignModeStep('foo', step);
-                Store.__private.changeDesignModeStep('foo', 'dragging', true);
+                        // test going from `initialStep` asking to change the grid (the default)
+                        Manipulator.addPlaceholders.calls.reset();
+                        Manipulator.removePlaceholders.calls.reset();
+                        Store.__private.setDesignModeStep('foo', initialStep);
+                        Store.__private.changeDesignModeStep('foo', step);
 
-                expect(Manipulator.hasPlaceholders(grid)).toBe(false);
-                expect(Manipulator.addPlaceholders.calls.count()).toEqual(0);
-                expect(Manipulator.removePlaceholders.calls.count()).toEqual(0);
+                        expect(Manipulator.hasPlaceholders(grid)).toBe(true, 'dontManageGrid=false');
+                        expect(Manipulator.addPlaceholders.calls.count()).toEqual(1, 'dontManageGrid=false');
+                        expect(Manipulator.removePlaceholders.calls.count()).toEqual(0, 'dontManageGrid=false');
 
-                // test going to dragging asking to change the grid (the default)
-                Store.__private.setDesignModeStep('foo', step);
-                Store.__private.changeDesignModeStep('foo', 'dragging');
+                        // same check but the grid still have placeholders
+                        Manipulator.addPlaceholders.calls.reset();
+                        Manipulator.removePlaceholders.calls.reset();
+                        Store.__private.setDesignModeStep('foo', initialStep);
+                        Store.__private.changeDesignModeStep('foo', step);
 
-                expect(Manipulator.hasPlaceholders(grid)).toBe(true);
-                expect(Manipulator.addPlaceholders.calls.count()).toEqual(1);
-                expect(Manipulator.removePlaceholders.calls.count()).toEqual(0);
-
-                // same check but the grid already have placeholders
-                Store.__private.setDesignModeStep('foo', step);
-                Store.__private.changeDesignModeStep('foo', 'dragging');
-
-                // nothing changed
-                expect(Manipulator.hasPlaceholders(grid)).toBe(true);
-                expect(Manipulator.addPlaceholders.calls.count()).toEqual(1);
-                expect(Manipulator.removePlaceholders.calls.count()).toEqual(0);
+                        // nothing changed
+                        expect(Manipulator.hasPlaceholders(grid)).toBe(true, 'already have placeholders');
+                        expect(Manipulator.addPlaceholders.calls.count()).toEqual(0, 'already have placeholders');
+                        expect(Manipulator.removePlaceholders.calls.count()).toEqual(0, 'already have placeholders');
+                    });
+                });
             });
+        });
 
-            // all other cases should remove placeholders
+        describe("it should remove placeholders if present when changing design mode step", function() {
+            // allowed changes that should end with no placeholders
             var tests = {
                 'disabled': ['enabled'],
-                'enabled': ['disabled'],
-                'dragging': ['enabled', 'prehovering'],
-                'prehovering': ['hovering', 'enabled'],
+                'enabled': ['disabled', 'resizing'],
+                'resizing': ['enabled'],
+                'dragging': ['enabled'],
+                'prehovering': ['enabled', 'hovering'],
                 'hovering': ['enabled']
             };
 
             _.each(tests, function(steps, initialStep) {
                 steps.forEach(function(step) {
-
-                    // reset placeholders
-                    if (!Manipulator.hasPlaceholders(grid)) {
+                    it("should remove/ignore them from `" + initialStep + "` to `" + step + "`", function(){
+                        var grid = createSimpleGrid();
                         Manipulator.addPlaceholders(grid);
-                    }
 
-                    // reset call counters
-                    Manipulator.addPlaceholders.calls.reset();
-                    Manipulator.removePlaceholders.calls.reset();
+                        spyOn(Manipulator, 'addPlaceholders').and.callThrough();
+                        spyOn(Manipulator, 'removePlaceholders').and.callThrough();
 
-                    // test going from dragging asking to not change the grid
-                    Store.__private.setDesignModeStep('foo', initialStep);
-                    Store.__private.changeDesignModeStep('foo', step, true);
+                        // test going from `initialStep` asking to not change the grid
+                        Store.__private.setDesignModeStep('foo', initialStep);
+                        Store.__private.changeDesignModeStep('foo', step, true);
 
-                    expect(Manipulator.hasPlaceholders(grid)).toBe(true);
-                    expect(Manipulator.addPlaceholders.calls.count()).toEqual(0);
-                    expect(Manipulator.removePlaceholders.calls.count()).toEqual(0);
+                        expect(Manipulator.hasPlaceholders(grid)).toBe(true, 'dontManageGrid=true');
+                        expect(Manipulator.addPlaceholders.calls.count()).toEqual(0, 'dontManageGrid=true');
+                        expect(Manipulator.removePlaceholders.calls.count()).toEqual(0, 'dontManageGrid=true');
 
-                    // test going from dragging asking to change the grid (the default)
-                    Store.__private.setDesignModeStep('foo', initialStep);
-                    Store.__private.changeDesignModeStep('foo', step);
+                        // test going from `initialStep` asking to change the grid (the default)
+                        Manipulator.addPlaceholders.calls.reset();
+                        Manipulator.removePlaceholders.calls.reset();
+                        Store.__private.setDesignModeStep('foo', initialStep);
+                        Store.__private.changeDesignModeStep('foo', step);
 
-                    expect(Manipulator.hasPlaceholders(grid)).toBe(false);
-                    expect(Manipulator.addPlaceholders.calls.count()).toEqual(0);
-                    expect(Manipulator.removePlaceholders.calls.count()).toEqual(1);
+                        expect(Manipulator.hasPlaceholders(grid)).toBe(false, 'dontManageGrid=false');
+                        expect(Manipulator.addPlaceholders.calls.count()).toEqual(0, 'dontManageGrid=false');
+                        expect(Manipulator.removePlaceholders.calls.count()).toEqual(1, 'dontManageGrid=false');
 
-                    // same check but the grid have no placeholders anymore
-                    Store.__private.setDesignModeStep('foo', initialStep);
-                    Store.__private.changeDesignModeStep('foo', step);
+                        // same check but the grid still have placeholders
+                        Manipulator.addPlaceholders.calls.reset();
+                        Manipulator.removePlaceholders.calls.reset();
+                        Store.__private.setDesignModeStep('foo', initialStep);
+                        Store.__private.changeDesignModeStep('foo', step);
 
-                    // nothing changed
-                    expect(Manipulator.hasPlaceholders(grid)).toBe(false);
-                    expect(Manipulator.addPlaceholders.calls.count()).toEqual(0);
-                    expect(Manipulator.removePlaceholders.calls.count()).toEqual(1);
-
+                        // nothing changed
+                        expect(Manipulator.hasPlaceholders(grid)).toBe(false, 'already have no nore placeholders');
+                        expect(Manipulator.addPlaceholders.calls.count()).toEqual(0, 'already have no nore placeholders');
+                        expect(Manipulator.removePlaceholders.calls.count()).toEqual(0, 'already have no nore placeholders');
+                    });
                 });
             });
+        });
 
+       describe("it should add resizers if missing when changing design mode step", function() {
+            // allowed changes that should end with resizers
+            var tests = {
+                'disabled': ['enabled'],
+                'enabled': ['resizing'],
+                'resizing': ['enabled'],
+                'dragging': ['enabled'],
+                'prehovering': ['enabled'],
+                'hovering': ['enabled']
+            };
+
+            _.each(tests, function(steps, initialStep) {
+                steps.forEach(function(step) {
+                    it("should add/keep them from `" + initialStep + "` to `" + step + "`", function(){
+                        var grid = createSimpleGrid();
+
+                        spyOn(Manipulator, 'addResizers').and.callThrough();
+                        spyOn(Manipulator, 'removeResizers').and.callThrough();
+
+                        // test going from `initialStep` asking to not change the grid
+                        Store.__private.setDesignModeStep('foo', initialStep);
+                        Store.__private.changeDesignModeStep('foo', step, true);
+
+                        expect(Manipulator.hasResizers(grid)).toBe(false, 'dontManageGrid=true');
+                        expect(Manipulator.addResizers.calls.count()).toEqual(0, 'dontManageGrid=true');
+                        expect(Manipulator.removeResizers.calls.count()).toEqual(0, 'dontManageGrid=true');
+
+                        // test going from `initialStep` asking to change the grid (the default)
+                        Manipulator.addResizers.calls.reset();
+                        Manipulator.removeResizers.calls.reset();
+                        Store.__private.setDesignModeStep('foo', initialStep);
+                        Store.__private.changeDesignModeStep('foo', step);
+
+                        expect(Manipulator.hasResizers(grid)).toBe(true, 'dontManageGrid=false');
+                        expect(Manipulator.addResizers.calls.count()).toEqual(1, 'dontManageGrid=false');
+                        expect(Manipulator.removeResizers.calls.count()).toEqual(0, 'dontManageGrid=false');
+
+                        // same check but the grid still have resizers
+                        Manipulator.addResizers.calls.reset();
+                        Manipulator.removeResizers.calls.reset();
+                        Store.__private.setDesignModeStep('foo', initialStep);
+                        Store.__private.changeDesignModeStep('foo', step);
+
+                        // nothing changed
+                        expect(Manipulator.hasResizers(grid)).toBe(true, 'already have resizers');
+                        expect(Manipulator.addResizers.calls.count()).toEqual(0, 'already have resizers');
+                        expect(Manipulator.removeResizers.calls.count()).toEqual(0, 'already have resizers');
+                    });
+                });
+            });
+        });
+
+        describe("it should remove resizers if present when changing design mode step", function() {
+            // allowed changes that should end with no resizers
+            var tests = {
+                'enabled': ['disabled', 'dragging'],
+                'dragging': ['prehovering'],
+                'prehovering': ['dragging', 'hovering'],
+                'hovering': ['dragging']
+            };
+
+            _.each(tests, function(steps, initialStep) {
+                steps.forEach(function(step) {
+                    it("should remove/ignore them from `" + initialStep + "` to `" + step + "`", function(){
+                        var grid = createSimpleGrid();
+                        Manipulator.addResizers(grid);
+
+                        spyOn(Manipulator, 'addResizers').and.callThrough();
+                        spyOn(Manipulator, 'removeResizers').and.callThrough();
+
+                        // test going from `initialStep` asking to not change the grid
+                        Store.__private.setDesignModeStep('foo', initialStep);
+                        Store.__private.changeDesignModeStep('foo', step, true);
+
+                        expect(Manipulator.hasResizers(grid)).toBe(true, 'dontManageGrid=true');
+                        expect(Manipulator.addResizers.calls.count()).toEqual(0, 'dontManageGrid=true');
+                        expect(Manipulator.removeResizers.calls.count()).toEqual(0, 'dontManageGrid=true');
+
+                        // test going from `initialStep` asking to change the grid (the default)
+                        Manipulator.addResizers.calls.reset();
+                        Manipulator.removeResizers.calls.reset();
+                        Store.__private.setDesignModeStep('foo', initialStep);
+                        Store.__private.changeDesignModeStep('foo', step);
+
+                        expect(Manipulator.hasResizers(grid)).toBe(false, 'dontManageGrid=false');
+                        expect(Manipulator.addResizers.calls.count()).toEqual(0, 'dontManageGrid=false');
+                        expect(Manipulator.removeResizers.calls.count()).toEqual(1, 'dontManageGrid=false');
+
+                        // same check but the grid still have resizers
+                        Manipulator.addResizers.calls.reset();
+                        Manipulator.removeResizers.calls.reset();
+                        Store.__private.setDesignModeStep('foo', initialStep);
+                        Store.__private.changeDesignModeStep('foo', step);
+
+                        // nothing changed
+                        expect(Manipulator.hasResizers(grid)).toBe(false, 'already have no nore resizers');
+                        expect(Manipulator.addResizers.calls.count()).toEqual(0, 'already have no nore resizers');
+                        expect(Manipulator.removeResizers.calls.count()).toEqual(0, 'already have no nore resizers');
+                    });
+                });
+            });
         });
 
         it("should set the design step mode", function() {

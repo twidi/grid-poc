@@ -230,6 +230,18 @@ var Store = {
     },
 
     /**
+     * Tell if the grid has resizers
+     *
+     * @param  {string} gridName - Name of the grid for which we want to know if it has resizers
+     *
+     * @return {Boolean} - `true` if the grid has resizers, else `false`
+     */
+    hasResizers: function(gridName) {
+        var grid = this.getGrid(gridName);
+        return Manipulator.hasResizers(grid);
+    },
+
+    /**
      * Remove all the grids
      *
      * @private
@@ -295,6 +307,13 @@ var Private = {
      * It can go to
      * - `disabled` if the design mode is deactivated.
      * - `dragging` if a module starts being dragged.
+     * - `resizing` if a resizing handler is being moved
+     *
+     * @property {string} resizing
+     * The resizing has started.
+     *
+     * It can go to:
+     * - `enabled` if the resizing has stopped
      *
      * @property {string} dragging
      * The dragging has started, waiting for hovering.
@@ -321,7 +340,8 @@ var Private = {
      */
     designModeValidSteps: {
         'disabled': ['enabled'],
-        'enabled': ['disabled', 'dragging'],
+        'enabled': ['disabled', 'dragging', 'resizing'],
+        'resizing': ['enabled'],
         'dragging': ['enabled', 'prehovering'],
         'prehovering': ['dragging', 'hovering', 'enabled'],
         'hovering': ['dragging', 'enabled']
@@ -417,11 +437,11 @@ var Private = {
     },
 
     /**
-     * Set the design mode step for the given grid
+     * Set the design mode step for the given grid. Add/remove placeholders and resizers if needed
      *
      * @param {string} gridName - The XML grid for which we want to change de design mode step
      * @param {string} step - The new step ("disabled", "enabled", "dragging", "hovering")
-     * @param {boolean} [dontManageGrid] - If true, won't add or remove placeholders, don't manage grid ids
+     * @param {boolean} [dontManageGrid] - If true, won't add or remove placeholders/resizers, don't manage grid ids
      *
      * @return {} - Returns nothing
      */
@@ -444,11 +464,19 @@ var Private = {
 
         if (!dontManageGrid) {
             var gridHasPlaceholders = Manipulator.hasPlaceholders(grid);
+            var gridHasResizers = Manipulator.hasResizers(grid);
 
-            if (step == 'dragging' && !gridHasPlaceholders) {
-                Manipulator.addPlaceholders(grid);
-            } else if (step != 'dragging' && gridHasPlaceholders) {
+            if (!(step == 'dragging' ||  step == 'prehovering') && gridHasPlaceholders) {
                 Manipulator.removePlaceholders(grid);
+            }
+            if (!(step == 'enabled' ||  step == 'resizing') && gridHasResizers) {
+                Manipulator.removeResizers(grid);
+            }
+            if ((step == 'dragging' ||  step == 'prehovering') && !gridHasPlaceholders) {
+                Manipulator.addPlaceholders(grid);
+            }
+            if ((step == 'enabled' ||  step == 'resizing') && !gridHasResizers) {
+                Manipulator.addResizers(grid);
             }
 
             Manipulator.setIds(grid);
@@ -730,7 +758,7 @@ var Private = {
         this.setHoveringTimeout(gridName);
 
         // set design step to "prehovering"
-        this.changeDesignModeStep(gridName, 'prehovering', true);
+        this.changeDesignModeStep(gridName, 'prehovering');
 
         // emit events
         this.emit('grid.designMode.hovering.start', gridName);

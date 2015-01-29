@@ -5,6 +5,7 @@ var TestUtils = React.addons.TestUtils;
 
 var Cell = require('../../../app/Grid/Components/Cell.jsx');
 var Manipulator = require('../../../app/Grid/Manipulator.js');
+var Resizer = require('../../../app/Grid/Components/Resizer.jsx');
 var Row = require('../../../app/Grid/Components/Row.jsx');
 var Store = require('../../../app/Grid/Store.js');
 
@@ -31,6 +32,7 @@ describe("Grid.Components.Row", function() {
 
         // we add a grid with some content
         testGrid = componentUtils.makeTestGrid();
+        Manipulator.setIds(testGrid);
         gridRow = testGrid.querySelector('row');
 
         setTimeout(done, 0.01);
@@ -76,12 +78,30 @@ describe("Grid.Components.Row", function() {
         expect(component.isInDesignMode()).toBe(true);
     });
 
-    it("should be able to get its grid cells", function() {
+    it("should be able to get its grid cells if no resizers", function() {
         var element = React.createElement(Row, {node: gridRow});
         var component = componentUtils.renderIntoDocument(element);
         var cells = component.getCells();
-        var expectedCells = _.toArray(gridRow.querySelectorAll(':scope > cell'));
+        var expectedCells = _.toArray(gridRow.querySelectorAll(':scope > cell, :scope > resizer'));
         expect(cells).toEqual(expectedCells);
+        expect(cells.length).toEqual(2);
+        expect(cells[0].tagName).toEqual('cell');
+        expect(cells[1].tagName).toEqual('cell');
+    });
+
+    it("should be able to get its grid cells with resizers if any", function() {
+        Manipulator.addResizers(testGrid);
+        Manipulator.setIds(testGrid);
+
+        var element = React.createElement(Row, {node: gridRow});
+        var component = componentUtils.renderIntoDocument(element);
+        var cells = component.getCells();
+        var expectedCells = _.toArray(gridRow.querySelectorAll(':scope > cell, :scope > resizer'));
+        expect(cells).toEqual(expectedCells);
+        expect(cells.length).toEqual(3);
+        expect(cells[0].tagName).toEqual('cell');
+        expect(cells[1].tagName).toEqual('resizer');
+        expect(cells[2].tagName).toEqual('cell');
     });
 
     it("should know if it's a placeolder or not", function() {
@@ -111,6 +131,7 @@ describe("Grid.Components.Row", function() {
     it("should render a placeholder", function() {
         Manipulator.addPlaceholders(testGrid);
         Manipulator.setIds(testGrid);
+
         var placeholderGridRow = testGrid.querySelector('row[type=placeholder]');
         var element = React.createElement(Row, {node: placeholderGridRow});
         var component = componentUtils.renderIntoDocument(element);
@@ -120,14 +141,26 @@ describe("Grid.Components.Row", function() {
         expect(domNode.classList.contains('grid-row-placeholder')).toBe(true);
     });
 
-    it("should be able to render its cells", function() {
+    it("should be able to render its cells if no resizers", function() {
         var element = React.createElement(Row, {node: gridRow});
         var component = componentUtils.renderIntoDocument(element);
         var cells = component.renderCells();
         expect(cells.length).toEqual(2);
-        _(cells).forEach(function(cell) {
-            expect(TestUtils.isElementOfType(cell, Cell)).toBe(true);
-        });
+        expect(TestUtils.isElementOfType(cells[0], Cell)).toBe(true);
+        expect(TestUtils.isElementOfType(cells[1], Cell)).toBe(true);
+    });
+
+    it("should be able to render its cells and resizers if any", function() {
+        Manipulator.addResizers(testGrid);
+        Manipulator.setIds(testGrid);
+
+        var element = React.createElement(Row, {node: gridRow});
+        var component = componentUtils.renderIntoDocument(element);
+        var cells = component.renderCells();
+        expect(cells.length).toEqual(3);
+        expect(TestUtils.isElementOfType(cells[0], Cell)).toBe(true);
+        expect(TestUtils.isElementOfType(cells[1], Resizer)).toBe(true);
+        expect(TestUtils.isElementOfType(cells[2], Cell)).toBe(true);
     });
 
     it("should render sub components", function() {

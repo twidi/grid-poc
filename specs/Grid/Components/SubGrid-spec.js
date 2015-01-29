@@ -4,6 +4,7 @@ var TestUtils = React.addons.TestUtils;
 
 var Manipulator = require('../../../app/Grid/Manipulator.js');
 
+var Resizer = require('../../../app/Grid/Components/Resizer.jsx');
 var Row = require('../../../app/Grid/Components/Row.jsx');
 var Store = require('../../../app/Grid/Store.js');
 var SubGrid = require('../../../app/Grid/Components/SubGrid.jsx');
@@ -76,22 +77,52 @@ describe("Grid.Components.SubGrid", function() {
         expect(component.isInDesignMode()).toBe(true);
     });
 
-    it("should be able to get its grid rows", function() {
+    it("should be able to get its grid rows if no resizers", function() {
         var element = React.createElement(SubGrid, {node: subGrid});
         var component = componentUtils.renderIntoDocument(element);
-        var rows =component.getRows();
-        var expectedRows = _.toArray(subGrid.querySelectorAll(':scope > content > row'));
+        var rows = component.getRows();
+        var expectedRows = _.toArray(subGrid.querySelectorAll(':scope > content > row, :scope > content > resizer'));
         expect(rows).toEqual(expectedRows);
+        expect(rows.length).toEqual(2);
+        expect(rows[0].tagName).toEqual('row');
+        expect(rows[1].tagName).toEqual('row');
     });
 
-    it("should be able to render its rows", function() {
+    it("should be able to get its grid rows and resizers if any", function() {
+        Manipulator.addResizers(testGrid);
+        Manipulator.setIds(testGrid);
+
+        var element = React.createElement(SubGrid, {node: subGrid});
+        var component = componentUtils.renderIntoDocument(element);
+        var rows = component.getRows();
+        var expectedRows = _.toArray(subGrid.querySelectorAll(':scope > content > row, :scope > content > resizer'));
+        expect(rows).toEqual(expectedRows);
+        expect(rows.length).toEqual(3);
+        expect(rows[0].tagName).toEqual('row');
+        expect(rows[1].tagName).toEqual('resizer');
+        expect(rows[2].tagName).toEqual('row');
+    });
+
+    it("should be able to render its rows if no resizers", function() {
         var element = React.createElement(SubGrid, {node: subGrid});
         var component = componentUtils.renderIntoDocument(element);
         var rows = component.renderRows();
         expect(rows.length).toEqual(2);
-        _(rows).forEach(function(row) {
-            expect(TestUtils.isElementOfType(row, Row)).toBe(true);
-        });
+        expect(TestUtils.isElementOfType(rows[0], Row)).toBe(true);
+        expect(TestUtils.isElementOfType(rows[1], Row)).toBe(true);
+    });
+
+    it("should be able to render its rows and resizers if any", function() {
+        Manipulator.addResizers(testGrid);
+        Manipulator.setIds(testGrid);
+
+        var element = React.createElement(SubGrid, {node: subGrid});
+        var component = componentUtils.renderIntoDocument(element);
+        var rows = component.renderRows();
+        expect(rows.length).toEqual(3);
+        expect(TestUtils.isElementOfType(rows[0], Row)).toBe(true);
+        expect(TestUtils.isElementOfType(rows[1], Resizer)).toBe(true);
+        expect(TestUtils.isElementOfType(rows[2], Row)).toBe(true);
     });
 
     it("should render a grid", function() {
@@ -104,9 +135,12 @@ describe("Grid.Components.SubGrid", function() {
         expect(domNode.classList.contains('grid-last-level-with-placeholders')).toBe(false);
     });
 
-    it("should have a specific class when its the deapest grid", function() {
+    it("should have a specific class when its the deepest grid", function() {
         Manipulator.addPlaceholders(testGrid);
+        Manipulator.setIds(testGrid);
+
         subGrid = testGrid.querySelector('cell[type=grid] cell[type=grid]');
+
         var element = React.createElement(SubGrid, {node: subGrid});
         var component = componentUtils.renderIntoDocument(element);
         var domNode = component.getDOMNode();

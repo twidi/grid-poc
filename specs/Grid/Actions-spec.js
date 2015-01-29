@@ -138,7 +138,7 @@ describe("Grid.Actions", function() {
 
                 // check if the grid is still the same
                 var expected =
-                    '<grid name="foo" space="5px" type="mainGrid" id="grid-1">' +
+                    '<grid name="foo" space="5px" type="mainGrid" id="grid-1" hasResizers="true">' +
                         '<content id="content-2"/>' +
                     '</grid>';
                 expect(grid).toEqualXML(expected);
@@ -798,13 +798,14 @@ describe("Grid.Actions", function() {
 
                             // check if the grid the dragged cell moved
                             var expected = otherPlaceholder ?
-                                '<grid name="foo" space="5px" type="mainGrid" id="grid-1">' +
+                                '<grid name="foo" space="5px" type="mainGrid" id="grid-1" hasResizers="true">' +
                                     '<content id="content-2">' +
                                         '<row id="row-3">' +
                                             '<cell type="module" id="cell-6">' +
                                                 '<content id="content-7"/>' +
                                             '</cell>' +
                                         '</row>' +
+                                        '<resizer type="horizontal" id="resizer-18"/>' +
                                         '<row id="row-15">' +
                                             '<cell type="module" id="cell-16">' +
                                                 '<content id="content-5"/>' +
@@ -815,12 +816,13 @@ describe("Grid.Actions", function() {
 
                                 :
 
-                                '<grid name="foo" space="5px" type="mainGrid" id="grid-1">' +
+                                '<grid name="foo" space="5px" type="mainGrid" id="grid-1" hasResizers="true">' +
                                     '<content id="content-2">' +
                                         '<row id="row-3">' +
                                             '<cell type="module" id="cell-11">' +
                                                 '<content id="content-5"/>' +
                                             '</cell>' +
+                                            '<resizer type="vertical" id="resizer-18"/>' +
                                             '<cell type="module" id="cell-6">' +
                                                 '<content id="content-7"/>' +
                                             '</cell>' +

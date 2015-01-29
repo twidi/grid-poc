@@ -77,6 +77,27 @@ var componentUtils = {
             return 0;
         };
     },
+    countResizers: function(component) {
+        try {
+            return TestUtils.scryRenderedDOMComponentsWithClass(component, 'grid-resizer').length;
+        } catch(e) {
+            return 0;
+        };
+    },
+    countVerticalResizers: function(component) {
+        try {
+            return TestUtils.scryRenderedDOMComponentsWithClass(component, 'grid-resizer-vertical').length;
+        } catch(e) {
+            return 0;
+        };
+    },
+    countHorizontalResizers: function(component) {
+        try {
+            return TestUtils.scryRenderedDOMComponentsWithClass(component, 'grid-resizer-horizontal').length;
+        } catch(e) {
+            return 0;
+        };
+    },
 
     clearModulesCache: function() {
         var ModulesCache = require('../../../app/Grid/Components/ModulesCache.js');
