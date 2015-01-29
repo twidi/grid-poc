@@ -16,11 +16,19 @@ var App = React.createClass({
             gridName: null,
         };
     },
+
     componentWillMount: function () {
         Store.on('grid.add', this.onGridAdded);
     },
+
     componentWillUnmount: function () {
         Store.off('grid.add', this.onGridAdded);
+    },
+
+    componentDidMount: function() {
+        if (!this.state.gridName) {
+            this.initGrid();
+        }
     },
 
     onGridAdded: function(gridName) {
@@ -55,6 +63,8 @@ var App = React.createClass({
             '</grid>');
 
         Manipulator.setIds(grid);
+        // Manipulator.addPlaceholders(grid);
+        // Manipulator.setIds(grid);
         Actions.addGrid(grid);
     },
 
