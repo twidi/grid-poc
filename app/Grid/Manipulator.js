@@ -194,7 +194,7 @@ var Manipulator = {
         if (beforeRow && beforeRow.parentNode != contentNode) {
             throw new this.Exceptions.Inconsistency("The 'beforeRow' must be a child of the content of the 'node'");
         }
-        var row = node.ownerDocument.createElement('rows');
+        var row = node.ownerDocument.createElement('row');
         if (beforeRow) {
             contentNode.insertBefore(row, beforeRow);
         } else {
@@ -227,7 +227,7 @@ var Manipulator = {
         if (!this.reCellType.test(type)) {
             throw new this.Exceptions.InvalidType("Cannot add cell of type <" + type + ">. Should be <grid> or <module>");
         }
-        var cell = row.ownerDocument.createElement('cells');
+        var cell = row.ownerDocument.createElement('cell');
         cell.setAttribute('type', type);
         if (!contentNode) {
             contentNode = row.ownerDocument.createElement('content');
@@ -289,29 +289,29 @@ var Manipulator = {
                 somethingRemoved = false;
 
                 // remove all empty cells (assume only possible children is "content")
-                _(contentNode.querySelectorAll('cells:empty')).forEach(function(cell) {
+                _(contentNode.querySelectorAll('cell:empty')).forEach(function(cell) {
                     cell.parentNode.removeChild(cell);
                     somethingRemoved = true;
                 });
 
                 // remove all empty rows (assume only possible children are "cells")
-                _(contentNode.querySelectorAll('rows:empty')).forEach(function(row) {
+                _(contentNode.querySelectorAll('row:empty')).forEach(function(row) {
                     row.parentNode.removeChild(row);
                     somethingRemoved = true;
                 });
 
                 // remove all grid withtout rows
-                _(contentNode.querySelectorAll('cells[type=grid] > content:empty')).forEach(function(content) {
+                _(contentNode.querySelectorAll('cell[type=grid] > content:empty')).forEach(function(content) {
                     content.parentNode.removeChild(content);
                     somethingRemoved = true;
                 });
 
                 // remove rows having only placeholders cells (and more than one: the other ones used to
                 // hold real cells not here anymore)
-                _(contentNode.querySelectorAll('rows:not([type=placeholder])')).forEach(function(row) {
-                    var nbPlaceholderCells = row.querySelectorAll(':scope > cells[type=placeholder]').length;
+                _(contentNode.querySelectorAll('row:not([type=placeholder])')).forEach(function(row) {
+                    var nbPlaceholderCells = row.querySelectorAll(':scope > cell[type=placeholder]').length;
                     if (nbPlaceholderCells > 1) {
-                        var nbCells = row.querySelectorAll(':scope > cells').length;
+                        var nbCells = row.querySelectorAll(':scope > cell').length;
                         if (nbCells == nbPlaceholderCells) {
                             row.parentNode.removeChild(row);
                         }
@@ -322,14 +322,14 @@ var Manipulator = {
 
             // reload contentNode if emptyed above
             contentNode = grid.querySelector(':scope > content');
-            var rows = contentNode.querySelectorAll(':scope > rows');
+            var rows = contentNode.querySelectorAll(':scope > row');
 
             if (rows.length == 1) {
                 var cells;
 
                 // move a grid inside the current grid only if it's a subgrid
                 if (nodeType == 'grid') {
-                    cells = rows[0].querySelectorAll(':scope > cells');
+                    cells = rows[0].querySelectorAll(':scope > cell');
                     if (cells.length == 1) {
                         nodeType = cells[0].getAttribute('type')
                         grid.setAttribute('type', nodeType);
@@ -347,15 +347,15 @@ var Manipulator = {
 
                 // we have only one row, but within it only one grid cell, so we replace our row by the cell ones
                 if (!rows) {
-                    rows = contentNode.querySelectorAll(':scope > rows');
+                    rows = contentNode.querySelectorAll(':scope > row');
                 }
                 if (rows.length == 1) {
                     if (!cells) {
-                        cells = rows[0].querySelectorAll(':scope > cells');
+                        cells = rows[0].querySelectorAll(':scope > cell');
                     }
                     if (cells.length == 1 && cells[0].getAttribute('type') == 'grid') {
                         // add all sub rows to the current grid
-                        _(cells[0].querySelectorAll(':scope > content > rows')).forEach(function(cellRow) {
+                        _(cells[0].querySelectorAll(':scope > content > row')).forEach(function(cellRow) {
                             contentNode.appendChild(cellRow);
                         });
                         // our original row is now empty, we can remove it
@@ -363,7 +363,7 @@ var Manipulator = {
                     } else if (this.reGridType.test(nodeType)) {  // maybe it's a module now
                         // only one row but many cells... maybe we are the only child of our parent row ?
                         var parentRow = grid.parentNode;
-                        if (parentRow && parentRow.querySelectorAll(':scope > cells').length == 1) {
+                        if (parentRow && parentRow.querySelectorAll(':scope > cell').length == 1) {
                             // ok so we move our cells in our parent row
                             _(cells).forEach(function(cell) {
                                 parentRow.appendChild(cell);
@@ -430,19 +430,19 @@ var Manipulator = {
             isSurround, displayLeftRightPlaceholders;
 
         // surround all grid, including current if it matches
-        var grids = grid.parentNode.querySelectorAll('grid, cells[type=grid]');
+        var grids = grid.parentNode.querySelectorAll('grid, cell[type=grid]');
         for (var i = 0; i < grids.length; i++) {
             subGrid = grids[i];
 
             // surround the grid if it has more than one row
-            if (subGrid.querySelectorAll(':scope > content > rows').length > 1) {
+            if (subGrid.querySelectorAll(':scope > content > row').length > 1) {
                 this.surroundCellWithGrid(subGrid);
                 subGrid.setAttribute('surround', 1);
             }
         }
 
         // surround all modules if more than one in the grid
-        modules = grid.querySelectorAll('cells[type=module]');
+        modules = grid.querySelectorAll('cell[type=module]');
         if (modules.length > 1) {
             for (var j = 0; j < modules.length; j++) {
                 this.surroundCellWithGrid(modules[j]);
@@ -451,10 +451,10 @@ var Manipulator = {
         }
 
         // add cells placeholders on each row
-        var rows = grid.querySelectorAll('rows');
+        var rows = grid.querySelectorAll('row');
         for (var m = 0; m < rows.length; m++) {
             row = rows[m];
-            cells = row.querySelectorAll(':scope > cells');
+            cells = row.querySelectorAll(':scope > cell');
 
             // is the row on a grid here only to surround an other one ?
             isSurround = row.parentNode.parentNode.hasAttribute('surround');
@@ -463,7 +463,7 @@ var Manipulator = {
             // left/rights placeholders because ones around the module will do the job
             displayLeftRightPlaceholders = !(cells.length == 1
                                           && cells[0].getAttribute('type') == 'grid'
-                                          && row.querySelectorAll('cells[type=module]').length==1);
+                                          && row.querySelectorAll('cell[type=module]').length==1);
 
             // add a cell placeholders before each cell
             for (var n = 0; n < cells.length; n++) {
@@ -482,10 +482,10 @@ var Manipulator = {
         };
 
         // add row placeholders on each grid
-        var grids = grid.parentNode.querySelectorAll('grid, cells[type=grid]');
+        var grids = grid.parentNode.querySelectorAll('grid, cell[type=grid]');
         for (var k = 0; k < grids.length; k++) {
             var subGrid = grids[k];
-            rows = subGrid.querySelectorAll(':scope > content > rows');
+            rows = subGrid.querySelectorAll(':scope > content > row');
 
             // is the cell on a grid here only to surround an other one ?
             isSurround = subGrid.hasAttribute('surround');
@@ -533,13 +533,13 @@ var Manipulator = {
         }
 
         // remove each placeholders rows except ones with a module in
-        _(grid.querySelectorAll('rows[type=placeholder]')).forEach(function(row) {
-            if (row.querySelectorAll('cells[type=module]').length) { return; }
+        _(grid.querySelectorAll('row[type=placeholder]')).forEach(function(row) {
+            if (row.querySelectorAll('cell[type=module]').length) { return; }
             row.parentNode.removeChild(row);
         });
         // remove each placeholders cells except ones with a module in
-        _(grid.querySelectorAll('cells[type=placeholder]')).forEach(function(cell) {
-            if (cell.querySelectorAll('cells[type=module]').length) { return; }
+        _(grid.querySelectorAll('cell[type=placeholder]')).forEach(function(cell) {
+            if (cell.querySelectorAll('cell[type=module]').length) { return; }
             cell.parentNode.removeChild(cell);
         });
         // remove type=placeholder attribute for trees with a module (ie, all nodes left having type=placeholder)
@@ -548,7 +548,7 @@ var Manipulator = {
         });
 
         // clean all module cells
-        _(grid.querySelectorAll('cells[type=grid]')).forEach(function(cell) {
+        _(grid.querySelectorAll('cell[type=grid]')).forEach(function(cell) {
             Manipulator.cleanGrid(cell);
         });
 
@@ -608,7 +608,7 @@ var Manipulator = {
      * @return {Boolean} - `true` if the node contains at least one subgrid, or `false`
      */
     containsSubGrid: function(node) {
-        return !!node.querySelector('cells[type=grid]');
+        return !!node.querySelector('cell[type=grid]');
     },
 
     /**
@@ -669,7 +669,7 @@ var Manipulator = {
     },
 
     /**
-     * Create the "content" XML node to use as a module (in a <cells type=module>)
+     * Create the "content" XML node to use as a module (in a <cell type=module>)
      *
      * @param  {JSON} params - The params of the module, to be converted in XML.
      * It should be a single level object with only string or numbers.
@@ -739,14 +739,14 @@ var Manipulator = {
         var rows, cells, resizer;
 
         // add a resizer between each row of a grid
-        var grids = grid.parentNode.querySelectorAll('grid, cells[type=grid]');
+        var grids = grid.parentNode.querySelectorAll('grid, cell[type=grid]');
         for (var i = 0; i < grids.length; i++) {
             // add a horizontal resizer before each row, except before the first one
-            rows = grids[i].querySelectorAll(':scope > content > rows');
+            rows = grids[i].querySelectorAll(':scope > content > row');
             for (var j = 0; j < rows.length; j++) {
                 if (j) { Manipulator.addResizer(rows[j]); }
                 // add a vertical resizer before each row, except before the first one
-                cells = rows[j].querySelectorAll(':scope > cells');
+                cells = rows[j].querySelectorAll(':scope > cell');
                 for (var k = 1; k < cells.length; k++) {
                     Manipulator.addResizer(cells[k]);
                 }
@@ -771,12 +771,12 @@ var Manipulator = {
     addResizer: function(beforeNode) {
         var nodeType = beforeNode.tagName;
         var resizerType;
-        if (nodeType == 'rows') {
+        if (nodeType == 'row') {
             resizerType = 'horizontal';
-        } else if (nodeType == 'cells') {
+        } else if (nodeType == 'cell') {
             resizerType = 'vertical';
         } else {
-            throw new this.Exceptions.InvalidType("Cannot add a resizer before a node of type <" + nodeType + ">. Should be a <rows> or a <cells>");
+            throw new this.Exceptions.InvalidType("Cannot add a resizer before a node of type <" + nodeType + ">. Should be a <rows> or a <cell>");
         }
         if (beforeNode == beforeNode.parentNode.firstChild) {
             throw new this.Exceptions.Inconsistency("Cannot add a resizer before the first node");

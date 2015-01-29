@@ -25,9 +25,9 @@ describe("Grid.Store", function() {
         var grid = Manipulator.XMLStringToXMLGrid(
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
-                    '<rows>' +
-                        '<cells type="module"><content/></cells>' +
-                    '</rows>' +
+                    '<row>' +
+                        '<cell type="module"><content/></cell>' +
+                    '</row>' +
                 '</content>' +
             '</grid>');
         Manipulator.setIds(grid);
@@ -109,8 +109,8 @@ describe("Grid.Store", function() {
     it("should tell if it's the dragging cell", function() {
         var grid = createSimpleGrid();
 
-        var row  = grid.querySelector('rows');
-        var cell = grid.querySelector('cells[type=module]');
+        var row  = grid.querySelector('row');
+        var cell = grid.querySelector('cell[type=module]');
         var otherCell = Manipulator.addCell(row, null, 'module');
 
         expect(Store.isDraggingCell('foo', cell)).toBe(false);
@@ -134,8 +134,8 @@ describe("Grid.Store", function() {
     it("should tell if it's the hovering cell", function() {
         var grid = createSimpleGrid();
 
-        var row  = grid.querySelector('rows');
-        var cell = grid.querySelector('cells[type=module]');
+        var row  = grid.querySelector('row');
+        var cell = grid.querySelector('cell[type=module]');
         var otherCell = Manipulator.addCell(row, null, 'module');
 
         expect(Store.isHoveringPlaceholder('foo', cell)).toBe(false);
@@ -406,7 +406,7 @@ describe("Grid.Store", function() {
             }).toThrowError(Store.Exceptions.GridDoesNotExist, "No grid with the name <absent>");
 
             var grid = createSimpleGrid();
-            var node = grid.querySelector('cells');
+            var node = grid.querySelector('cell');
 
             // ok for grid+node
             expect(function() {
@@ -544,8 +544,8 @@ describe("Grid.Store", function() {
 
         it("should save a node", function() {
             var grid = createSimpleGrid();
-            var row = grid.querySelector('rows');
-            var cell = grid.querySelector('cells[type=module]');
+            var row = grid.querySelector('row');
+            var cell = grid.querySelector('cell[type=module]');
 
             Store.__private.saveNode('foo', cell, 'mycell');
 
@@ -562,8 +562,8 @@ describe("Grid.Store", function() {
 
         it("should find a saved node in another grid using its id", function() {
             var grid = createSimpleGrid();
-            var row = grid.querySelector('rows');
-            var cell = grid.querySelector('cells[type=module]');
+            var row = grid.querySelector('row');
+            var cell = grid.querySelector('cell[type=module]');
 
             // first test without changing the grid
             var clonedRow = Store.__private.getSameNodeInActualGrid('foo', row);
@@ -593,8 +593,8 @@ describe("Grid.Store", function() {
 
         it("should get the saved node", function() {
             var grid = createSimpleGrid();
-            var row = grid.querySelector('rows');
-            var cell = grid.querySelector('cells[type=module]');
+            var row = grid.querySelector('row');
+            var cell = grid.querySelector('cell[type=module]');
 
             Store.__private.saveNode('foo', cell, 'mycell');
             Store.__private.saveNode('foo', row, 'myrow');
@@ -637,8 +637,8 @@ describe("Grid.Store", function() {
 
         it("should clear a saved node", function() {
             var grid = createSimpleGrid();
-            var row = grid.querySelector('rows');
-            var cell = grid.querySelector('cells[type=module]');
+            var row = grid.querySelector('row');
+            var cell = grid.querySelector('cell[type=module]');
 
             Store.__private.saveNode('foo', cell, 'mycell');
             Store.__private.saveNode('foo', row, 'myrow');

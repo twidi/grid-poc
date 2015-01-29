@@ -101,7 +101,7 @@ describe("Grid.Components.MainGrid", function() {
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = componentUtils.renderIntoDocument(element);
         var rows =component.getRows();
-        var expectedRows = _.toArray(testGrid.querySelectorAll(':scope > content > rows'));
+        var expectedRows = _.toArray(testGrid.querySelectorAll(':scope > content > row'));
         expect(rows).toEqual(expectedRows);
     });
 
@@ -254,7 +254,7 @@ describe("Grid.Components.MainGrid", function() {
         Store.__private.enterDesignMode('Test grid');
 
         // first shot with start drag + cancel drag
-        Store.__private.startDragging('Test grid', testGrid.querySelector('cells[type=module]'));
+        Store.__private.startDragging('Test grid', testGrid.querySelector('cell[type=module]'));
 
         // leave time for the designMode.dragging.start to be catched
         setTimeout(function() {
@@ -269,7 +269,7 @@ describe("Grid.Components.MainGrid", function() {
                 // now second show sith start drag + drop
                 component.activateDropDetection.calls.reset();
                 component.deactivateDropDetection.calls.reset();
-                Store.__private.startDragging('Test grid', testGrid.querySelector('cells[type=module]'));
+                Store.__private.startDragging('Test grid', testGrid.querySelector('cell[type=module]'));
 
                 // leave time for the designMode.dragging.start to be catched
                 setTimeout(function() {
@@ -307,7 +307,7 @@ describe("Grid.Components.MainGrid", function() {
 
         // simulate grid in dragging mode
         Store.__private.enterDesignMode('Test grid');
-        Store.__private.startDragging('Test grid', Store.getGrid('Test grid').querySelector('cells[type=module]'));
+        Store.__private.startDragging('Test grid', Store.getGrid('Test grid').querySelector('cell[type=module]'));
 
         // simulate a stopped drag (mouse button release)
         Store.__private.cancelDragging('Test grid');
@@ -318,7 +318,7 @@ describe("Grid.Components.MainGrid", function() {
             expect(fakeDragEndCalled).toEqual(1);
 
             // go back in dragging mode
-            Store.__private.startDragging('Test grid', Store.getGrid('Test grid').querySelector('cells[type=module]'));
+            Store.__private.startDragging('Test grid', Store.getGrid('Test grid').querySelector('cell[type=module]'));
 
             // then simulate a drop
             Store.__private.drop('Test grid');
@@ -329,10 +329,10 @@ describe("Grid.Components.MainGrid", function() {
                 expect(fakeDragEndCalled).toEqual(2);
 
                 // go back in dragging mode
-                Store.__private.startDragging('Test grid', Store.getGrid('Test grid').querySelector('cells[type=module]'));
+                Store.__private.startDragging('Test grid', Store.getGrid('Test grid').querySelector('cell[type=module]'));
 
                 // then simulate a drop on a placeholder
-                Store.__private.drop('Test grid', Store.getGrid('Test grid').querySelector('cells[type=placeholder]'));
+                Store.__private.drop('Test grid', Store.getGrid('Test grid').querySelector('cell[type=placeholder]'));
 
                 // leave time for event to propagate
                 setTimeout(function() {
@@ -364,7 +364,7 @@ describe("Grid.Components.MainGrid", function() {
 
         // simulate grid in dragging mode
         Store.__private.enterDesignMode('Test grid');
-        Store.__private.startDragging('Test grid', Store.getGrid('Test grid').querySelector('cells[type=module]'));
+        Store.__private.startDragging('Test grid', Store.getGrid('Test grid').querySelector('cell[type=module]'));
 
         // leave time to let the start drag events to propagate
         setTimeout(function() {
@@ -444,7 +444,7 @@ describe("Grid.Components.MainGrid", function() {
 
         // simulate grid in dragging mode
         Store.__private.enterDesignMode('Test grid');
-        Store.__private.startDragging('Test grid', Store.getGrid('Test grid').querySelector('cells[type=module]'));
+        Store.__private.startDragging('Test grid', Store.getGrid('Test grid').querySelector('cell[type=module]'));
 
         // leave time to let the start drag events to propagate
         setTimeout(function() {
@@ -452,7 +452,7 @@ describe("Grid.Components.MainGrid", function() {
             // get the placeholder to use to simulate events on it
             // we get the node from the grid and one from the dom, using the fact that `querySelector`
             // will always return the first in the tree, and both tree are similars
-            var placeholder = Store.getGrid('Test grid').querySelector('cells[type=placeholder]');
+            var placeholder = Store.getGrid('Test grid').querySelector('cell[type=placeholder]');
             var placeholderDomNode = domNode.querySelector('.grid-cell-placeholder');
 
             var draggedCell = Store.__private.grids['Test grid'].nodes.dragging;
@@ -525,7 +525,7 @@ describe("Grid.Components.MainGrid", function() {
 
         // simulate grid in dragging mode
         Store.__private.enterDesignMode('Test grid');
-        Store.__private.startDragging('Test grid', Store.getGrid('Test grid').querySelector('cells[type=module]'));
+        Store.__private.startDragging('Test grid', Store.getGrid('Test grid').querySelector('cell[type=module]'));
 
         // leave time to let the start drag events to propagate
         setTimeout(function() {

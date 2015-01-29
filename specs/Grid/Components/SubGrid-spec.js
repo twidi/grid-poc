@@ -31,7 +31,7 @@ describe("Grid.Components.SubGrid", function() {
 
         // we add a grid with some content
         testGrid = componentUtils.makeTestGrid();
-        subGrid = testGrid.querySelector('cells[type=grid]');
+        subGrid = testGrid.querySelector('cell[type=grid]');
 
         setTimeout(done, 0.01);
     });
@@ -80,7 +80,7 @@ describe("Grid.Components.SubGrid", function() {
         var element = React.createElement(SubGrid, {node: subGrid});
         var component = componentUtils.renderIntoDocument(element);
         var rows =component.getRows();
-        var expectedRows = _.toArray(subGrid.querySelectorAll(':scope > content > rows'));
+        var expectedRows = _.toArray(subGrid.querySelectorAll(':scope > content > row'));
         expect(rows).toEqual(expectedRows);
     });
 
@@ -106,7 +106,7 @@ describe("Grid.Components.SubGrid", function() {
 
     it("should have a specific class when its the deapest grid", function() {
         Manipulator.addPlaceholders(testGrid);
-        subGrid = testGrid.querySelector('cells[type=grid] cells[type=grid]');
+        subGrid = testGrid.querySelector('cell[type=grid] cell[type=grid]');
         var element = React.createElement(SubGrid, {node: subGrid});
         var component = componentUtils.renderIntoDocument(element);
         var domNode = component.getDOMNode();

@@ -36,7 +36,7 @@ var Row = {
      * @return {array} - An array of XML grid cells
      */
     getCells: function() {
-        return _.toArray(this.state.node.querySelectorAll(':scope > cells'));
+        return _.toArray(this.state.node.querySelectorAll(':scope > cell'));
     },
 
     /**

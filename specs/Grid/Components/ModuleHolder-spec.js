@@ -36,7 +36,7 @@ describe("Grid.Components.ModuleHolder", function() {
 
         // we add a grid with some content
         testGrid = componentUtils.makeTestGrid();
-        moduleGridCell = testGrid.querySelector('cells[type=module]');
+        moduleGridCell = testGrid.querySelector('cell[type=module]');
         attributes = ModulesCache._extractAttributes(moduleGridCell.querySelector(':scope > content'));
         cacheKey = stringify(attributes);
 

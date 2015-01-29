@@ -31,7 +31,7 @@ describe("Grid.Components.ModulesCache", function() {
 
         // we add a grid with some content
         testGrid = componentUtils.makeTestGrid();
-        var moduleGridCell = testGrid.querySelector('cells[type=module]');
+        var moduleGridCell = testGrid.querySelector('cell[type=module]');
         var cellElement = React.createElement(Cell, {node: moduleGridCell});
 
         // we don't want the cell to call the ModulesCache
@@ -226,7 +226,7 @@ describe("Grid.Components.ModulesCache", function() {
 
             // change cell props
             var clonedGrid = Manipulator.clone(testGrid);
-            var clonedCell = clonedGrid.querySelector('cells[type=module]');
+            var clonedCell = clonedGrid.querySelector('cell[type=module]');
             cellComponent.setProps({node: clonedCell});
 
             // give some time to propagate the props update
@@ -268,7 +268,7 @@ describe("Grid.Components.ModulesCache", function() {
         setTimeout(function() {
             // get a new grid cell
             var clonedGrid = Manipulator.clone(testGrid);
-            var clonedCell = clonedGrid.querySelector('cells[type=module]');
+            var clonedCell = clonedGrid.querySelector('cell[type=module]');
 
             // set it in the cache
             var cache = getCacheEntry();

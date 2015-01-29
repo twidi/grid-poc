@@ -31,7 +31,7 @@ describe("Grid.Components.Row", function() {
 
         // we add a grid with some content
         testGrid = componentUtils.makeTestGrid();
-        gridRow = testGrid.querySelector('rows');
+        gridRow = testGrid.querySelector('row');
 
         setTimeout(done, 0.01);
     });
@@ -79,8 +79,8 @@ describe("Grid.Components.Row", function() {
     it("should be able to get its grid cells", function() {
         var element = React.createElement(Row, {node: gridRow});
         var component = componentUtils.renderIntoDocument(element);
-        var cells =component.getCells();
-        var expectedCells = _.toArray(gridRow.querySelectorAll(':scope > cells'));
+        var cells = component.getCells();
+        var expectedCells = _.toArray(gridRow.querySelectorAll(':scope > cell'));
         expect(cells).toEqual(expectedCells);
     });
 
@@ -88,12 +88,12 @@ describe("Grid.Components.Row", function() {
         Manipulator.addPlaceholders(testGrid);
         Manipulator.setIds(testGrid);
 
-        gridRow = testGrid.querySelector('rows[type=placeholder]');
+        gridRow = testGrid.querySelector('row[type=placeholder]');
         var element = React.createElement(Row, {node: gridRow});
         var component = componentUtils.renderIntoDocument(element);
         expect(component.isPlaceholder()).toBe(true);
 
-        gridRow = testGrid.querySelector('rows:not([type=placeholder])');
+        gridRow = testGrid.querySelector('row:not([type=placeholder])');
         var element = React.createElement(Row, {node: gridRow});
         var component = componentUtils.renderIntoDocument(element);
         expect(component.isPlaceholder()).toBe(false);
@@ -111,7 +111,7 @@ describe("Grid.Components.Row", function() {
     it("should render a placeholder", function() {
         Manipulator.addPlaceholders(testGrid);
         Manipulator.setIds(testGrid);
-        var placeholderGridRow = testGrid.querySelector('rows[type=placeholder]');
+        var placeholderGridRow = testGrid.querySelector('row[type=placeholder]');
         var element = React.createElement(Row, {node: placeholderGridRow});
         var component = componentUtils.renderIntoDocument(element);
         var domNode = component.getDOMNode();

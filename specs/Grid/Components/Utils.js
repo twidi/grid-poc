@@ -15,24 +15,24 @@ var componentUtils = {
         var testGrid = Manipulator.XMLStringToXMLGrid(
             '<grid name="Test grid" space="5px" type="mainGrid">' +
                 '<content>' +
-                    '<rows>' +
-                        '<cells type="module"><content component="Module.Test1" text="test 1-1"/></cells>' +
-                        '<cells type="grid">' +
+                    '<row>' +
+                        '<cell type="module"><content component="Module.Test1" text="test 1-1"/></cell>' +
+                        '<cell type="grid">' +
                             '<content>' +
-                                '<rows>' +
-                                    '<cells type="module"><content component="Module.Test2" text="test 2-1"/></cells>' +
-                                '</rows>' +
-                                '<rows>' +
-                                    '<cells type="module"><content component="Module.Test1" text="test 1-2"/></cells>' +
-                                '</rows>' +
+                                '<row>' +
+                                    '<cell type="module"><content component="Module.Test2" text="test 2-1"/></cell>' +
+                                '</row>' +
+                                '<row>' +
+                                    '<cell type="module"><content component="Module.Test1" text="test 1-2"/></cell>' +
+                                '</row>' +
                             '</content>' +
-                        '</cells>' +
-                    '</rows>' +
-                    '<rows>' +
-                        '<cells type="module"><content component="Module.Test1" text="test 1-3"/></cells>' +
-                        '<cells type="module"><content component="Module.Test2" text="test 2-2"/></cells>' +
-                        '<cells type="module"><content component="Module.Test2" text="test 2-3"/></cells>' +
-                    '</rows>' +
+                        '</cell>' +
+                    '</row>' +
+                    '<row>' +
+                        '<cell type="module"><content component="Module.Test1" text="test 1-3"/></cell>' +
+                        '<cell type="module"><content component="Module.Test2" text="test 2-2"/></cell>' +
+                        '<cell type="module"><content component="Module.Test2" text="test 2-3"/></cell>' +
+                    '</row>' +
                 '</content>' +
             '</grid>');
 

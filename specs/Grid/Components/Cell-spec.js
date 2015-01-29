@@ -37,8 +37,8 @@ describe("Grid.Components.Cell", function() {
 
         // we add a grid with some content
         testGrid = componentUtils.makeTestGrid();
-        moduleGridCell = testGrid.querySelector('cells[type=module]');
-        subGridCell = testGrid.querySelector('cells[type=grid]');
+        moduleGridCell = testGrid.querySelector('cell[type=module]');
+        subGridCell = testGrid.querySelector('cell[type=grid]');
 
         setTimeout(done, 0.01);
     });
@@ -103,7 +103,7 @@ describe("Grid.Components.Cell", function() {
         Manipulator.addPlaceholders(testGrid);
         Manipulator.setIds(testGrid);
 
-        var gridCell = testGrid.querySelector('cells[type=placeholder]');
+        var gridCell = testGrid.querySelector('cell[type=placeholder]');
         element = React.createElement(Cell, {node: gridCell});
         component = componentUtils.renderIntoDocument(element);
 
@@ -180,7 +180,7 @@ describe("Grid.Components.Cell", function() {
         jasmineReact.spyOnClass(Cell, 'renderAsPlaceholder').and.callThrough();
 
         Manipulator.addPlaceholders(testGrid);
-        var placeholderGridCell = testGrid.querySelector('cells[type=placeholder]');
+        var placeholderGridCell = testGrid.querySelector('cell[type=placeholder]');
         var element = React.createElement(Cell, {node: placeholderGridCell});
         var component = componentUtils.renderIntoDocument(element);
         var domNode = component.getDOMNode();
@@ -256,7 +256,7 @@ describe("Grid.Components.Cell", function() {
 
         Manipulator.addPlaceholders(testGrid);
         Manipulator.setIds(testGrid);
-        var gridCell = testGrid.querySelector('cells[type=placeholder]');
+        var gridCell = testGrid.querySelector('cell[type=placeholder]');
         element = React.createElement(Cell, {node: gridCell});
         component = componentUtils.renderIntoDocument(element);
         expect(component.canHoldExternalNodes()).toBe(false);
@@ -321,7 +321,7 @@ describe("Grid.Components.Cell", function() {
 
         Manipulator.addPlaceholders(testGrid);
         Manipulator.setIds(testGrid);
-        var gridCell = testGrid.querySelector('cells[type=placeholder]');
+        var gridCell = testGrid.querySelector('cell[type=placeholder]');
         element = React.createElement(Cell, {node: gridCell});
         component = componentUtils.renderIntoDocument(element);
 

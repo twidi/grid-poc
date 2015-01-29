@@ -20,16 +20,16 @@ describe("Grid.Manipulator", function() {
         var grid = Manipulator.XMLStringToXMLGrid(
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
-                    '<rows>' +
-                        '<cells type="grid">' +
+                    '<row>' +
+                        '<cell type="grid">' +
                             '<content>' +
-                                '<rows>' +
-                                    '<cells type="module"><content/></cells>' +
-                                '</rows>' +
+                                '<row>' +
+                                    '<cell type="module"><content/></cell>' +
+                                '</row>' +
                             '</content>' +
-                        '</cells>' +
-                        '<cells type="module"><content/></cells>' +
-                    '</rows>' +
+                        '</cell>' +
+                        '<cell type="module"><content/></cell>' +
+                    '</row>' +
                 '</content>' +
             '</grid>');
 
@@ -55,7 +55,7 @@ describe("Grid.Manipulator", function() {
         var expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
-                    '<rows/>' +
+                    '<row/>' +
                 '</content>' +
             '</grid>';
         expect(grid).toEqualXML(expected);
@@ -65,8 +65,8 @@ describe("Grid.Manipulator", function() {
         var expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
-                    '<rows/>' +
-                    '<rows type="foo"/>' +
+                    '<row/>' +
+                    '<row type="foo"/>' +
                 '</content>' +
             '</grid>';
         expect(grid).toEqualXML(expected);
@@ -76,8 +76,8 @@ describe("Grid.Manipulator", function() {
         var expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
-                    '<rows/>' +
-                    '<rows type="foo" foo="bar"/>' +
+                    '<row/>' +
+                    '<row type="foo" foo="bar"/>' +
                 '</content>' +
             '</grid>';
         expect(grid).toEqualXML(expected);
@@ -91,9 +91,9 @@ describe("Grid.Manipulator", function() {
         var expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
-                    '<rows>' +
-                        '<cells type="module" foo="bar"><content bar="baz"/></cells>' +
-                    '</rows>' +
+                    '<row>' +
+                        '<cell type="module" foo="bar"><content bar="baz"/></cell>' +
+                    '</row>' +
                 '</content>' +
             '</grid>';
         expect(grid).toEqualXML(expected);
@@ -102,16 +102,16 @@ describe("Grid.Manipulator", function() {
         var expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
-                    '<rows>' +
-                        '<cells type="grid" foo="bar">' +
+                    '<row>' +
+                        '<cell type="grid" foo="bar">' +
                             '<content>' +
-                                '<rows>' +
-                                    '<cells type="module"><content bar="baz"/></cells>' +
-                                '</rows>' +
-                                '<rows/>' +
+                                '<row>' +
+                                    '<cell type="module"><content bar="baz"/></cell>' +
+                                '</row>' +
+                                '<row/>' +
                             '</content>' +
-                        '</cells>' +
-                    '</rows>' +
+                        '</cell>' +
+                    '</row>' +
                 '</content>' +
             '</grid>';
         expect(grid).toEqualXML(expected);
@@ -130,8 +130,8 @@ describe("Grid.Manipulator", function() {
         var expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
-                    '<rows inserted="before"/>' +
-                    '<rows created="first"/>' +
+                    '<row inserted="before"/>' +
+                    '<row created="first"/>' +
                 '</content>' +
             '</grid>';
         expect(grid).toEqualXML(expected);
@@ -160,16 +160,16 @@ describe("Grid.Manipulator", function() {
         var expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
-                    '<rows inserted="before"/>' +
-                    '<rows created="first">' +
-                        '<cells type="grid">' +
+                    '<row inserted="before"/>' +
+                    '<row created="first">' +
+                        '<cell type="grid">' +
                             '<content>' +
-                                '<rows><cells type="module"><content/></cells></rows>' +
-                                '<rows inserted="before (sub-row)"/>' +
-                                '<rows created="first (sub-row)"/>' +
+                                '<row><cell type="module"><content/></cell></row>' +
+                                '<row inserted="before (sub-row)"/>' +
+                                '<row created="first (sub-row)"/>' +
                             '</content>' +
-                        '</cells>' +
-                    '</rows>' +
+                        '</cell>' +
+                    '</row>' +
                 '</content>' +
             '</grid>';
         expect(grid).toEqualXML(expected);
@@ -185,11 +185,11 @@ describe("Grid.Manipulator", function() {
         var expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
-                    '<rows>' +
-                        '<cells type="grid">' +
+                    '<row>' +
+                        '<cell type="grid">' +
                             '<content/>' +
-                        '</cells>' +
-                    '</rows>' +
+                        '</cell>' +
+                    '</row>' +
                 '</content>' +
             '</grid>';
         expect(grid).toEqualXML(expected);
@@ -199,14 +199,14 @@ describe("Grid.Manipulator", function() {
         var expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
-                    '<rows>' +
-                        '<cells type="grid">' +
+                    '<row>' +
+                        '<cell type="grid">' +
                             '<content/>' +
-                        '</cells>' +
-                        '<cells type="grid">' +
+                        '</cell>' +
+                        '<cell type="grid">' +
                             '<content/>' +
-                        '</cells>' +
-                    '</rows>' +
+                        '</cell>' +
+                    '</row>' +
                 '</content>' +
             '</grid>';
         expect(grid).toEqualXML(expected);
@@ -216,14 +216,14 @@ describe("Grid.Manipulator", function() {
         var expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
-                    '<rows>' +
-                        '<cells type="grid">' +
+                    '<row>' +
+                        '<cell type="grid">' +
                             '<content/>' +
-                        '</cells>' +
-                        '<cells type="grid" foo="bar">' +
+                        '</cell>' +
+                        '<cell type="grid" foo="bar">' +
                             '<content/>' +
-                        '</cells>' +
-                    '</rows>' +
+                        '</cell>' +
+                    '</row>' +
                 '</content>' +
             '</grid>';
         expect(grid).toEqualXML(expected);
@@ -248,10 +248,10 @@ describe("Grid.Manipulator", function() {
         var expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
-                    '<rows>' +
-                        '<cells type="module" inserted="before"><content/></cells>' +
-                        '<cells type="module" created="first"><content/></cells>' +
-                    '</rows>' +
+                    '<row>' +
+                        '<cell type="module" inserted="before"><content/></cell>' +
+                        '<cell type="module" created="first"><content/></cell>' +
+                    '</row>' +
                 '</content>' +
             '</grid>';
         expect(grid).toEqualXML(expected);
@@ -273,20 +273,20 @@ describe("Grid.Manipulator", function() {
         var expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
-                    '<rows>' +
-                        '<cells type="module" inserted="before"><content/></cells>' +
-                        '<cells type="grid" created="first">' +
+                    '<row>' +
+                        '<cell type="module" inserted="before"><content/></cell>' +
+                        '<cell type="grid" created="first">' +
                             '<content>' +
-                                '<rows>' +
-                                    '<cells type="module"><content/></cells>' +
-                                '</rows>' +
-                                '<rows>' +
-                                    '<cells type="module" inserted="before (sub-cell)"><content/></cells>' +
-                                    '<cells type="module" created="first (sub-cell)"><content/></cells>' +
-                                '</rows>' +
+                                '<row>' +
+                                    '<cell type="module"><content/></cell>' +
+                                '</row>' +
+                                '<row>' +
+                                    '<cell type="module" inserted="before (sub-cell)"><content/></cell>' +
+                                    '<cell type="module" created="first (sub-cell)"><content/></cell>' +
+                                '</row>' +
                             '</content>' +
-                        '</cells>' +
-                    '</rows>' +
+                        '</cell>' +
+                    '</row>' +
                 '</content>' +
             '</grid>';
         expect(grid).toEqualXML(expected);
@@ -314,27 +314,27 @@ describe("Grid.Manipulator", function() {
             var expected =
                 '<grid name="foo" space="5px" type="mainGrid">' +
                     '<content>' +
-                        '<rows>' +
-                            '<cells type="grid">' +
+                        '<row>' +
+                            '<cell type="grid">' +
                                 '<content>' +
-                                    '<rows>' +
-                                        '<cells type="module"><content path="path.to.module1"/></cells>' +
-                                        '<cells type="module"><content path="path.to.module2"/></cells>' +
-                                    '</rows>' +
-                                    '<rows>' +
-                                        '<cells type="module"><content path="path.to.module3"/></cells>' +
-                                        '<cells type="grid">' +
+                                    '<row>' +
+                                        '<cell type="module"><content path="path.to.module1"/></cell>' +
+                                        '<cell type="module"><content path="path.to.module2"/></cell>' +
+                                    '</row>' +
+                                    '<row>' +
+                                        '<cell type="module"><content path="path.to.module3"/></cell>' +
+                                        '<cell type="grid">' +
                                             '<content>' +
-                                                '<rows>' +
-                                                    '<cells type="module"><content path="path.to.module4"/></cells>' +
-                                                '</rows>' +
+                                                '<row>' +
+                                                    '<cell type="module"><content path="path.to.module4"/></cell>' +
+                                                '</row>' +
                                             '</content>' +
-                                        '</cells>' +
-                                    '</rows>' +
+                                        '</cell>' +
+                                    '</row>' +
                                 '</content>' +
-                            '</cells>' +
-                            '<cells type="grid"><content/></cells>' +
-                        '</rows>' +
+                            '</cell>' +
+                            '<cell type="grid"><content/></cell>' +
+                        '</row>' +
                     '</content>' +
                 '</grid>';
 
@@ -346,57 +346,57 @@ describe("Grid.Manipulator", function() {
         var grid = Manipulator.XMLStringToXMLGrid(
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
-                    '<rows id="r1">' +
-                        '<cells type="grid" id="c1" toclean="2">' +
+                    '<row id="r1">' +
+                        '<cell type="grid" id="c1" toclean="2">' +
                             '<content>' +
-                                '<rows id="r2">' +
-                                    '<cells type="grid" id="c2">' +
+                                '<row id="r2">' +
+                                    '<cell type="grid" id="c2">' +
                                         '<content>' +
-                                            '<rows id="r3">' +
-                                                '<cells type="grid" toclean="1" surround="1" id="c3">' +
+                                            '<row id="r3">' +
+                                                '<cell type="grid" toclean="1" surround="1" id="c3">' +
                                                     '<content>' +
-                                                        '<rows id="r4">' +
-                                                            '<cells type="module" id="c4">' +
+                                                        '<row id="r4">' +
+                                                            '<cell type="module" id="c4">' +
                                                                 '<content foo="bar"/>' +
-                                                            '</cells>' +
-                                                            '<cells type="grid"/>' +
-                                                            '<cells type="grid">' +
+                                                            '</cell>' +
+                                                            '<cell type="grid"/>' +
+                                                            '<cell type="grid">' +
                                                                 '<content>' +
-                                                                    '<rows/>' +
-                                                                    '<rows>' +
-                                                                        '<cells type="grid">' +
+                                                                    '<row/>' +
+                                                                    '<row>' +
+                                                                        '<cell type="grid">' +
                                                                             '<content/>' +
-                                                                        '</cells>' +
-                                                                    '</rows>' +
+                                                                        '</cell>' +
+                                                                    '</row>' +
                                                                 '</content>' +
-                                                            '</cells>' +
-                                                        '</rows>' +
+                                                            '</cell>' +
+                                                        '</row>' +
                                                     '</content>' +
-                                                '</cells>' +
-                                            '</rows>' +
+                                                '</cell>' +
+                                            '</row>' +
                                         '</content>' +
-                                    '</cells>' +
-                                '</rows>' +
-                                '<rows id="r5"><cells type="module" id="c6"><content/></cells></rows>' +
+                                    '</cell>' +
+                                '</row>' +
+                                '<row id="r5"><cell type="module" id="c6"><content/></cell></row>' +
                             '</content>' +
-                        '</cells>' +
-                    '</rows>' +
+                        '</cell>' +
+                    '</row>' +
                 '</content>' +
             '</grid>');
 
         // then clean
-        Manipulator.cleanGrid(grid.querySelector('cells[toclean="1"]'));
+        Manipulator.cleanGrid(grid.querySelector('cell[toclean="1"]'));
 
         // we should have the useless rows and grids removed
         var expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
-                    '<rows id="r2">' +
-                        '<cells type="module" id="c2">' +
+                    '<row id="r2">' +
+                        '<cell type="module" id="c2">' +
                             '<content foo="bar"/>' +
-                        '</cells>' +
-                    '</rows>' +
-                    '<rows id="r5"><cells type="module" id="c6"><content/></cells></rows>' +
+                        '</cell>' +
+                    '</row>' +
+                    '<row id="r5"><cell type="module" id="c6"><content/></cell></row>' +
                 '</content>' +
             '</grid>';
 
@@ -445,7 +445,7 @@ describe("Grid.Manipulator", function() {
         var expectedWithPlaceholders =
             '<grid name="foo" space="5px" type="mainGrid" hasPlaceholders="true">' +
                 '<content>' +
-                    '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
+                    '<row type="placeholder"><cell type="placeholder"><content/></cell></row>' +
                 '</content>' +
             '</grid>';
         expect(grid).toEqualXML(expectedWithPlaceholders);
@@ -462,9 +462,9 @@ describe("Grid.Manipulator", function() {
         var expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
-                    '<rows>' +
-                        '<cells type="module"><content/></cells>' +
-                    '</rows>' +
+                    '<row>' +
+                        '<cell type="module"><content/></cell>' +
+                    '</row>' +
                 '</content>' +
             '</grid>';
 
@@ -475,15 +475,15 @@ describe("Grid.Manipulator", function() {
         var expectedWithPlaceholders =
             '<grid name="foo" space="5px" type="mainGrid" hasPlaceholders="true">' +
                 '<content>' +
-                    '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
-                    '<rows>' +
-                        '<cells type="placeholder"><content/></cells>' +
-                        '<cells type="module">' +
+                    '<row type="placeholder"><cell type="placeholder"><content/></cell></row>' +
+                    '<row>' +
+                        '<cell type="placeholder"><content/></cell>' +
+                        '<cell type="module">' +
                             '<content/>' +
-                        '</cells>' +
-                        '<cells type="placeholder"><content/></cells>' +
-                    '</rows>' +
-                    '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
+                        '</cell>' +
+                        '<cell type="placeholder"><content/></cell>' +
+                    '</row>' +
+                    '<row type="placeholder"><cell type="placeholder"><content/></cell></row>' +
                 '</content>' +
             '</grid>';
 
@@ -496,24 +496,24 @@ describe("Grid.Manipulator", function() {
         var expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
-                    '<rows>' +
-                        '<cells type="module"><content/></cells>' +
-                        '<cells type="module"><content/></cells>' +
-                    '</rows>' +
-                    '<rows>' +
-                        '<cells type="grid">' +
+                    '<row>' +
+                        '<cell type="module"><content/></cell>' +
+                        '<cell type="module"><content/></cell>' +
+                    '</row>' +
+                    '<row>' +
+                        '<cell type="grid">' +
                             '<content>' +
-                                '<rows>' +
-                                    '<cells type="module"><content/></cells>' +
-                                    '<cells type="module"><content/></cells>' +
-                                '</rows>' +
-                                '<rows>' +
-                                    '<cells type="module"><content/></cells>' +
-                                '</rows>' +
+                                '<row>' +
+                                    '<cell type="module"><content/></cell>' +
+                                    '<cell type="module"><content/></cell>' +
+                                '</row>' +
+                                '<row>' +
+                                    '<cell type="module"><content/></cell>' +
+                                '</row>' +
                             '</content>' +
-                        '</cells>' +
-                        '<cells type="module"><content/></cells>' +
-                    '</rows>' +
+                        '</cell>' +
+                        '<cell type="module"><content/></cell>' +
+                    '</row>' +
                 '</content>' +
             '</grid>';
 
@@ -522,74 +522,74 @@ describe("Grid.Manipulator", function() {
         Manipulator.addPlaceholders(grid);
 
         var moduleCellReplacedByPlaceholders =
-            '<cells type="grid" surround="1">' +
+            '<cell type="grid" surround="1">' +
                 '<content>' +
-                    '<rows type="placeholder"><cells type="placeholder" surround="1"><content/></cells></rows>' +
-                    '<rows>' +
-                        '<cells type="placeholder" surround="1"><content/></cells>' +
-                        '<cells type="module"><content/></cells>' +
-                        '<cells type="placeholder" surround="1"><content/></cells>' +
-                    '</rows>' +
-                    '<rows type="placeholder"><cells type="placeholder" surround="1"><content/></cells></rows>' +
+                    '<row type="placeholder"><cell type="placeholder" surround="1"><content/></cell></row>' +
+                    '<row>' +
+                        '<cell type="placeholder" surround="1"><content/></cell>' +
+                        '<cell type="module"><content/></cell>' +
+                        '<cell type="placeholder" surround="1"><content/></cell>' +
+                    '</row>' +
+                    '<row type="placeholder"><cell type="placeholder" surround="1"><content/></cell></row>' +
                 '</content>' +
-            '</cells>';
+            '</cell>';
 
         var expectedWithPlaceholders =
             '<grid name="foo" space="5px" type="mainGrid" surround="1" hasPlaceholders="true">' +
                 '<content>' +
-                    '<rows type="placeholder"><cells type="placeholder" surround="1"><content/></cells></rows>' +
-                    '<rows>' +
-                        '<cells type="placeholder" surround="1"><content/></cells>' +
-                        '<cells type="grid">' +
+                    '<row type="placeholder"><cell type="placeholder" surround="1"><content/></cell></row>' +
+                    '<row>' +
+                        '<cell type="placeholder" surround="1"><content/></cell>' +
+                        '<cell type="grid">' +
                             '<content>' +
-                                '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
-                                '<rows>' +
-                                    '<cells type="placeholder"><content/></cells>' +
+                                '<row type="placeholder"><cell type="placeholder"><content/></cell></row>' +
+                                '<row>' +
+                                    '<cell type="placeholder"><content/></cell>' +
                                     moduleCellReplacedByPlaceholders +
-                                    '<cells type="placeholder"><content/></cells>' +
+                                    '<cell type="placeholder"><content/></cell>' +
                                     moduleCellReplacedByPlaceholders +
-                                    '<cells type="placeholder"><content/></cells>' +
-                                '</rows>' +
-                                '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
-                                '<rows>' +
-                                    '<cells type="placeholder"><content/></cells>' +
-                                    '<cells type="grid" surround="1">' +
+                                    '<cell type="placeholder"><content/></cell>' +
+                                '</row>' +
+                                '<row type="placeholder"><cell type="placeholder"><content/></cell></row>' +
+                                '<row>' +
+                                    '<cell type="placeholder"><content/></cell>' +
+                                    '<cell type="grid" surround="1">' +
                                         '<content>' +
-                                            '<rows type="placeholder"><cells type="placeholder" surround="1"><content/></cells></rows>' +
-                                            '<rows>' +
-                                                '<cells type="placeholder" surround="1"><content/></cells>' +
-                                                '<cells type="grid">' +
+                                            '<row type="placeholder"><cell type="placeholder" surround="1"><content/></cell></row>' +
+                                            '<row>' +
+                                                '<cell type="placeholder" surround="1"><content/></cell>' +
+                                                '<cell type="grid">' +
                                                     '<content>' +
-                                                        '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
-                                                        '<rows>' +
-                                                            '<cells type="placeholder"><content/></cells>' +
+                                                        '<row type="placeholder"><cell type="placeholder"><content/></cell></row>' +
+                                                        '<row>' +
+                                                            '<cell type="placeholder"><content/></cell>' +
                                                             moduleCellReplacedByPlaceholders +
-                                                            '<cells type="placeholder"><content/></cells>' +
+                                                            '<cell type="placeholder"><content/></cell>' +
                                                             moduleCellReplacedByPlaceholders +
-                                                            '<cells type="placeholder"><content/></cells>' +
-                                                        '</rows>' +
-                                                        '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
-                                                        '<rows>' +
+                                                            '<cell type="placeholder"><content/></cell>' +
+                                                        '</row>' +
+                                                        '<row type="placeholder"><cell type="placeholder"><content/></cell></row>' +
+                                                        '<row>' +
                                                             moduleCellReplacedByPlaceholders +
-                                                        '</rows>' +
-                                                        '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
+                                                        '</row>' +
+                                                        '<row type="placeholder"><cell type="placeholder"><content/></cell></row>' +
                                                     '</content>' +
-                                                '</cells>' +
-                                                '<cells type="placeholder" surround="1"><content/></cells>' +
-                                            '</rows>' +
-                                            '<rows type="placeholder"><cells type="placeholder" surround="1"><content/></cells></rows>' +
+                                                '</cell>' +
+                                                '<cell type="placeholder" surround="1"><content/></cell>' +
+                                            '</row>' +
+                                            '<row type="placeholder"><cell type="placeholder" surround="1"><content/></cell></row>' +
                                         '</content>' +
-                                    '</cells>' +
-                                    '<cells type="placeholder"><content/></cells>' +
+                                    '</cell>' +
+                                    '<cell type="placeholder"><content/></cell>' +
                                     moduleCellReplacedByPlaceholders +
-                                    '<cells type="placeholder"><content/></cells>' +
-                                '</rows>' +
-                                '<rows type="placeholder"><cells type="placeholder"><content/></cells></rows>' +
+                                    '<cell type="placeholder"><content/></cell>' +
+                                '</row>' +
+                                '<row type="placeholder"><cell type="placeholder"><content/></cell></row>' +
                             '</content>' +
-                        '</cells>' +
-                        '<cells type="placeholder" surround="1"><content/></cells>' +
-                    '</rows>' +
-                    '<rows type="placeholder"><cells type="placeholder" surround="1"><content/></cells></rows>' +
+                        '</cell>' +
+                        '<cell type="placeholder" surround="1"><content/></cell>' +
+                    '</row>' +
+                    '<row type="placeholder"><cell type="placeholder" surround="1"><content/></cell></row>' +
                 '</content>' +
             '</grid>';
 
@@ -607,7 +607,7 @@ describe("Grid.Manipulator", function() {
         Manipulator.addPlaceholders(grid);
 
         // add a module in a placeholder cell (in the second row (our first original one), last cell (a placeholder))
-        var cell = grid.querySelector(':scope > content > rows:nth-child(2) > cells:last-child');
+        var cell = grid.querySelector(':scope > content > row:nth-child(2) > cell:last-child');
         cell.setAttribute('type', 'module');
         cell.setAttribute('was', 'placeholder');
 
@@ -616,10 +616,10 @@ describe("Grid.Manipulator", function() {
         var expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
-                    '<rows>' +
-                        '<cells type="module"><content/></cells>' +
-                        '<cells type="module" was="placeholder"><content/></cells>' +
-                    '</rows>' +
+                    '<row>' +
+                        '<cell type="module"><content/></cell>' +
+                        '<cell type="module" was="placeholder"><content/></cell>' +
+                    '</row>' +
                 '</content>' +
             '</grid>';
 
@@ -629,7 +629,7 @@ describe("Grid.Manipulator", function() {
 
         Manipulator.addPlaceholders(grid);
 
-        var cell = grid.querySelector(':scope > content > rows:last-child > cells');
+        var cell = grid.querySelector(':scope > content > row:last-child > cell');
         cell.setAttribute('type', 'module');
         cell.setAttribute('was', 'placeholder, too');
 
@@ -638,13 +638,13 @@ describe("Grid.Manipulator", function() {
         var expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
-                    '<rows>' +
-                        '<cells type="module"><content/></cells>' +
-                        '<cells type="module" was="placeholder"><content/></cells>' +
-                    '</rows>' +
-                    '<rows>' +
-                        '<cells type="module" was="placeholder, too"><content/></cells>' +
-                    '</rows>' +
+                    '<row>' +
+                        '<cell type="module"><content/></cell>' +
+                        '<cell type="module" was="placeholder"><content/></cell>' +
+                    '</row>' +
+                    '<row>' +
+                        '<cell type="module" was="placeholder, too"><content/></cell>' +
+                    '</row>' +
                 '</content>' +
             '</grid>';
 
@@ -692,19 +692,19 @@ describe("Grid.Manipulator", function() {
         var grid = Manipulator.XMLStringToXMLGrid(
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
-                    '<rows>' +
-                        '<cells type="module">' +
+                    '<row>' +
+                        '<cell type="module">' +
                             '<content id="mod1"/>' +
-                        '</cells>' +
-                        '<cells type="module">' +
+                        '</cell>' +
+                        '<cell type="module">' +
                             '<content id="mod2"/>' +
-                        '</cells>' +
-                    '</rows>' +
-                    '<rows>' +
-                        '<cells type="module">' +
+                        '</cell>' +
+                    '</row>' +
+                    '<row>' +
+                        '<cell type="module">' +
                             '<content id="mod3"/>' +
-                        '</cells>' +
-                    '</rows>' +
+                        '</cell>' +
+                    '</row>' +
                 '</content>' +
             '</grid>');
 
@@ -717,19 +717,19 @@ describe("Grid.Manipulator", function() {
         var expected = Manipulator.XMLStringToXMLGrid(
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
-                    '<rows>' +
-                        '<cells type="module">' +
+                    '<row>' +
+                        '<cell type="module">' +
                             '<content id="mod2"/>' +
-                        '</cells>' +
-                    '</rows>' +
-                    '<rows>' +
-                        '<cells type="module">' +
+                        '</cell>' +
+                    '</row>' +
+                    '<row>' +
+                        '<cell type="module">' +
                             '<content id="mod3"/>' +
-                        '</cells>' +
-                        '<cells type="module">' +
+                        '</cell>' +
+                        '<cell type="module">' +
                             '<content id="mod1"/>' +
-                        '</cells>' +
-                    '</rows>' +
+                        '</cell>' +
+                    '</row>' +
                 '</content>' +
             '</grid>');
         expect(grid).toEqualXML(expected);
@@ -770,13 +770,13 @@ describe("Grid.Manipulator", function() {
         // go in "design" mode
         Manipulator.addPlaceholders(grid);
         // add the module in the only placeholder cell
-        Manipulator.moveContentToPlaceholder(content1, grid.querySelector('cells[type=placeholder]'));
+        Manipulator.moveContentToPlaceholder(content1, grid.querySelector('cell[type=placeholder]'));
         // reset the placeholders with the new grid
         Manipulator.cleanPlaceholders(grid);
         // get another module from somewhere to insert
         var content2 = Manipulator.createModuleNode({path: 'test.module.2'});
         // add it to the last placeholder row
-        Manipulator.moveContentToPlaceholder(content2, grid.querySelector(':scope > content > rows[type=placeholder] > cells[type=placeholder]'));
+        Manipulator.moveContentToPlaceholder(content2, grid.querySelector(':scope > content > row[type=placeholder] > cell[type=placeholder]'));
         // reset the placeholders with the new grid
         Manipulator.cleanPlaceholders(grid);
         // now move the first content on the right of the second one
@@ -785,17 +785,17 @@ describe("Grid.Manipulator", function() {
         Manipulator.removePlaceholders(grid);
 
         // we should have both contents in the only row
-        var expected = 
+        var expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
-                    '<rows>' +
-                        '<cells type="module">' +
+                    '<row>' +
+                        '<cell type="module">' +
                             '<content path="test.module.2"/>' +
-                        '</cells>' +
-                        '<cells type="module">' +
+                        '</cell>' +
+                        '<cell type="module">' +
                             '<content path="test.module.1"/>' +
-                        '</cells>' +
-                    '</rows>' +
+                        '</cell>' +
+                    '</row>' +
                 '</content>' +
             '</grid>';
 
@@ -807,19 +807,19 @@ describe("Grid.Manipulator", function() {
         var grid = Manipulator.XMLStringToXMLGrid(
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
-                    '<rows>' +
-                        '<cells type="module"><content/></cells>' +
-                        '<cells type="grid">' +
+                    '<row>' +
+                        '<cell type="module"><content/></cell>' +
+                        '<cell type="grid">' +
                             '<content>' +
-                                '<rows>' +
-                                    '<cells type="module"><content/></cells>' +
-                                '</rows>' +
+                                '<row>' +
+                                    '<cell type="module"><content/></cell>' +
+                                '</row>' +
                             '</content>' +
-                        '</cells>' +
-                    '</rows>' +
-                    '<rows>' +
-                        '<cells type="module"><content/></cells>' +
-                    '</rows>' +
+                        '</cell>' +
+                    '</row>' +
+                    '<row>' +
+                        '<cell type="module"><content/></cell>' +
+                    '</row>' +
                 '</content>' +
             '</grid>');
 
@@ -828,19 +828,19 @@ describe("Grid.Manipulator", function() {
         var expected =
             '<grid name="foo" space="5px" type="mainGrid" id="grid-1">' +
                 '<content id="content-2">' +
-                    '<rows id="rows-3">' +
-                        '<cells type="module" id="cells-4"><content id="content-5"/></cells>' +
-                        '<cells type="grid" id="cells-6">' +
+                    '<row id="row-3">' +
+                        '<cell type="module" id="cell-4"><content id="content-5"/></cell>' +
+                        '<cell type="grid" id="cell-6">' +
                             '<content id="content-7">' +
-                                '<rows id="rows-8">' +
-                                    '<cells type="module" id="cells-9"><content id="content-10"/></cells>' +
-                                '</rows>' +
+                                '<row id="row-8">' +
+                                    '<cell type="module" id="cell-9"><content id="content-10"/></cell>' +
+                                '</row>' +
                             '</content>' +
-                        '</cells>' +
-                    '</rows>' +
-                    '<rows id="rows-11">' +
-                        '<cells type="module" id="cells-12"><content id="content-13"/></cells>' +
-                    '</rows>' +
+                        '</cell>' +
+                    '</row>' +
+                    '<row id="row-11">' +
+                        '<cell type="module" id="cell-12"><content id="content-13"/></cell>' +
+                    '</row>' +
                 '</content>' +
             '</grid>';
 
@@ -909,50 +909,50 @@ describe("Grid.Manipulator", function() {
         var grid = Manipulator.XMLStringToXMLGrid(
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
-                    '<rows>' +
-                        '<cells type="module"><content/></cells>' +
-                        '<cells type="grid">' +
+                    '<row>' +
+                        '<cell type="module"><content/></cell>' +
+                        '<cell type="grid">' +
                             '<content>' +
-                                '<rows></rows>' +
-                                '<rows>' +
-                                    '<cells type="module"><content/></cells>' +
-                                    '<cells type="module"><content/></cells>' +
-                                '</rows>' +
+                                '<row></row>' +
+                                '<row>' +
+                                    '<cell type="module"><content/></cell>' +
+                                    '<cell type="module"><content/></cell>' +
+                                '</row>' +
                             '</content>' +
-                        '</cells>' +
-                        '<cells type="module"><content/></cells>' +
-                    '</rows>' +
-                    '<rows></rows>' +
-                    '<rows></rows>' +
+                        '</cell>' +
+                        '<cell type="module"><content/></cell>' +
+                    '</row>' +
+                    '<row></row>' +
+                    '<row></row>' +
                 '</content>' +
             '</grid>');
 
         Manipulator.addResizers(grid);
 
-        var expected = 
+        var expected =
             '<grid name="foo" space="5px" type="mainGrid" hasResizers="true">' +
                 '<content>' +
-                    '<rows>' +
-                        '<cells type="module"><content/></cells>' +
+                    '<row>' +
+                        '<cell type="module"><content/></cell>' +
                         '<resizer type="vertical"/>' +
-                        '<cells type="grid">' +
+                        '<cell type="grid">' +
                             '<content>' +
-                                '<rows/>' +
+                                '<row/>' +
                                 '<resizer type="horizontal"/>' +
-                                '<rows>' +
-                                    '<cells type="module"><content/></cells>' +
+                                '<row>' +
+                                    '<cell type="module"><content/></cell>' +
                                     '<resizer type="vertical"/>' +
-                                    '<cells type="module"><content/></cells>' +
-                                '</rows>' +
+                                    '<cell type="module"><content/></cell>' +
+                                '</row>' +
                             '</content>' +
-                        '</cells>' +
+                        '</cell>' +
                         '<resizer type="vertical"/>' +
-                        '<cells type="module"><content/></cells>' +
-                    '</rows>' +
+                        '<cell type="module"><content/></cell>' +
+                    '</row>' +
                     '<resizer type="horizontal"/>' +
-                    '<rows/>' +
+                    '<row/>' +
                     '<resizer type="horizontal"/>' +
-                    '<rows/>' +
+                    '<row/>' +
                 '</content>' +
             '</grid>';
 

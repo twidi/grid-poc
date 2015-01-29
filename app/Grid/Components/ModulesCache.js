@@ -12,7 +12,7 @@ var Modules = require('../Modules.js');
  * The two react components created by this module are:
  *
  * - modules, to be strictly independant from the grid, so they won't be rendered
- *   on grid changes. Their are attached to cells in normal mode, and to modules
+ *   on grid changes. They are attached to cells in normal mode, and to modules
  *   holders (see below) in design mode.
  *
  * - {@link module:Grid.Components.ModuleHolder module holder}, that will hold

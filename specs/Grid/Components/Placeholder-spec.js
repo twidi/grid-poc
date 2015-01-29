@@ -35,7 +35,7 @@ describe("Grid.Components.Placeholder", function() {
         testGrid = componentUtils.makeTestGrid();
         Manipulator.addPlaceholders(testGrid);
         Manipulator.setIds(testGrid);
-        gridPlaceholder = testGrid.querySelector('cells[type=placeholder]:not([surround])');
+        gridPlaceholder = testGrid.querySelector('cell[type=placeholder]:not([surround])');
 
         setTimeout(done, 0.01);
     });
@@ -65,7 +65,7 @@ describe("Grid.Components.Placeholder", function() {
         component.forceUpdate();
         expect(domNode.classList.contains('grid-cell-placeholder-prehovering')).toBe(true);
 
-        var gridPlaceholderSurround = testGrid.querySelector('cells[type=placeholder][surround]');
+        var gridPlaceholderSurround = testGrid.querySelector('cell[type=placeholder][surround]');
         element = React.createElement(Placeholder, {node: gridPlaceholderSurround});
         component = componentUtils.renderIntoDocument(element);
         domNode = component.getDOMNode();
@@ -244,7 +244,7 @@ describe("Grid.Components.Placeholder", function() {
 
             // now we simulate the fact to be in dragging mode
             Store.__private.grids['Test grid'].designModeStep = 'dragging';
-            Store.__private.grids['Test grid'].nodes.dragging = testGrid.querySelector('cells[type=module] > content');
+            Store.__private.grids['Test grid'].nodes.dragging = testGrid.querySelector('cell[type=module] > content');
 
             // then drop
             var fakeDropEvent = new Event('fakedrop', {view: window, bubbles: true, target: domNode, });
