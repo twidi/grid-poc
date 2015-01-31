@@ -126,6 +126,15 @@ describe("Grid.Components.Row", function() {
         expect(domNode.tagName).toEqual('DIV');
         expect(domNode.classList.contains('grid-row')).toBe(true);
         expect(domNode.classList.contains('grid-row-placeholder')).toBe(false);
+
+        // default relative size => flex-grow=1
+        expect(domNode.getAttribute('style')).toMatch(/\bflex-grow\s*:\s*1\b/);
+
+        // update the relativeSize to see if it's taken into account
+        gridRow.setAttribute('relativeSize', 2);
+        component.forceUpdate();
+        // new relative size of the node, check the rendered div
+        expect(domNode.getAttribute('style')).toMatch(/\bflex-grow\s*:\s*2\b/);
     });
 
     it("should render a placeholder", function() {

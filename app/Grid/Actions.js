@@ -103,6 +103,44 @@ var Actions = {
      * @fires module:Grid.Store#"grid.designMode.drop"
      */
     drop: function(gridName, placeholderCell) {},
+
+    /**
+     * Start moving the given resizer on the given grid
+     *
+     * @type {function}
+     *
+     * @param  {string} gridName - The name of the grid on witch the resizing occurs
+     * @param  {XML} resizer - The resizer of the grid beingmoved
+     * @param  {Integer} fullSize - The full size (height if horizontal resizer, or width) of the previous and next nodes
+     * @param  {Integer} initialPos - The position of the mouse acting as a starting point for the resizing
+     *
+     * @fires module:Grid.Store#"grid.designMode.resizing.start"
+     */
+    startResizing: function(gridName, resizer, fullSize, initialPos) {},
+
+    /**
+     * Move a resizer to resize its previous and next nodes
+     *
+     * @type {function}
+     *
+     * @param  {string} gridName - The name of the grid on witch the resizing occurs
+     * @param  {Integer} currentPos - The position of the mouse at the moment where the action is called
+     *                                to compute the new sizes of the previous and next nodes
+     *
+     * @fires module:Grid.Store#"grid.designMode.resizing.move"
+     */
+    resize: function(gridName, currentPos) {},
+
+    /**
+     * Stop moving the given resizer on the given grid
+     *
+     * @type {function}
+     *
+     * @param  {string} gridName - The name of the grid on witch the resizing occurs
+     *
+     * @fires module:Grid.Store#"grid.designMode.resizing.stop"
+     */
+    stopResizing: function(gridName) {},
 };
 
 module.exports = flux.createActions(_.keys(Actions));

@@ -77,13 +77,30 @@ var Row = {
     },
 
     /**
+     * Return the inline styles to use when rendering the current row
+     *
+     * @return {Object} - An object including styles
+     *
+     * One or more of these styles:
+     *
+     * - `flexGrow`: the relative size of the row as defined in the grid if this is not a row placeholder
+     */
+    getRowStyle: function() {
+        var style = {};
+        if (!this.isPlaceholder()) {
+            style.flexGrow = Store.getRelativeSize(this.state.node);
+        }
+        return style;
+    },
+
+    /**
      * Render the component
      *
      * @returns {div} - A div with classes defined by `getRowClasses`, containing
      * cells, including resizers, returned by `renderCells`
      */
     render: function() {
-        return <div className={this.getRowClasses()}>{this.renderCells()}</div>
+        return <div className={this.getRowClasses()} style={this.getRowStyle()}>{this.renderCells()}</div>
     }
 
 };

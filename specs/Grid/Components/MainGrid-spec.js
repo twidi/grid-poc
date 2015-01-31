@@ -142,6 +142,8 @@ describe("Grid.Components.MainGrid", function() {
         expect(gridDomNode.classList.contains('grid-main')).toBe(true);
         expect(gridDomNode.classList.contains('grid-last-level-with-placeholders')).toBe(false);
         expect(domNode.classList.contains('grid-container-with-resizers')).toBe(false);
+        // no specific style defined
+        expect(gridDomNode.getAttribute('style')).toBe(null);
     });
 
     it("should be able to render its rows", function() {
@@ -176,7 +178,14 @@ describe("Grid.Components.MainGrid", function() {
             'grid.designMode.hovering.start',
             'grid.designMode.hovering.stay',
             'grid.designMode.hovering.stop',
-            'grid.designMode.drop'
+            'grid.designMode.drop',
+            'grid.designMode.resizing.start',
+            'grid.designMode.resizing.move',
+            'grid.designMode.resizing.stop'
+        ];
+
+        var notUpdatingEvents = [
+            'grid.designMode.resizing.move',
         ];
 
         var testNextEvent = function() {
@@ -189,7 +198,11 @@ describe("Grid.Components.MainGrid", function() {
             component.forceUpdate.calls.reset();
             Store.__private.emit(event, 'Test grid');
             setTimeout(function() {
-                expect(component.forceUpdate).toHaveBeenCalled();
+                if (_.contains(notUpdatingEvents, event)) {
+                    expect(component.forceUpdate).not.toHaveBeenCalled();
+                } else {
+                    expect(component.forceUpdate).toHaveBeenCalled();
+                }
                 testNextEvent();
             }, 0.01);
         };

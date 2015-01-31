@@ -133,6 +133,15 @@ describe("Grid.Components.SubGrid", function() {
         expect(domNode.classList.contains('grid')).toBe(true);
         expect(domNode.classList.contains('grid-main')).toBe(false);
         expect(domNode.classList.contains('grid-last-level-with-placeholders')).toBe(false);
+
+        // default relative size => flex-grow=1
+        expect(domNode.getAttribute('style')).toMatch(/\bflex-grow\s*:\s*1\b/);
+
+        // update the relativeSize to see if it's taken into account
+        subGrid.setAttribute('relativeSize', 2);
+        component.forceUpdate();
+        // new relative size of the node, check the rendered div
+        expect(domNode.getAttribute('style')).toMatch(/\bflex-grow\s*:\s*2\b/);
     });
 
     it("should have a specific class when its the deepest grid", function() {

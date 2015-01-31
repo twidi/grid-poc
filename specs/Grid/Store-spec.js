@@ -54,7 +54,7 @@ describe("Grid.Store", function() {
             expect(gridEntry.backups).toEqual({});
             expect(gridEntry.nodes).toEqual({});
             expect(gridEntry.hoveringTimeout).toBe(null);
-
+            expect(gridEntry.resizing).toEqual({});
 
             done();
         });
@@ -147,6 +147,37 @@ describe("Grid.Store", function() {
         expect(Store.isHoveringPlaceholder('foo', otherCell)).toBe(false);
     });
 
+    it("should tell if the grid is in resizing mode", function() {
+        var grid = createSimpleGrid();
+        expect(Store.isResizing('foo')).toBe(false);
+        // it's in resizing mode if there is a resizer node currently moved
+        Store.__private.grids['foo'].nodes.resizing = true;
+        expect(Store.isResizing('foo')).toBe(true);
+    });
+
+    it("should tell if it's the moving resizer", function() {
+        var grid = createSimpleGrid();
+        // add two rows to have two resizers between them
+        Manipulator.addRow(grid);
+        Manipulator.addRow(grid);
+
+        Manipulator.addResizers(grid);
+        Manipulator.setIds(grid);
+
+        var resizer1 = grid.querySelectorAll('resizer')[0];
+        var resizer2 = grid.querySelectorAll('resizer')[1];
+
+        // not marked as moving
+        expect(Store.isMovingResizer('foo', resizer1)).toBe(false);
+
+        // mark it as the one moving
+        Store.__private.grids['foo'].nodes.resizing = resizer1;
+        expect(Store.isMovingResizer('foo', resizer1)).toBe(true);
+
+        // check another resizer
+        expect(Store.isMovingResizer('foo', resizer2)).toBe(false);
+    });
+
     it("should tell if a grid has a subgrid", function() {
         var grid = Manipulator.createBaseGrid('foo');
         Store.__private.addGrid(grid);
@@ -185,7 +216,22 @@ describe("Grid.Store", function() {
         expect(Store.hasResizers('foo')).toBe(true);
     });
 
+    it("should get the relative size of a node", function() {
+        var grid = createSimpleGrid();
+        var row = grid.querySelector('row');
+
+        // not defined, 1 by default
+        expect(Store.getRelativeSize(row)).toEqual(1);
+
+        row.setAttribute('relativeSize', 2);
+        expect(Store.getRelativeSize(row)).toEqual(2);
+
+        row.setAttribute('relativeSize', 1.234);
+        expect(Store.getRelativeSize(row)).toEqual(1.234);
+    });
+
     describe('Private api', function() {
+
         it("should return a grid entry", function() {
             var grid = createSimpleGrid();
 
@@ -197,8 +243,9 @@ describe("Grid.Store", function() {
             expect(entry.backups).toEqual({});
             expect(entry.nodes).toEqual({});
             expect(entry.hoveringTimeout).toBe(null);
+            expect(entry.resizing).toEqual({});
 
-            expect(_.size(entry)).toEqual(6);
+            expect(_.size(entry)).toEqual(7);
         });
 
         it("should raise if a grid entry is not available", function() {

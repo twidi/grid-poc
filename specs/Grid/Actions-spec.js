@@ -151,7 +151,6 @@ describe("Grid.Actions", function() {
         }
     });
 
-
     it("should start dragging", function(done) {
         // will set this to True when the callback is called
         var callbackCalled = false;
@@ -875,7 +874,6 @@ describe("Grid.Actions", function() {
                 // exit hovering mode
                 Actions.stopHovering('foo');
 
-
                 // leave some time the exit hovering mode
                 setTimeout(function() {
 
@@ -973,5 +971,258 @@ describe("Grid.Actions", function() {
         }
     });
 
+    it("should start resizing", function(done) {
+        // will set this to True when the callback is called
+        var callbackCalled = false;
+        // will store the grid name received via the tested event
+        var updatedGridName;
+
+        var callback = function(gridName) {
+            callbackCalled = true;
+            updatedGridName = gridName;
+        };
+
+        // add a grid to work on
+        var grid = createSimpleGrid();
+        Manipulator.addResizers(grid);
+        var resizer = grid.querySelector('resizer[type=vertical]');
+
+        // listen to the tested event
+        Store.on('grid.designMode.resizing.start', callback);
+
+        try {
+
+            Actions.startResizing('foo', resizer, 200, 100);
+
+        } finally {
+            // give some time to let the callbacks to be called
+            setTimeout(function() {
+
+                // clean the listener
+                Store.off('grid.designMode.resizing.start', callback);
+
+                // check if the callback were called
+                expect(callbackCalled).toBe(true);
+                expect(updatedGridName).toEqual('foo');
+
+                // check the new designMode step
+                expect(Store.getDesignModeStep('foo')).toEqual('resizing');
+
+                // check that we have resizing data
+                var gridEntry = Store.__private.getGridEntry('foo');
+                expect(gridEntry.nodes.resizing).toBe(resizer);
+                expect(gridEntry.resizing).toEqual({
+                    initialPos: 100,
+                    previousRelativeSize: 1,
+                    nextRelativeSize: 1,
+                    sizeRatio: 0.01,  // 2 (total relative size) / 200 (full size)
+                });
+
+                // tell jasmine we're done
+                done();
+
+            }, 0.01);
+
+        }
+    });
+
+    it("should continue resizing", function(done) {
+        // will set this to True when the callback is called
+        var callbackCalled = false;
+        // will store the grid name received via the tested event
+        var updatedGridName;
+        // will store event callback additional data
+        var callbackData;
+
+        var callback = function(gridName, data) {
+            callbackCalled = true;
+            updatedGridName = gridName;
+            callbackData = data;
+        };
+
+        // add a grid to work on
+        var grid = createSimpleGrid();
+        Manipulator.addResizers(grid);
+        var resizer = grid.querySelector('resizer[type=vertical]');
+        // nodes around the resizer that will be resized
+        var previous = resizer.previousSibling;
+        var next = resizer.nextSibling;
+
+        // start by going in resizing mode
+        Actions.startResizing('foo', resizer, 200, 100);
+
+        // leave some time the go in resizing mode
+        setTimeout(function() {
+
+            // listen to the tested event
+            Store.on('grid.designMode.resizing.move', callback);
+
+            try {
+
+                Actions.resize('foo', 150);
+
+            } finally {
+                // give some time to let the callbacks to be called
+                setTimeout(function() {
+
+                    // clean the listener
+                    Store.off('grid.designMode.resizing.move', callback);
+
+                    // check if the callback were called
+                    expect(callbackCalled).toBe(true);
+                    expect(updatedGridName).toEqual('foo');
+                    expect(callbackData).toEqual({
+                        previousRelativeSize: 1.5,
+                        nextRelativeSize: 0.5,
+                    });
+
+                    // check the new designMode step, still "resizing"
+                    expect(Store.getDesignModeStep('foo')).toEqual('resizing');
+
+                    // check that we still have the same resizing data
+                    var gridEntry = Store.__private.getGridEntry('foo');
+                    expect(gridEntry.nodes.resizing).toBe(resizer);
+                    expect(gridEntry.resizing).toEqual({
+                        initialPos: 100,
+                        previousRelativeSize: 1,
+                        nextRelativeSize: 1,
+                        sizeRatio: 0.01,  // 2 (total relative size) / 200 (full size)
+                    });
+
+                    // check that the nodes are updated in the grid
+                    expect(previous.getAttribute('relativeSize')).toEqual('1.5');
+                    expect(next.getAttribute('relativeSize')).toEqual('0.5');
+
+                    // tell jasmine we're done
+                    done();
+
+                }, 0.01);
+
+            }
+        }, 0.01);
+    });
+
+    it("should ignore resizing if out of bound", function(done) {
+        // will set this to True when the callback is called
+        var callbackCalled = false;
+        var callback = function(gridName) {
+            callbackCalled = true;
+        };
+
+        // add a grid to work on
+        var grid = createSimpleGrid();
+        Manipulator.addResizers(grid);
+        var resizer = grid.querySelector('resizer[type=vertical]');
+        // nodes around the resizer that will not be resized in this case
+        var previous = resizer.previousSibling;
+        var next = resizer.nextSibling;
+
+        // start by going in resizing mode
+        Actions.startResizing('foo', resizer, 200, 100);
+
+        // leave some time the go in resizing mode
+        setTimeout(function() {
+
+            // listen to the tested event
+            Store.on('grid.designMode.resizing.move', callback);
+
+            try {
+
+                Actions.resize('foo', 500);
+
+            } finally {
+                // give some time to let the callbacks to be called
+                setTimeout(function() {
+
+                    // clean the listener
+                    Store.off('grid.designMode.resizing.move', callback);
+
+                    expect(callbackCalled).toBe(false);
+
+                    // check that the nodes are not updated in the grid
+                    expect(previous.getAttribute('relativeSize')).toBe(null);
+                    expect(next.getAttribute('relativeSize')).toBe(null);
+
+                    // tell jasmine we're done
+                    done();
+
+                }, 0.01);
+
+            }
+        }, 0.01);
+    });
+
+    it("should stop resizing", function(done) {
+        // will set this to True when the callback is called
+        var callbackCalled = false;
+        // will store the grid name received via the tested event
+        var updatedGridName;
+
+        var callback = function(gridName, data) {
+            callbackCalled = true;
+            updatedGridName = gridName;
+        };
+
+        // add a grid to work on
+        var grid = createSimpleGrid();
+        Manipulator.addResizers(grid);
+        var resizer = grid.querySelector('resizer[type=vertical]');
+        // nodes around the resizer that will be resized
+        var previous = resizer.previousSibling;
+        var next = resizer.nextSibling;
+
+        // start by going in resizing mode
+        Actions.startResizing('foo', resizer, 200, 100);
+
+        // leave some time the go in resizing mode
+        setTimeout(function() {
+
+            // then do a resize
+            Actions.resize('foo', 150);
+
+            // leave some time the update the relative sizes
+            setTimeout(function() {
+
+                // listen to the tested event
+                Store.on('grid.designMode.resizing.stop', callback);
+
+                try {
+
+                    Actions.stopResizing('foo');
+
+                } finally {
+                    // give some time to let the callbacks to be called
+                    setTimeout(function() {
+
+                        // clean the listener
+                        Store.off('grid.designMode.resizing.stop', callback);
+
+                        // check if the callback were called
+                        expect(callbackCalled).toBe(true);
+                        expect(updatedGridName).toEqual('foo');
+
+                        // check the new designMode step, now "enabled"
+                        expect(Store.getDesignModeStep('foo')).toEqual('enabled');
+
+                        // check that we don't have resizing data anymore
+                        var gridEntry = Store.__private.getGridEntry('foo');
+                        expect(gridEntry.nodes.resizing).toBe(undefined);
+                        expect(gridEntry.resizing).toEqual({});
+
+                        console.log(grid);
+
+                        // check that the nodes are still updated in the grid
+                        expect(previous.getAttribute('relativeSize')).toEqual('1.5');
+                        expect(next.getAttribute('relativeSize')).toEqual('0.5');
+
+                        // tell jasmine we're done
+                        done();
+
+                    }, 0.01);
+
+                }
+            }, 0.01);
+        }, 0.01);
+    });
 
 });

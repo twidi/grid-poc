@@ -121,6 +121,9 @@ describe("Grid.Components.Cell", function() {
         var component = componentUtils.renderIntoDocument(element);
         expect(jasmineReact.classPrototype(Cell).renderAsSubGrid.calls.count()).toEqual(1);
 
+        // default relative size => flex-grow=1
+        expect(component.getDOMNode().getAttribute('style')).toMatch(/\bflex-grow\s*:\s*1\b/);
+
         var subGrid = component.renderAsSubGrid();
         expect(TestUtils.isElementOfType(subGrid, SubGrid)).toBe(true);
         expect(subGrid.props.node).toBe(subGridCell);
@@ -146,6 +149,15 @@ describe("Grid.Components.Cell", function() {
         expect(moduleContainer.children.length).toEqual(1);
         expect(moduleContainer.children[0].tagName).toEqual('DIV');
         expect(moduleContainer.children[0].className).toEqual('module');
+
+        // default relative size => flex-grow=1
+        expect(domNode.getAttribute('style')).toMatch(/\bflex-grow\s*:\s*1\b/);
+
+        // update the relativeSize to see if it's taken into account
+        moduleGridCell.setAttribute('relativeSize', 2);
+        component.forceUpdate();
+        // new relative size of the node, check the rendered div
+        expect(domNode.getAttribute('style')).toMatch(/\bflex-grow\s*:\s*2\b/);
 
         var module = component.renderAsModule();
         expect(TestUtils.isElementOfType(module, React.DOM.div)).toBe(true);
@@ -174,6 +186,15 @@ describe("Grid.Components.Cell", function() {
         expect(moduleContainer.children[0].children[1].className).toEqual('module-container');
         expect(moduleContainer.children[0].children[1].children[0].tagName).toEqual('DIV');
         expect(moduleContainer.children[0].children[1].children[0].className).toEqual('module');
+
+        // default relative size => flex-grow=1
+        expect(domNode.getAttribute('style')).toMatch(/\bflex-grow\s*:\s*1\b/);
+
+        // update the relativeSize to see if it's taken into account
+        moduleGridCell.setAttribute('relativeSize', 2);
+        component.forceUpdate();
+        // new relative size of the node, check the rendered div
+        expect(domNode.getAttribute('style')).toMatch(/\bflex-grow\s*:\s*2\b/);
     });
 
     it("should render a placeholder", function() {
@@ -191,6 +212,9 @@ describe("Grid.Components.Cell", function() {
         expect(domNode.classList.contains('grid-cell')).toBe(true);
         expect(domNode.classList.contains('grid-cell-placeholder')).toBe(true);
         expect(domNode.classList.contains('grid-cell-module-dragging')).toBe(false);
+
+        // no specific style defined
+        expect(domNode.getAttribute('style')).toBe(null);
 
         var placeholder = component.renderAsPlaceholder();
         expect(TestUtils.isElementOfType(placeholder, Placeholder)).toBe(true);

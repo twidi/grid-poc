@@ -207,6 +207,32 @@ var Store = {
     },
 
     /**
+     * Tell if the given grid is in resizing mode (a resizing node is currently dragged by the user)
+     *
+     * @param  {string} gridName - Name of the grid for which we want to know if it is in resizing mode
+     *
+     * @return {Boolean} - `true` if the grid is in resizing mode, else `false`
+     */
+    isResizing: function(gridName) {
+        var resizingNode = this.grids[gridName].nodes.resizing;
+        return !!resizingNode;
+    },
+
+    /**
+     * Tell if the given resizer is the one currently dragged on the given grid
+     *
+     * @param  {string} gridName - Name of the grid for which we want to do the check
+     * @param  {XML}  resizer - The resizer we want to check if it's the currently dragged one
+     *
+     * @return {Boolean} - `true` if the resizer is the currently dragged one,or `false`
+     */
+    isMovingResizer: function(gridName, resizer) {
+        var resizingNode = this.grids[gridName].nodes.resizing;
+        if (!resizingNode) { return false; }
+        return resizingNode.getAttribute('id') == resizer.getAttribute('id');
+    },
+
+    /**
      * Tell if the given node contains a subgrid.
      *
      * @param  {XML} node - The XML node to check for sub grids
@@ -239,6 +265,17 @@ var Store = {
     hasResizers: function(gridName) {
         var grid = this.getGrid(gridName);
         return Manipulator.hasResizers(grid);
+    },
+
+    /**
+     * Return the value of the "relativeSize" attribute of the given node
+     *
+     * @param  {XML} node - The node for which we want the size
+     *
+     * @return {Float} - The float-converted value of the attribute, or 1 if not defined
+     */
+    getRelativeSize: function(node) {
+        return parseFloat(node.getAttribute('relativeSize') || 1);
     },
 
     /**
@@ -285,8 +322,14 @@ var Private = {
      * @property {Object} nodes - References to some node that are manipulated throug the drag and drop process
      * @property {Object} nodes.dragging - The node currently being dragged
      * @property {Object} nodes.hovering - The placeholder node currently being hovered by the dragged node
+     * @property {Object} nodes.resizing - The resizer node currently being moved
      *
-     * @property {timeout} [hoveringTimeout] - The timeout to take hovering into account
+     * @property {timeout} hoveringTimeout - The timeout to take hovering into account
+     * @property {Object} resizing - Some data to hold current state of resizing
+     * @property {Integer} resizing.initialPos - Initial position of the mouse when the resizing started (X if vertical resizer, Y if horizontal)
+     * @property {Float} resizing.previousRelativeSize - The initial related size of the previous node
+     * @property {Float} resizing.nextRelativeSize - The initial related size of the next node
+     * @property {Float} resizing.sizeRatio - The ratio to use to compute new relative size., based on fullsize given when resizing started, and the full relative size
      */
     grids: {},
 
@@ -393,6 +436,7 @@ var Private = {
             backups: {},
             nodes: {},
             hoveringTimeout: null,
+            resizing: {},
         };
         /**
          * Event fired when a grid is added to the Grid store
@@ -966,6 +1010,120 @@ var Private = {
         this.clearBackupedGrid(gridName, 'hovering');
         this.clearSavedNode(gridName, 'dragging');
         this.clearSavedNode(gridName, 'hovering');
+    },
+
+    /**
+     * Start moving the given resizer on the given grid
+     *
+     * @param  {string} gridName - The name of the grid on witch the resizing occurs
+     * @param  {XML} resizer - The resizer of the grid beingmoved
+     * @param  {Integer} fullSize - The full size (height if horizontal resizer, or width) of the previous and next nodes
+     * @param  {Integer} initialPos - The position of the mouse acting as a starting point for the resizing
+     *
+     * @fires module:Grid.Store#"grid.designMode.resizing.start"
+     */
+    startResizing: function(gridName, resizer, fullSize, initialPos) {
+        this.checkConsistency(gridName);
+
+        // save the resizer as the resizer being moved for this grid
+        this.saveNode(gridName, resizer, 'resizing');
+
+        // get existing relative size information
+        var previousRelativeSize = this.getRelativeSize(resizer.previousSibling);
+        var nextRelativeSize = this.getRelativeSize(resizer.nextSibling);
+
+        // and save computed data
+        var gridEntry = this.getGridEntry(gridName);
+        gridEntry.resizing = {
+            initialPos: initialPos,
+            previousRelativeSize:  previousRelativeSize,
+            nextRelativeSize:  nextRelativeSize,
+            sizeRatio:  (previousRelativeSize + nextRelativeSize) / fullSize,
+        };
+
+        // set design step to "resizing"
+        this.changeDesignModeStep(gridName, 'resizing');
+
+        /**
+         * Event fired when a resizer starts to be moved
+         *
+         * @event module:Grid.Store#"grid.grid.designMode.resizing.start"
+         *
+         * @property {string} name - The name of the Grid when the resizing occurs
+         */
+        this.emit('grid.designMode.resizing.start', gridName);
+    },
+
+    /**
+     * Move a resizer to resize its previous and next nodes
+     *
+     * @param  {string} gridName - The name of the grid on witch the resizing occurs
+     * @param  {Integer} currentPos - The position of the mouse at the moment where the action is called
+     *                                to compute the new sizes of the previous and next nodes
+     *
+     * @fires module:Grid.Store#"grid.designMode.resizing.move"
+     */
+    resize: function(gridName, currentPos) {
+        this.checkConsistency(gridName);
+
+        var resizing = this.getGridEntry(gridName).resizing;
+
+        // compute new related sizes based on the new position
+        var relatedDiff = (currentPos - resizing.initialPos) * resizing.sizeRatio;
+        var newPreviousRelativeSize = resizing.previousRelativeSize + relatedDiff;
+        var newNextRelativeSize = resizing.nextRelativeSize - relatedDiff;
+
+        // we are out of bound, so we don't do anything
+        if (newPreviousRelativeSize <= 0 || newNextRelativeSize <= 0) {
+            return;
+        }
+
+        var eventData = {
+            previousRelativeSize: newPreviousRelativeSize,
+            nextRelativeSize: newNextRelativeSize,
+        };
+
+        /**
+         * Event fired when a resizer is moved over the grid
+         *
+         * @event module:Grid.Store#"grid.grid.designMode.resizing.move"
+         *
+         * @property {string} name - The name of the Grid when the resizing occurs
+         */
+        this.emit('grid.designMode.resizing.move', gridName, eventData);
+
+
+        // save relative sizes in the grid
+        var resizer = this.getSavedNode(gridName, 'resizing');
+        resizer.previousSibling.setAttribute('relativeSize', newPreviousRelativeSize);
+        resizer.nextSibling.setAttribute('relativeSize', newNextRelativeSize);
+    },
+
+    /**
+     * Stop moving the given resizer on the given grid
+     *
+     * @param  {string} gridName - The name of the grid on witch the resizing occurs
+     *
+     * @fires module:Grid.Store#"grid.designMode.resizing.stop"
+     */
+    stopResizing: function(gridName) {
+        this.checkConsistency(gridName);
+
+        // set design step to "enabled"
+        this.changeDesignModeStep(gridName, 'enabled');
+
+        /**
+         * Event fired when a resizer is released
+         *
+         * @event module:Grid.Store#"grid.grid.designMode.resizing.stop"
+         *
+         * @property {string} name - The name of the Grid when the resizing occurs
+         */
+        this.emit('grid.designMode.resizing.stop', gridName);
+
+        // clear saved not if exists, and working data
+        this.clearSavedNode(gridName, 'resizing');
+        this.getGridEntry(gridName).resizing = {};
     },
 
     // add the public interface

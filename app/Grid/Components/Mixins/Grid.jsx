@@ -75,13 +75,30 @@ var Grid = {
     },
 
     /**
+     * Return the inline styles to use when rendering the current grid
+     *
+     * @return {Object} - An object including styles
+     *
+     * One or more of these styles:
+     *
+     * - `flexGrow`: the relative size of the grid as defined in the grid if this is not a main grid, only a subgrid
+     */
+    getGridStyle: function() {
+        var style = {};
+        if (!this.isMainGrid()) {
+            style.flexGrow = Store.getRelativeSize(this.state.node);
+        }
+        return style;
+    },
+
+    /**
      * Render the grid component
      *
      * @returns {div} - A div with classes defined by `getGridClasses`, containing
      * rows, including resizers, returned by `renderRows`
      */
     renderGrid: function() {
-        return <div className={this.getGridClasses()}>{this.renderRows()}</div>
+        return <div className={this.getGridClasses()} style={this.getGridStyle()}>{this.renderRows()}</div>
     },
 
 };

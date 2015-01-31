@@ -76,8 +76,13 @@ var MainGrid = {
             // if the grid is different, update the state, it will rerender
             this.setState({node: actualGrid});
         } else {
-            // the grid is the same, but we still want a rerender, so we forceit
-            this.forceUpdate();
+            // the grid is the same, but we still want a rerender, so we force it
+            // except when a resizer is currently move, we choose to not update
+            // the grid in this case and let the resizer apply the new flex values
+            // to its previous and next sibling, for faster rendering
+            if (eventName != 'grid.designMode.resizing.move') {
+                this.forceUpdate();
+            }
         }
 
         // do some specific action depending on the received event

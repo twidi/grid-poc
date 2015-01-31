@@ -166,11 +166,27 @@ var Cell = {
     },
 
     /**
+     * Return the inline styles to use when rendering the current module cell
+     *
+     * @return {Object} - An object including styles
+     *
+     * One or more of these styles:
+     *
+     * - `flexGrow`: the relative size of the cell as defined in the grid
+     */
+    getModuleStyle: function() {
+        var style = {
+            flexGrow: Store.getRelativeSize(this.state.node),
+        };
+        return style;
+    },
+
+    /**
      * Render the cell as a standalone component: a empty div that, if it's a module, will hold
      * the real module component (not directly rendered), via {@link module:Grid.Components.Mixins.NodesHolder NodesHolderMixin}
      */
     renderAsModule: function() {
-        return <div className={this.getModuleCellClasses()}/>
+        return <div className={this.getModuleCellClasses()} style={this.getModuleStyle()}/>
     },
 
     /**
