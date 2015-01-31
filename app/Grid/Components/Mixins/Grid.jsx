@@ -52,7 +52,7 @@ var Grid = {
     },
 
     /**
-     * Return the classes to use when rendering the current subgrid
+     * Return the classes to use when rendering the current grid
      *
      * @return {React.addons.classSet}
      *

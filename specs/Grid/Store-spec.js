@@ -53,7 +53,7 @@ describe("Grid.Store", function() {
             expect(gridEntry.designModeStep).toEqual('disabled');
             expect(gridEntry.backups).toEqual({});
             expect(gridEntry.nodes).toEqual({});
-            expect(gridEntry.timeout).toBe(null);
+            expect(gridEntry.hoveringTimeout).toBe(null);
 
 
             done();
@@ -196,7 +196,7 @@ describe("Grid.Store", function() {
             expect(entry.designModeStep).toEqual('disabled');
             expect(entry.backups).toEqual({});
             expect(entry.nodes).toEqual({});
-            expect(entry.timeout).toBe(null);
+            expect(entry.hoveringTimeout).toBe(null);
 
             expect(_.size(entry)).toEqual(6);
         });

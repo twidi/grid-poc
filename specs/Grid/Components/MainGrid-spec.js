@@ -162,6 +162,42 @@ describe("Grid.Components.MainGrid", function() {
         expect(componentUtils.countSubGrids(component)).toEqual(1);
     });
 
+    it("should update the grid when a design mode event is triggered", function(done) {
+        var element = React.createElement(MainGrid, {node: testGrid});
+        var component = componentUtils.renderIntoDocument(element);
+
+        spyOn(component, 'forceUpdate').and.returnValue();
+
+        var events = [
+            'grid.designMode.enter',
+            'grid.designMode.exit',
+            'grid.designMode.dragging.start',
+            'grid.designMode.dragging.stop',
+            'grid.designMode.hovering.start',
+            'grid.designMode.hovering.stay',
+            'grid.designMode.hovering.stop',
+            'grid.designMode.drop'
+        ];
+
+        var testNextEvent = function() {
+            var event = events.shift();
+            if (!event) {
+                // no nore event, tell jasmine we're done, and exit
+                done();
+                return;
+            }
+            component.forceUpdate.calls.reset();
+            Store.__private.emit(event, 'Test grid');
+            setTimeout(function() {
+                expect(component.forceUpdate).toHaveBeenCalled();
+                testNextEvent();
+            }, 0.01);
+        };
+
+        testNextEvent();
+
+    });
+
     it("should change when toggling design mode, managing resizers", function(done) {
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = componentUtils.renderIntoDocument(element);

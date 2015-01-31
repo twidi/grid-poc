@@ -106,7 +106,7 @@ var ModuleHolder = {
      *
      * - the design mode is "enabled",so we make the element dragable
      * - the element is currently dragged, so we activate the dragleave event
-     * 
+     *
      * @return {object} - A "dict" with the attributes
      */
     getRenderAttrs: function() {

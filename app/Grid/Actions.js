@@ -74,10 +74,8 @@ var Actions = {
      * @type {function}
      *
      * @param {string} gridName - The name of the grid on witch the hovering occurs
-     * @param {XML} placeholderCell - The "placeholder" cell where we the module is hover
      *
      * @fires module:Grid.Store#"grid.designMode.hovering.start"
-     * @fires module:Grid.Store#"grid.designMode.hovering.stay"
      */
     startHovering: function(gridName, placeholderCell) {},
 
@@ -87,6 +85,7 @@ var Actions = {
      * @type {function}
      *
      * @param {string} gridName - The name of the grid on witch the hovering occurs
+     * @param {XML} placeholderCell - The "placeholder" cell where we the module is hover
      *
      * @fires module:Grid.Store#"grid.designMode.hovering.stop"
      */

@@ -376,6 +376,10 @@ var Private = {
      * Add a grid to the list of grids.
      * It's an action, should be called via
      * {@link module:Grid.Actions.enterDesignMode Grid.Actions.addGrid}
+     *
+     * @param {XML} grid - The grid to add to the list
+     *
+     * @fires module:Grid.Store#"grid.add"
      */
     addGrid: function(grid) {
         var name = grid.getAttribute('name');
@@ -388,7 +392,7 @@ var Private = {
             designModeStep: 'disabled',
             backups: {},
             nodes: {},
-            timeout: null,
+            hoveringTimeout: null,
         };
         /**
          * Event fired when a grid is added to the Grid store
@@ -402,8 +406,13 @@ var Private = {
 
     /**
      * Set design mode for the given grid.
+     *
      * It's an action, should be called via
      * {@link module:Grid.Actions.enterDesignMode Grid.Actions.enterDesignMode}
+     *
+     * @param {string} gridName - The name of the grid for witch we want to enter the design mode
+     *
+     * @fires module:Grid.Store#"grid.designMode.enter"
      */
     enterDesignMode: function(gridName) {
         this.changeDesignModeStep(gridName, 'enabled');
@@ -420,8 +429,13 @@ var Private = {
 
     /**
      * Exit design mode for the given grid.
+     *
      * It's an action, should be called via
      * {@link module:Grid.Actions.exitDesignMode Grid.Actions.exitDesignMode}
+     *
+     * @param {string} gridName - The name of the grid for witch we want to exit the design mode
+     *
+     * @fires module:Grid.Store#"grid.designMode.exit"
      */
     exitDesignMode: function(gridName) {
         this.changeDesignModeStep(gridName, 'disabled');
@@ -662,8 +676,13 @@ var Private = {
 
     /**
      * Start dragging the given module in the given grid.
+     *
      * It's an action, should be called via
      * {@link module:Grid.Actions.startDragging Grid.Actions.startDragging}
+     *
+     * @param {string} gridName - The name of the grid for witch we want to stop dragging
+     *
+     * @fires module:Grid.Store#"grid.designMode.dragging.start"
      */
     startDragging: function(gridName, moduleCell) {
         try {
@@ -685,7 +704,13 @@ var Private = {
             // set design step do "dragging"
             this.changeDesignModeStep(gridName, 'dragging');
 
-            // emit events
+            /**
+             * Event fired when a module starts to be dragged over a grid
+             *
+             * @event module:Grid.Store#"grid.grid.designMode.dragging.start"
+             *
+             * @property {string} name - The name of the Grid when the dragging occurs
+             */
             this.emit('grid.designMode.dragging.start', gridName);
 
         } catch(e) {
@@ -700,8 +725,13 @@ var Private = {
 
     /**
      * Stop dragging the currently dragged module in the given grid.
+     *
      * It's an action, should be called via
      * {@link module:Grid.Actions.cancelDragging Grid.Actions.cancelDragging}
+     *
+     * @param {string} gridName - The name of the grid for witch we want to stop dragging
+     *
+     * @fires module:Grid.Store#"grid.designMode.dragging.stop"
      */
     cancelDragging: function(gridName) {
         this.checkConsistency(gridName);
@@ -715,7 +745,13 @@ var Private = {
         // restore the "dragging" grid backup
         this.restoreGrid(gridName, 'dragging');
 
-        // emit events
+        /**
+         * Event fired when a module stop to be dragged over a grid
+         *
+         * @event module:Grid.Store#"grid.grid.designMode.dragging.stop"
+         *
+         * @property {string} name - The name of the Grid when the dragging occurs
+         */
         this.emit('grid.designMode.dragging.stop', gridName);
 
         // we don't need to keep a reference to the dragging module
@@ -727,8 +763,12 @@ var Private = {
 
     /**
      * The currently dragged module stays on a placeholder.
+     *
      * It's an action, should be called via
      * {@link module:Grid.Actions.startHovering Grid.Actions.startHovering}
+     * @param {string} gridName - The name of the grid on witch the hovering occurs
+     *
+     * @fires module:Grid.Store#"grid.designMode.hovering.start"
      */
     startHovering: function(gridName, placeholderCell) {
         placeholderCell = this.checkConsistency(gridName, placeholderCell);
@@ -760,14 +800,18 @@ var Private = {
         // set design step to "prehovering"
         this.changeDesignModeStep(gridName, 'prehovering');
 
-        // emit events
+        /**
+         * Event fired when a dragged module starts to hover a placeholder
+         *
+         * @event module:Grid.Store#"grid.grid.designMode.hovering.start"
+         *
+         * @property {string} name - The name of the Grid when the dragging occurs
+         */
         this.emit('grid.designMode.hovering.start', gridName);
     },
 
     /**
      * The currently dragged module is hovering a placeholder for a certain delay
-     *
-     * @type {function}
      *
      * @param {string} gridName - The name of the grid on witch the hovering occurs
      *
@@ -800,14 +844,27 @@ var Private = {
         // set design step to "hovering"
         this.changeDesignModeStep(gridName, 'hovering');
 
-        // emit events
+        /**
+         * Event fired when a dragged module stay over a placeholder a long
+         * time, the placeholder being replaced by the module
+         *
+         * @event module:Grid.Store#"grid.designMode.hovering.stay"
+         *
+         * @property {string} name - The name of the Grid where the dragging occurs
+         */
         this.emit('grid.designMode.hovering.stay', gridName);
     },
 
     /**
      * The currently dragged module moves away from the placeholder it was hover.
+     *
      * It's an action, should be called via
      * {@link module:Grid.Actions.stopHovering Grid.Actions.stopHovering}
+     *
+     * @param {string} gridName - The name of the grid on witch the hovering occurs
+     * @param {XML} placeholderCell - The "placeholder" cell where we the module is hover
+     *
+     * @fires module:Grid.Store#"grid.designMode.hovering.stop"
      */
     stopHovering: function(gridName) {
         this.checkConsistency(gridName);
@@ -826,14 +883,27 @@ var Private = {
         // we don't need to keep a reference to the hovered module
         this.clearSavedNode(gridName, 'hovering');
 
-        // emit events
+        /**
+         * Event fired when a dragged module stops hovering a placeholder
+         *
+         * @event module:Grid.Store#"grid.designMode.hovering.stop"
+         *
+         * @property {string} name - The name of the Grid when the dragging occurs
+         */
         this.emit('grid.designMode.hovering.stop', gridName);
     },
 
     /**
      * Drop the currently dragged module in the given placeholder.
+     *
      * It's an action, should be called via
      * {@link module:Grid.Actions.drop Grid.Actions.drop}
+     *
+     * @param {string} gridName - The name of the grid for witch we want to start dragging
+     * @param {XML} [placeholderCell] - The "placeholder" cell we want the dragging cell 
+     * to be dropped on. If defined, will replace the one saved in the store.
+     *
+     * @fires module:Grid.Store#"grid.designMode.drop"
      */
     drop: function(gridName, placeholderCell) {
         // stop the delay to go in real hovering mode
@@ -882,7 +952,13 @@ var Private = {
         // set design step to "enabled"
         this.changeDesignModeStep(gridName, 'enabled');
 
-        // emit events
+        /**
+         * Event fired when a dragged module is dropped
+         *
+         * @event module:Grid.Store#"grid.designMode.drop"
+         *
+         * @property {string} name - The name of the Grid when the dragging occurs
+         */
         this.emit('grid.designMode.drop', gridName);
 
         // clear backups if exists
