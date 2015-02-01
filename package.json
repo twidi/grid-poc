@@ -27,8 +27,8 @@
     "requireify": "~0.2.1",
     "gulp-rename": "~1.2.0",
     "gulp-print": "~1.1.0",
-    "jasmine-react": "twidi/jasmine-react",
-    "gulp-react": "~2.0.0"
+    "gulp-react": "~2.0.0",
+    "jasmine-react-helpers": "~0.2.2"
   },
   "dependencies": {
     "flux-react": "twidi/flux-react#no-deep-cloning",
