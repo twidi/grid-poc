@@ -28,6 +28,7 @@ var Store = {
          * @property {string} message - The message passed when the exception was raised, or a default value
          */
         GridDoesNotExist: function GridDoesNotExist(message) {
+            this.name = 'GridDoesNotExist';
             this.message = message || 'Grid does not exist';
         },
         /**
@@ -41,6 +42,7 @@ var Store = {
          * @property {string} message - The message passed when the exception was raised, or a default value
          */
         NodeDoesNotExist: function NodeDoesNotExist(message) {
+            this.name = 'NodeDoesNotExist';
             this.message = message || 'Node does not exist';
         },
         /**
@@ -54,6 +56,7 @@ var Store = {
          * @property {string} message - The message passed when the exception was raised, or a default value
          */
         InvalidDesignModeStep: function InvalidDesignModeStep(message) {
+            this.name = 'InvalidDesignModeStep';
             this.message = message || 'Design mode step is invalid';
         },
 
@@ -497,6 +500,9 @@ var Private = {
 
     /**
      * Remove a module from the given grid
+     *
+     * It's an action, should be called via
+     * {@link module:Grid.Actions.enterDesignMode Grid.Actions.removeModule}
      *
      * @param  {String} gridName - The grid from which we want to remove the module
      * @param  {XML} moduleCell - The module cell to remove
@@ -1094,6 +1100,9 @@ var Private = {
     /**
      * Start moving the given resizer on the given grid
      *
+     * It's an action, should be called via
+     * {@link module:Grid.Actions.drop Grid.Actions.startResizing}
+     *
      * @param  {string} gridName - The name of the grid on witch the resizing occurs
      * @param  {XML} resizer - The resizer of the grid beingmoved
      * @param  {Integer} fullSize - The full size (height if horizontal resizer, or width) of the previous and next nodes
@@ -1136,6 +1145,9 @@ var Private = {
     /**
      * Move a resizer to resize its previous and next nodes
      *
+     * It's an action, should be called via
+     * {@link module:Grid.Actions.drop Grid.Actions.resize}
+     *
      * @param  {string} gridName - The name of the grid on witch the resizing occurs
      * @param  {Integer} currentPos - The position of the mouse at the moment where the action is called
      *                                to compute the new sizes of the previous and next nodes
@@ -1171,7 +1183,6 @@ var Private = {
          */
         this.emit('grid.designMode.resizing.move', gridName, eventData);
 
-
         // save relative sizes in the grid
         var resizer = this.getSavedNode(gridName, 'resizing');
         resizer.previousSibling.setAttribute('relativeSize', newPreviousRelativeSize);
@@ -1180,6 +1191,9 @@ var Private = {
 
     /**
      * Stop moving the given resizer on the given grid
+     *
+     * It's an action, should be called via
+     * {@link module:Grid.Actions.drop Grid.Actions.stopResizing}
      *
      * @param  {string} gridName - The name of the grid on witch the resizing occurs
      *
