@@ -90,18 +90,10 @@ var Resizer = {
     },
 
     /**
-     * Called before attaching the component to the dom, to watch for the resizing.move event
-     */
-    componentWillMount: function () {
-        Store.on('grid.designMode.resizing.move', this.onResizingMove);
-    },
-
-    /**
-     * Called before detaching the component from the dom, to stop watching for the
-     * resizing.move event
+     * Called before detaching the component from the dom, to stop watching for 
+     * events related to resizing
      */
     componentWillUnmount: function () {
-        Store.off('grid.designMode.resizing.move', this.onResizingMove);
         this.deactivateResizingDetection();
     },
 
@@ -109,16 +101,21 @@ var Resizer = {
      * Add a handler on the document to act react then the mouse is moved, or
      * released over the whole document, to intercept them and use them to
      * move the resizer, and stop it.
+     * Also watch from the move event from the Store to do the resizing on
+     * previous and next siblings
      */
     activateResizingDetection: function() {
+        Store.on('grid.designMode.resizing.move', this.onResizingMove);
         this.addDocumentListener('mousemove', 'onDocumentMouseMove');
         this.addDocumentListener('mouseup', 'onDocumentMouseUp');
     },
 
     /**
-     * Stop listening to events defined in `activateResizingDetection`
+     * Stop listening to events defined in `activateResizingDetection`, and to
+     * the move event from the store
      */
     deactivateResizingDetection: function() {
+        Store.off('grid.designMode.resizing.move', this.onResizingMove);
         this.removeDocumentListener('mousemove', 'onDocumentMouseMove');
         this.removeDocumentListener('mouseup', 'onDocumentMouseUp');
     },
