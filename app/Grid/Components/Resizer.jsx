@@ -135,8 +135,9 @@ var Resizer = {
     /**
      * Return the cursor position on the screen for the given event. Position is
      * the X or Y coordinage depending of the resizer being vertical or horizontal
-     * @param  {[type]} event [description]
-     * @return {[type]}       [description]
+     *
+     * @param  {event} event - The event that must have a `screenX` and `screenY` attributes
+     * @return {Integer} - The asked mouse position
      */
     getScreenMousePosition: function(event) {
         return event[this.isHorizontal() ? 'screenY' : 'screenX'];

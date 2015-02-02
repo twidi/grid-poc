@@ -893,7 +893,7 @@ var Private = {
             /**
              * Event fired when a module starts to be dragged over a grid
              *
-             * @event module:Grid.Store#"grid.grid.designMode.dragging.start"
+             * @event module:Grid.Store#"grid.designMode.dragging.start"
              *
              * @property {string} name - The name of the Grid when the dragging occurs
              */
@@ -934,7 +934,7 @@ var Private = {
         /**
          * Event fired when a module stop to be dragged over a grid
          *
-         * @event module:Grid.Store#"grid.grid.designMode.dragging.stop"
+         * @event module:Grid.Store#"grid.designMode.dragging.stop"
          *
          * @property {string} name - The name of the Grid when the dragging occurs
          */
@@ -989,7 +989,7 @@ var Private = {
         /**
          * Event fired when a dragged module starts to hover a placeholder
          *
-         * @event module:Grid.Store#"grid.grid.designMode.hovering.start"
+         * @event module:Grid.Store#"grid.designMode.hovering.start"
          *
          * @property {string} name - The name of the Grid when the dragging occurs
          */
@@ -1192,7 +1192,7 @@ var Private = {
         /**
          * Event fired when a resizer starts to be moved
          *
-         * @event module:Grid.Store#"grid.grid.designMode.resizing.start"
+         * @event module:Grid.Store#"grid.designMode.resizing.start"
          *
          * @property {string} name - The name of the Grid when the resizing occurs
          */
@@ -1234,7 +1234,7 @@ var Private = {
         /**
          * Event fired when a resizer is moved over the grid
          *
-         * @event module:Grid.Store#"grid.grid.designMode.resizing.move"
+         * @event module:Grid.Store#"grid.designMode.resizing.move"
          *
          * @property {string} name - The name of the Grid when the resizing occurs
          */
@@ -1265,7 +1265,7 @@ var Private = {
         /**
          * Event fired when a resizer is released
          *
-         * @event module:Grid.Store#"grid.grid.designMode.resizing.stop"
+         * @event module:Grid.Store#"grid.designMode.resizing.stop"
          *
          * @property {string} name - The name of the Grid when the resizing occurs
          */
@@ -1312,7 +1312,7 @@ var Private = {
         /**
          * Event fired when a new version of a grid is added to its history.
          *
-         * @event module:Grid.Store#"grid.grid.designMode.history.add"
+         * @event module:Grid.Store#"grid.designMode.history.add"
          *
          * @property {string} name - The name of the Grid when the history was changed
          */
@@ -1367,7 +1367,7 @@ var Private = {
         /**
          * Event fired when we go back to the previous version of a grid in its history
          *
-         * @event module:Grid.Store#"grid.grid.designMode.history.back"
+         * @event module:Grid.Store#"grid.designMode.history.back"
          *
          * @property {string} name - The name of the Grid when the history was changed
          */
@@ -1397,7 +1397,7 @@ var Private = {
         /**
          * Event fired when we go forward to the next version of a grid in its history
          *
-         * @event module:Grid.Store#"grid.grid.designMode.history.forward"
+         * @event module:Grid.Store#"grid.designMode.history.forward"
          *
          * @property {string} name - The name of the Grid when the history was changed
          */
