@@ -1,7 +1,5 @@
 var _ = require('lodash');
 
-var JXON = require('jxon');
-
 
 /**
  * Manipulates grid data
