@@ -1,0 +1,2010 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Source: app/Grid/Manipulator.js</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
+    
+    
+    <script>
+    var config = {"default":{"outputSourceFiles":true},"monospaceLinks":false,"cleverLinks":false,"applicationName":"Grid POC"};
+    </script>
+    
+
+    
+</head>
+<body>
+<div id="wrap" class="clearfix">
+    
+<div class="navigation">
+    <h3 class="applicationName"><a href="index.html">Grid POC</a></h3>
+
+    <div class="search">
+        <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentations">
+    </div>
+    <ul class="list">
+    
+        <li class="item" data-name="module:Grid.Actions">
+            <span class="title">
+                <a href="module-Grid.Actions.html">module:Grid.Actions</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="module:Grid.Actions.addGrid"><a href="module-Grid.Actions.html#addGrid">addGrid</a></li>
+            
+                <li data-name="module:Grid.Actions.addModule"><a href="module-Grid.Actions.html#addModule">addModule</a></li>
+            
+                <li data-name="module:Grid.Actions.cancelDragging"><a href="module-Grid.Actions.html#cancelDragging">cancelDragging</a></li>
+            
+                <li data-name="module:Grid.Actions.drop"><a href="module-Grid.Actions.html#drop">drop</a></li>
+            
+                <li data-name="module:Grid.Actions.enterDesignMode"><a href="module-Grid.Actions.html#enterDesignMode">enterDesignMode</a></li>
+            
+                <li data-name="module:Grid.Actions.exitDesignMode"><a href="module-Grid.Actions.html#exitDesignMode">exitDesignMode</a></li>
+            
+                <li data-name="module:Grid.Actions.goBackInHistory"><a href="module-Grid.Actions.html#goBackInHistory">goBackInHistory</a></li>
+            
+                <li data-name="module:Grid.Actions.goForwardInHistory"><a href="module-Grid.Actions.html#goForwardInHistory">goForwardInHistory</a></li>
+            
+                <li data-name="module:Grid.Actions.removeModule"><a href="module-Grid.Actions.html#removeModule">removeModule</a></li>
+            
+                <li data-name="module:Grid.Actions.resize"><a href="module-Grid.Actions.html#resize">resize</a></li>
+            
+                <li data-name="module:Grid.Actions.startDragging"><a href="module-Grid.Actions.html#startDragging">startDragging</a></li>
+            
+                <li data-name="module:Grid.Actions.startHovering"><a href="module-Grid.Actions.html#startHovering">startHovering</a></li>
+            
+                <li data-name="module:Grid.Actions.startResizing"><a href="module-Grid.Actions.html#startResizing">startResizing</a></li>
+            
+                <li data-name="module:Grid.Actions.stopHovering"><a href="module-Grid.Actions.html#stopHovering">stopHovering</a></li>
+            
+                <li data-name="module:Grid.Actions.stopResizing"><a href="module-Grid.Actions.html#stopResizing">stopResizing</a></li>
+            
+            </ul>
+            <ul class="classes itemMembers">
+            
+            </ul>
+            <ul class="mixins itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+            <ul class="namespaces itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="module:Grid.Components">
+            <span class="title">
+                <a href="module-Grid.Components.html">module:Grid.Components</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="classes itemMembers">
+            
+            </ul>
+            <ul class="mixins itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+            <ul class="namespaces itemMembers">
+            
+            <span class="subtitle">Namespaces</span>
+            
+                <li data-name="module:Grid.Components.Cell"><a href="module-Grid.Components.Cell.html">Cell</a></li>
+            
+                <li data-name="module:Grid.Components.MainGrid"><a href="module-Grid.Components.MainGrid.html">MainGrid</a></li>
+            
+                <li data-name="module:Grid.Components.Mixins"><a href="module-Grid.Components.Mixins.html">Mixins</a></li>
+            
+                <li data-name="module:Grid.Components.ModuleHolder"><a href="module-Grid.Components.ModuleHolder.html">ModuleHolder</a></li>
+            
+                <li data-name="module:Grid.Components.ModulesCache"><a href="module-Grid.Components.ModulesCache.html">ModulesCache</a></li>
+            
+                <li data-name="module:Grid.Components.Placeholder"><a href="module-Grid.Components.Placeholder.html">Placeholder</a></li>
+            
+                <li data-name="module:Grid.Components.Resizer"><a href="module-Grid.Components.Resizer.html">Resizer</a></li>
+            
+                <li data-name="module:Grid.Components.Row"><a href="module-Grid.Components.Row.html">Row</a></li>
+            
+                <li data-name="module:Grid.Components.SubGrid"><a href="module-Grid.Components.SubGrid.html">SubGrid</a></li>
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="module:Grid.Components.Cell">
+            <span class="title">
+                <a href="module-Grid.Components.Cell.html">module:Grid.Components.Cell</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="module:Grid.Components.Cell.externalNodesClassNames"><a href="module-Grid.Components.Cell.html#externalNodesClassNames">externalNodesClassNames</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="module:Grid.Components.Cell.canHoldExternalNodes"><a href="module-Grid.Components.Cell.html#canHoldExternalNodes">canHoldExternalNodes</a></li>
+            
+                <li data-name="module:Grid.Components.Cell.getExternalNode"><a href="module-Grid.Components.Cell.html#getExternalNode">getExternalNode</a></li>
+            
+                <li data-name="module:Grid.Components.Cell.getModuleCellClasses"><a href="module-Grid.Components.Cell.html#getModuleCellClasses">getModuleCellClasses</a></li>
+            
+                <li data-name="module:Grid.Components.Cell.getModuleStyle"><a href="module-Grid.Components.Cell.html#getModuleStyle">getModuleStyle</a></li>
+            
+                <li data-name="module:Grid.Components.Cell.isModule"><a href="module-Grid.Components.Cell.html#isModule">isModule</a></li>
+            
+                <li data-name="module:Grid.Components.Cell.isPlaceholder"><a href="module-Grid.Components.Cell.html#isPlaceholder">isPlaceholder</a></li>
+            
+                <li data-name="module:Grid.Components.Cell.isSubGrid"><a href="module-Grid.Components.Cell.html#isSubGrid">isSubGrid</a></li>
+            
+                <li data-name="module:Grid.Components.Cell.render"><a href="module-Grid.Components.Cell.html#render">render</a></li>
+            
+                <li data-name="module:Grid.Components.Cell.renderAsModule"><a href="module-Grid.Components.Cell.html#renderAsModule">renderAsModule</a></li>
+            
+                <li data-name="module:Grid.Components.Cell.renderAsPlaceholder"><a href="module-Grid.Components.Cell.html#renderAsPlaceholder">renderAsPlaceholder</a></li>
+            
+                <li data-name="module:Grid.Components.Cell.renderAsSubGrid"><a href="module-Grid.Components.Cell.html#renderAsSubGrid">renderAsSubGrid</a></li>
+            
+            </ul>
+            <ul class="classes itemMembers">
+            
+            </ul>
+            <ul class="mixins itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+            <ul class="namespaces itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="module:Grid.Components.MainGrid">
+            <span class="title">
+                <a href="module-Grid.Components.MainGrid.html">module:Grid.Components.MainGrid</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="module:Grid.Components.MainGrid.activateDropDetection"><a href="module-Grid.Components.MainGrid.html#activateDropDetection">activateDropDetection</a></li>
+            
+                <li data-name="module:Grid.Components.MainGrid.addRandomModule"><a href="module-Grid.Components.MainGrid.html#addRandomModule">addRandomModule</a></li>
+            
+                <li data-name="module:Grid.Components.MainGrid.applyDrop"><a href="module-Grid.Components.MainGrid.html#applyDrop">applyDrop</a></li>
+            
+                <li data-name="module:Grid.Components.MainGrid.componentWillMount"><a href="module-Grid.Components.MainGrid.html#componentWillMount">componentWillMount</a></li>
+            
+                <li data-name="module:Grid.Components.MainGrid.componentWillReceiveProps"><a href="module-Grid.Components.MainGrid.html#componentWillReceiveProps">componentWillReceiveProps</a></li>
+            
+                <li data-name="module:Grid.Components.MainGrid.componentWillUnmount"><a href="module-Grid.Components.MainGrid.html#componentWillUnmount">componentWillUnmount</a></li>
+            
+                <li data-name="module:Grid.Components.MainGrid.deactivateDropDetection"><a href="module-Grid.Components.MainGrid.html#deactivateDropDetection">deactivateDropDetection</a></li>
+            
+                <li data-name="module:Grid.Components.MainGrid.emitFakeDragEnd"><a href="module-Grid.Components.MainGrid.html#emitFakeDragEnd">emitFakeDragEnd</a></li>
+            
+                <li data-name="module:Grid.Components.MainGrid.emitFakeDrop"><a href="module-Grid.Components.MainGrid.html#emitFakeDrop">emitFakeDrop</a></li>
+            
+                <li data-name="module:Grid.Components.MainGrid.getContainerClasses"><a href="module-Grid.Components.MainGrid.html#getContainerClasses">getContainerClasses</a></li>
+            
+                <li data-name="module:Grid.Components.MainGrid.getInitialState"><a href="module-Grid.Components.MainGrid.html#getInitialState">getInitialState</a></li>
+            
+                <li data-name="module:Grid.Components.MainGrid.onDesignModeChange"><a href="module-Grid.Components.MainGrid.html#onDesignModeChange">onDesignModeChange</a></li>
+            
+                <li data-name="module:Grid.Components.MainGrid.onDocumentDetectDrop"><a href="module-Grid.Components.MainGrid.html#onDocumentDetectDrop">onDocumentDetectDrop</a></li>
+            
+                <li data-name="module:Grid.Components.MainGrid.onDocumentDragEnd"><a href="module-Grid.Components.MainGrid.html#onDocumentDragEnd">onDocumentDragEnd</a></li>
+            
+                <li data-name="module:Grid.Components.MainGrid.onDocumentDragOver"><a href="module-Grid.Components.MainGrid.html#onDocumentDragOver">onDocumentDragOver</a></li>
+            
+                <li data-name="module:Grid.Components.MainGrid.onDocumentDrop"><a href="module-Grid.Components.MainGrid.html#onDocumentDrop">onDocumentDrop</a></li>
+            
+                <li data-name="module:Grid.Components.MainGrid.redo"><a href="module-Grid.Components.MainGrid.html#redo">redo</a></li>
+            
+                <li data-name="module:Grid.Components.MainGrid.render"><a href="module-Grid.Components.MainGrid.html#render">render</a></li>
+            
+                <li data-name="module:Grid.Components.MainGrid.toggleDesignMode"><a href="module-Grid.Components.MainGrid.html#toggleDesignMode">toggleDesignMode</a></li>
+            
+                <li data-name="module:Grid.Components.MainGrid.undo"><a href="module-Grid.Components.MainGrid.html#undo">undo</a></li>
+            
+            </ul>
+            <ul class="classes itemMembers">
+            
+            </ul>
+            <ul class="mixins itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+            <ul class="namespaces itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="module:Grid.Components.Mixins">
+            <span class="title">
+                <a href="module-Grid.Components.Mixins.html">module:Grid.Components.Mixins</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="classes itemMembers">
+            
+            </ul>
+            <ul class="mixins itemMembers">
+            
+            <span class="subtitle">Mixins</span>
+            
+                <li data-name="module:Grid.Components.Mixins.Grid"><a href="module-Grid.Components.Mixins.Grid.html">Grid</a></li>
+            
+                <li data-name="module:Grid.Components.Mixins.Node"><a href="module-Grid.Components.Mixins.Node.html">Node</a></li>
+            
+                <li data-name="module:Grid.Components.Mixins.NodesHolder"><a href="module-Grid.Components.Mixins.NodesHolder.html">NodesHolder</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+            <ul class="namespaces itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="module:Grid.Components.ModuleHolder">
+            <span class="title">
+                <a href="module-Grid.Components.ModuleHolder.html">module:Grid.Components.ModuleHolder</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="module:Grid.Components.ModuleHolder.externalNodesClassNames"><a href="module-Grid.Components.ModuleHolder.html#externalNodesClassNames">externalNodesClassNames</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="module:Grid.Components.ModuleHolder.canHoldExternalNodes"><a href="module-Grid.Components.ModuleHolder.html#canHoldExternalNodes">canHoldExternalNodes</a></li>
+            
+                <li data-name="module:Grid.Components.ModuleHolder.componentDidUpdate"><a href="module-Grid.Components.ModuleHolder.html#componentDidUpdate">componentDidUpdate</a></li>
+            
+                <li data-name="module:Grid.Components.ModuleHolder.getExternalNode"><a href="module-Grid.Components.ModuleHolder.html#getExternalNode">getExternalNode</a></li>
+            
+                <li data-name="module:Grid.Components.ModuleHolder.getRenderAttrs"><a href="module-Grid.Components.ModuleHolder.html#getRenderAttrs">getRenderAttrs</a></li>
+            
+                <li data-name="module:Grid.Components.ModuleHolder.onDragLeave"><a href="module-Grid.Components.ModuleHolder.html#onDragLeave">onDragLeave</a></li>
+            
+                <li data-name="module:Grid.Components.ModuleHolder.onDragStart"><a href="module-Grid.Components.ModuleHolder.html#onDragStart">onDragStart</a></li>
+            
+                <li data-name="module:Grid.Components.ModuleHolder.removeModule"><a href="module-Grid.Components.ModuleHolder.html#removeModule">removeModule</a></li>
+            
+                <li data-name="module:Grid.Components.ModuleHolder.render"><a href="module-Grid.Components.ModuleHolder.html#render">render</a></li>
+            
+            </ul>
+            <ul class="classes itemMembers">
+            
+            </ul>
+            <ul class="mixins itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+            <ul class="namespaces itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="module:Grid.Components.ModulesCache">
+            <span class="title">
+                <a href="module-Grid.Components.ModulesCache.html">module:Grid.Components.ModulesCache</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="module:Grid.Components.ModulesCache.holderContainerClassName"><a href="module-Grid.Components.ModulesCache.html#holderContainerClassName">holderContainerClassName</a></li>
+            
+                <li data-name="module:Grid.Components.ModulesCache.moduleContainerClassName"><a href="module-Grid.Components.ModulesCache.html#moduleContainerClassName">moduleContainerClassName</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="module:Grid.Components.ModulesCache._extractAttributes"><a href="module-Grid.Components.ModulesCache.html#_extractAttributes">_extractAttributes</a></li>
+            
+                <li data-name="module:Grid.Components.ModulesCache.getHolderComponent"><a href="module-Grid.Components.ModulesCache.html#getHolderComponent">getHolderComponent</a></li>
+            
+                <li data-name="module:Grid.Components.ModulesCache.getModuleComponent"><a href="module-Grid.Components.ModulesCache.html#getModuleComponent">getModuleComponent</a></li>
+            
+            </ul>
+            <ul class="classes itemMembers">
+            
+            </ul>
+            <ul class="mixins itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+            <ul class="namespaces itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="module:Grid.Components.Placeholder">
+            <span class="title">
+                <a href="module-Grid.Components.Placeholder.html">module:Grid.Components.Placeholder</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="module:Grid.Components.Placeholder.activateDropDetection"><a href="module-Grid.Components.Placeholder.html#activateDropDetection">activateDropDetection</a></li>
+            
+                <li data-name="module:Grid.Components.Placeholder.componentDidMount"><a href="module-Grid.Components.Placeholder.html#componentDidMount">componentDidMount</a></li>
+            
+                <li data-name="module:Grid.Components.Placeholder.componentDidUpdate"><a href="module-Grid.Components.Placeholder.html#componentDidUpdate">componentDidUpdate</a></li>
+            
+                <li data-name="module:Grid.Components.Placeholder.componentWillUnmount"><a href="module-Grid.Components.Placeholder.html#componentWillUnmount">componentWillUnmount</a></li>
+            
+                <li data-name="module:Grid.Components.Placeholder.componentWillUpdate"><a href="module-Grid.Components.Placeholder.html#componentWillUpdate">componentWillUpdate</a></li>
+            
+                <li data-name="module:Grid.Components.Placeholder.deactivateDropDetection"><a href="module-Grid.Components.Placeholder.html#deactivateDropDetection">deactivateDropDetection</a></li>
+            
+                <li data-name="module:Grid.Components.Placeholder.getClasses"><a href="module-Grid.Components.Placeholder.html#getClasses">getClasses</a></li>
+            
+                <li data-name="module:Grid.Components.Placeholder.onDocumentDetectDrop"><a href="module-Grid.Components.Placeholder.html#onDocumentDetectDrop">onDocumentDetectDrop</a></li>
+            
+                <li data-name="module:Grid.Components.Placeholder.onDocumentDragEnd"><a href="module-Grid.Components.Placeholder.html#onDocumentDragEnd">onDocumentDragEnd</a></li>
+            
+                <li data-name="module:Grid.Components.Placeholder.onDragEnter"><a href="module-Grid.Components.Placeholder.html#onDragEnter">onDragEnter</a></li>
+            
+                <li data-name="module:Grid.Components.Placeholder.onDragLeave"><a href="module-Grid.Components.Placeholder.html#onDragLeave">onDragLeave</a></li>
+            
+                <li data-name="module:Grid.Components.Placeholder.onDragOver"><a href="module-Grid.Components.Placeholder.html#onDragOver">onDragOver</a></li>
+            
+                <li data-name="module:Grid.Components.Placeholder.render"><a href="module-Grid.Components.Placeholder.html#render">render</a></li>
+            
+            </ul>
+            <ul class="classes itemMembers">
+            
+            </ul>
+            <ul class="mixins itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+            <ul class="namespaces itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="module:Grid.Components.Resizer">
+            <span class="title">
+                <a href="module-Grid.Components.Resizer.html">module:Grid.Components.Resizer</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="module:Grid.Components.Resizer.activateResizingDetection"><a href="module-Grid.Components.Resizer.html#activateResizingDetection">activateResizingDetection</a></li>
+            
+                <li data-name="module:Grid.Components.Resizer.componentWillUnmount"><a href="module-Grid.Components.Resizer.html#componentWillUnmount">componentWillUnmount</a></li>
+            
+                <li data-name="module:Grid.Components.Resizer.deactivateResizingDetection"><a href="module-Grid.Components.Resizer.html#deactivateResizingDetection">deactivateResizingDetection</a></li>
+            
+                <li data-name="module:Grid.Components.Resizer.getDomNodeSize"><a href="module-Grid.Components.Resizer.html#getDomNodeSize">getDomNodeSize</a></li>
+            
+                <li data-name="module:Grid.Components.Resizer.getRenderAttrs"><a href="module-Grid.Components.Resizer.html#getRenderAttrs">getRenderAttrs</a></li>
+            
+                <li data-name="module:Grid.Components.Resizer.getResizerClasses"><a href="module-Grid.Components.Resizer.html#getResizerClasses">getResizerClasses</a></li>
+            
+                <li data-name="module:Grid.Components.Resizer.getScreenMousePosition"><a href="module-Grid.Components.Resizer.html#getScreenMousePosition">getScreenMousePosition</a></li>
+            
+                <li data-name="module:Grid.Components.Resizer.isHorizontal"><a href="module-Grid.Components.Resizer.html#isHorizontal">isHorizontal</a></li>
+            
+                <li data-name="module:Grid.Components.Resizer.isVertical"><a href="module-Grid.Components.Resizer.html#isVertical">isVertical</a></li>
+            
+                <li data-name="module:Grid.Components.Resizer.onDocumentMouseMove"><a href="module-Grid.Components.Resizer.html#onDocumentMouseMove">onDocumentMouseMove</a></li>
+            
+                <li data-name="module:Grid.Components.Resizer.onDocumentMouseUp"><a href="module-Grid.Components.Resizer.html#onDocumentMouseUp">onDocumentMouseUp</a></li>
+            
+                <li data-name="module:Grid.Components.Resizer.onResizingMove"><a href="module-Grid.Components.Resizer.html#onResizingMove">onResizingMove</a></li>
+            
+                <li data-name="module:Grid.Components.Resizer.render"><a href="module-Grid.Components.Resizer.html#render">render</a></li>
+            
+                <li data-name="module:Grid.Components.Resizer.setDomNodeRelativeSise"><a href="module-Grid.Components.Resizer.html#setDomNodeRelativeSise">setDomNodeRelativeSise</a></li>
+            
+            </ul>
+            <ul class="classes itemMembers">
+            
+            </ul>
+            <ul class="mixins itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+            <ul class="namespaces itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="module:Grid.Components.Row">
+            <span class="title">
+                <a href="module-Grid.Components.Row.html">module:Grid.Components.Row</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="module:Grid.Components.Row.getCells"><a href="module-Grid.Components.Row.html#getCells">getCells</a></li>
+            
+                <li data-name="module:Grid.Components.Row.getRowClasses"><a href="module-Grid.Components.Row.html#getRowClasses">getRowClasses</a></li>
+            
+                <li data-name="module:Grid.Components.Row.getRowStyle"><a href="module-Grid.Components.Row.html#getRowStyle">getRowStyle</a></li>
+            
+                <li data-name="module:Grid.Components.Row.isPlaceholder"><a href="module-Grid.Components.Row.html#isPlaceholder">isPlaceholder</a></li>
+            
+                <li data-name="module:Grid.Components.Row.render"><a href="module-Grid.Components.Row.html#render">render</a></li>
+            
+                <li data-name="module:Grid.Components.Row.renderCells"><a href="module-Grid.Components.Row.html#renderCells">renderCells</a></li>
+            
+            </ul>
+            <ul class="classes itemMembers">
+            
+            </ul>
+            <ul class="mixins itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+            <ul class="namespaces itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="module:Grid.Components.SubGrid">
+            <span class="title">
+                <a href="module-Grid.Components.SubGrid.html">module:Grid.Components.SubGrid</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="module:Grid.Components.SubGrid.render"><a href="module-Grid.Components.SubGrid.html#render">render</a></li>
+            
+            </ul>
+            <ul class="classes itemMembers">
+            
+            </ul>
+            <ul class="mixins itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+            <ul class="namespaces itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="module:Grid.Manipulator">
+            <span class="title">
+                <a href="module-Grid.Manipulator.html">module:Grid.Manipulator</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="module:Grid.Manipulator.reCellType"><a href="module-Grid.Manipulator.html#reCellType">reCellType</a></li>
+            
+                <li data-name="module:Grid.Manipulator.reGridType"><a href="module-Grid.Manipulator.html#reGridType">reGridType</a></li>
+            
+                <li data-name="module:Grid.Manipulator.reResizerType"><a href="module-Grid.Manipulator.html#reResizerType">reResizerType</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="module:Grid.Manipulator.addCell"><a href="module-Grid.Manipulator.html#addCell">addCell</a></li>
+            
+                <li data-name="module:Grid.Manipulator.addPlaceholders"><a href="module-Grid.Manipulator.html#addPlaceholders">addPlaceholders</a></li>
+            
+                <li data-name="module:Grid.Manipulator.addResizer"><a href="module-Grid.Manipulator.html#addResizer">addResizer</a></li>
+            
+                <li data-name="module:Grid.Manipulator.addResizers"><a href="module-Grid.Manipulator.html#addResizers">addResizers</a></li>
+            
+                <li data-name="module:Grid.Manipulator.addRow"><a href="module-Grid.Manipulator.html#addRow">addRow</a></li>
+            
+                <li data-name="module:Grid.Manipulator.cleanGrid"><a href="module-Grid.Manipulator.html#cleanGrid">cleanGrid</a></li>
+            
+                <li data-name="module:Grid.Manipulator.cleanPlaceholders"><a href="module-Grid.Manipulator.html#cleanPlaceholders">cleanPlaceholders</a></li>
+            
+                <li data-name="module:Grid.Manipulator.clone"><a href="module-Grid.Manipulator.html#clone">clone</a></li>
+            
+                <li data-name="module:Grid.Manipulator.containsSubGrid"><a href="module-Grid.Manipulator.html#containsSubGrid">containsSubGrid</a></li>
+            
+                <li data-name="module:Grid.Manipulator.createBaseGrid"><a href="module-Grid.Manipulator.html#createBaseGrid">createBaseGrid</a></li>
+            
+                <li data-name="module:Grid.Manipulator.createContentNode"><a href="module-Grid.Manipulator.html#createContentNode">createContentNode</a></li>
+            
+                <li data-name="module:Grid.Manipulator.createModuleNode"><a href="module-Grid.Manipulator.html#createModuleNode">createModuleNode</a></li>
+            
+                <li data-name="module:Grid.Manipulator.getNearestGrid"><a href="module-Grid.Manipulator.html#getNearestGrid">getNearestGrid</a></li>
+            
+                <li data-name="module:Grid.Manipulator.hasPlaceholders"><a href="module-Grid.Manipulator.html#hasPlaceholders">hasPlaceholders</a></li>
+            
+                <li data-name="module:Grid.Manipulator.hasResizers"><a href="module-Grid.Manipulator.html#hasResizers">hasResizers</a></li>
+            
+                <li data-name="module:Grid.Manipulator.moveContentToPlaceholder"><a href="module-Grid.Manipulator.html#moveContentToPlaceholder">moveContentToPlaceholder</a></li>
+            
+                <li data-name="module:Grid.Manipulator.removeCell"><a href="module-Grid.Manipulator.html#removeCell">removeCell</a></li>
+            
+                <li data-name="module:Grid.Manipulator.removeContentNode"><a href="module-Grid.Manipulator.html#removeContentNode">removeContentNode</a></li>
+            
+                <li data-name="module:Grid.Manipulator.removePlaceholders"><a href="module-Grid.Manipulator.html#removePlaceholders">removePlaceholders</a></li>
+            
+                <li data-name="module:Grid.Manipulator.removeResizers"><a href="module-Grid.Manipulator.html#removeResizers">removeResizers</a></li>
+            
+                <li data-name="module:Grid.Manipulator.setIds"><a href="module-Grid.Manipulator.html#setIds">setIds</a></li>
+            
+                <li data-name="module:Grid.Manipulator.surroundCellWithGrid"><a href="module-Grid.Manipulator.html#surroundCellWithGrid">surroundCellWithGrid</a></li>
+            
+                <li data-name="module:Grid.Manipulator.XMLGridToXMLString"><a href="module-Grid.Manipulator.html#XMLGridToXMLString">XMLGridToXMLString</a></li>
+            
+                <li data-name="module:Grid.Manipulator.XMLStringToXMLGrid"><a href="module-Grid.Manipulator.html#XMLStringToXMLGrid">XMLStringToXMLGrid</a></li>
+            
+            </ul>
+            <ul class="classes itemMembers">
+            
+            </ul>
+            <ul class="mixins itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+            <ul class="namespaces itemMembers">
+            
+            <span class="subtitle">Namespaces</span>
+            
+                <li data-name="module:Grid.Manipulator.Exceptions"><a href="module-Grid.Manipulator.Exceptions.html">Exceptions</a></li>
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="module:Grid.Manipulator.Exceptions">
+            <span class="title">
+                <a href="module-Grid.Manipulator.Exceptions.html">module:Grid.Manipulator.Exceptions</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="classes itemMembers">
+            
+            <span class="subtitle">Classes</span>
+            
+                <li data-name="module:Grid.Manipulator.Exceptions.Inconsistency"><a href="module-Grid.Manipulator.Exceptions.Inconsistency.html">Inconsistency</a></li>
+            
+                <li data-name="module:Grid.Manipulator.Exceptions.InvalidState"><a href="module-Grid.Manipulator.Exceptions.InvalidState.html">InvalidState</a></li>
+            
+                <li data-name="module:Grid.Manipulator.Exceptions.InvalidType"><a href="module-Grid.Manipulator.Exceptions.InvalidType.html">InvalidType</a></li>
+            
+            </ul>
+            <ul class="mixins itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+            <ul class="namespaces itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="module:Grid.Modules">
+            <span class="title">
+                <a href="module-Grid.Modules.html">module:Grid.Modules</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="classes itemMembers">
+            
+            </ul>
+            <ul class="mixins itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+            <ul class="namespaces itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="module:Grid.Store">
+            <span class="title">
+                <a href="module-Grid.Store.html">module:Grid.Store</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="module:Grid.Store.canGoBackInHistory"><a href="module-Grid.Store.html#canGoBackInHistory">canGoBackInHistory</a></li>
+            
+                <li data-name="module:Grid.Store.canGoForwardInHistory"><a href="module-Grid.Store.html#canGoForwardInHistory">canGoForwardInHistory</a></li>
+            
+                <li data-name="module:Grid.Store.containsSubGrid"><a href="module-Grid.Store.html#containsSubGrid">containsSubGrid</a></li>
+            
+                <li data-name="module:Grid.Store.getDesignModeStep"><a href="module-Grid.Store.html#getDesignModeStep">getDesignModeStep</a></li>
+            
+                <li data-name="module:Grid.Store.getGrid"><a href="module-Grid.Store.html#getGrid">getGrid</a></li>
+            
+                <li data-name="module:Grid.Store.getGridNodeById"><a href="module-Grid.Store.html#getGridNodeById">getGridNodeById</a></li>
+            
+                <li data-name="module:Grid.Store.getMainGrid"><a href="module-Grid.Store.html#getMainGrid">getMainGrid</a></li>
+            
+                <li data-name="module:Grid.Store.getMainGridName"><a href="module-Grid.Store.html#getMainGridName">getMainGridName</a></li>
+            
+                <li data-name="module:Grid.Store.getNodeId"><a href="module-Grid.Store.html#getNodeId">getNodeId</a></li>
+            
+                <li data-name="module:Grid.Store.getRelativeSize"><a href="module-Grid.Store.html#getRelativeSize">getRelativeSize</a></li>
+            
+                <li data-name="module:Grid.Store.hasPlaceholders"><a href="module-Grid.Store.html#hasPlaceholders">hasPlaceholders</a></li>
+            
+                <li data-name="module:Grid.Store.hasResizers"><a href="module-Grid.Store.html#hasResizers">hasResizers</a></li>
+            
+                <li data-name="module:Grid.Store.isDragging"><a href="module-Grid.Store.html#isDragging">isDragging</a></li>
+            
+                <li data-name="module:Grid.Store.isDraggingCell"><a href="module-Grid.Store.html#isDraggingCell">isDraggingCell</a></li>
+            
+                <li data-name="module:Grid.Store.isHovering"><a href="module-Grid.Store.html#isHovering">isHovering</a></li>
+            
+                <li data-name="module:Grid.Store.isHoveringPlaceholder"><a href="module-Grid.Store.html#isHoveringPlaceholder">isHoveringPlaceholder</a></li>
+            
+                <li data-name="module:Grid.Store.isMovingResizer"><a href="module-Grid.Store.html#isMovingResizer">isMovingResizer</a></li>
+            
+                <li data-name="module:Grid.Store.isResizing"><a href="module-Grid.Store.html#isResizing">isResizing</a></li>
+            
+            </ul>
+            <ul class="classes itemMembers">
+            
+            </ul>
+            <ul class="mixins itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            <span class="subtitle">Events</span>
+            
+                <li data-name="module:Grid.Store#event:"grid.add""><a href="module-Grid.Store.html#event:"grid.add"">"grid.add"</a></li>
+            
+                <li data-name="module:Grid.Store#event:"grid.designMode.drop""><a href="module-Grid.Store.html#event:"grid.designMode.drop"">"grid.designMode.drop"</a></li>
+            
+                <li data-name="module:Grid.Store#event:"grid.designMode.enter""><a href="module-Grid.Store.html#event:"grid.designMode.enter"">"grid.designMode.enter"</a></li>
+            
+                <li data-name="module:Grid.Store#event:"grid.designMode.exit""><a href="module-Grid.Store.html#event:"grid.designMode.exit"">"grid.designMode.exit"</a></li>
+            
+                <li data-name="module:Grid.Store#event:"grid.designMode.hovering.stay""><a href="module-Grid.Store.html#event:"grid.designMode.hovering.stay"">"grid.designMode.hovering.stay"</a></li>
+            
+                <li data-name="module:Grid.Store#event:"grid.designMode.hovering.stop""><a href="module-Grid.Store.html#event:"grid.designMode.hovering.stop"">"grid.designMode.hovering.stop"</a></li>
+            
+                <li data-name="module:Grid.Store#event:"grid.designMode.module.add""><a href="module-Grid.Store.html#event:"grid.designMode.module.add"">"grid.designMode.module.add"</a></li>
+            
+                <li data-name="module:Grid.Store#event:"grid.designMode.module.remove""><a href="module-Grid.Store.html#event:"grid.designMode.module.remove"">"grid.designMode.module.remove"</a></li>
+            
+                <li data-name="module:Grid.Store#event:"grid.grid.designMode.dragging.start""><a href="module-Grid.Store.html#event:"grid.grid.designMode.dragging.start"">"grid.grid.designMode.dragging.start"</a></li>
+            
+                <li data-name="module:Grid.Store#event:"grid.grid.designMode.dragging.stop""><a href="module-Grid.Store.html#event:"grid.grid.designMode.dragging.stop"">"grid.grid.designMode.dragging.stop"</a></li>
+            
+                <li data-name="module:Grid.Store#event:"grid.grid.designMode.history.add""><a href="module-Grid.Store.html#event:"grid.grid.designMode.history.add"">"grid.grid.designMode.history.add"</a></li>
+            
+                <li data-name="module:Grid.Store#event:"grid.grid.designMode.history.back""><a href="module-Grid.Store.html#event:"grid.grid.designMode.history.back"">"grid.grid.designMode.history.back"</a></li>
+            
+                <li data-name="module:Grid.Store#event:"grid.grid.designMode.history.forward""><a href="module-Grid.Store.html#event:"grid.grid.designMode.history.forward"">"grid.grid.designMode.history.forward"</a></li>
+            
+                <li data-name="module:Grid.Store#event:"grid.grid.designMode.hovering.start""><a href="module-Grid.Store.html#event:"grid.grid.designMode.hovering.start"">"grid.grid.designMode.hovering.start"</a></li>
+            
+                <li data-name="module:Grid.Store#event:"grid.grid.designMode.resizing.move""><a href="module-Grid.Store.html#event:"grid.grid.designMode.resizing.move"">"grid.grid.designMode.resizing.move"</a></li>
+            
+                <li data-name="module:Grid.Store#event:"grid.grid.designMode.resizing.start""><a href="module-Grid.Store.html#event:"grid.grid.designMode.resizing.start"">"grid.grid.designMode.resizing.start"</a></li>
+            
+                <li data-name="module:Grid.Store#event:"grid.grid.designMode.resizing.stop""><a href="module-Grid.Store.html#event:"grid.grid.designMode.resizing.stop"">"grid.grid.designMode.resizing.stop"</a></li>
+            
+            </ul>
+            <ul class="namespaces itemMembers">
+            
+            <span class="subtitle">Namespaces</span>
+            
+                <li data-name="module:Grid.Store.Exceptions"><a href="module-Grid.Store.Exceptions.html">Exceptions</a></li>
+            
+                <li data-name="module:Grid.Store~Private"><a href="module-Grid.Store-Private.html">Private</a></li>
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="module:Grid.Store.Exceptions">
+            <span class="title">
+                <a href="module-Grid.Store.Exceptions.html">module:Grid.Store.Exceptions</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="classes itemMembers">
+            
+            <span class="subtitle">Classes</span>
+            
+                <li data-name="module:Grid.Store.Exceptions.GridDoesNotExist"><a href="module-Grid.Store.Exceptions.GridDoesNotExist.html">GridDoesNotExist</a></li>
+            
+                <li data-name="module:Grid.Store.Exceptions.HistoryOutOfBound"><a href="module-Grid.Store.Exceptions.HistoryOutOfBound.html">HistoryOutOfBound</a></li>
+            
+                <li data-name="module:Grid.Store.Exceptions.Inconsistency"><a href="module-Grid.Store.Exceptions.Inconsistency.html">Inconsistency</a></li>
+            
+                <li data-name="module:Grid.Store.Exceptions.InvalidDesignModeStep"><a href="module-Grid.Store.Exceptions.InvalidDesignModeStep.html">InvalidDesignModeStep</a></li>
+            
+                <li data-name="module:Grid.Store.Exceptions.NodeDoesNotExist"><a href="module-Grid.Store.Exceptions.NodeDoesNotExist.html">NodeDoesNotExist</a></li>
+            
+            </ul>
+            <ul class="mixins itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+            <ul class="namespaces itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="module:Grid.Store~Private">
+            <span class="title">
+                <a href="module-Grid.Store-Private.html">module:Grid.Store~Private</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            <span class="subtitle">Members</span>
+            
+                <li data-name="module:Grid.Store~Private.designModeValidSteps"><a href="module-Grid.Store-Private.html#designModeValidSteps">designModeValidSteps</a></li>
+            
+                <li data-name="module:Grid.Store~Private.grids"><a href="module-Grid.Store-Private.html#grids">grids</a></li>
+            
+                <li data-name="module:Grid.Store~Private.hoveringDelay"><a href="module-Grid.Store-Private.html#hoveringDelay">hoveringDelay</a></li>
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li data-name="module:Grid.Store~Private.addCurrentGridToHistory"><a href="module-Grid.Store-Private.html#addCurrentGridToHistory">addCurrentGridToHistory</a></li>
+            
+                <li data-name="module:Grid.Store~Private.addGrid"><a href="module-Grid.Store-Private.html#addGrid">addGrid</a></li>
+            
+                <li data-name="module:Grid.Store~Private.addModule"><a href="module-Grid.Store-Private.html#addModule">addModule</a></li>
+            
+                <li data-name="module:Grid.Store~Private.backupGrid"><a href="module-Grid.Store-Private.html#backupGrid">backupGrid</a></li>
+            
+                <li data-name="module:Grid.Store~Private.cancelDragging"><a href="module-Grid.Store-Private.html#cancelDragging">cancelDragging</a></li>
+            
+                <li data-name="module:Grid.Store~Private.changeDesignModeStep"><a href="module-Grid.Store-Private.html#changeDesignModeStep">changeDesignModeStep</a></li>
+            
+                <li data-name="module:Grid.Store~Private.checkConsistency"><a href="module-Grid.Store-Private.html#checkConsistency">checkConsistency</a></li>
+            
+                <li data-name="module:Grid.Store~Private.clearBackupedGrid"><a href="module-Grid.Store-Private.html#clearBackupedGrid">clearBackupedGrid</a></li>
+            
+                <li data-name="module:Grid.Store~Private.clearHoveringTimeout"><a href="module-Grid.Store-Private.html#clearHoveringTimeout">clearHoveringTimeout</a></li>
+            
+                <li data-name="module:Grid.Store~Private.clearSavedNode"><a href="module-Grid.Store-Private.html#clearSavedNode">clearSavedNode</a></li>
+            
+                <li data-name="module:Grid.Store~Private.drop"><a href="module-Grid.Store-Private.html#drop">drop</a></li>
+            
+                <li data-name="module:Grid.Store~Private.enterDesignMode"><a href="module-Grid.Store-Private.html#enterDesignMode">enterDesignMode</a></li>
+            
+                <li data-name="module:Grid.Store~Private.exitDesignMode"><a href="module-Grid.Store-Private.html#exitDesignMode">exitDesignMode</a></li>
+            
+                <li data-name="module:Grid.Store~Private.getGridEntry"><a href="module-Grid.Store-Private.html#getGridEntry">getGridEntry</a></li>
+            
+                <li data-name="module:Grid.Store~Private.getSameNodeInActualGrid"><a href="module-Grid.Store-Private.html#getSameNodeInActualGrid">getSameNodeInActualGrid</a></li>
+            
+                <li data-name="module:Grid.Store~Private.getSavedNode"><a href="module-Grid.Store-Private.html#getSavedNode">getSavedNode</a></li>
+            
+                <li data-name="module:Grid.Store~Private.goBackInHistory"><a href="module-Grid.Store-Private.html#goBackInHistory">goBackInHistory</a></li>
+            
+                <li data-name="module:Grid.Store~Private.goForwardInHistory"><a href="module-Grid.Store-Private.html#goForwardInHistory">goForwardInHistory</a></li>
+            
+                <li data-name="module:Grid.Store~Private.removeModule"><a href="module-Grid.Store-Private.html#removeModule">removeModule</a></li>
+            
+                <li data-name="module:Grid.Store~Private.resize"><a href="module-Grid.Store-Private.html#resize">resize</a></li>
+            
+                <li data-name="module:Grid.Store~Private.restoreFromCurrentHistoryIndex"><a href="module-Grid.Store-Private.html#restoreFromCurrentHistoryIndex">restoreFromCurrentHistoryIndex</a></li>
+            
+                <li data-name="module:Grid.Store~Private.restoreGrid"><a href="module-Grid.Store-Private.html#restoreGrid">restoreGrid</a></li>
+            
+                <li data-name="module:Grid.Store~Private.saveNode"><a href="module-Grid.Store-Private.html#saveNode">saveNode</a></li>
+            
+                <li data-name="module:Grid.Store~Private.setDesignModeStep"><a href="module-Grid.Store-Private.html#setDesignModeStep">setDesignModeStep</a></li>
+            
+                <li data-name="module:Grid.Store~Private.setHoveringTimeout"><a href="module-Grid.Store-Private.html#setHoveringTimeout">setHoveringTimeout</a></li>
+            
+                <li data-name="module:Grid.Store~Private.startDragging"><a href="module-Grid.Store-Private.html#startDragging">startDragging</a></li>
+            
+                <li data-name="module:Grid.Store~Private.startHovering"><a href="module-Grid.Store-Private.html#startHovering">startHovering</a></li>
+            
+                <li data-name="module:Grid.Store~Private.startResizing"><a href="module-Grid.Store-Private.html#startResizing">startResizing</a></li>
+            
+                <li data-name="module:Grid.Store~Private.stayHovering"><a href="module-Grid.Store-Private.html#stayHovering">stayHovering</a></li>
+            
+                <li data-name="module:Grid.Store~Private.stopHovering"><a href="module-Grid.Store-Private.html#stopHovering">stopHovering</a></li>
+            
+                <li data-name="module:Grid.Store~Private.stopResizing"><a href="module-Grid.Store-Private.html#stopResizing">stopResizing</a></li>
+            
+            </ul>
+            <ul class="classes itemMembers">
+            
+            </ul>
+            <ul class="mixins itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+            <ul class="namespaces itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="module:Utils.ReactMixins">
+            <span class="title">
+                <a href="module-Utils.ReactMixins.html">module:Utils.ReactMixins</a>
+                
+                <span class="static">static</span>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="classes itemMembers">
+            
+            </ul>
+            <ul class="mixins itemMembers">
+            
+            <span class="subtitle">Mixins</span>
+            
+                <li data-name="module:Utils.ReactMixins.DocumentEvents"><a href="module-Utils.ReactMixins.DocumentEvents.html">DocumentEvents</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+            <ul class="namespaces itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="module:Grid">
+            <span class="title">
+                <a href="module-Grid.html">module:Grid</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="classes itemMembers">
+            
+            </ul>
+            <ul class="mixins itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+            <ul class="namespaces itemMembers">
+            
+            <span class="subtitle">Namespaces</span>
+            
+                <li data-name="module:Grid.Actions"><a href="module-Grid.Actions.html">Actions</a></li>
+            
+                <li data-name="module:Grid.Components"><a href="module-Grid.Components.html">Components</a></li>
+            
+                <li data-name="module:Grid.Manipulator"><a href="module-Grid.Manipulator.html">Manipulator</a></li>
+            
+                <li data-name="module:Grid.Modules"><a href="module-Grid.Modules.html">Modules</a></li>
+            
+                <li data-name="module:Grid.Store"><a href="module-Grid.Store.html">Store</a></li>
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="module:Utils">
+            <span class="title">
+                <a href="module-Utils.html">module:Utils</a>
+                
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            </ul>
+            <ul class="classes itemMembers">
+            
+            </ul>
+            <ul class="mixins itemMembers">
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+            <ul class="namespaces itemMembers">
+            
+            <span class="subtitle">Namespaces</span>
+            
+                <li data-name="module:Utils.ReactMixins"><a href="module-Utils.ReactMixins.html">ReactMixins</a></li>
+            
+            </ul>
+        </li>
+    
+    </ul>
+</div>
+    <div class="main">
+        <h1 class="page-title" data-filename="Manipulator.js.html">Source: app/Grid/Manipulator.js</h1>
+        
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source "><code>var _ = require('lodash');
+
+
+/**
+ * Manipulates grid data
+ * @namespace
+ * @memberOf module:Grid
+ */
+var Manipulator = {
+    XMLSerializer: new XMLSerializer(),
+    DOMParser: new DOMParser(),
+
+    /**
+     * Exceptions for the Manipulator module
+     * @namespace
+     *
+     */
+    Exceptions: {
+        /**
+         * Exception raised when a type is invalid
+         * This is a subclass of "Error"
+         * @class
+         *
+         * @param {string} [message] - The raised message
+         *
+         * @property {string} name - The name of the exception: "InvalidType"
+         * @property {string} message - The message passed when the exception was raised, or a default value
+         */
+        InvalidType: function InvalidType(message) {
+            this.name = 'InvalidType';
+            this.message = message || 'Invalid type detected';
+        },
+
+        /**
+         * Exception raised when an inconsistency occurs
+         * This is a subclass of "Error"
+         * @class
+         *
+         * @param {string} [message] - The raised message
+         *
+         * @property {string} name - The name of the exception: "Inconsistency"
+         * @property {string} message - The message passed when the exception was raised, or a default value
+         */
+        Inconsistency: function Inconsistency(message) {
+            this.name = 'Inconsistency';
+            this.message = message || 'Inconsistency detected';
+        },
+
+        /**
+         * Exception raised when a the state of something is not the one expected
+         * This is a subclass of "Error"
+         * @class
+         *
+         * @param {string} [message] - The raised message
+         *
+         * @property {string} name - The name of the exception: "InvalidState"
+         * @property {string} message - The message passed when the exception was raised, or a default value
+         */
+        InvalidState: function InvalidState(message) {
+            this.name = 'InvalidState';
+            this.message = message || 'Invalid state detected';
+        },
+    },
+
+    /**
+     * Nodes types that can directly accept rows
+     * @type {RegExp}
+     */
+    reGridType: /^(mainGrid|grid)$/,
+
+    /**
+     * Allowed types of cell
+     * @type {RegExp}
+     */
+    reCellType: /^(module|grid|placeholder)$/,
+
+
+    /**
+     * Allowed types of resizers
+     * @type {RegExp}
+     */
+    reResizerType: /^(vertic|horizont)al$/,
+
+    /**
+     * Convert a Grid in XML format to its stringified representation
+     *
+     * @param {XML} XMLGrid - The XML Grid to represent in in a stringified XML
+     *
+     * @returns {string} - The stringified XML representation of the XML Grid
+     */
+    XMLGridToXMLString: function(XMLGrid) {
+        return this.XMLSerializer.serializeToString(XMLGrid);
+    },
+
+    /**
+     * Convert a string representation of an XML Grid to an XML document
+     *
+     * @param {string} XMLString - The string representation of the XML Grid to convert
+     *
+     * @returns {string} - The XML Grid based on the string representation
+     */
+    XMLStringToXMLGrid: function(XMLString) {
+        return this.DOMParser.parseFromString(XMLString, "text/xml").documentElement;
+    },
+
+    /**
+     * Return a deep clone of the given grid. Nothing is shared between the clones.
+     *
+     * @param  {XML} grid - The grid to clone
+     *
+     * @return {XML} - The clone of the original grid
+     */
+    clone: function(grid) {
+        return this.XMLStringToXMLGrid(this.XMLGridToXMLString(grid));
+    },
+
+    /**
+     * Create a new XML grid from scratch
+     *
+     * @param  {string} name - The name of the new grid to create
+     * @param  {integer} [space=5] - The space between modules in the new grid
+     *
+     * @returns {XML} - The XML version of the new created grid
+     */
+    createBaseGrid: function(name, space) {
+        var grid = this.XMLStringToXMLGrid('&lt;grid>&lt;content/>&lt;/grid>');
+        grid.setAttribute('name', name);
+        grid.setAttribute('space', (space || 5) + 'px');
+        grid.setAttribute('type', 'mainGrid');
+        return grid;
+    },
+
+    /**
+     * Surround a cell, of any type, by a grid which will have one row, and
+     * inside this row, a cell with the content of the original cell.
+     *
+     * The given cell is transformed in a one of type "grid", and its content
+     * will be moved in the inside cell
+     *
+     * @param  {XML} cell The cell we want to convert
+     *
+     * @return {XML} - The inner cell
+     */
+    surroundCellWithGrid: function(cell) {
+        var type = cell.getAttribute('type');
+
+        // new types of both cells (existing, and new one inside)
+        var mainCellType = type == 'module' ? 'grid' : type;
+        var innerCellType = type == 'module'  ? 'module' : 'grid';
+
+        var contentNode = cell.querySelector(':scope > content');
+
+        // remove the cell content from the cell to move it into the future new cell
+        cell.removeChild(contentNode);
+        // transform the current cell into a grid one
+        cell.setAttribute('type', mainCellType);
+        var newContentNode = cell.ownerDocument.createElement('content');
+        cell.appendChild(newContentNode);
+        // add a row to hold the old cell content
+        var cellRow = this.addRow(cell);
+        // add the cell to hold the old cell content
+        return this.addCell(cellRow, null, innerCellType, contentNode);
+    },
+
+    /**
+     * Add a row to the given XML grid node. Update the node in place.
+     * Will transform a non-grid node into a grid one, with a first row containing the actuel content
+     *
+     * @param {XML} node - The XML grid node on which to add a row (should contain a "type", which must be "mainGrid" or "grid")
+     * @param {XML} [beforeRow] - The XML node of a row, on the given node, where to insert the new row before. If not given, the new row is added at the end. Cannot be used if the current type of the node is not "grid".
+     * @param {string} [type] - If defined, the value of the "type" attribute to set on the row
+     *
+     * @returns {XML} - The added row
+     *
+     * @throws {module:Grid.Manipulator.Exceptions.Inconsistency} If "beforeRow" is given but the node is not yet a grid
+     * @throws {module:Grid.Manipulator.Exceptions.Inconsistency} If "beforeRow" is not in the content of the "node"
+     */
+    addRow: function(node, beforeRow, type) {
+        /* If this is not a grid node, create a first row this the actual
+         * content in a cell */
+        if (!this.reGridType.test(node.getAttribute('type'))) {
+            // not compatible when we ask for inserting the new row before a new one
+            if (beforeRow) {
+                throw new this.Exceptions.Inconsistency("Cannot insert before a row if there is no row");
+            }
+            this.surroundCellWithGrid(node);
+        }
+
+        // we insert the row in the content node
+        var contentNode = node.querySelector(':scope > content');
+
+        if (beforeRow &amp;&amp; beforeRow.parentNode != contentNode) {
+            throw new this.Exceptions.Inconsistency("The 'beforeRow' must be a child of the content of the 'node'");
+        }
+        var row = node.ownerDocument.createElement('row');
+        if (beforeRow) {
+            contentNode.insertBefore(row, beforeRow);
+        } else {
+            contentNode.appendChild(row);
+        }
+
+        if (type) {
+            row.setAttribute('type', type);
+        }
+        return row;
+    },
+
+
+
+    /**
+     * Add a cell to the given XML grid row. Update the row in place.
+     *
+     * @param {XML} row - The XML grid row on which to add a cell
+     * @param {XML} [beforeCell] - The XML node of a cell, on the given row, where to insert the new cell before. If not given, the new cell is added at the end.
+     * @param {string} type - The type of cell to add: "grid" or "module"
+     * @param {XML} [contentNode] - The XML "content" node to insert in the cell.
+     *     If not given, a new empty "content" node will be created.
+     *
+     * @returns {XML} - The added cell (XML), with the type and a content.
+     *
+     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the given "type" is not "grid" or "module"
+     * @throws {module:Grid.Manipulator.Exceptions.Inconsistency} If "beforeCell" is not in the "row"
+     */
+    addCell: function(row, beforeCell, type, contentNode) {
+        if (!this.reCellType.test(type)) {
+            throw new this.Exceptions.InvalidType("Cannot add cell of type &lt;" + type + ">. Should be &lt;grid> or &lt;module>");
+        }
+        var cell = row.ownerDocument.createElement('cell');
+        cell.setAttribute('type', type);
+        if (!contentNode) {
+            contentNode = row.ownerDocument.createElement('content');
+        }
+        if (beforeCell &amp;&amp; beforeCell.parentNode != row) {
+            throw new this.Exceptions.Inconsistency("The 'beforeCell' must be a child of 'row'");
+        }
+        cell.appendChild(contentNode);
+        if (beforeCell) {
+            row.insertBefore(cell, beforeCell);
+        } else {
+            row.appendChild(cell);
+        }
+        return cell;
+    },
+
+    /**
+     * Remove the given cell from the grid it belongs to
+     *
+     * @param  {XML} cell - The XML cell to remove
+     */
+    removeCell: function(cell) {
+        var parentGrid = this.getNearestGrid(cell);
+        cell.parentNode.removeChild(cell);
+        this.cleanGrid(parentGrid);
+    },
+
+    /**
+     * Create a content node, to be later inserted into an empty module cell, with the given attributes
+     *
+     * @param  {XML} grid - The grid on which the content node is aimed to be attached
+     * @param  {Object} attributes - All attributes to include in the content node. Note that all attributes
+     *                               will be inserted as text
+     *
+     * @return {XML} - The newly created &lt;content> xml node
+     */
+    createContentNode: function(grid, attributes) {
+        var contentNode = grid.ownerDocument.createElement('content');
+        for (var key in attributes) {
+            contentNode.setAttribute(key, attributes[key]);
+        }
+        return contentNode;
+    },
+
+    /**
+     * Clean a grid node by doing two operations:
+     * 1/ Remove all empty cells/rows/contents
+     * 2/ if a XML grid node has only one row with only one cell, convert the grid node into a node
+     * without rows (only the type and content are copied) but only the content of the cell
+     * 3/ if a XML grid node has only one row, with only one cell of type "grid", move all rows from
+     * this cell into the current grid
+     * All this is done recursively by calling the same method for the parent grid
+     *
+     * @param  {XML} grid - The XML grid node to clean
+     *
+     * @returns {} - Returns nothing
+     *
+     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a grid (type nor "grid" nor "mainGrid")
+     */
+    cleanGrid: function(grid) {
+        var nodeType = grid.getAttribute('type');
+        if (!this.reGridType.test(nodeType)) {
+            throw new this.Exceptions.InvalidType("Cannot clean node of type &lt;" + nodeType + ">. Should be &lt;grid> or &lt;mainGrid>");
+        }
+
+        // get the next parent grid to compute (we may not be able to do it this way later)
+        try {
+            var parentGrid = grid.parentNode.parentNode.parentNode
+        } catch (e) {
+            if (e instanceof TypeError) {
+                // We silently ignore these exceptions. This can happen for many reasons:
+                // - a parentNode is null => TypeError
+                // - the final parentNode has no "getAttribute" (the xml root document) => TypeError
+            } else {
+                // other cases, throw the original exception
+                throw(e);
+            }
+        }
+
+        var contentNode = grid.querySelector(':scope > content');
+
+        if (contentNode) {
+
+            // remove all empty things, until there is no more
+            var somethingRemoved = true;
+            while (somethingRemoved) {
+                somethingRemoved = false;
+
+                // remove all empty cells (assume only possible children is "content")
+                _(contentNode.querySelectorAll('cell:empty')).forEach(function(cell) {
+                    cell.parentNode.removeChild(cell);
+                    somethingRemoved = true;
+                });
+
+                // remove all empty rows (assume only possible children are "cells")
+                _(contentNode.querySelectorAll('row:empty')).forEach(function(row) {
+                    row.parentNode.removeChild(row);
+                    somethingRemoved = true;
+                });
+
+                // remove all grid withtout rows
+                _(contentNode.querySelectorAll('cell[type=grid] > content:empty')).forEach(function(content) {
+                    content.parentNode.removeChild(content);
+                    somethingRemoved = true;
+                });
+
+                // remove rows having only placeholders cells (and more than one: the other ones used to
+                // hold real cells not here anymore)
+                _(contentNode.querySelectorAll('row:not([type=placeholder])')).forEach(function(row) {
+                    var nbPlaceholderCells = row.querySelectorAll(':scope > cell[type=placeholder]').length;
+                    if (nbPlaceholderCells > 1) {
+                        var nbCells = row.querySelectorAll(':scope > cell').length;
+                        if (nbCells == nbPlaceholderCells) {
+                            row.parentNode.removeChild(row);
+                        }
+                    }
+                });
+
+            }
+
+            // reload contentNode if emptyed above
+            contentNode = grid.querySelector(':scope > content');
+            var rows = contentNode.querySelectorAll(':scope > row');
+
+            if (rows.length == 1) {
+                var cells;
+
+                // move a grid inside the current grid only if it's a subgrid
+                if (nodeType == 'grid') {
+                    cells = rows[0].querySelectorAll(':scope > cell');
+                    if (cells.length == 1) {
+                        nodeType = cells[0].getAttribute('type')
+                        grid.setAttribute('type', nodeType);
+                        grid.removeChild(contentNode);
+                        grid.appendChild(cells[0].querySelector(':scope > content'));
+                        contentNode = null;
+                    }
+                    rows = null;
+                    cells = null;
+                }
+
+                if (!contentNode) {
+                    contentNode = grid.querySelector(':scope > content');
+                }
+
+                // we have only one row, but within it only one grid cell, so we replace our row by the cell ones
+                if (!rows) {
+                    rows = contentNode.querySelectorAll(':scope > row');
+                }
+                if (rows.length == 1) {
+                    if (!cells) {
+                        cells = rows[0].querySelectorAll(':scope > cell');
+                    }
+                    if (cells.length == 1 &amp;&amp; cells[0].getAttribute('type') == 'grid') {
+                        // add all sub rows to the current grid
+                        _(cells[0].querySelectorAll(':scope > content > row')).forEach(function(cellRow) {
+                            contentNode.appendChild(cellRow);
+                        });
+                        // our original row is now empty, we can remove it
+                        contentNode.removeChild(rows[0]);
+                    } else if (this.reGridType.test(nodeType)) {  // maybe it's a module now
+                        // only one row but many cells... maybe we are the only child of our parent row ?
+                        var parentRow = grid.parentNode;
+                        if (parentRow &amp;&amp; parentRow.querySelectorAll(':scope > cell').length == 1) {
+                            // ok so we move our cells in our parent row
+                            _(cells).forEach(function(cell) {
+                                parentRow.appendChild(cell);
+                            });
+                            parentRow.removeChild(grid);
+                            parentGrid = parentRow.parentNode.parentNode;
+                        }
+                    }
+                }
+
+            }
+
+        }
+
+        // Continue for the parent grid (parent is the row, parent.parent is the content, parent.parent.parent is the grid)
+        try {
+            if (parentGrid) { this.cleanGrid(parentGrid); }
+        } catch (e) {
+            if (e instanceof TypeError || e instanceof this.Exceptions.InvalidType) {
+                // We silently ignore these exceptions. This can happen for many reasons:
+                // - the final parentNode is not a "grid" => InvalidType
+            } else {
+                // other cases, throw the original exception
+                throw(e);
+            }
+        }
+    },
+
+    /**
+     * Tel if the grid has placeholders
+     *
+     * @param {XML} grid - The grid to test
+     *
+     * @return {Boolean} - true if the grid has placeholders
+     */
+    hasPlaceholders: function(grid) {
+        return !!grid.getAttribute('hasPlaceholders');
+    },
+
+    /**
+     * Add all placeholders in the given grid
+     * Add a "hasPlaceholders" attribute (set to "true") on the main grid node.
+     *
+     * @param {XML} grid - The grid to insert placeholders in
+     *
+     * @returns {} - Returns nothing
+     *
+     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
+     * @throws {module:Grid.Manipulator.Exceptions.InvalidState} If the grid already has placeholders or resizers
+     */
+    addPlaceholders: function(grid) {
+        var nodeType = grid.getAttribute('type');
+        if (nodeType != 'mainGrid') {
+            throw new this.Exceptions.InvalidType("Cannot add placeholders in grid of type &lt;" + nodeType + ">. Should be &lt;mainGrid>");
+        }
+        if (this.hasPlaceholders(grid)) {
+            throw new this.Exceptions.InvalidState("Cannot add placeholders on a grid which already have them");
+        }
+        if (this.hasResizers(grid)) {
+            throw new this.Exceptions.InvalidState("Cannot add resizers on a grid which already have placeholders");
+        }
+
+        var placeholder, grids, row, rows, cell, cells, subGrid, modules,
+            isSurround, displayLeftRightPlaceholders;
+
+        // surround all grid, including current if it matches
+        var grids = grid.parentNode.querySelectorAll('grid, cell[type=grid]');
+        for (var i = 0; i &lt; grids.length; i++) {
+            subGrid = grids[i];
+
+            // surround the grid if it has more than one row
+            if (subGrid.querySelectorAll(':scope > content > row').length > 1) {
+                this.surroundCellWithGrid(subGrid);
+                subGrid.setAttribute('surround', 1);
+            }
+        }
+
+        // surround all modules if more than one in the grid
+        modules = grid.querySelectorAll('cell[type=module]');
+        if (modules.length > 1) {
+            for (var j = 0; j &lt; modules.length; j++) {
+                this.surroundCellWithGrid(modules[j]);
+                modules[j].setAttribute('surround', 1);
+            }
+        }
+
+        // add cells placeholders on each row
+        var rows = grid.querySelectorAll('row');
+        for (var m = 0; m &lt; rows.length; m++) {
+            row = rows[m];
+            cells = row.querySelectorAll(':scope > cell');
+
+            // is the row on a grid here only to surround an other one ?
+            isSurround = row.parentNode.parentNode.hasAttribute('surround');
+
+            // if only one cell, which is a grid, and only one module inside, no need to add
+            // left/rights placeholders because ones around the module will do the job
+            displayLeftRightPlaceholders = !(cells.length == 1
+                                          &amp;&amp; cells[0].getAttribute('type') == 'grid'
+                                          &amp;&amp; row.querySelectorAll('cell[type=module]').length==1);
+
+            // add a cell placeholders before each cell
+            for (var n = 0; n &lt; cells.length; n++) {
+                // if it's the first cell and we don't want one on the left/right, do nothing
+                if (n > 0 || displayLeftRightPlaceholders) {
+                    var cell = cells[n];
+                    placeholder = Manipulator.addCell(row, cell, 'placeholder');
+                    if (isSurround) { placeholder.setAttribute('surround', 1); }
+                }
+            }
+            // add a cell placeholder after the last cell, except if we don't want one on the left/right
+            if (displayLeftRightPlaceholders) {
+                placeholder = Manipulator.addCell(row, null, 'placeholder');
+                if (isSurround) { placeholder.setAttribute('surround', 1); }
+            }
+        };
+
+        // add row placeholders on each grid
+        var grids = grid.parentNode.querySelectorAll('grid, cell[type=grid]');
+        for (var k = 0; k &lt; grids.length; k++) {
+            var subGrid = grids[k];
+            rows = subGrid.querySelectorAll(':scope > content > row');
+
+            // is the cell on a grid here only to surround an other one ?
+            isSurround = subGrid.hasAttribute('surround');
+
+            // add a row placeholder before each row
+            for (var l = 0; l &lt; rows.length; l++) {
+                var row = rows[l];
+                placeholder = Manipulator.addCell(
+                    Manipulator.addRow(subGrid, row, 'placeholder')
+                    , null, 'placeholder'
+                );
+                if (isSurround) { placeholder.setAttribute('surround', 1); }
+            };
+
+            // add a row placeholder after the last row
+            placeholder = Manipulator.addCell(
+                Manipulator.addRow(subGrid, null, 'placeholder')
+                , null, 'placeholder'
+            );
+            if (isSurround) { placeholder.setAttribute('surround', 1); }
+        }
+
+        // finally mark the grid
+        grid.setAttribute('hasPlaceholders', true);
+   },
+
+    /**
+     * Remove all existing placeholders, except ones with a module.
+     * Remove the "hasPlaceholders" attribute on the main grid node.
+     *
+     * @param  {XML} grid The grid in witch to remove the placeholders
+     *
+     * @returns {} - Returns nothing
+     *
+     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
+     * @throws {module:Grid.Manipulator.Exceptions.InvalidState} If the grid isn't marked as having placeholders
+     */
+    removePlaceholders: function(grid) {
+        var nodeType = grid.getAttribute('type');
+        if (nodeType != 'mainGrid') {
+            throw new this.Exceptions.InvalidType("Cannot remove placeholders in grid of type &lt;" + nodeType + ">. Should be &lt;mainGrid>");
+        }
+        if (!this.hasPlaceholders(grid)) {
+            throw new this.Exceptions.InvalidState("Cannot remove placeholders on a grid which doesn't have any");
+        }
+
+        // remove each placeholders rows except ones with a module in
+        _(grid.querySelectorAll('row[type=placeholder]')).forEach(function(row) {
+            if (row.querySelectorAll('cell[type=module]').length) { return; }
+            row.parentNode.removeChild(row);
+        });
+        // remove each placeholders cells except ones with a module in
+        _(grid.querySelectorAll('cell[type=placeholder]')).forEach(function(cell) {
+            if (cell.querySelectorAll('cell[type=module]').length) { return; }
+            cell.parentNode.removeChild(cell);
+        });
+        // remove type=placeholder attribute for trees with a module (ie, all nodes left having type=placeholder)
+        _(grid.querySelectorAll('[type=placeholder]')).forEach(function(node) {
+            node.removeAttribute('type');
+        });
+
+        // clean all module cells
+        _(grid.querySelectorAll('cell[type=grid]')).forEach(function(cell) {
+            Manipulator.cleanGrid(cell);
+        });
+
+        // remove all 'surround' attributes
+        _(grid.querySelectorAll('[surround]')).forEach(function(cell) {
+            cell.removeAttribute('surround');
+        });
+        grid.removeAttribute('surround');
+
+        grid.removeAttribute('hasPlaceholders');
+    },
+
+    /**
+     * Clean existing placeholders to be in a valid state. Usefull to call after adding/removing a module
+     *
+     * @param  {XML} grid The grid for witch to clean the placeholders
+     *
+     * @returns {} - Returns nothing
+     */
+    cleanPlaceholders: function(grid) {
+        this.removePlaceholders(grid);
+        this.addPlaceholders(grid);
+    },
+
+    /**
+     * Return the nearest grid (or mainGrid) for the given node
+     *
+     * @param  {XML} node - The grid node (can be a row, cell, content...) for which we want the grid
+     * @param {boolean} includeCurrent - If we test the given node if it's a grid and return it if True
+     *
+     * @return {XML} - The found grid node, or null if none found (may not happen)
+     */
+    getNearestGrid: function(node, includeCurrent) {
+        if (!includeCurrent) {
+            node = node.parentNode;
+        }
+        while (true) {
+            // no node to test (given node or an absent parent), stop here
+            if (!node) {
+                return null;
+            }
+            // check if type is grid/mainGrid
+            var nodeType = node.getAttribute ? node.getAttribute('type') : null;
+            if (nodeType &amp;&amp; this.reGridType.test(nodeType)) {
+                return node;
+            }
+            // continue with the parentNode
+            node = node.parentNode;
+        };
+    },
+
+    /**
+     * Tell if the given node contains a subgrid.
+     *
+     * @param  {XML} node - The XML node to check for sub grids
+     *
+     * @return {Boolean} - `true` if the node contains at least one subgrid, or `false`
+     */
+    containsSubGrid: function(node) {
+        return !!node.querySelector('cell[type=grid]');
+    },
+
+    /**
+     * Remove a content node from its grid
+     *
+     * @param  {XML} contentNode - The "content" node we want to remove
+     * @param {boolean} [dontClean] - Do not try to clean the parent grid node
+     */
+    removeContentNode: function(contentNode, dontClean) {
+        // save actual grid parent to "clean" it after the move
+        var gridNode = dontClean ? null : this.getNearestGrid(contentNode);
+
+        // remove the node from the grid
+        if (contentNode.parentNode) {
+            contentNode.parentNode.removeChild(contentNode);
+        }
+
+        // now clean the old parent that may be empty now
+        if (gridNode) {
+            this.cleanGrid(gridNode);
+        }
+    },
+
+    /**
+     * Move a content node (module) to a placeholder
+     *
+     * @param  {XML} contentNode - The content node to move
+     * @param  {XML} placeholderCell - The cell placeholder in which to move the content
+     *
+     * @return {} - Reurns nothing
+     *
+     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the placeholder cell is not a placeholder (type "placeholder")
+     */
+    moveContentToPlaceholder: function(contentNode, placeholderCell) {
+        var placeholderType = placeholderCell.getAttribute('type');
+        if (placeholderType != 'placeholder') {
+            throw new this.Exceptions.InvalidType("Cannot move content in cell of type &lt;" + placeholderType + ">. It must be &lt;placeholder>");
+        }
+
+        // remove the existing placeholder content
+        var placeholderContent = placeholderCell.querySelector(':scope > content');
+        if (placeholderContent) {
+            placeholderCell.removeChild(placeholderContent);
+        }
+
+        // save actual content parent to "clean" it after the move
+        var contentParentNode = this.getNearestGrid(contentNode);
+
+        // actually move the content in the placeholder
+        placeholderCell.appendChild(contentNode);
+        placeholderCell.setAttribute('type', 'module');
+
+        // clean the old parent node if any
+        if (contentParentNode) {
+            this.cleanGrid(contentParentNode);
+        }
+
+    },
+
+    /**
+     * Create the "content" XML node to use as a module (in a &lt;cell type=module>)
+     *
+     * @param  {JSON} params - The params of the module, to be converted in XML.
+     * It should be a single level object with only string or numbers.
+     * There is no validation for now but only these keys are guaranteed to be restored as is.
+     *
+     * @return {XML} - The XML content node
+     */
+    createModuleNode: function(params) {
+        var node = this.XMLStringToXMLGrid('&lt;content/>');
+        for (key in params) {
+            node.setAttribute(key, params[key]);
+        }
+        return node
+    },
+
+    /**
+     * Set an unique ID on the given node and each of if sub nodes (whole tree)
+     * Don't update nodes that already have an ID
+     *
+     * @returns {} - Returns nothing
+     */
+    setIds: function(node) {
+        var nodes = _.toArray(node.querySelectorAll('*:not([id])'));
+        if (!node.getAttribute('id')) {
+            nodes.unshift(node);
+        }
+        _(nodes).forEach(function(subnode) {
+            subnode.setAttribute('id', _.uniqueId(subnode.tagName + '-'));
+        });
+    },
+
+
+    /**
+     * Tel if the grid has resizers
+     *
+     * @param {XML} grid - The grid to test
+     *
+     * @return {Boolean} - true if the grid has resizers
+     */
+    hasResizers: function(grid) {
+        return !!grid.getAttribute('hasResizers');
+    },
+
+    /**
+     * Add all resizers in the given grid
+     * Add a "hasResizers" attribute (set to "true") on the main grid node.
+     *
+     * @param {XML} grid - The grid to insert resizers in
+     *
+     * @returns {} - Returns nothing
+     *
+     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
+     * @throws {module:Grid.Manipulator.Exceptions.InvalidState} If the grid already has resizers or placeholders
+     */
+    addResizers: function(grid) {
+        var nodeType = grid.getAttribute('type');
+        if (nodeType != 'mainGrid') {
+            throw new this.Exceptions.InvalidType("Cannot add resizers in grid of type &lt;" + nodeType + ">. Should be &lt;mainGrid>");
+        }
+        if (this.hasResizers(grid)) {
+            throw new this.Exceptions.InvalidState("Cannot add resizers on a grid which already have them");
+        }
+        if (this.hasPlaceholders(grid)) {
+            throw new this.Exceptions.InvalidState("Cannot add resizers on a grid which already have placeholders");
+        }
+
+        var rows, cells, resizer;
+
+        // add a resizer between each row of a grid
+        var grids = grid.parentNode.querySelectorAll('grid, cell[type=grid]');
+        for (var i = 0; i &lt; grids.length; i++) {
+            // add a horizontal resizer before each row, except before the first one
+            rows = grids[i].querySelectorAll(':scope > content > row');
+            for (var j = 0; j &lt; rows.length; j++) {
+                if (j) { Manipulator.addResizer(rows[j]); }
+                // add a vertical resizer before each row, except before the first one
+                cells = rows[j].querySelectorAll(':scope > cell');
+                for (var k = 1; k &lt; cells.length; k++) {
+                    Manipulator.addResizer(cells[k]);
+                }
+            }
+        }
+
+        // finally mark the grid
+        grid.setAttribute('hasResizers', true);
+    },
+
+    /**
+     * Add a resizer before the given XML grid row or cell
+     *
+     * @param {XML} beforeNode - The node (row or cell) of the grid before which to add the resizer
+     * @param {string} type - The type of placeholder to add: "vertical" or "horizontal"
+     *
+     * @returns {XML} - The added resizer (XML), with the type.
+     *
+     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the given node is not a row neither a cell
+     * @throws {module:Grid.Manipulator.Exceptions.Inconsistency} If the given node is the first child
+     */
+    addResizer: function(beforeNode) {
+        var nodeType = beforeNode.tagName;
+        var resizerType;
+        if (nodeType == 'row') {
+            resizerType = 'horizontal';
+        } else if (nodeType == 'cell') {
+            resizerType = 'vertical';
+        } else {
+            throw new this.Exceptions.InvalidType("Cannot add a resizer before a node of type &lt;" + nodeType + ">. Should be a &lt;rows> or a &lt;cell>");
+        }
+        if (beforeNode == beforeNode.parentNode.firstChild) {
+            throw new this.Exceptions.Inconsistency("Cannot add a resizer before the first node");
+        }
+        var resizer = beforeNode.ownerDocument.createElement('resizer');
+        resizer.setAttribute('type', resizerType);
+        beforeNode.parentNode.insertBefore(resizer, beforeNode);
+        return resizer;
+    },
+    /**
+     * Remove all existing resizers
+     * Remove the "hasResizers" attribute on the main grid node.
+     *
+     * @param  {XML} grid The grid in witch to remove the resizers
+     *
+     * @returns {} - Returns nothing
+     *
+     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
+     * @throws {module:Grid.Manipulator.Exceptions.InvalidState} If the grid isn't marked as having resizers
+     */
+    removeResizers: function(grid) {
+        var nodeType = grid.getAttribute('type');
+        if (nodeType != 'mainGrid') {
+            throw new this.Exceptions.InvalidType("Cannot remove resizers in grid of type &lt;" + nodeType + ">. Should be &lt;mainGrid>");
+        }
+        if (!this.hasResizers(grid)) {
+            throw new this.Exceptions.InvalidState("Cannot remove resizers on a grid which doesn't have any");
+        }
+
+        // remove each resizers
+        _(grid.querySelectorAll('resizer')).forEach(function(resizer) {
+            resizer.parentNode.removeChild(resizer);
+        });
+
+        grid.removeAttribute('hasResizers');
+    },
+};
+
+// Exceptions must be based on the Error class
+_(Manipulator.Exceptions).forEach(function(exceptionClass, exceptionName) {
+    exceptionClass.prototype = new Error();
+    exceptionClass.prototype.constructor = exceptionClass;
+    exceptionClass.displayName = exceptionName;
+});
+
+module.exports = Manipulator;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+
+
+        
+
+        <footer>
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a> on Tue Feb 03 2015 00:46:49 GMT+0100 (CET)
+        </footer>
+    </div>
+</div>
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+<script src="scripts/main.js"></script>
+</body>
+</html>
