@@ -281,9 +281,10 @@ var ModulesCache = {
                 component.setProps(newProps);
             } else {
                 // no new props, but ask for a rerender if the the module is not inside the component
-                if (!component.getDOMNode().querySelector(':scope > .' + this.moduleContainerClassName)) {
+                // TODO: for now we always rerender the holder, it needs to change on some cases
+                // if (!component.getDOMNode().querySelector(':scope > .' + this.moduleContainerClassName)) {
                     component.forceUpdate();
-                }
+                // }
             }
         }
 

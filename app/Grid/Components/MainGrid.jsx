@@ -305,15 +305,21 @@ var MainGrid = {
      * Will render the component
      */
     render: function() {
-        var addButton;
-        if (this.getDesignModeStep() == 'enabled') {
+        var addButton, toggleButton;
+        var designModeStep = this.getDesignModeStep();
+
+        if (designModeStep == 'enabled') {
             addButton = <button onClick={this.addRandomModule}>Add a random module</button>
         }
+
+        if (designModeStep == 'enabled' || designModeStep == 'disabled') {
+            toggleButton = <button onClick={this.toggleDesignMode}>{this.isInDesignMode() ? "Exit" : "Enter"} design mode</button>;
+        }
+
         return <div className={this.getContainerClasses()}>
             <nav className="grid-toolbar">
                 <label>{this.state.gridName}</label>
-                {addButton}
-                <button onClick={this.toggleDesignMode}>{this.isInDesignMode() ? "Exit" : "Enter"} design mode</button>
+                {addButton}{toggleButton}
             </nav>
             {this.renderGrid()}
         </div>;

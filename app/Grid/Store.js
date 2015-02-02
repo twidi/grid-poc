@@ -454,7 +454,7 @@ var Private = {
      * It's an action, should be called via
      * {@link module:Grid.Actions.enterDesignMode Grid.Actions.addModule}
      *
-     * @param {XML} gridName - The name of the grid on which to add the module
+     * @param {String} gridName - The name of the grid on which to add the module
      * @param {String} module - The path of the module to use
      * @param {Object} params - An flat object with all attributes of this module
      *
@@ -493,6 +493,38 @@ var Private = {
          * @property {string} name - The name of the updated Grid
          */
         this.emit('grid.designMode.module.add', gridName);
+    },
+
+    /**
+     * Remove a module from the given grid
+     *
+     * @param  {String} gridName - The grid from which we want to remove the module
+     * @param  {XML} moduleCell - The module cell to remove
+     *
+     * @fires module:Grid.Store#"grid.designMode.module.remove"
+     */
+    removeModule: function(gridName, moduleCell) {
+        var grid = this.getGrid(gridName);
+
+        var hasResizers = Manipulator.hasResizers(grid);
+
+        // remove resizers for now
+        if (hasResizers) {
+            Manipulator.removeResizers(grid);
+        }
+
+        Manipulator.removeCell(moduleCell);
+        if (hasResizers) {
+            Manipulator.addResizers(grid);
+        }
+        /**
+         * Event fired when a module is removed from a grid
+         *
+         * @event module:Grid.Store#"grid.designMode.module.remove"
+         *
+         * @property {string} name - The name of the updated Grid
+         */
+        this.emit('grid.designMode.module.remove', gridName);
     },
 
     /**

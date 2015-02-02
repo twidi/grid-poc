@@ -245,6 +245,17 @@ var Manipulator = {
     },
 
     /**
+     * Remove the given cell from the grid it belongs to
+     *
+     * @param  {XML} cell - The XML cell to remove
+     */
+    removeCell: function(cell) {
+        var parentGrid = this.getNearestGrid(cell);
+        cell.parentNode.removeChild(cell);
+        this.cleanGrid(parentGrid);
+    },
+
+    /**
      * Create a content node, to be later inserted into an empty module cell, with the given attributes
      *
      * @param  {XML} grid - The grid on which the content node is aimed to be attached

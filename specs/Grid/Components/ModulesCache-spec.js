@@ -166,7 +166,9 @@ describe("Grid.Components.ModulesCache", function() {
                 // render was not called again
                 expect(React.render.calls.count()).toEqual(0);
                 // idem for forceUpdate
-                expect(component.forceUpdate.calls.count()).toEqual(0);
+                // see TODO in ModulesCache.getHolderComponent
+                // expect(component.forceUpdate.calls.count()).toEqual(0);
+                expect(component.forceUpdate.calls.count()).toEqual(1);
                 // idem for setProps
                 expect(component.setProps.calls.count()).toEqual(0);
 

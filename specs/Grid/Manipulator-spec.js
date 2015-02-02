@@ -54,6 +54,38 @@ describe("Grid.Manipulator", function() {
         expect(contentNode).toEqualXML('<content foo="1" bar="baz"/>');
     });
 
+    it("should remove a cell", function() {
+        var grid = Manipulator.XMLStringToXMLGrid(
+            '<grid name="foo" space="5px" type="mainGrid">' +
+                '<content>' +
+                    '<row>' +
+                        '<cell type="grid">' +
+                            '<content>' +
+                                '<row>' +
+                                    '<cell type="module"><content mode="foo"/></cell>' +
+                                '</row>' +
+                            '</content>' +
+                        '</cell>' +
+                        '<cell type="module"><content mode="bar"/></cell>' +
+                    '</row>' +
+                '</content>' +
+            '</grid>');
+
+        var cell = grid.querySelector('cell[type=module]');
+        Manipulator.removeCell(cell);
+
+        // the cell should be removed, and the grid cleaned
+        var expected = 
+            '<grid name="foo" space="5px" type="mainGrid">' +
+                '<content>' +
+                    '<row>' +
+                        '<cell type="module"><content mode="bar"/></cell>' +
+                    '</row>' +
+                '</content>' +
+            '</grid>';
+        expect(grid).toEqualXML(expected);
+    });
+
     it("should add a row", function() {
         var grid = Manipulator.createBaseGrid('foo', 5);
 

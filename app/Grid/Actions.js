@@ -36,6 +36,18 @@ var Actions = {
     addModule: function(gridName, module, params) {},
 
     /**
+     * Remove a module from the given grid
+     *
+     * @type {function}
+     *
+     * @param  {String} gridName - The grid from which we want to remove the module
+     * @param  {XML} moduleCell - The module cell to remove
+     *
+     * @fires module:Grid.Store#"grid.designMode.module.remove"
+     */
+    removeModule: function(gridName, moduleCell) {},
+
+    /**
      * Set design mode for the given grid
      *
      * @type {function}

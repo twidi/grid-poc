@@ -200,6 +200,67 @@ describe("Grid.Components.ModuleHolder", function() {
         expect(container).toBe(undefined);
     });
 
+    it("should include a delete button in design mode", function() {
+        // check in normal mode
+        var element = createCacheEntry().holderElement;
+        var component = componentUtils.renderIntoDocument(element);
+        expect(component.getDOMNode().querySelectorAll('.module-cover button').length).toEqual(0);
+
+        // check in design mode "enabled"
+        Store.__private.setDesignModeStep('Test grid', 'enabled');
+        component.forceUpdate();
+        expect(component.getDOMNode().querySelectorAll('.module-cover button').length).toEqual(1);
+
+        // check in design mode "dragging"
+        Store.__private.setDesignModeStep('Test grid', 'dragging');
+        component.forceUpdate();
+        expect(component.getDOMNode().querySelectorAll('.module-cover button').length).toEqual(0);
+
+        // check in design mode "resizing"
+        Store.__private.setDesignModeStep('Test grid', 'resizing');
+        component.forceUpdate();
+        expect(component.getDOMNode().querySelectorAll('.module-cover button').length).toEqual(0);
+
+    });
+
+    it("should ask to remove the module when the delete button is clicked", function(done) {
+        // removing a module is only valid in design mode
+        Store.__private.setDesignModeStep('Test grid', 'enabled');
+
+        var element = createCacheEntry().holderElement;
+        var component = componentUtils.renderIntoDocument(element);
+
+        // will set this to True when the callback is called
+        var callbackCalled = false;
+        // will store the grid name received via the tested event
+        var updatedGridName;
+
+        var callback = function(gridName) {
+            callbackCalled = true;
+            updatedGridName = gridName;
+        };
+
+        // listen to the tested event
+        Store.on('grid.designMode.module.remove', callback);
+
+        // simulate the startDrag event
+        React.addons.TestUtils.Simulate.click(component.getDOMNode().querySelector('.module-cover button'));
+
+        // leave some time to render the component
+        setTimeout(function() {
+            // stop listening
+            Store.off('grid.designMode.module.remove', callback);
+
+            // check if the callback were called
+            expect(callbackCalled).toBe(true);
+            expect(updatedGridName).toEqual('Test grid');
+
+            done();
+
+        }, 0.01);
+
+    });
+
     it("should start the dragging", function(done) {
 
         // dragging is only valid in design mode
@@ -288,5 +349,6 @@ describe("Grid.Components.ModuleHolder", function() {
 
         }, 300); // minimal delay for the settimeout function in onDragLeave, don't know why
     });
+
 
 });

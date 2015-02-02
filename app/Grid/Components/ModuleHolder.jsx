@@ -73,9 +73,18 @@ var ModuleHolder = {
      * Call {@link module:Grid.Actions.startDragging startDragging} action when the drags of
      * the dom node starts.
      *
+     * Before anything else, a class is added to the dom element to hide the delete
+     * button on the "image" of the element that will be shown by the browser during
+     * the drag
+     *
      * @param  {event} event - The dragStart event
      */
     onDragStart: function(event) {
+        // hack to hide the del button on the dragged view (rendered by the browser
+        // before we can render the holder).
+        // It's removed on the next update, via componentDidUpdate
+        this.getDOMNode().classList.add('module-holder-browser-dragging');
+
         Actions.startDragging(this.props.gridName, this.props.gridCell);
         event.dataTransfer.setData('application/x-grid-module', this.props.gridName);
         event.dataTransfer.effectAllowed = 'move';
@@ -97,6 +106,14 @@ var ModuleHolder = {
                 Actions.stopHovering(this.props.gridName);
             }
         }.bind(this), this.dragLeaveTimeout);
+    },
+
+    /**
+     * Called when the "delete" button is clicked, to call the actions asking the
+     * Store to remove the cell linked to this holder
+     */
+    removeModule: function() {
+        Actions.removeModule(this.props.gridName, this.props.gridCell);
     },
 
     /**
@@ -129,15 +146,30 @@ var ModuleHolder = {
     },
 
     /**
+     * Called just after an update, remove the class temporarily set in onDragStart,
+     * as we now need to have the delete button displayed
+     */
+    componentDidUpdate: function() {
+        this.getDOMNode().classList.remove('module-holder-browser-dragging');
+    },
+
+    /**
      * Render the module holder, as a simple div with drag attributes/events, and
      * as a child, a div used as a cover over the module (attached via
      * {@link module:Grid.Components.Mixins.NodesHolder NodesHolderMixin}) to
-     * drag the dom node without any risk of interacting with the module content
+     * drag the dom node without any risk of interacting with the module content.
+     * This cover contain a "delete" button in design mode to delete the 
      */
     render: function() {
+        var delButton;
+        if (Store.getDesignModeStep(this.props.gridName) == 'enabled' && !Store.isResizing(this.props.gridName)) {
+            delButton = <button onClick={this.removeModule} title="Remove this module">X</button>;
+        }
         return <div className='module-holder'
                     {...this.getRenderAttrs()}>
-                    <div className="module-cover"/>
+                    <div className="module-cover">
+                    {delButton}
+                    </div>
                 </div>;
     }
 

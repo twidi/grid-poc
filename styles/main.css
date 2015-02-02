@@ -23,6 +23,7 @@ html, body, #app, .grid-container {
         float: left;
     }
     .grid-toolbar button {
+        cursor: pointer;
         margin-right: 20px;
     }
 
@@ -193,6 +194,11 @@ html, body, #app, .grid-container {
                 top: 16px; /* height of top placeholder, +1px white */
             }
 
+.module {
+    position: relative;
+    flex: 1;
+    background: white;
+}
 
 .module-holder {
     cursor: move;
@@ -203,26 +209,24 @@ html, body, #app, .grid-container {
     display: flex;
 }
 
-.module {
-    position: relative;
-    flex: 1;
-    background: white;
-}
-
 .module-cover {
-    display: none;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.5);
+    z-index: 1;
 }
-
-    .grid-container-design-mode .module-cover {
-        display: block;
+    .module-cover button {
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 1000;
-        opacity: 0.5;
-        background: white;
-        z-index: 1;
+        top: 5px;
+        right: 5px;
+        cursor: pointer;
     }
 
+    .module-holder-browser-dragging .module-cover button {
+        display: none;
+    }
