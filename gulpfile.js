@@ -44,7 +44,7 @@ var browserifyTask = function (options) {
 		entries: [options.src], // Only need initial file, browserify finds the rest
    	transform: browserifyTransforms,
 		debug: options.development, // Gives us sourcemapping
-		cache: {}, packageCache: {}, fullPaths: true // Requirement of watchify
+		cache: {}, packageCache: {}, fullPaths: options.development // Requirement of watchify
 	});
 
 	// We set our dependencies as externals on our app bundler when developing
