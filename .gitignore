@@ -6,13 +6,3 @@ npm-debug.log
 Gemfile.lock
 Gemfile
 Guardfile
-
-# Don't commit builded files
-build/*.css
-build/*.js
-dist/*.css
-dist/*.js
-
-# Ignore doc directory
-/doc/
-/dist-doc/
