@@ -166,6 +166,28 @@ var Actions = {
      * @fires module:Grid.Store#"grid.designMode.resizing.stop"
      */
     stopResizing: function(gridName) {},
+
+    /**
+     * Use the previous version of grid found in its history
+     *
+     * @type {function}
+     *
+     * @param  {string} gridName - The name of the grid on witch the undo occurs
+     *
+     * @fires module:Grid.Store#"grid.designMode.history.back"
+     */
+    goBackInHistory: function(gridName) {},
+
+    /**
+     * Use the next version of grid found in its history
+     *
+     * @type {function}
+     *
+     * @param  {string} gridName - The name of the grid on witch the redo occurs
+     *
+     * @fires module:Grid.Store#"grid.designMode.history.forward"
+     */
+    goForwardInHistory: function(gridName) {},
 };
 
 module.exports = flux.createActions(_.keys(Actions));

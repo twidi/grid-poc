@@ -3,6 +3,7 @@ var TestUtils = React.addons.TestUtils;
 
 var Actions = require('../../../app/Grid/Actions.js');
 var Manipulator = require('../../../app/Grid/Manipulator.js');
+var Store = require('../../../app/Grid/Store.js');
 
 var Row = require('../../../app/Grid/Components/Row.jsx');
 var SubGrid = require('../../../app/Grid/Components/SubGrid.jsx');
@@ -39,7 +40,7 @@ var componentUtils = {
         Actions.addGrid(testGrid);
         Manipulator.setIds(testGrid);
 
-        return testGrid;
+        return Store.getGrid('Test grid');
     },
 
     countRows: function(component) {

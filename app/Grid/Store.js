@@ -73,7 +73,23 @@ var Store = {
         Inconsistency: function Inconsistency(message) {
             this.name = 'Inconsistency';
             this.message = message || 'Inconsistency detected';
-        },    },
+        },
+
+        /**
+         * Exception raised when an history manipulation cannot be done because it's out of bound.
+         * This is a subclass of "Error"
+         * @class
+         *
+         * @param {string} [message] - The raised message
+         *
+         * @property {string} name - The name of the exception: "HistoryOutOfBound"
+         * @property {string} message - The message passed when the exception was raised, or a default value
+         */
+        HistoryOutOfBound: function HistoryOutOfBound(message) {
+            this.name = 'HistoryOutOfBound';
+            this.message = message || 'Operation out of bound on history';
+        },
+    },
 
     /**
      * Get a grid from the store by its name. All nodes are ensured to have an ID.
@@ -282,6 +298,30 @@ var Store = {
     },
 
     /**
+     * Tell if we can go back in history ("undo") for the given grid
+     *
+     * @param  {String} gridName - The name of the grid for which we ask
+     *
+     * @return {Boolean} - `true` if an "undo" can be done, or `false`
+     */
+    canGoBackInHistory: function(gridName) {
+        var gridEntry = this.getGridEntry(gridName);
+        return (gridEntry.currentHistoryIndex > 0);
+    },
+
+    /**
+     * Tell if we can go forward in history ("redo") for the given grid
+     *
+     * @param  {String} gridName - The name of the grid for which we ask
+     *
+     * @return {Boolean} - `true` if a "redo" can be done, or `false`
+     */
+    canGoForwardInHistory: function(gridName) {
+        var gridEntry = this.getGridEntry(gridName);
+        return (gridEntry.currentHistoryIndex < gridEntry.history.length - 1);
+    },
+
+    /**
      * Remove all the grids
      *
      * @private
@@ -318,6 +358,9 @@ var Private = {
      * @property {XML} grid - The XML grid
      * @property {string} designModeStep - The current design mode step for this grid
      *
+     * @property {Array} history - History of grids to allow undo/redo
+     * @property {Integer} currentHistoryIndex - The current index in history
+     *
      * @property {Object} backups - Some backups of previous states needed during the drag and drop process
      * @property {Object} backups.dragging - The grid before starting the dragging process
      * @property {Object} backups.hovering - The grid after starting the dragging process, before hovering on a placeholder
@@ -328,6 +371,7 @@ var Private = {
      * @property {Object} nodes.resizing - The resizer node currently being moved
      *
      * @property {timeout} hoveringTimeout - The timeout to take hovering into account
+     *
      * @property {Object} resizing - Some data to hold current state of resizing
      * @property {Integer} resizing.initialPos - Initial position of the mouse when the resizing started (X if vertical resizer, Y if horizontal)
      * @property {Float} resizing.previousRelativeSize - The initial related size of the previous node
@@ -436,11 +480,17 @@ var Private = {
             name: name,
             grid: grid,
             designModeStep: 'disabled',
+            history: [],
+            currentHistoryIndex: -1.0,
             backups: {},
             nodes: {},
             hoveringTimeout: null,
             resizing: {},
         };
+
+        // starting point of this grid history
+        this.addCurrentGridToHistory(name);
+
         /**
          * Event fired when a grid is added to the Grid store
          *
@@ -488,6 +538,9 @@ var Private = {
         }
         Manipulator.setIds(grid);
 
+        // grid changed, add it to history
+        this.addCurrentGridToHistory(gridName);
+
         /**
          * Event fired when a module is added to a grid
          *
@@ -523,6 +576,10 @@ var Private = {
         if (hasResizers) {
             Manipulator.addResizers(grid);
         }
+
+        // grid changed, add it to history
+        this.addCurrentGridToHistory(gridName);
+
         /**
          * Event fired when a module is removed from a grid
          *
@@ -1075,11 +1132,11 @@ var Private = {
             Manipulator.moveContentToPlaceholder(draggedContent, placeholderCell);
         }
 
-        // make a copy of the grid to ensure its different to trigger react rendering
-        this.grids[gridName].grid = Manipulator.clone(this.grids[gridName].grid);
-
         // set design step to "enabled"
         this.changeDesignModeStep(gridName, 'enabled');
+
+        // grid changed, add it to history
+        this.addCurrentGridToHistory(gridName);
 
         /**
          * Event fired when a dragged module is dropped
@@ -1214,9 +1271,137 @@ var Private = {
          */
         this.emit('grid.designMode.resizing.stop', gridName);
 
+        // add the grid in history if it really changed
+        var resizer = this.getSavedNode(gridName, 'resizing');
+        var currentPreviousRelativeSize = this.getRelativeSize(resizer.previousSibling);
+        var currentNextRelativeSize = this.getRelativeSize(resizer.nextSibling);
+        var resizing = this.getGridEntry(gridName).resizing;
+        if (resizing.previousRelativeSize != currentPreviousRelativeSize || resizing.nextRelativeSize != currentNextRelativeSize) {
+            this.addCurrentGridToHistory(gridName);
+        }
+
         // clear saved not if exists, and working data
         this.clearSavedNode(gridName, 'resizing');
         this.getGridEntry(gridName).resizing = {};
+    },
+
+    /**
+     * Add the current iteration of the given grid to the history
+     *
+     * The exact version of the actual grid will be saved in history, and the
+     * current grid will be replaced by a clone to avoid updating the one in
+     * history with manipulations done later
+     *
+     * It will also reset the "forward" possibilities
+     *
+     * @param {String} gridName - The name of the grid for which we want to update the history
+     */
+    addCurrentGridToHistory: function(gridName) {
+        var gridEntry = this.getGridEntry(gridName);
+
+        // remove everything after the current index in the history => no forward possible
+        gridEntry.history.splice(gridEntry.currentHistoryIndex+1);
+
+        // add the current grid in the history
+        gridEntry.history.push(gridEntry.grid);
+        gridEntry.currentHistoryIndex++;
+
+        // make a copy for the next updates (to avoid updating the one in the history)
+        gridEntry.grid = Manipulator.clone(gridEntry.grid);
+
+        /**
+         * Event fired when a new version of a grid is added to its history.
+         *
+         * @event module:Grid.Store#"grid.grid.designMode.history.add"
+         *
+         * @property {string} name - The name of the Grid when the history was changed
+         */
+        this.emit('grid.designMode.history.add', gridName);
+    },
+
+    /**
+     * Restore the actual pointed entry in the history of a grid to be used as
+     * the current grid.
+     *
+     * Placeholders will be removed if there were any, resizers will be added if
+     * some missed, and missing IDs will be set
+     *
+     * It's a clone of the entry in the history that will be restored. to avoid
+     * updating the one in history with manipulations done later
+     *
+     * @param {String} gridName - The name of the grid for which we want to restore from the history
+     */
+    restoreFromCurrentHistoryIndex: function(gridName) {
+        var gridEntry = this.getGridEntry(gridName);
+        gridEntry.grid = Manipulator.clone(gridEntry.history[gridEntry.currentHistoryIndex]);
+        if (Manipulator.hasPlaceholders(gridEntry.grid)) {
+            Manipulator.removePlaceholders(gridEntry.grid);
+        }
+        if (!Manipulator.hasResizers(gridEntry.grid)) {
+            Manipulator.addResizers(gridEntry.grid);
+        }
+        Manipulator.setIds(gridEntry.grid);
+    },
+
+
+    /**
+     * Use the previous version of grid found in its history
+     *
+     * It's an action, should be called via
+     * {@link module:Grid.Actions.drop Grid.Actions.goBackInHistory}
+     *
+     * @param  {string} gridName - The name of the grid on witch the undo occurs
+     *
+     * @fires module:Grid.Store#"grid.designMode.history.back"
+     */
+    goBackInHistory: function(gridName) {
+        if (!this.canGoBackInHistory(gridName)) {
+            throw new this.Exceptions.HistoryOutOfBound("Cannot go backward in history for grid <" + gridName + ">");
+        }
+
+        var gridEntry = this.getGridEntry(gridName);
+        gridEntry.currentHistoryIndex--;
+
+        this.restoreFromCurrentHistoryIndex(gridName);
+
+        /**
+         * Event fired when we go back to the previous version of a grid in its history
+         *
+         * @event module:Grid.Store#"grid.grid.designMode.history.back"
+         *
+         * @property {string} name - The name of the Grid when the history was changed
+         */
+        this.emit('grid.designMode.history.back', gridName);
+    },
+
+    /**
+     * Use the next version of grid found in its history
+     *
+     * It's an action, should be called via
+     * {@link module:Grid.Actions.drop Grid.Actions.goForwardInHistory}
+     *
+     * @param  {string} gridName - The name of the grid on witch the redo occurs
+     *
+     * @fires module:Grid.Store#"grid.designMode.history.forward"
+     */
+    goForwardInHistory: function(gridName) {
+        if (!this.canGoForwardInHistory(gridName)) {
+            throw new this.Exceptions.HistoryOutOfBound("Cannot go forward in history for grid <" + gridName + ">");
+        }
+
+        var gridEntry = this.getGridEntry(gridName);
+        gridEntry.currentHistoryIndex++;
+
+        this.restoreFromCurrentHistoryIndex(gridName);
+
+        /**
+         * Event fired when we go forward to the next version of a grid in its history
+         *
+         * @event module:Grid.Store#"grid.grid.designMode.history.forward"
+         *
+         * @property {string} name - The name of the Grid when the history was changed
+         */
+        this.emit('grid.designMode.history.forward', gridName);
     },
 
     // add the public interface

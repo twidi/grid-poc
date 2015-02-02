@@ -181,7 +181,12 @@ describe("Grid.Components.MainGrid", function() {
             'grid.designMode.drop',
             'grid.designMode.resizing.start',
             'grid.designMode.resizing.move',
-            'grid.designMode.resizing.stop'
+            'grid.designMode.resizing.stop',
+            'grid.designMode.module.add',
+            'grid.designMode.module.remove',
+            'grid.designMode.history.add',
+            'grid.designMode.history.back',
+            'grid.designMode.history.forward',
         ];
 
         var notUpdatingEvents = [

@@ -32,7 +32,7 @@ describe("Grid.Store", function() {
             '</grid>');
         Manipulator.setIds(grid);
         Store.__private.addGrid(grid);
-        return grid;
+        return Store.getGrid('foo');
     };
 
     it("should raise if a grid is not available", function() {
@@ -46,11 +46,11 @@ describe("Grid.Store", function() {
         Actions.addGrid(grid);
 
         setTimeout(function() {
-            expect(Store.getGrid('foo')).toBe(grid);
-
             var gridEntry = Store.__private.getGridEntry('foo');
             expect(gridEntry.name).toEqual('foo');
             expect(gridEntry.designModeStep).toEqual('disabled');
+            expect(gridEntry.history.length).toEqual(1);
+            expect(gridEntry.currentHistoryIndex).toEqual(0);
             expect(gridEntry.backups).toEqual({});
             expect(gridEntry.nodes).toEqual({});
             expect(gridEntry.hoveringTimeout).toBe(null);
@@ -230,6 +230,40 @@ describe("Grid.Store", function() {
         expect(Store.getRelativeSize(row)).toEqual(1.234);
     });
 
+    it("should tell if possible to go through history", function() {
+        var grid = createSimpleGrid();
+        var gridEntry = Store.__private.getGridEntry('foo');
+
+        // only one entry, cannot bo back
+        expect(Store.canGoBackInHistory('foo')).toBe(false);
+        // neither forward
+        expect(Store.canGoForwardInHistory('foo')).toBe(false);
+
+        // add a fake entry
+        gridEntry.history.push(null);
+
+        // style at first pos, cannot go back
+        expect(Store.canGoBackInHistory('foo')).toBe(false);
+        // but can go forward
+        expect(Store.canGoForwardInHistory('foo')).toBe(true);
+
+        // go to second entry
+        gridEntry.currentHistoryIndex = 1;
+
+        // can now got back
+        expect(Store.canGoBackInHistory('foo')).toBe(true);
+        // but not forward
+        expect(Store.canGoForwardInHistory('foo')).toBe(false);
+
+        // add another fake entry
+        gridEntry.history.push(null);
+        // can now got back
+        expect(Store.canGoBackInHistory('foo')).toBe(true);
+        // and forward
+        expect(Store.canGoForwardInHistory('foo')).toBe(true);
+    });
+
+
     describe('Private api', function() {
 
         it("should return a grid entry", function() {
@@ -240,12 +274,14 @@ describe("Grid.Store", function() {
             expect(entry.name).toBe('foo');
             expect(entry.grid).toBe(grid);
             expect(entry.designModeStep).toEqual('disabled');
+            expect(entry.history.length).toEqual(1);
+            expect(entry.currentHistoryIndex).toEqual(0);
             expect(entry.backups).toEqual({});
             expect(entry.nodes).toEqual({});
             expect(entry.hoveringTimeout).toBe(null);
             expect(entry.resizing).toEqual({});
 
-            expect(_.size(entry)).toEqual(7);
+            expect(_.size(entry)).toEqual(9);
         });
 
         it("should raise if a grid entry is not available", function() {
@@ -589,6 +625,8 @@ describe("Grid.Store", function() {
 
             // now add the grid in the store
             Actions.addGrid(grid2);
+            grid2 = Store.getGrid('bar');
+            node2 = Manipulator.addCell(Manipulator.addRow(grid2), null, 'module');
 
             // ok for grid2+node2
             expect(function() {
@@ -878,6 +916,138 @@ describe("Grid.Store", function() {
                 Store.__private.hoveringDelay = defaultHoveringDelay;
             }
 
+
+        });
+
+        it("should add an updated grid in the history", function() {
+            var grid = createSimpleGrid();
+            var gridEntry = Store.__private.getGridEntry('foo');
+
+            // we should have one entry in the history
+            expect(gridEntry.history.length).toEqual(1);
+            // and we should be at the first/last one
+            expect(gridEntry.currentHistoryIndex).toEqual(0);
+            // having one row
+            expect(gridEntry.history[0].querySelectorAll(':scope > content > row').length).toEqual(1)
+
+            // add a second row to have a different grid
+            Manipulator.addRow(grid);
+            Manipulator.setIds(grid);
+
+            Store.__private.addCurrentGridToHistory('foo');
+            var newGrid = Store.getGrid('foo');
+
+            // we should have two entries now
+            expect(gridEntry.history.length).toEqual(2);
+            // and we should be at the last one
+            expect(gridEntry.currentHistoryIndex).toEqual(1);
+            // the last entry should be our updated grid
+            expect(gridEntry.history[1]).toBe(grid);
+            // having two rows
+            expect(gridEntry.history[1].querySelectorAll(':scope > content > row').length).toEqual(2)
+
+            // it should not be the one that was there
+            expect(newGrid).not.toBe(grid);
+            // but they have the same content
+            expect(newGrid).toEqualXML(grid);
+
+            // add third row
+            grid = Store.getGrid('foo');
+            Manipulator.addRow(grid);
+            Manipulator.setIds(grid);
+
+            // add the new grid to the history
+            Store.__private.addCurrentGridToHistory('foo');
+
+            // we should have three entries now
+            expect(gridEntry.history.length).toEqual(3);
+            // and we should be at the last one
+            expect(gridEntry.currentHistoryIndex).toEqual(2);
+            // which has a grid with 3 rows
+            expect(gridEntry.history[2].querySelectorAll(':scope > content > row').length).toEqual(3)
+
+            // go to first entry
+            Store.__private.goBackInHistory('foo');
+            Store.__private.goBackInHistory('foo');
+            gridEntry.currentHistoryIndex = 0;
+
+            // we still have one row in the first entry which didn't change
+            expect(gridEntry.history[0].querySelectorAll(':scope > content > row').length).toEqual(1)
+
+            // and still 3 entries in the history
+            expect(gridEntry.history.length).toEqual(3);
+
+            // update our grid with 3 more rows
+            grid = Store.getGrid('foo');
+            Manipulator.addRow(grid);
+            Manipulator.addRow(grid);
+            Manipulator.addRow(grid);
+            Manipulator.setIds(grid);
+
+            // add the new grid to the history
+            Store.__private.addCurrentGridToHistory('foo');
+
+            // we should only have two entries in the history, the previous one, and the new one
+            // all after the previous one were discarded
+            expect(gridEntry.history.length).toEqual(2);
+            // and we should be at the last one
+            expect(gridEntry.currentHistoryIndex).toEqual(1);
+            // the last entry should be our updated grid
+            expect(gridEntry.history[1]).toBe(grid);
+            // having four rows
+            expect(gridEntry.history[1].querySelectorAll(':scope > content > row').length).toEqual(4)
+        });
+
+        it("should restore a ready and usable grid from history", function() {
+            var grid = createSimpleGrid();
+
+            // no placeholders by default
+            expect(Store.hasPlaceholders('foo')).toBe(false);
+            // no resizers by default
+            expect(Store.hasResizers('foo')).toBe(false);
+
+            // restore should add resizers (to be usable in "enabled" design mode)
+            Store.__private.restoreFromCurrentHistoryIndex('foo');
+
+            // still no placeholders
+            expect(Store.hasPlaceholders('foo')).toBe(false);
+            // but we have resizers
+            expect(Store.hasResizers('foo')).toBe(true);
+
+            // remove resizers and add placeholders
+            Manipulator.removeResizers(Store.getGrid('foo'));
+            Manipulator.addPlaceholders(Store.getGrid('foo'));
+
+            // and at it in the history
+            Store.__private.addCurrentGridToHistory('foo');
+
+            // should have placeholders
+            expect(Store.hasPlaceholders('foo')).toBe(true);
+            // and no resizers
+            expect(Store.hasResizers('foo')).toBe(false);
+
+            // restore should remove placeholders (to be usable in "enabled" design mode)
+            Store.__private.restoreFromCurrentHistoryIndex('foo');
+
+            // no placeholders anymore
+            expect(Store.hasPlaceholders('foo')).toBe(false);
+            // but we have resizers
+            expect(Store.hasResizers('foo')).toBe(true);
+
+        });
+
+        it("should fail when goiing out of history bound", function() {
+            var grid = createSimpleGrid();
+
+            // cannot go back
+            expect(function() {
+                Store.__private.goBackInHistory('foo');
+            }).toThrowError(Store.Exceptions.HistoryOutOfBound, "Cannot go backward in history for grid <foo>");
+
+            // neigher forward
+            expect(function() {
+                Store.__private.goForwardInHistory('foo');
+            }).toThrowError(Store.Exceptions.HistoryOutOfBound, "Cannot go forward in history for grid <foo>");
 
         });
 

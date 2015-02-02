@@ -277,6 +277,20 @@ var MainGrid = {
     },
 
     /**
+     * Ask the store to restore the previous version of the grid in its history
+     */
+    undo: function() {
+        Actions.goBackInHistory(this.state.gridName);
+    },
+
+    /**
+     * Ask the store to restore the next version of the grid in its history
+     */
+    redo: function() {
+        Actions.goForwardInHistory(this.state.gridName);
+    },
+
+    /**
      * Return the classes to use when rendering the container of the current main grid
      *
      * @return {React.addons.classSet}
@@ -287,7 +301,7 @@ var MainGrid = {
      * - `grid-container-design-mode`: if the grid is in design mode
      * - `grid-container-design-mode-step-*`: if the grid is in design mode, depending of the current step
      * - `grid-container-with-placeholders`: if the grid has placeholders
-     * - `grid-container-with-placeholders`: if the grid has resizers
+     * - `grid-container-with-resizers`: if the grid has resizers
      */
     getContainerClasses: function() {
         var inDesignMode = this.isInDesignMode();
@@ -305,21 +319,29 @@ var MainGrid = {
      * Will render the component
      */
     render: function() {
-        var addButton, toggleButton;
+        var addButton, toggleButton, undoButton, redoButton;
         var designModeStep = this.getDesignModeStep();
 
+        // manage the "Add a module" button
         if (designModeStep == 'enabled') {
             addButton = <button onClick={this.addRandomModule}>Add a random module</button>
         }
 
+        // manage the "enter/exit design mode" button
         if (designModeStep == 'enabled' || designModeStep == 'disabled') {
             toggleButton = <button onClick={this.toggleDesignMode}>{this.isInDesignMode() ? "Exit" : "Enter"} design mode</button>;
+        }
+
+        // manage the "undo" and "redo" buttons
+        if (designModeStep == 'enabled') {
+            undoButton = <button onClick={this.undo} disabled={!Store.canGoBackInHistory(this.state.gridName)}>Undo</button>;
+            redoButton = <button onClick={this.redo} disabled={!Store.canGoForwardInHistory(this.state.gridName)}>Redo</button>;
         }
 
         return <div className={this.getContainerClasses()}>
             <nav className="grid-toolbar">
                 <label>{this.state.gridName}</label>
-                {addButton}{toggleButton}
+                {undoButton}{redoButton}{addButton}{toggleButton}
             </nav>
             {this.renderGrid()}
         </div>;

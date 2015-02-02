@@ -30,7 +30,7 @@ describe("Grid.Actions", function() {
         // force it to be in design mode
         Store.__private.grids['foo'].designModeStep = 'enabled';
 
-        return grid;
+        return Store.getGrid('foo');
     };
 
     beforeEach(function() {
@@ -83,8 +83,9 @@ describe("Grid.Actions", function() {
                 expect(addedGridName).toEqual('foo');
 
                 // check if we really have the new grid
+                var addedGrid;
                 expect(function() {
-                    var grid = Store.getGrid('foo');
+                    addedGrid = Store.getGrid('foo');
                 }).not.toThrowError(Store.Exceptions.GridDoesNotExist);
 
                 // and if it is valid
@@ -92,7 +93,12 @@ describe("Grid.Actions", function() {
                     '<grid name="foo" space="5px" type="mainGrid" id="grid-1">' +
                         '<content id="content-2"/>' +
                     '</grid>';
-                expect(grid).toEqualXML(expected);
+                expect(addedGrid).toEqualXML(expected);
+
+                // and is in the history
+                var gridEntry = Store.__private.getGridEntry('foo');
+                expect(gridEntry.history.length).toBe(1);
+                expect(gridEntry.history[0]).toBe(grid);
 
                 // tell jasmine we're done
                 done();
@@ -126,6 +132,8 @@ describe("Grid.Actions", function() {
 
             // give some time to let the callbacks to be called
             setTimeout(function() {
+                var newGrid = Store.getGrid('foo');
+
                 // clean the listener
                 Store.off('grid.designMode.enter', callback);
 
@@ -141,7 +149,7 @@ describe("Grid.Actions", function() {
                     '<grid name="foo" space="5px" type="mainGrid" id="grid-1" hasResizers="true">' +
                         '<content id="content-2"/>' +
                     '</grid>';
-                expect(grid).toEqualXML(expected);
+                expect(newGrid).toEqualXML(expected);
 
                 // tell jasmine we're done
                 done();
@@ -175,8 +183,6 @@ describe("Grid.Actions", function() {
             // give some time to let the callbacks to be called
             setTimeout(function() {
                 var newGrid = Store.getGrid('foo');
-                // it should be the same grid (only the content is different)
-                expect(newGrid).toBe(grid);
 
                 // clean the listener
                 Store.off('grid.designMode.module.add', callback);
@@ -202,6 +208,11 @@ describe("Grid.Actions", function() {
                         '</content>' +
                     '</grid>';
                 expect(newGrid).toEqualXML(expected);
+
+                // check that the grid with the new module is in the history
+                var gridEntry = Store.__private.getGridEntry('foo');
+                expect(gridEntry.history.length).toBe(2);
+                expect(gridEntry.history[1]).toEqualXML(newGrid);
 
                 // tell jasmine we're done
                 done();
@@ -236,8 +247,6 @@ describe("Grid.Actions", function() {
             // give some time to let the callbacks to be called
             setTimeout(function() {
                 var newGrid = Store.getGrid('foo');
-                // it should be the same grid (only the content is different)
-                expect(newGrid).toBe(grid);
 
                 // clean the listener
                 Store.off('grid.designMode.module.remove', callback);
@@ -259,6 +268,11 @@ describe("Grid.Actions", function() {
                         '</content>' +
                     '</grid>';
                 expect(newGrid).toEqualXML(expected);
+
+                // check that the grid with the removed module is in the history
+                var gridEntry = Store.__private.getGridEntry('foo');
+                expect(gridEntry.history.length).toBe(2);
+                expect(gridEntry.history[1]).toEqualXML(newGrid);
 
                 // tell jasmine we're done
                 done();
@@ -948,6 +962,11 @@ describe("Grid.Actions", function() {
 
                             expect(newGrid).toEqualXML(expected);
 
+                            // check that the grid with the module modev is in the history
+                            var gridEntry = Store.__private.getGridEntry('foo');
+                            expect(gridEntry.history.length).toBe(2);
+                            expect(gridEntry.history[1]).toEqualXML(newGrid);
+
                             // tell jasmine we're done
                             done();
 
@@ -1310,6 +1329,7 @@ describe("Grid.Actions", function() {
                 } finally {
                     // give some time to let the callbacks to be called
                     setTimeout(function() {
+                        var newGrid = Store.getGrid('foo');
 
                         // clean the listener
                         Store.off('grid.designMode.resizing.stop', callback);
@@ -1326,11 +1346,14 @@ describe("Grid.Actions", function() {
                         expect(gridEntry.nodes.resizing).toBe(undefined);
                         expect(gridEntry.resizing).toEqual({});
 
-                        console.log(grid);
-
                         // check that the nodes are still updated in the grid
                         expect(previous.getAttribute('relativeSize')).toEqual('1.5');
                         expect(next.getAttribute('relativeSize')).toEqual('0.5');
+
+                        // check that the grid with the resizing done is in the history
+                        var gridEntry = Store.__private.getGridEntry('foo');
+                        expect(gridEntry.history.length).toBe(2);
+                        expect(gridEntry.history[1]).toEqualXML(newGrid);
 
                         // tell jasmine we're done
                         done();
@@ -1338,6 +1361,104 @@ describe("Grid.Actions", function() {
                     }, 0.01);
 
                 }
+            }, 0.01);
+        }, 0.01);
+    });
+
+    it("should go through in history", function(done) {
+        // will set this to True when the callbacks are called
+        var addCallbackCalled = false;
+        var backCallbackCalled = false;
+        var forwardCallbackCalled = false;
+        // will store the grid name received via the tested events
+        var addUpdatedGridName;
+        var backUpdatedGridName;
+        var forwardUpdatedGridName;
+
+        var addCallback = function(gridName) {
+            addCallbackCalled = true;
+            addUpdatedGridName = gridName;
+        };
+        var backCallback = function(gridName) {
+            backCallbackCalled = true;
+            backUpdatedGridName = gridName;
+        };
+        var forwardCallback = function(gridName) {
+            forwardCallbackCalled = true;
+            forwardUpdatedGridName = gridName;
+        };
+
+        // add a grid to work on, which is set in history
+        var grid = createSimpleGrid();
+
+        // listen to the tested events
+        Store.on('grid.designMode.history.back', backCallback);
+        Store.on('grid.designMode.history.add', addCallback);
+        Store.on('grid.designMode.history.forward', forwardCallback);
+
+        // we should have one entry in the history
+        var gridEntry = Store.__private.getGridEntry('foo');
+        expect(gridEntry.history.length).toEqual(1);
+        // with only one row
+        expect(gridEntry.history[0].querySelectorAll(':scope > content > row').length).toEqual(1);
+        expect(Store.getGrid('foo').querySelectorAll(':scope > content > row').length).toEqual(1);
+
+        // update the grid
+        Manipulator.addRow(grid);
+
+        // add it to the history
+        Store.__private.addCurrentGridToHistory('foo');
+
+        // leave some time to update the history
+        setTimeout(function() {
+            // check if the callback were called
+            expect(addCallbackCalled).toBe(true);
+            expect(addUpdatedGridName).toEqual('foo');
+
+            // we should be at the second entry in the history
+            expect(gridEntry.history.length).toEqual(2);
+            expect(gridEntry.currentHistoryIndex).toEqual(1);
+            // with two rows
+            expect(gridEntry.history[1].querySelectorAll(':scope > content > row').length).toEqual(2);
+            expect(Store.getGrid('foo').querySelectorAll(':scope > content > row').length).toEqual(2);
+
+            // ask to go back in history
+            Actions.goBackInHistory('foo');
+
+            // leave some time the go update the history
+            setTimeout(function() {
+
+                // check if the callback were called
+                expect(backCallbackCalled).toBe(true);
+                expect(backUpdatedGridName).toEqual('foo');
+
+                // we should be back at the first entry in the history, which has still two entries
+                expect(gridEntry.history.length).toEqual(2);
+                expect(gridEntry.currentHistoryIndex).toEqual(0);
+                // with only one row
+                expect(gridEntry.history[0].querySelectorAll(':scope > content > row').length).toEqual(1);
+                expect(Store.getGrid('foo').querySelectorAll(':scope > content > row').length).toEqual(1);
+
+                // now go forward in history
+                Actions.goForwardInHistory('foo');
+
+                // leave some time the go update the history
+                setTimeout(function() {
+
+                    // check if the callback were called
+                    expect(forwardCallbackCalled).toBe(true);
+                    expect(forwardUpdatedGridName).toEqual('foo');
+
+                    // we should be back at the second entry in the history, which has still two entries
+                    expect(gridEntry.history.length).toEqual(2);
+                    expect(gridEntry.currentHistoryIndex).toEqual(1);
+                    // with two row
+                    expect(gridEntry.history[1].querySelectorAll(':scope > content > row').length).toEqual(2);
+                    expect(Store.getGrid('foo').querySelectorAll(':scope > content > row').length).toEqual(2);
+
+                    // tell jasmine we're done
+                    done();
+                }, 0.01);
             }, 0.01);
         }, 0.01);
     });
