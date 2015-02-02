@@ -151,6 +151,66 @@ describe("Grid.Actions", function() {
         }
     });
 
+    it("should add a module", function(done) {
+        // will set this to True when the callback is called
+        var callbackCalled = false;
+        // will store the grid name received via the tested event
+        var updatedGridName;
+
+        var callback = function(gridName) {
+            callbackCalled = true;
+            updatedGridName = gridName;
+        };
+
+        // add a grid to work on
+        var grid = createSimpleGrid();
+
+        // listen to the tested event
+        Store.on('grid.designMode.module.add', callback);
+
+        try {
+            Actions.addModule('foo', 'Module.Test1', {text: 'test text'});
+        } finally {
+
+            // give some time to let the callbacks to be called
+            setTimeout(function() {
+                var newGrid = Store.getGrid('foo');
+                // it should be the same grid (only the content is different)
+                expect(newGrid).toBe(grid);
+
+                // clean the listener
+                Store.off('grid.designMode.module.add', callback);
+
+                // check if the callback were called
+                expect(callbackCalled).toBe(true);
+                expect(updatedGridName).toEqual('foo');
+
+                // check that we are still in design mode
+                expect(Store.getDesignModeStep('foo')).toEqual('enabled');
+
+                // check if the grid has a new row with the module
+                var expected =
+                    '<grid name="foo" space="5px" type="mainGrid" id="grid-1">' +
+                        '<content id="content-2">' +
+                            '<row id="row-8">' +
+                                '<cell type="module" id="cell-9"><content component="Module.Test1" text="test text" id="content-10"/></cell>' +
+                            '</row>' +
+                            '<row id="row-3">' +
+                                '<cell type="module" id="cell-4"><content id="content-5"/></cell>' +
+                                '<cell type="module" id="cell-6"><content id="content-7"/></cell>' +
+                            '</row>' +
+                        '</content>' +
+                    '</grid>';
+                expect(newGrid).toEqualXML(expected);
+
+                // tell jasmine we're done
+                done();
+
+            }, 0.01);
+
+        }
+    });
+
     it("should start dragging", function(done) {
         // will set this to True when the callback is called
         var callbackCalled = false;

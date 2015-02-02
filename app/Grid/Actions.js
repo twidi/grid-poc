@@ -23,6 +23,19 @@ var Actions = {
     addGrid: function(grid) {},
 
     /**
+     * Add a module to the given grid
+     *
+     * @type {function}
+     *
+     * @param {XML} gridName - The name of the grid on which to add the module
+     * @param {String} module - The path of the module to use
+     * @param {Object} params - An flat object with all attributes of this module
+     *
+     * @fires module:Grid.Store#"grid.designMode.module.add"
+     */
+    addModule: function(gridName, module, params) {},
+
+    /**
      * Set design mode for the given grid
      *
      * @type {function}

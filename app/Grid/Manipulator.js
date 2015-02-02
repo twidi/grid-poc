@@ -245,6 +245,23 @@ var Manipulator = {
     },
 
     /**
+     * Create a content node, to be later inserted into an empty module cell, with the given attributes
+     *
+     * @param  {XML} grid - The grid on which the content node is aimed to be attached
+     * @param  {Object} attributes - All attributes to include in the content node. Note that all attributes
+     *                               will be inserted as text
+     *
+     * @return {XML} - The newly created <content> xml node
+     */
+    createContentNode: function(grid, attributes) {
+        var contentNode = grid.ownerDocument.createElement('content');
+        for (var key in attributes) {
+            contentNode.setAttribute(key, attributes[key]);
+        }
+        return contentNode;
+    },
+
+    /**
      * Clean a grid node by doing two operations:
      * 1/ Remove all empty cells/rows/contents
      * 2/ if a XML grid node has only one row with only one cell, convert the grid node into a node

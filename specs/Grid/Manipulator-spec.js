@@ -47,6 +47,13 @@ describe("Grid.Manipulator", function() {
         expect(grid).toEqualXML(expected);
     });
 
+    it("should create a content node", function() {
+        var grid = Manipulator.createBaseGrid('foo', 5);
+
+        var contentNode = Manipulator.createContentNode(grid, {foo: 1, bar: "baz"});
+        expect(contentNode).toEqualXML('<content foo="1" bar="baz"/>');
+    });
+
     it("should add a row", function() {
         var grid = Manipulator.createBaseGrid('foo', 5);
 

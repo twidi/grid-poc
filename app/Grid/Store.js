@@ -449,6 +449,53 @@ var Private = {
     },
 
     /**
+     * Add a module to the given grid
+     *
+     * It's an action, should be called via
+     * {@link module:Grid.Actions.enterDesignMode Grid.Actions.addModule}
+     *
+     * @param {XML} gridName - The name of the grid on which to add the module
+     * @param {String} module - The path of the module to use
+     * @param {Object} params - An flat object with all attributes of this module
+     *
+     * @fires module:Grid.Store#"grid.designMode.module.add"
+     */
+    addModule: function(gridName, module, params) {
+        var grid = this.getGrid(gridName);
+
+        var hasResizers = Manipulator.hasResizers(grid);
+
+        // remove resizers for now
+        if (hasResizers) {
+            Manipulator.removeResizers(grid);
+        }
+
+        // create a content node, including the module name as an attribute
+        var attributes = _.extend({component: module}, params);
+        var contentNode = Manipulator.createContentNode(grid, attributes);
+
+        // add a row with this module only
+        var firstRow = grid.querySelector('row');
+        var newRow = Manipulator.addRow(grid, firstRow);
+        var newCell = Manipulator.addCell(newRow, null, 'module', contentNode);
+
+        // put the grid in a good state
+        if (hasResizers) {
+            Manipulator.addResizers(grid);
+        }
+        Manipulator.setIds(grid);
+
+        /**
+         * Event fired when a module is added to a grid
+         *
+         * @event module:Grid.Store#"grid.designMode.module.add"
+         *
+         * @property {string} name - The name of the updated Grid
+         */
+        this.emit('grid.designMode.module.add', gridName);
+    },
+
+    /**
      * Set design mode for the given grid.
      *
      * It's an action, should be called via

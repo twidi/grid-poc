@@ -263,6 +263,20 @@ var MainGrid = {
     },
 
     /**
+     * Add a random module to the grid, with random content text.
+     */
+    addRandomModule: function() {
+        var availableModules = [
+            'Modules.Test1',
+            'Modules.Test2',
+        ];
+        var randomModule = availableModules[Math.floor(availableModules.length * Math.random())];
+        var modulesCount = Store.getGrid(this.state.gridName).querySelectorAll('cell[type=module]').length;
+        var randomText = 'test.' + modulesCount;
+        Actions.addModule(this.state.gridName, randomModule, {text: randomText});
+    },
+
+    /**
      * Return the classes to use when rendering the container of the current main grid
      *
      * @return {React.addons.classSet}
@@ -280,8 +294,8 @@ var MainGrid = {
         var classes = {
             'grid-container': true,
             'grid-container-design-mode': inDesignMode,
-            'grid-container-with-placeholders': Store.hasPlaceholders(this.getGridName()),
-            'grid-container-with-resizers': Store.hasResizers(this.getGridName()),
+            'grid-container-with-placeholders': Store.hasPlaceholders(this.state.gridName),
+            'grid-container-with-resizers': Store.hasResizers(this.state.gridName),
         };
         classes['grid-container-design-mode-step-' + this.getDesignModeStep()] = inDesignMode;
         return cx(classes);
@@ -291,9 +305,14 @@ var MainGrid = {
      * Will render the component
      */
     render: function() {
+        var addButton;
+        if (this.getDesignModeStep() == 'enabled') {
+            addButton = <button onClick={this.addRandomModule}>Add a random module</button>
+        }
         return <div className={this.getContainerClasses()}>
             <nav className="grid-toolbar">
                 <label>{this.state.gridName}</label>
+                {addButton}
                 <button onClick={this.toggleDesignMode}>{this.isInDesignMode() ? "Exit" : "Enter"} design mode</button>
             </nav>
             {this.renderGrid()}
