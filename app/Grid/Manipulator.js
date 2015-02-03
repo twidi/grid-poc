@@ -1,5 +1,7 @@
 import _ from 'lodash';
 
+import { Exceptions } from '../Utils/Exceptions';
+
 
 /**
  * Manipulates grid data
@@ -831,10 +833,6 @@ const Manipulator = {
 };
 
 // Exceptions must be based on the Error class
-_(Manipulator.Exceptions).forEach((exceptionClass, exceptionName) => {
-    exceptionClass.prototype = new Error();
-    exceptionClass.prototype.constructor = exceptionClass;
-    exceptionClass.displayName = exceptionName;
-});
+Exceptions.normalize(Manipulator.Exceptions);
 
 export { Manipulator };

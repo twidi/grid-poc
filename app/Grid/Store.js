@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import flux from 'flux-react';
 
+import { Exceptions } from '../Utils/Exceptions';
+
 import { Actions } from './Actions';
 import { Manipulator } from './Manipulator';
 
@@ -1417,11 +1419,7 @@ Private.exports.__private = Private;
 
 
 // Exceptions must be based on the Error class
-_(Store.Exceptions).forEach((exceptionClass, exceptionName) => {
-    exceptionClass.prototype = new Error();
-    exceptionClass.prototype.constructor = exceptionClass;
-    exceptionClass.displayName = exceptionName;
-});
+Exceptions.normalize(Store.Exceptions);
 
 
 Store = flux.createStore(Private);
