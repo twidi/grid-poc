@@ -1,5 +1,6 @@
 var _ = require('lodash');
 
+var Exceptions = require('../Utils/Exceptions.js');
 
 /**
  * Manipulates grid data
@@ -842,10 +843,6 @@ var Manipulator = {
 };
 
 // Exceptions must be based on the Error class
-_(Manipulator.Exceptions).forEach(function(exceptionClass, exceptionName) {
-    exceptionClass.prototype = new Error();
-    exceptionClass.prototype.constructor = exceptionClass;
-    exceptionClass.displayName = exceptionName;
-});
+Exceptions.normalize(Manipulator.Exceptions);
 
 module.exports = Manipulator;

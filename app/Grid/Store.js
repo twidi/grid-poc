@@ -1,6 +1,8 @@
 var _ = require('lodash');
 var flux = require('flux-react');
 
+var Exceptions = require('../Utils/Exceptions.js');
+
 var Actions = require('./Actions.js');
 var Manipulator = require('./Manipulator.js');
 
@@ -1414,11 +1416,7 @@ Private.exports.__private = Private;
 
 
 // Exceptions must be based on the Error class
-_(Store.Exceptions).forEach(function(exceptionClass, exceptionName) {
-    exceptionClass.prototype = new Error();
-    exceptionClass.prototype.constructor = exceptionClass;
-    exceptionClass.displayName = exceptionName;
-});
+Exceptions.normalize(Store.Exceptions);
 
 
 Store = flux.createStore(Private);
