@@ -14,15 +14,12 @@ export const App = React.createClass({
         };
     },
 
-    componentWillMount() {
-        Store.on('grid.add', this.onGridAdded);
-    },
-
     componentWillUnmount() {
         Store.off('grid.add', this.onGridAdded);
     },
 
     componentDidMount() {
+        Store.on('grid.add', this.onGridAdded);
         if (!this.state.gridName) {
             this.initGrid();
         }
