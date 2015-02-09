@@ -17,15 +17,12 @@ var App = React.createClass({
         };
     },
 
-    componentWillMount: function () {
-        Store.on('grid.add', this.onGridAdded);
-    },
-
     componentWillUnmount: function () {
         Store.off('grid.add', this.onGridAdded);
     },
 
     componentDidMount: function() {
+        Store.on('grid.add', this.onGridAdded);
         if (!this.state.gridName) {
             this.initGrid();
         }

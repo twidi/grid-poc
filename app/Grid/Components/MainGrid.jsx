@@ -228,10 +228,10 @@ var MainGrid = {
     },
 
     /**
-     * Called before attaching the component to the dom, to watch changes of the
+     * Called just after attaching the component to the dom, to watch changes of the
      * store that impact the component
      */
-    componentWillMount: function () {
+    componentDidMount: function () {
         // hack to pass the original event to onDesignModeChange
         var self = this;
         this.__onDesignModeChange = this.__onDesignModeChange || function(gridName) {
@@ -246,7 +246,7 @@ var MainGrid = {
      * changes of the store that impact the component
      */
     componentWillUnmount: function () {
-        // this.__onDesignModeChange was defined in componentWillMount
+        // this.__onDesignModeChange was defined in componentDidMount
         Store.off('grid.designMode.**', this.__onDesignModeChange);
         this.deactivateDropDetection();
     },
