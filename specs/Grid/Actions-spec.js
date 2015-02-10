@@ -408,7 +408,7 @@ describe("Grid.Actions", function() {
         // go to dragging mode
         Actions.startDragging('foo', grid.querySelector('#cell-4'));
 
-        // leave some time the go in dragging mode
+        // leave some time to go in dragging mode
         setTimeout(function() {
 
             // listen to the tested event
@@ -479,7 +479,7 @@ describe("Grid.Actions", function() {
         // go to dragging mode
         Actions.startDragging('foo', grid.querySelector('#cell-4'));
 
-        // leave some time the go in dragging mode
+        // leave some time to go in dragging mode
         setTimeout(function() {
 
             // listen to the tested event
@@ -597,7 +597,7 @@ describe("Grid.Actions", function() {
         // go to dragging mode
         Actions.startDragging('foo', grid.querySelector('#cell-4'));
 
-        // leave some time the go in dragging mode
+        // leave some time to go in dragging mode
         setTimeout(function() {
 
             try {
@@ -665,7 +665,7 @@ describe("Grid.Actions", function() {
         // go to dragging mode
         Actions.startDragging('foo', grid.querySelector('#cell-4'));
 
-        // leave some time the go in dragging mode
+        // leave some time to go in dragging mode
         setTimeout(function() {
 
             try {
@@ -731,7 +731,7 @@ describe("Grid.Actions", function() {
         // we'll check if clearHoveringTimeout is called, it should NOT
         spyOn(Store.__private, 'clearHoveringTimeout').and.callThrough();
 
-        // leave some time the go in dragging mode
+        // leave some time to go in dragging mode
         setTimeout(function() {
 
             try {
@@ -785,7 +785,7 @@ describe("Grid.Actions", function() {
             // go to dragging mode
             Actions.startDragging('foo', grid.querySelector('#cell-4'));
 
-            // leave some time the go in dragging mode
+            // leave some time to go in dragging mode
             setTimeout(function() {
                 // keep a reference of the grid in dragging mode to compare to it later
                 var dragGrid = Store.getGrid('foo');
@@ -793,7 +793,7 @@ describe("Grid.Actions", function() {
                 // go to hovering mode
                 Actions.startHovering('foo', Store.getGrid('foo').querySelector('#cell-16'));
 
-                // leave some time the go in hovering mode
+                // leave some time to go in hovering mode
                 setTimeout(function() {
 
                     if (stayCalled) {
@@ -885,7 +885,7 @@ describe("Grid.Actions", function() {
             // go to dragging mode
             Actions.startDragging('foo', grid.querySelector('#cell-4'));
 
-            // leave some time the go in dragging mode
+            // leave some time to go in dragging mode
             setTimeout(function() {
 
                 // go to hovering mode
@@ -895,7 +895,7 @@ describe("Grid.Actions", function() {
                 // listen to the tested event
                 Store.on('grid.designMode.drop', callback);
 
-                // leave some time the go in hovering mode
+                // leave some time to go in hovering mode
                 setTimeout(function() {
 
                     if (stayCalled) {
@@ -998,13 +998,13 @@ describe("Grid.Actions", function() {
         // go to dragging mode
         Actions.startDragging('foo', grid.querySelector('#cell-4'));
 
-        // leave some time the go in dragging mode
+        // leave some time to go in dragging mode
         setTimeout(function() {
 
             // go to hovering mode
             Actions.startHovering('foo', Store.getGrid('foo').querySelector('#cell-16'));
 
-            // leave some time the go in hovering mode
+            // leave some time to go in hovering mode
             setTimeout(function() {
 
                 // exit hovering mode
@@ -1187,7 +1187,7 @@ describe("Grid.Actions", function() {
         // start by going in resizing mode
         Actions.startResizing('foo', resizer, 200, 100);
 
-        // leave some time the go in resizing mode
+        // leave some time to go in resizing mode
         setTimeout(function() {
 
             // listen to the tested event
@@ -1256,7 +1256,7 @@ describe("Grid.Actions", function() {
         // start by going in resizing mode
         Actions.startResizing('foo', resizer, 200, 100);
 
-        // leave some time the go in resizing mode
+        // leave some time to go in resizing mode
         setTimeout(function() {
 
             // listen to the tested event
@@ -1310,7 +1310,7 @@ describe("Grid.Actions", function() {
         // start by going in resizing mode
         Actions.startResizing('foo', resizer, 200, 100);
 
-        // leave some time the go in resizing mode
+        // leave some time to go in resizing mode
         setTimeout(function() {
 
             // then do a resize
@@ -1425,7 +1425,7 @@ describe("Grid.Actions", function() {
             // ask to go back in history
             Actions.goBackInHistory('foo');
 
-            // leave some time the go update the history
+            // leave some time to update the history
             setTimeout(function() {
 
                 // check if the callback were called
@@ -1442,7 +1442,7 @@ describe("Grid.Actions", function() {
                 // now go forward in history
                 Actions.goForwardInHistory('foo');
 
-                // leave some time the go update the history
+                // leave some time to update the history
                 setTimeout(function() {
 
                     // check if the callback were called
@@ -1461,6 +1461,170 @@ describe("Grid.Actions", function() {
                 }, 0.01);
             }, 0.01);
         }, 0.01);
+    });
+
+    it("should focus a module cell", function(done) {
+        var grid = Manipulator.XMLStringToXMLGrid(
+            '<grid name="bar" space="5px" type="mainGrid">' +
+                '<content>' +
+                    '<row>' +
+                        '<cell type="module" id="c1"><content/></cell>' +
+                        '<cell type="grid">' +
+                            '<content>' +
+                                '<row>' +
+                                    '<cell type="module" id="c2"><content/></cell>' +
+                                    '<cell type="module" id="c3"><content/></cell>' +
+                                '</row>' +
+                                '<row>' +
+                                    '<cell type="module" id="c4"><content/></cell>' +
+                                    '<cell type="module" id="c5"><content/></cell>' +
+                                    '<cell type="module" id="c6"><content/></cell>' +
+                                '</row>' +
+                            '</content>' +
+                        '</cell>' +
+                        '<cell type="grid">' +
+                            '<content>' +
+                                '<row>' +
+                                    '<cell type="module" id="c7"><content/></cell>' +
+                                '</row>' +
+                                '<row>' +
+                                    '<cell type="module" id="c8"><content/></cell>' +
+                                '</row>' +
+                                '<row>' +
+                                    '<cell type="module" id="c9"><content/></cell>' +
+                                '</row>' +
+                            '</content>' +
+                        '</cell>' +
+                    '</row>' +
+                '</content>' +
+            '</grid>');
+
+        Manipulator.setIds(grid);
+        Store.__private.addGrid(grid);
+        grid = Store.getGrid('bar');
+
+        // will set this to True when the callbacks are called
+        var offCallbackCalled = false;
+        var onCallbackCalled = false;
+        // will store the grid name received via the tested events
+        var offUpdatedGridName;
+        var onUpdatedGridName;
+        // and the module cell id focused/unfocused
+        var offCellId;
+        var onCellId;
+
+        var offCallback = function(gridName, cellId) {
+            offCallbackCalled = true;
+            offUpdatedGridName = gridName;
+            offCellId = cellId;
+        };
+        var onCallback = function(gridName, cellId) {
+            onCallbackCalled = true;
+            onUpdatedGridName = gridName;
+            onCellId = cellId;
+        };
+
+        Store.on('grid.navigate.focus.off', offCallback);
+        Store.on('grid.navigate.focus.on', onCallback);
+
+        var resetCallbacks = function() {
+            offCallbackCalled = false;
+            offUpdatedGridName = null;
+            offCellId = null;
+            onCallbackCalled = false;
+            onUpdatedGridName = null;
+            onCellId = null;
+        };
+
+        // start by focusing a cell, without any focused before that
+        Actions.focusModuleCell('bar', null, true);
+
+        // leave some time to focus the new node
+        setTimeout(function() {
+            expect(Store.__private.grids['bar'].focusedModuleCellId).toEqual('c1');
+            expect(offCallbackCalled).toBe(false);
+            expect(onCallbackCalled).toBe(true);
+            expect(onUpdatedGridName).toEqual('bar');
+            expect(onCellId).toEqual('c1');
+
+            // now focus another node
+            resetCallbacks()/
+            Actions.focusModuleCell('bar', grid.querySelector('#c2'));
+
+            // leave some time to focus the new node
+            setTimeout(function() {
+                expect(Store.__private.grids['bar'].focusedModuleCellId).toEqual('c2');
+                expect(offCallbackCalled).toBe(true);
+                expect(offUpdatedGridName).toEqual('bar');
+                expect(offCellId).toEqual('c1');
+                expect(onCallbackCalled).toBe(true);
+                expect(onUpdatedGridName).toEqual('bar');
+                expect(onCellId).toEqual('c2');
+
+                // and now test navigation
+                var tests = [
+                    // base-cell, exected top, expected bottom, expected left, expected right
+                    ['#c1', undefined, undefined, undefined, '#c2'],
+                    ['#c2', undefined, '#c4', '#c1', '#c3'],
+                    ['#c3', undefined, '#c6', '#c2', '#c7'],
+                    ['#c4', '#c2', undefined, '#c1', '#c5'],
+                    ['#c5', '#c2', undefined, '#c4', '#c6'],
+                    ['#c6', '#c3', undefined, '#c5', '#c9'],
+                    ['#c7', undefined, '#c8', '#c3', undefined],
+                    ['#c8', '#c7', '#c9', '#c3', undefined],
+                    ['#c9', '#c8', undefined, '#c6', undefined],
+                ];
+
+                var finalTests = [];
+                for (var numTest = 0; numTest < tests.length; numTest++) {
+                    var test = tests[numTest];
+                    finalTests.push([test[0], 'Top', test[1]]);
+                    finalTests.push([test[0], 'Bottom', test[2]]);
+                    finalTests.push([test[0], 'Left', test[3]]);
+                    finalTests.push([test[0], 'Right', test[4]]);
+                }
+
+                var doTest = function(test) {
+                    resetCallbacks();
+
+                    var baseId = test[0].substring(1);
+                    Store.__private.grids['bar'].focusedModuleCellId = baseId;
+                    Actions['focus' + test[1] + 'ModuleCell']('bar');
+                    // leave some time to focus the new node
+                    setTimeout(function() {
+                        // if undefined, the focused didn't change, else we use the target
+                        var expectedId = (test[2] || test[0]).substring(1);
+                        expect(Store.__private.grids['bar'].focusedModuleCellId).toEqual(expectedId, test[1] + ' ' + test[0]);
+
+                        // callbacks are called only if the focused cell changes
+                        if (test[2]) {
+                            expect(offCallbackCalled).toBe(true);
+                            expect(offUpdatedGridName).toEqual('bar');
+                            expect(offCellId).toEqual(baseId);
+                            expect(onCallbackCalled).toBe(true);
+                            expect(onUpdatedGridName).toEqual('bar');
+                            expect(onCellId).toEqual(expectedId);
+                        } else {
+                            expect(offCallbackCalled).toBe(false);
+                            expect(onCallbackCalled).toBe(false);
+                        }
+
+                        if (!finalTests.length) {
+                            // no more test, we are done
+                            Store.off('grid.navigate.focus.off', offCallback);
+                            Store.off('grid.navigate.focus.on', onCallback);
+                            done();
+                        } else {
+                            // continue on the next available test
+                            doTest(finalTests.shift());
+                        }
+                    }, 0.01);
+                };
+
+                doTest(finalTests.shift());
+            }, 0.01);
+        }, 0.01);
+
     });
 
 });

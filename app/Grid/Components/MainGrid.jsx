@@ -7,6 +7,8 @@ var Actions = require('../Actions.js');
 var Store = require('../Store.js');
 
 var DocumentEventsMixin = require('../../Utils/ReactMixins/DocumentEvents.jsx');
+var MousetrapMixin = require('../../Utils/ReactMixins/Mousetrap.jsx');
+
 var GridMixin = require('./Mixins/Grid.jsx');
 var NodeMixin = require('./Mixins/Node.jsx');
 
@@ -23,6 +25,7 @@ var NodeMixin = require('./Mixins/Node.jsx');
 var MainGrid = {
     mixins: [
         DocumentEventsMixin,
+        MousetrapMixin,
         NodeMixin,
         GridMixin,
     ],
@@ -88,6 +91,9 @@ var MainGrid = {
         // do some specific action depending on the received event
 
         if (eventName == 'grid.designMode.enter' ) {
+
+            this.deactivateGridNavigation()
+
             // entering design mode, we start by now to listen do `dragover` and `drop` events on
             // the whole document
 
@@ -110,6 +116,9 @@ var MainGrid = {
 
 
         } else if (eventName == 'grid.designMode.exit' ) {
+
+            this.activateGridNavigation()
+
             // exiting the design mode, we can stop listening to dragover and drop events
 
             this.removeDocumentListener('drop', 'onDocumentDrop');
@@ -239,16 +248,20 @@ var MainGrid = {
             self.onDesignModeChange(this.event, gridName);
         }
         Store.on('grid.designMode.**', this.__onDesignModeChange);
+        this.activateGridNavigation();
     },
 
     /**
      * Called before detaching the component from the dom, to stop watching
      * changes of the store that impact the component
+     *
+     * We don't call `deactivateGridNavigation` because the clean 
      */
     componentWillUnmount: function () {
         // this.__onDesignModeChange was defined in componentDidMount
         Store.off('grid.designMode.**', this.__onDesignModeChange);
         this.deactivateDropDetection();
+        this.deactivateGridNavigation()
     },
 
     /**
@@ -291,6 +304,68 @@ var MainGrid = {
     },
 
     /**
+     * Ask the store to focus on the cell next to the right of the current focused one
+     */
+    focusRightModuleCell: function() {
+        Actions.focusRightModuleCell(this.state.gridName);
+    },
+
+    /**
+     * Ask the store to focus on the cell next to the left of the current focused one
+     */
+    focusLeftModuleCell: function() {
+        Actions.focusLeftModuleCell(this.state.gridName);
+    },
+
+    /**
+     * Ask the store to focus on the cell next to the bottom of the current focused one
+     */
+    focusBottomModuleCell: function() {
+        Actions.focusBottomModuleCell(this.state.gridName);
+    },
+
+    /**
+     * Ask the store to focus on the cell next to the top of the current focused one
+     */
+    focusTopModuleCell: function() {
+        Actions.focusTopModuleCell(this.state.gridName);
+    },
+
+    /**
+     * Activate the keyboard shortcuts to enable keyboard navigation between
+     * module cells
+     */
+    activateGridNavigation: function() {
+        this.bindShortcut('ctrl+right', this.focusRightModuleCell);
+        this.bindShortcut('ctrl+left', this.focusLeftModuleCell);
+        this.bindShortcut('ctrl+down', this.focusBottomModuleCell);
+        this.bindShortcut('ctrl+up', this.focusTopModuleCell);
+    },
+
+    /**
+     * Deactivate the keyboard shortcuts to disaable keyboard navigation between
+     * module cells
+     */
+    deactivateGridNavigation: function() {
+        try {
+            this.unbindShortcut('ctrl+right');
+            this.unbindShortcut('ctrl+left');
+            this.unbindShortcut('ctrl+down');
+            this.unbindShortcut('ctrl+up');
+        } catch (e) {
+            if (e instanceof MousetrapMixin.statics.Exceptions.Inconsistency) {
+                // We silently ignore this exception. It may happen if the
+                // `unbindAllShortcuts` of the MousetrapMixin was called just
+                // before
+            } else {
+                // other cases, throw the original exception
+                throw(e);
+            }
+        }
+
+    },
+
+    /**
      * Return the classes to use when rendering the container of the current main grid
      *
      * @return {React.addons.classSet}
@@ -324,24 +399,26 @@ var MainGrid = {
 
         // manage the "Add a module" button
         if (designModeStep == 'enabled') {
-            addButton = <button onClick={this.addRandomModule}>Add a random module</button>
+            addButton = <button onClick={this.addRandomModule} key='addButton'>Add a random module</button>
         }
 
         // manage the "enter/exit design mode" button
         if (designModeStep == 'enabled' || designModeStep == 'disabled') {
-            toggleButton = <button onClick={this.toggleDesignMode}>{this.isInDesignMode() ? "Exit" : "Enter"} design mode</button>;
+            toggleButton = <button onClick={this.toggleDesignMode} key='toggleButton'>{this.isInDesignMode() ? "Exit" : "Enter"} design mode</button>;
         }
 
         // manage the "undo" and "redo" buttons
         if (designModeStep == 'enabled') {
-            undoButton = <button onClick={this.undo} disabled={!Store.canGoBackInHistory(this.state.gridName)}>Undo</button>;
-            redoButton = <button onClick={this.redo} disabled={!Store.canGoForwardInHistory(this.state.gridName)}>Redo</button>;
+            undoButton = <button onClick={this.undo} disabled={!Store.canGoBackInHistory(this.state.gridName)} key='undoButton'>Undo</button>;
+            redoButton = <button onClick={this.redo} disabled={!Store.canGoForwardInHistory(this.state.gridName)} key='redoButton'>Redo</button>;
         }
+
+        var buttons = [undoButton, redoButton, addButton, toggleButton];
 
         return <div className={this.getContainerClasses()}>
             <nav className="grid-toolbar">
                 <label>{this.state.gridName}</label>
-                {undoButton}{redoButton}{addButton}{toggleButton}
+                {buttons}
             </nav>
             {this.renderGrid()}
         </div>;

@@ -4,7 +4,8 @@
  * @memberOf module:Utils
  */
 var ReactMixins = {
-    DocumentEvents: require('./Utils/ReactMixins/DocumentEvents.jsx'),
+    DocumentEvents: require('./ReactMixins/DocumentEvents.jsx'),
+    Mousetrap: require('./ReactMixins/Mousetrap.jsx'),
 };
 
 module.exports = ReactMixins;

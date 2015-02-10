@@ -323,6 +323,18 @@ var Store = {
         return (gridEntry.currentHistoryIndex < gridEntry.history.length - 1);
     },
 
+
+    /**
+     * Tell if the given module cell is the currently focused one
+     *
+     * @param  {String} gridName - The name of the grid for which we ask
+     *
+     * @return {Boolean} - `true` if it's the focused cell, or `false`
+     */
+    isFocusedModuleCell: function(gridName, moduleCell) {
+        return moduleCell.getAttribute('id') == this.getGridEntry(gridName).focusedModuleCellId;
+    },
+
     /**
      * Remove all the grids
      *
@@ -359,6 +371,7 @@ var Private = {
      * @property {string} name - The name of the grid
      * @property {XML} grid - The XML grid
      * @property {string} designModeStep - The current design mode step for this grid
+     * @property {string} focusedModuleCellId - The ID of the actual focused cell
      *
      * @property {Array} history - History of grids to allow undo/redo
      * @property {Integer} currentHistoryIndex - The current index in history
@@ -482,6 +495,7 @@ var Private = {
             name: name,
             grid: grid,
             designModeStep: 'disabled',
+            focusedModuleCellId: null,
             history: [],
             currentHistoryIndex: -1.0,
             backups: {},
@@ -1404,6 +1418,149 @@ var Private = {
          * @property {string} name - The name of the Grid where the history was changed
          */
         this.emit('grid.designMode.history.forward', gridName);
+    },
+
+    /**
+     * Return the currently focused module cell for the given grid
+     *
+     * @param  {string} gridName - The name of the grid for which we want the focused cell
+     *
+     * @return {XML} - The grid xml node actually focused
+     */
+    getFocusedModuleCell: function(gridName) {
+        var gridEntry = this.getGridEntry(gridName);
+        if (!gridEntry.focusedModuleCellId) { return; }
+        return gridEntry.grid.querySelector('#' + gridEntry.focusedModuleCellId);
+    },
+
+    /**
+     * Focus the given module cell in the given grid. If not possible, focus
+     * the first available module cell if asked
+     *
+     * It's an action, should be called via
+     * {@link module:Grid.Actions.drop Grid.Actions.focusModuleCell}
+     *
+     * @param  {string} gridName - The name of the grid for which we want to focus a cell
+     * @param  {XML} [moduleCell=null] - The module cell we want to set the focus on
+     * @param  {Boolean} [defaultToFirstModuleCell=false]
+     *         - `true` if we want to focus the first available cell if the given one is not available
+     *
+     * @fires module:Grid.Store#"grid.navigate.focus.off"
+     * @fires module:Grid.Store#"grid.navigate.focus.on"
+     */
+    focusModuleCell: function(gridName, moduleCell, defaultToFirstModuleCell) {
+        var gridEntry = this.getGridEntry(gridName);
+        var oldFocusedModuleCellId = gridEntry.focusedModuleCellId;
+        if (!moduleCell && defaultToFirstModuleCell) {
+            moduleCell = Manipulator.getModuleCellFromCell(gridEntry.grid, false, false);
+        }
+        if (!moduleCell) { return; }
+        gridEntry.focusedModuleCellId = moduleCell.getAttribute('id');
+
+        if (oldFocusedModuleCellId) {
+            /**
+             * Event fired when we a cell that was focused lost the focus
+             *
+             * @event module:Grid.Store#"grid.navigate.focus.off
+             *
+             * @property {string} name - The name of the Grid where the focus change
+             * @property {integer} oldFocusedModuleCellId - The ID of the module cell
+             *                                              that just lost the focus
+             */
+            this.emit('grid.navigate.focus.off', gridName, oldFocusedModuleCellId);
+        }
+
+        /**
+         * Event fired when we a cell that gain the focus
+         *
+         * @event module:Grid.Store#"grid.navigate.focus.on
+         *
+         * @property {string} name - The name of the Grid where the focus change
+         * @property {integer} oldFocusedModuleCellId - The ID of the module cell
+         *                                              that just gain the focus
+         */
+        this.emit('grid.navigate.focus.on', gridName, gridEntry.focusedModuleCellId);
+    },
+
+    /**
+     * In the given grid, focus the cell next to the one actually selected.
+     *
+     * The way to select the cell to select is done by calling a method
+     * of the Manipulator module: get{Right|Left|Bottom|Top}Cell.
+     *
+     * If no module cell is currently focused, the first one of the grid will be.
+     *
+     * @param  {string} gridName - The name of the grid on which to select a cell
+     * @param  {string} manipulatorFindCellFunctionName - The name of the function of the
+     *                                                    Manipulator module to call
+     */
+    focusNextModuleCell: function(gridName, manipulatorFindCellFunctionName) {
+        var nextModuleCell;
+        var focusedModuleCell = this.getFocusedModuleCell(gridName);
+        if (focusedModuleCell) {
+            nextModuleCell = Manipulator[manipulatorFindCellFunctionName](focusedModuleCell);
+        }
+        this.focusModuleCell(gridName, nextModuleCell, !focusedModuleCell);
+    },
+
+    /**
+     * Try to focus the next module cell on the right of the current one for the given grid
+     *
+     * It's an action, should be called via
+     * {@link module:Grid.Actions.drop Grid.Actions.focusRightModuleCell}
+     *
+     * @param  {string} gridName - The name of the grid where we want to focus a cell
+     *
+     * @fires module:Grid.Store#"grid.navigate.focus.off"
+     * @fires module:Grid.Store#"grid.navigate.focus.on"
+     */
+    focusRightModuleCell: function(gridName) {
+        this.focusNextModuleCell(gridName, 'getRightCell');
+    },
+
+    /**
+     * Try to focus the previous module cell on the left of the current one for the given grid
+     *
+     * It's an action, should be called via
+     * {@link module:Grid.Actions.drop Grid.Actions.focusLeftModuleCell}
+     *
+     * @param  {string} gridName - The name of the grid where we want to focus a cell
+     *
+     * @fires module:Grid.Store#"grid.navigate.focus.off"
+     * @fires module:Grid.Store#"grid.navigate.focus.on"
+     */
+    focusLeftModuleCell: function(gridName) {
+        this.focusNextModuleCell(gridName, 'getLeftCell');
+    },
+
+    /**
+     * Try to focus the next module cell on the bottom of the current one for the given grid
+     *
+     * It's an action, should be called via
+     * {@link module:Grid.Actions.drop Grid.Actions.focusBottomModuleCell}
+     *
+     * @param  {string} gridName - The name of the grid where we want to focus a cell
+     *
+     * @fires module:Grid.Store#"grid.navigate.focus.off"
+     * @fires module:Grid.Store#"grid.navigate.focus.on"
+     */
+    focusBottomModuleCell: function(gridName) {
+        this.focusNextModuleCell(gridName, 'getBottomCell');
+    },
+
+    /**
+     * Try to focus the previous module cell on the top of the current one for the given grid
+     *
+     * It's an action, should be called via
+     * {@link module:Grid.Actions.drop Grid.Actions.focusTopModuleCell}
+     *
+     * @param  {string} gridName - The name of the grid where we want to focus a cell
+     *
+     * @fires module:Grid.Store#"grid.navigate.focus.off"
+     * @fires module:Grid.Store#"grid.navigate.focus.on"
+     */
+    focusTopModuleCell: function(gridName) {
+        this.focusNextModuleCell(gridName, 'getTopCell');
     },
 
     // add the public interface

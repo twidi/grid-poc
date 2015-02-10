@@ -188,6 +188,70 @@ var Actions = {
      * @fires module:Grid.Store#"grid.designMode.history.forward"
      */
     goForwardInHistory: function(gridName) {},
+
+    /**
+     * Focus the given module cell in the given grid. If not possible, focus
+     * the first available module cell if asked
+     *
+     * @type {function}
+     *
+     * @param  {string} gridName - The name of the grid for which we want to focus a cell
+     * @param  {XML} [moduleCell=null] - The module cell we want to set the focus on
+     * @param  {Boolean} [defaultToFirstModuleCell=false]
+     *         - `true` if we want to focus the first available cell if the given one is not available
+     *
+     * @fires module:Grid.Store#"grid.navigate.focus.off"
+     * @fires module:Grid.Store#"grid.navigate.focus.on"
+     */
+    focusModuleCell: function(gridName, moduleCell, defaultToFirstModuleCell) {},
+
+    /**
+     * Try to focus the next module cell on the right of the current one for the given grid
+     *
+     * @type {function}
+     *
+     * @param  {string} gridName - The name of the grid where we want to focus a cell
+     *
+     * @fires module:Grid.Store#"grid.navigate.focus.off"
+     * @fires module:Grid.Store#"grid.navigate.focus.on"
+     */
+    focusRightModuleCell: function(gridName) {},
+
+    /**
+     * Try to focus the previous module cell on the left of the current one for the given grid
+     *
+     * @type {function}
+     *
+     * @param  {string} gridName - The name of the grid where we want to focus a cell
+     *
+     * @fires module:Grid.Store#"grid.navigate.focus.off"
+     * @fires module:Grid.Store#"grid.navigate.focus.on"
+     */
+    focusLeftModuleCell: function(gridName) {},
+
+    /**
+     * Try to focus the next module cell on the bottom of the current one for the given grid
+     *
+     * @type {function}
+     *
+     * @param  {string} gridName - The name of the grid where we want to focus a cell
+     *
+     * @fires module:Grid.Store#"grid.navigate.focus.off"
+     * @fires module:Grid.Store#"grid.navigate.focus.on"
+     */
+    focusBottomModuleCell: function(gridName) {},
+
+    /**
+     * Try to focus the previous module cell on the top of the current one for the given grid
+     *
+     * @type {function}
+     *
+     * @param  {string} gridName - The name of the grid where we want to focus a cell
+     *
+     * @fires module:Grid.Store#"grid.navigate.focus.off"
+     * @fires module:Grid.Store#"grid.navigate.focus.on"
+     */
+    focusTopModuleCell: function(gridName) {},
 };
 
 module.exports = flux.createActions(_.keys(Actions));

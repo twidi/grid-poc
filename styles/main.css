@@ -123,6 +123,9 @@ html, body, #app, .grid-container {
     .grid-cell-module-dragging {
         outline: solid 1px rgba(0,150,136,0.5);
     }
+    .grid-cell-module-focused {
+        outline: solid 1px rgba(0,150,136,0.5);
+    }
 
 .grid-row-placeholder {
     height: 15px;

@@ -37,6 +37,7 @@
     "lodash": "~2.4.1",
     "jxon": "twidi/jxon#twidi-current",
     "scopedQuerySelectorShim": "twidi/scopedQuerySelectorShim",
-    "json-stable-stringify": "~1.0.0"
+    "json-stable-stringify": "~1.0.0",
+    "br-mousetrap": "~1.1.3"
   }
 }
