@@ -23,7 +23,7 @@ const Manipulator = {
          * This is a subclass of "Error"
          * @class
          *
-         * @param {string} [message] - The raised message
+         * @param {string} [message=Invalid type detected] - The raised message
          *
          * @property {string} name - The name of the exception: "InvalidType"
          * @property {string} message - The message passed when the exception was raised, or a default value
@@ -38,7 +38,7 @@ const Manipulator = {
          * This is a subclass of "Error"
          * @class
          *
-         * @param {string} [message] - The raised message
+         * @param {string} [message=Inconsistency detected] - The raised message
          *
          * @property {string} name - The name of the exception: "Inconsistency"
          * @property {string} message - The message passed when the exception was raised, or a default value
@@ -53,7 +53,7 @@ const Manipulator = {
          * This is a subclass of "Error"
          * @class
          *
-         * @param {string} [message] - The raised message
+         * @param {string} [message=Invalid state detected] - The raised message
          *
          * @property {string} name - The name of the exception: "InvalidState"
          * @property {string} message - The message passed when the exception was raised, or a default value
@@ -169,8 +169,8 @@ const Manipulator = {
      * Will transform a non-grid node into a grid one, with a first row containing the actuel content
      *
      * @param {XML} node - The XML grid node on which to add a row (should contain a "type", which must be "mainGrid" or "grid")
-     * @param {XML} [beforeRow] - The XML node of a row, on the given node, where to insert the new row before. If not given, the new row is added at the end. Cannot be used if the current type of the node is not "grid".
-     * @param {string} [type] - If defined, the value of the "type" attribute to set on the row
+     * @param {XML} [beforeRow=null] - The XML node of a row, on the given node, where to insert the new row before. If not given, the new row is added at the end. Cannot be used if the current type of the node is not "grid".
+     * @param {string} [type=null] - If defined, the value of the "type" attribute to set on the row
      *
      * @returns {XML} - The added row
      *
@@ -212,9 +212,9 @@ const Manipulator = {
      * Add a cell to the given XML grid row. Update the row in place.
      *
      * @param {XML} row - The XML grid row on which to add a cell
-     * @param {XML} [beforeCell] - The XML node of a cell, on the given row, where to insert the new cell before. If not given, the new cell is added at the end.
+     * @param {XML} [beforeCell=null] - The XML node of a cell, on the given row, where to insert the new cell before. If not given, the new cell is added at the end.
      * @param {string} type - The type of cell to add: "grid" or "module"
-     * @param {XML} [contentNode] - The XML "content" node to insert in the cell.
+     * @param {XML} [contentNode=null] - The XML "content" node to insert in the cell.
      *     If not given, a new empty "content" node will be created.
      *
      * @returns {XML} - The added cell (XML), with the type and a content.
@@ -634,7 +634,7 @@ const Manipulator = {
      * Remove a content node from its grid
      *
      * @param  {XML} contentNode - The "content" node we want to remove
-     * @param {boolean} [dontClean] - Do not try to clean the parent grid node
+     * @param {boolean} [dontClean=false] - Do not try to clean the parent grid node
      */
     removeContentNode(contentNode, dontClean) {
         // save actual grid parent to "clean" it after the move

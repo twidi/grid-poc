@@ -97,7 +97,7 @@ const NodesHolderMixin = {
      *
      * @param  {DomNode} domNode - The dom node to add
      * @param  {string} className - The class name to force the dom node to add to have
-     * @param  {DomNode} [parentNode] - The dom node holding the one to add
+     * @param  {DomNode} [parentNode=null] - The dom node holding the one to add
      *
      * @private
      */
@@ -132,7 +132,7 @@ const NodesHolderMixin = {
      * If the domNode if not given, `ReactDOM.findDOMNode(this)` will be used;
      *
      * @param  {string} domNode - The dom node to remove
-     * @param  {DomNode} [parentNode] - The dom node holding the one to remove
+     * @param  {DomNode} [parentNode=null] - The dom node holding the one to remove
      *
      * @private
      */
