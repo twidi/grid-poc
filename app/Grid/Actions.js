@@ -122,7 +122,7 @@ var Actions = {
      * @type {function}
      *
      * @param {string} gridName - The name of the grid for witch we want to start dragging
-     * @param {XML} [placeholderCell] - The "placeholder" cell we want the dragging cell 
+     * @param {XML} [placeholderCell=null] - The "placeholder" cell where we want to drag the cell
      * to be dropped on. If defined, will replace the one saved in the store.
      *
      * @fires module:Grid.Store#"grid.designMode.drop"

@@ -24,7 +24,7 @@ var Store = {
          * This is a subclass of "Error"
          * @class
          *
-         * @param {string} [message] - The raised message
+         * @param {string} [message=Grid does not exist] - The raised message
          *
          * @property {string} name - The name of the exception: "GridDoesNotExist"
          * @property {string} message - The message passed when the exception was raised, or a default value
@@ -38,7 +38,7 @@ var Store = {
          * This is a subclass of "Error"
          * @class
          *
-         * @param {string} [message] - The raised message
+         * @param {string} [message=Node does not exist] - The raised message
          *
          * @property {string} name - The name of the exception: "NodeDoesNotExist"
          * @property {string} message - The message passed when the exception was raised, or a default value
@@ -52,7 +52,7 @@ var Store = {
          * This is a subclass of "Error"
          * @class
          *
-         * @param {string} [message] - The raised message
+         * @param {string} [message=Design mode step is invalid] - The raised message
          *
          * @property {string} name - The name of the exception: "InvalidDesignModeStep"
          * @property {string} message - The message passed when the exception was raised, or a default value
@@ -67,7 +67,7 @@ var Store = {
          * This is a subclass of "Error"
          * @class
          *
-         * @param {string} [message] - The raised message
+         * @param {string} [message=Inconsistency detected] - The raised message
          *
          * @property {string} name - The name of the exception: "Inconsistency"
          * @property {string} message - The message passed when the exception was raised, or a default value
@@ -82,7 +82,7 @@ var Store = {
          * This is a subclass of "Error"
          * @class
          *
-         * @param {string} [message] - The raised message
+         * @param {string} [message=Operation out of bound on history] - The raised message
          *
          * @property {string} name - The name of the exception: "HistoryOutOfBound"
          * @property {string} message - The message passed when the exception was raised, or a default value
@@ -643,7 +643,7 @@ var Private = {
      *
      * @param {string} gridName - The XML grid for which we want to change de design mode step
      * @param {string} step - The new step ("disabled", "enabled", "dragging", "hovering")
-     * @param {boolean} [dontManageGrid] - If true, won't add or remove placeholders/resizers, don't manage grid ids
+     * @param {boolean} [dontManageGrid=false] - If `true`, won't add or remove placeholders/resizers, don't manage grid ids
      *
      * @return {} - Returns nothing
      */
@@ -703,7 +703,7 @@ var Private = {
      * Check that a gridName is valid, and if the node is given, if it belongs to this grid
      *
      * @param  {string} gridName - The grid name to check
-     * @param  {XML} [node] - The node to check
+     * @param  {XML} [node=null] - The node to check
      *
      * @returns {XML} - The node, eventually updated to be the actual one in the grid
      *
@@ -795,7 +795,7 @@ var Private = {
      *
      * @param  {string} gridName - The name of the grid for which we want the reference node
      * @param  {string} saveName - The name used in `saveNode` to get the reference back
-     * @param  {boolean} [dontUpdate] - Do not try to find the node in the actual grid (if the node was removed for example)
+     * @param  {boolean} [dontUpdate=false] - Do not try to find the node in the actual grid (if the node was removed for example)
      *
      * @return {XML} - The wanted node grid (or null if not found)
      */
@@ -897,7 +897,7 @@ var Private = {
              *
              * @event module:Grid.Store#"grid.designMode.dragging.start"
              *
-             * @property {string} name - The name of the Grid when the dragging occurs
+             * @property {string} name - The name of the Grid where the dragging occurs
              */
             this.emit('grid.designMode.dragging.start', gridName);
 
@@ -938,7 +938,7 @@ var Private = {
          *
          * @event module:Grid.Store#"grid.designMode.dragging.stop"
          *
-         * @property {string} name - The name of the Grid when the dragging occurs
+         * @property {string} name - The name of the Grid where the dragging occurs
          */
         this.emit('grid.designMode.dragging.stop', gridName);
 
@@ -993,7 +993,7 @@ var Private = {
          *
          * @event module:Grid.Store#"grid.designMode.hovering.start"
          *
-         * @property {string} name - The name of the Grid when the dragging occurs
+         * @property {string} name - The name of the Grid where the dragging occurs
          */
         this.emit('grid.designMode.hovering.start', gridName);
     },
@@ -1076,7 +1076,7 @@ var Private = {
          *
          * @event module:Grid.Store#"grid.designMode.hovering.stop"
          *
-         * @property {string} name - The name of the Grid when the dragging occurs
+         * @property {string} name - The name of the Grid where the dragging occurs
          */
         this.emit('grid.designMode.hovering.stop', gridName);
     },
@@ -1088,7 +1088,7 @@ var Private = {
      * {@link module:Grid.Actions.drop Grid.Actions.drop}
      *
      * @param {string} gridName - The name of the grid for witch we want to start dragging
-     * @param {XML} [placeholderCell] - The "placeholder" cell we want the dragging cell 
+     * @param {XML} [placeholderCell=null] - The "placeholder" cell where we want to drag the cell
      * to be dropped on. If defined, will replace the one saved in the store.
      *
      * @fires module:Grid.Store#"grid.designMode.drop"
@@ -1145,7 +1145,7 @@ var Private = {
          *
          * @event module:Grid.Store#"grid.designMode.drop"
          *
-         * @property {string} name - The name of the Grid when the dragging occurs
+         * @property {string} name - The name of the Grid where the dragging occurs
          */
         this.emit('grid.designMode.drop', gridName);
 
@@ -1196,7 +1196,7 @@ var Private = {
          *
          * @event module:Grid.Store#"grid.designMode.resizing.start"
          *
-         * @property {string} name - The name of the Grid when the resizing occurs
+         * @property {string} name - The name of the Grid where the resizing occurs
          */
         this.emit('grid.designMode.resizing.start', gridName);
     },
@@ -1238,7 +1238,7 @@ var Private = {
          *
          * @event module:Grid.Store#"grid.designMode.resizing.move"
          *
-         * @property {string} name - The name of the Grid when the resizing occurs
+         * @property {string} name - The name of the Grid where the resizing occurs
          */
         this.emit('grid.designMode.resizing.move', gridName, eventData);
 
@@ -1269,7 +1269,7 @@ var Private = {
          *
          * @event module:Grid.Store#"grid.designMode.resizing.stop"
          *
-         * @property {string} name - The name of the Grid when the resizing occurs
+         * @property {string} name - The name of the Grid where the resizing occurs
          */
         this.emit('grid.designMode.resizing.stop', gridName);
 
@@ -1316,7 +1316,7 @@ var Private = {
          *
          * @event module:Grid.Store#"grid.designMode.history.add"
          *
-         * @property {string} name - The name of the Grid when the history was changed
+         * @property {string} name - The name of the Grid where the history was changed
          */
         this.emit('grid.designMode.history.add', gridName);
     },
@@ -1371,7 +1371,7 @@ var Private = {
          *
          * @event module:Grid.Store#"grid.designMode.history.back"
          *
-         * @property {string} name - The name of the Grid when the history was changed
+         * @property {string} name - The name of the Grid where the history was changed
          */
         this.emit('grid.designMode.history.back', gridName);
     },
@@ -1401,7 +1401,7 @@ var Private = {
          *
          * @event module:Grid.Store#"grid.designMode.history.forward"
          *
-         * @property {string} name - The name of the Grid when the history was changed
+         * @property {string} name - The name of the Grid where the history was changed
          */
         this.emit('grid.designMode.history.forward', gridName);
     },
