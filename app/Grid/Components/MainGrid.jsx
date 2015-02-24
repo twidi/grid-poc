@@ -2,11 +2,13 @@
 var _ = require('lodash');
 var React = require('react/addons');  // react + addons
 var cx = React.addons.classSet;
+var Hammer = require('hammerjs');
 
 var Actions = require('../Actions.js');
 var Store = require('../Store.js');
 
 var DocumentEventsMixin = require('../../Utils/ReactMixins/DocumentEvents.jsx');
+var HammerComponent = require('../../Utils/ReactMixins/Hammer.jsx');
 var MousetrapMixin = require('../../Utils/ReactMixins/Mousetrap.jsx');
 
 var GridMixin = require('./Mixins/Grid.jsx');
@@ -241,6 +243,7 @@ var MainGrid = {
      * store that impact the component
      */
     componentDidMount: function () {
+        console.log('in compo');
         // hack to pass the original event to onDesignModeChange
         var self = this;
         this.__onDesignModeChange = this.__onDesignModeChange || function(gridName) {
@@ -249,6 +252,7 @@ var MainGrid = {
         }
         Store.on('grid.designMode.**', this.__onDesignModeChange);
         this.activateGridNavigation();
+        this.configurePan();
     },
 
     /**
@@ -303,6 +307,11 @@ var MainGrid = {
         Actions.goForwardInHistory(this.state.gridName);
     },
 
+    onNavigateTo: function(gridName) {
+        if (gridName != this.state.gridName) { return; }
+        this.updateMainGridStyle();
+    },
+
     /**
      * Ask the store to focus on the cell next to the right of the current focused one
      */
@@ -331,6 +340,179 @@ var MainGrid = {
         Actions.focusTopModuleCell(this.state.gridName);
     },
 
+    onSwipe: function(event) {
+        console.log(event);
+        var goToDirection;
+        switch(event.direction) {
+            case Hammer.DIRECTION_LEFT:
+                goToDirection = 'Right';
+                break;
+            case Hammer.DIRECTION_RIGHT:
+                goToDirection = 'Left';
+                break;
+            default:
+                return;
+        }
+        console.log('SWIPE from ', goToDirection);
+        if (this.panData) {
+            this.panData.cancelled = true;
+        }
+        Actions['focus' + goToDirection + 'ModuleCell'](this.state.gridName, true);
+    },
+
+    onPan: function(event) {
+        switch(event.eventType) {
+            case Hammer.INPUT_START:
+                console.log('START');
+                break;
+
+            case Hammer.INPUT_MOVE:
+                console.log('PAN MOVE');
+                if (!this.panData) {
+                    var gridContainer = this.refs.gridContainer.getDOMNode();
+                    this.panData = {
+                        gridContainer: gridContainer,
+                        gridContainerIdSet: false,
+
+                        gridWidth: gridContainer.firstChild.offsetWidth,
+                        bodyWidth: document.body.offsetWidth,
+
+                        cancelled: false,
+
+                        overflow: {
+                            delta: 0,
+
+                            left: {
+                                blocked: false,
+                                node: gridContainer.children[1],
+                                delta: null,
+                                offTimer: null,
+                            },
+
+                            right: {
+                                blocked: false,
+                                node: gridContainer.children[2],
+                                delta: null,
+                                offTimer: null,
+                            },
+                        },
+
+                        activateOverflow: function(side, delta) {
+                            var data = this.overflow[side];
+                            if (data.offTimer) {
+                                clearTimeout(data.offTimer);
+                                data.offTimer = null;
+                            }
+                            this.overflow.delta = delta;
+                            data.blocked = true;
+                            var newDelta = Math.round(Math.sqrt(Math.abs(delta % this.bodyWidth)) * 2);
+                            if (newDelta != data.delta) {
+                                data.node.classList.remove('going-off');
+                                data.node.classList.add('on');
+                                data.node.style.transform = 'translateX(' + (side == 'right' ? '-' : '') + newDelta + 'px)';
+                                data.node.style.opacity = 0.5 + (1-Math.exp(-0.00001 * Math.pow(delta, 2)))/2;
+                                data.delta = newDelta;
+                            }
+                        },
+
+                        deactivateOverflow: function(side) {
+                            var data = this.overflow[side];
+                            if (!data.blocked) { return; }
+                            if (data.offTimer) {
+                                clearTimeout(data.offTimer);
+                                data.offTimer = null;
+                            }
+                            data.blocked = false;
+                            data.delta = null;
+                            if (data.node.classList.contains('on')) {
+                                data.node.classList.add('going-off');
+                                data.node.style.transform = '';
+                                data.node.style.opacity = '';
+                                data.offTimer = setTimeout(function() {
+                                    data.offTimer = null;
+                                    data.node.classList.remove('on');
+                                    data.node.classList.remove('going-off');
+                                }, 200);
+                            }
+                        },
+                    };
+
+                    var gridContainerId = gridContainer.getAttribute('id');
+                    if (!gridContainerId) {
+                        gridContainerId = _.uniqueId('gridContainer');
+                        gridContainer.setAttribute('id', gridContainerId);
+                        this.panData.gridContainerIdSet = true;
+                    }
+                    this.panData.gridContainerId = gridContainerId;
+                    this.panData.nbCards = Math.round(this.panData.gridWidth / this.panData.bodyWidth);
+                }
+
+                var deltaX = event.deltaX - this.panData.overflow.delta;
+
+                var index = Store.getFocusedModuleCellIndex(this.state.gridName);
+
+                var canScrollLeft = (index * this.panData.bodyWidth - deltaX > 0);
+                var canScrollRight = ((index + 1) * this.panData.bodyWidth - deltaX < this.panData.gridWidth -1);
+
+                if (deltaX >= 0 && !canScrollLeft) {
+                    if (!this.panData.overflow.left.blocked) {
+                        this.updateMainGridStyle(index * this.panData.bodyWidth + 'px');
+                    }
+                    this.panData.activateOverflow('left', event.deltaX);
+                } else if (deltaX <= 0 && !canScrollRight) {
+                    if (!this.panData.overflow.right.blocked) {
+                        this.updateMainGridStyle((index - this.panData.nbCards + 1)*100 + 'vw');
+                    }
+                    this.panData.activateOverflow('right', event.deltaX);
+                } else {
+                    this.panData.deactivateOverflow('left');
+                    this.panData.deactivateOverflow('right');
+                    this.updateMainGridStyle(deltaX + 'px');
+                }
+                break;
+
+            case Hammer.INPUT_END:
+                console.log('PAN END');
+            case Hammer.INPUT_CANCEL:
+                if (!this.panData) {
+                    break;
+                }
+                if (event.eventType == Hammer.INPUT_CANCEL || this.panData.cancelled) { console.log('PAN CANCEL',  this.panData.cancelled); }
+
+                var panData = this.panData;
+                delete this.panData;
+
+                panData.deactivateOverflow('left');
+                panData.deactivateOverflow('right');
+
+                var cancelPan = true;
+
+                if (event.eventType == Hammer.INPUT_END && !panData.cancelled) {
+                    var deltaX = event.deltaX - panData.overflow.delta;
+
+                    if (Math.abs(deltaX) > document.body.offsetWidth / 2) {
+                        var goToDirection = deltaX < 0 ? 'Right' : 'Left';
+                        cancelPan = false;
+                        Actions['focus' + goToDirection + 'ModuleCell'](this.state.gridName, true);
+                    }
+                }
+
+                if (cancelPan) {
+                    this.updateMainGridStyle();
+                }
+
+                break;
+
+        }
+    },
+
+    configurePan: function() {
+        var hammer = this.refs.gridContainer.hammer;
+        hammer.get('swipe').set({direction: Hammer.DIRECTION_HORIZONTAL});
+        hammer.add(new Hammer.Pan({direction: Hammer.DIRECTION_HORIZONTAL})).recognizeWith(hammer.get('swipe'));
+        hammer.on('pan', this.onPan);
+    },
+
     /**
      * Activate the keyboard shortcuts to enable keyboard navigation between
      * module cells
@@ -340,6 +522,8 @@ var MainGrid = {
         this.bindShortcut('ctrl+left', this.focusLeftModuleCell);
         this.bindShortcut('ctrl+down', this.focusBottomModuleCell);
         this.bindShortcut('ctrl+up', this.focusTopModuleCell);
+
+        Store.on('grid.navigate.focus.on', this.onNavigateTo);
     },
 
     /**
@@ -363,6 +547,7 @@ var MainGrid = {
             }
         }
 
+        Store.off('grid.navigate.focus.on', this.onNavigateTo);
     },
 
     /**
@@ -372,22 +557,48 @@ var MainGrid = {
      *
      * One or more of these classes:
      *
-     * - `grid-container`: in all cases
-     * - `grid-container-design-mode`: if the grid is in design mode
-     * - `grid-container-design-mode-step-*`: if the grid is in design mode, depending of the current step
-     * - `grid-container-with-placeholders`: if the grid has placeholders
-     * - `grid-container-with-resizers`: if the grid has resizers
+     * - `grid-component`: in all cases
+     * - `grid-component-design-mode`: if the grid is in design mode
+     * - `grid-component-design-mode-step-*`: if the grid is in design mode, depending of the current step
+     * - `grid-component-with-placeholders`: if the grid has placeholders
+     * - `grid-component-with-resizers`: if the grid has resizers
      */
-    getContainerClasses: function() {
+    getComponentClasses: function() {
         var inDesignMode = this.isInDesignMode();
         var classes = {
-            'grid-container': true,
-            'grid-container-design-mode': inDesignMode,
-            'grid-container-with-placeholders': Store.hasPlaceholders(this.state.gridName),
-            'grid-container-with-resizers': Store.hasResizers(this.state.gridName),
+            'grid-component': true,
+            'grid-component-design-mode': inDesignMode,
+            'grid-component-with-placeholders': Store.hasPlaceholders(this.state.gridName),
+            'grid-component-with-resizers': Store.hasResizers(this.state.gridName),
         };
-        classes['grid-container-design-mode-step-' + this.getDesignModeStep()] = inDesignMode;
+        classes['grid-component-design-mode-step-' + this.getDesignModeStep()] = inDesignMode;
         return cx(classes);
+    },
+
+    updateMainGridStyle: function(adjustWidth) {
+        var domNode = this.getDOMNode();
+
+        var container = domNode.querySelector('.grid-container');
+        container.scrollLeft = 0;
+
+        var gridNode = domNode.querySelector('.grid-main');
+        var styles = this.getMainGridStyle(adjustWidth);
+        for (var name in styles) {
+            gridNode.style[name] = styles[name];
+        }
+    },
+
+    getMainGridStyle: function(adjustWidth) {
+        var index = Store.getFocusedModuleCellIndex(this.state.gridName);
+        delta =  '-' + (index * 100) + 'vw';
+        var adjustWidthSet = (typeof adjustWidth != 'undefined');
+        if (adjustWidthSet) {
+            delta = 'calc(' + delta + ' + ' + adjustWidth + ')';
+        }
+        return {
+            transform: 'translateX(' + delta + ')',
+            transition: adjustWidthSet ? 'none' : '',
+        };
     },
 
     /**
@@ -415,12 +626,24 @@ var MainGrid = {
 
         var buttons = [undoButton, redoButton, addButton, toggleButton];
 
-        return <div className={this.getContainerClasses()}>
+        var containerChildren = [this.renderGrid({}, this.getMainGridStyle())];
+
+        var containerSmallAttrs = {}
+
+        if (true) {  // if media query
+            containerChildren.push(<div className="grid-container-scroll-overflow-left" />);
+            containerChildren.push(<div className="grid-container-scroll-overflow-right" />);
+            containerSmallAttrs.onSwipe = this.onSwipe;
+        }
+
+        return <div className={this.getComponentClasses()}>
             <nav className="grid-toolbar">
                 <label>{this.state.gridName}</label>
                 {buttons}
             </nav>
-            {this.renderGrid()}
+            <HammerComponent component="div" className="grid-container" ref="gridContainer" {...containerSmallAttrs}>
+                {containerChildren}
+            </HammerComponent>
         </div>;
     }
 

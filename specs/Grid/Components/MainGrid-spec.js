@@ -130,21 +130,19 @@ describe("Grid.Components.MainGrid", function() {
         var component = componentUtils.renderIntoDocument(element);
         var domNode = component.getDOMNode();
         expect(domNode.tagName).toEqual('DIV');
-        expect(domNode.classList.contains('grid-container')).toBe(true);
-        expect(domNode.classList.contains('grid-container-design-mode')).toBe(false);
-        expect(domNode.classList.contains('grid-container-with-placeholders')).toBe(false);
-        expect(domNode.classList.contains('grid-container-with-resizers')).toBe(false);
+        expect(domNode.classList.contains('grid-component')).toBe(true);
+        expect(domNode.classList.contains('grid-component-design-mode')).toBe(false);
+        expect(domNode.classList.contains('grid-component-with-placeholders')).toBe(false);
+        expect(domNode.classList.contains('grid-component-with-resizers')).toBe(false);
         expect(domNode.children.length).toEqual(2);
         var navDomNode = domNode.children[0];
         expect(navDomNode.tagName).toEqual('NAV');
         expect(navDomNode.classList.contains('grid-toolbar')).toBe(true);
-        var gridDomNode = domNode.children[1];
-        expect(gridDomNode.classList.contains('grid')).toBe(true);
-        expect(gridDomNode.classList.contains('grid-main')).toBe(true);
+        var gridDomNode = component.refs.gridNode.getDOMNode();
+        expect(gridDomNode.classList.contains('grid')).toBe(true, 1);
+        expect(gridDomNode.classList.contains('grid-main')).toBe(true, 2);
         expect(gridDomNode.classList.contains('grid-last-level-with-placeholders')).toBe(false);
-        expect(domNode.classList.contains('grid-container-with-resizers')).toBe(false);
-        // no specific style defined
-        expect(gridDomNode.getAttribute('style')).toBe(null);
+        expect(domNode.classList.contains('grid-component-with-resizers')).toBe(false);
     });
 
     it("should be able to render its rows", function() {
@@ -221,9 +219,9 @@ describe("Grid.Components.MainGrid", function() {
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = componentUtils.renderIntoDocument(element);
         var domNode = component.getDOMNode();
-        expect(domNode.classList.contains('grid-container-design-mode')).toBe(false);
-        expect(domNode.classList.contains('grid-container-with-placeholders')).toBe(false);
-        expect(domNode.classList.contains('grid-container-with-resizers')).toBe(false);
+        expect(domNode.classList.contains('grid-component-design-mode')).toBe(false);
+        expect(domNode.classList.contains('grid-component-with-placeholders')).toBe(false);
+        expect(domNode.classList.contains('grid-component-with-resizers')).toBe(false);
 
         // no resizers at start
         expect(componentUtils.countResizers(component)).toEqual(0);
@@ -239,9 +237,9 @@ describe("Grid.Components.MainGrid", function() {
             expect(component.forceUpdate.calls.count()).toEqual(1);
 
             var domNode = component.getDOMNode();
-            expect(domNode.classList.contains('grid-container-design-mode')).toBe(true);
-            expect(domNode.classList.contains('grid-container-with-placeholders')).toBe(false);
-            expect(domNode.classList.contains('grid-container-with-resizers')).toBe(true);
+            expect(domNode.classList.contains('grid-component-design-mode')).toBe(true);
+            expect(domNode.classList.contains('grid-component-with-placeholders')).toBe(false);
+            expect(domNode.classList.contains('grid-component-with-resizers')).toBe(true);
 
             // should still have the same number of sub components
             expect(componentUtils.countRows(component)).toEqual(4);
@@ -262,9 +260,9 @@ describe("Grid.Components.MainGrid", function() {
                 expect(component.forceUpdate.calls.count()).toEqual(1);
 
                 var domNode = component.getDOMNode();
-                expect(domNode.classList.contains('grid-container-design-mode')).toBe(false);
-                expect(domNode.classList.contains('grid-container-with-placeholders')).toBe(false);
-                expect(domNode.classList.contains('grid-container-with-resizers')).toBe(false);
+                expect(domNode.classList.contains('grid-component-design-mode')).toBe(false);
+                expect(domNode.classList.contains('grid-component-with-placeholders')).toBe(false);
+                expect(domNode.classList.contains('grid-component-with-resizers')).toBe(false);
 
                 // should still have the same number of sub components
                 expect(componentUtils.countRows(component)).toEqual(4);
@@ -283,7 +281,7 @@ describe("Grid.Components.MainGrid", function() {
     it("should have placeholders when going in dragging mode", function(done) {
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = componentUtils.renderIntoDocument(element);
-        expect(component.getDOMNode().classList.contains('grid-container-design-mode')).toBe(false);
+        expect(component.getDOMNode().classList.contains('grid-component-design-mode')).toBe(false);
 
         component.toggleDesignMode();
 
@@ -302,9 +300,9 @@ describe("Grid.Components.MainGrid", function() {
                 expect(component.forceUpdate.calls.count()).toEqual(1);
 
                 var domNode = component.getDOMNode();
-                expect(domNode.classList.contains('grid-container-design-mode')).toBe(true);
-                expect(domNode.classList.contains('grid-container-with-placeholders')).toBe(true);
-                expect(domNode.classList.contains('grid-container-with-resizers')).toBe(false);
+                expect(domNode.classList.contains('grid-component-design-mode')).toBe(true);
+                expect(domNode.classList.contains('grid-component-with-placeholders')).toBe(true);
+                expect(domNode.classList.contains('grid-component-with-resizers')).toBe(false);
 
                 // should have placeholders
                 // 4 (before each row) + 2 (end of each grid) + 6 ("module") * 2 (per module) + 2 (wrap maingrid) + 2 (wrap subgrid)

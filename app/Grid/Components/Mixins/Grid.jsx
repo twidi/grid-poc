@@ -63,14 +63,14 @@ var Grid = {
      * - `grid-last-level-with-placeholders`: if the grid does not contain any sub grid,
      *                                        and we have placeholders (only if it's not the main grid)
      */
-    getGridClasses: function() {
-        var classes = {
+    getGridClasses: function(forcedClasses) {
+        var classes = _.merge({
             'grid': true,
             'grid-main': this.isMainGrid(),
             'grid-last-level-with-placeholders': !this.isMainGrid()
                                               && !Store.containsSubGrid(this.state.node)
                                               && Store.hasPlaceholders(this.getGridName()),
-        };
+        }, forcedClasses);
         return cx(classes);
     },
 
@@ -83,12 +83,12 @@ var Grid = {
      *
      * - `flexGrow`: the relative size of the grid as defined in the grid if this is not a main grid, only a subgrid
      */
-    getGridStyle: function() {
+    getGridStyle: function(forcedStyle) {
         var style = {};
         if (!this.isMainGrid()) {
             style.flexGrow = Store.getRelativeSize(this.state.node);
         }
-        return style;
+        return _.merge(style, forcedStyle);
     },
 
     /**
@@ -97,8 +97,13 @@ var Grid = {
      * @returns {div} - A div with classes defined by `getGridClasses`, containing
      * rows, including resizers, returned by `renderRows`
      */
-    renderGrid: function() {
-        return <div className={this.getGridClasses()} style={this.getGridStyle()}>{this.renderRows()}</div>
+    renderGrid: function(classes, style) {
+        return <div className={this.getGridClasses(classes)}
+                    ref='gridNode'
+                    style={this.getGridStyle(style)}
+                    key={this.getGridName()}>
+                {this.renderRows()}
+            </div>
     },
 
 };

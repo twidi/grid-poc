@@ -215,7 +215,7 @@ var Actions = {
      * @fires module:Grid.Store#"grid.navigate.focus.off"
      * @fires module:Grid.Store#"grid.navigate.focus.on"
      */
-    focusRightModuleCell: function(gridName) {},
+    focusRightModuleCell: function(gridName, useModuleIndex) {},
 
     /**
      * Try to focus the previous module cell on the left of the current one for the given grid
@@ -227,7 +227,7 @@ var Actions = {
      * @fires module:Grid.Store#"grid.navigate.focus.off"
      * @fires module:Grid.Store#"grid.navigate.focus.on"
      */
-    focusLeftModuleCell: function(gridName) {},
+    focusLeftModuleCell: function(gridName, useModuleIndex) {},
 
     /**
      * Try to focus the next module cell on the bottom of the current one for the given grid

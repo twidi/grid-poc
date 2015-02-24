@@ -102,7 +102,7 @@ var Store = {
      */
     getGrid: function(gridName) {
         var grid = this.getGridEntry(gridName);
-        Manipulator.setIds(grid.grid);
+        this.setIds(grid.grid);
         return grid.grid;
     },
 
@@ -335,6 +335,17 @@ var Store = {
         return moduleCell.getAttribute('id') == this.getGridEntry(gridName).focusedModuleCellId;
     },
 
+    getFocusedModuleCellIndex: function(gridName) {
+        var gridEntry = this.getGridEntry(gridName);
+        var focusedModuleId = gridEntry.focusedModuleCellId;
+        if (focusedModuleId) {
+            try {
+                return parseInt(this.getGridNodeById(gridName, focusedModuleId).getAttribute('module-index') || 0, 10);
+            } catch(e) {}
+        }
+        return 0;
+    },
+
     /**
      * Remove all the grids
      *
@@ -517,6 +528,14 @@ var Private = {
         this.emit('grid.add', name);
     },
 
+    setIds: function(grid) {
+        Manipulator.setIds(grid);
+        var moduleCells = grid.querySelectorAll('cell[type=module]');
+        for (var i = 0; i < moduleCells.length; i++) {
+            moduleCells[i].setAttribute('module-index', i);
+        }
+    },
+
     /**
      * Add a module to the given grid
      *
@@ -552,7 +571,7 @@ var Private = {
         if (hasResizers) {
             Manipulator.addResizers(grid);
         }
-        Manipulator.setIds(grid);
+        this.setIds(grid);
 
         // grid changed, add it to history
         this.addCurrentGridToHistory(gridName);
@@ -592,6 +611,7 @@ var Private = {
         if (hasResizers) {
             Manipulator.addResizers(grid);
         }
+        this.setIds(grid);
 
         // grid changed, add it to history
         this.addCurrentGridToHistory(gridName);
@@ -695,7 +715,7 @@ var Private = {
                 Manipulator.addResizers(grid);
             }
 
-            Manipulator.setIds(grid);
+            this.setIds(grid);
         }
 
         this.setDesignModeStep(gridName, step);
@@ -1356,7 +1376,7 @@ var Private = {
         if (!Manipulator.hasResizers(gridEntry.grid)) {
             Manipulator.addResizers(gridEntry.grid);
         }
-        Manipulator.setIds(gridEntry.grid);
+        this.setIds(gridEntry.grid);
     },
 
 
@@ -1503,6 +1523,20 @@ var Private = {
         this.focusModuleCell(gridName, nextModuleCell, !focusedModuleCell);
     },
 
+    focusNextModuleCellByIndex: function(gridName, delta) {
+        var nextModuleCell;
+        var focusedModuleCell = this.getFocusedModuleCell(gridName);
+        var currentIndex = parseInt(focusedModuleCell ? focusedModuleCell.getAttribute('module-index') || 0 : 0, 10);
+        var newIndex = currentIndex + delta;
+        var allModuleCells = this.getGrid(gridName).querySelectorAll('cell[type=module]');
+        if (newIndex >= 0 && currentIndex < allModuleCells.length) {
+            nextModuleCell = allModuleCells[newIndex];
+        } else {
+            return;
+        }
+        this.focusModuleCell(gridName, nextModuleCell, !focusedModuleCell);
+    },
+
     /**
      * Try to focus the next module cell on the right of the current one for the given grid
      *
@@ -1514,8 +1548,12 @@ var Private = {
      * @fires module:Grid.Store#"grid.navigate.focus.off"
      * @fires module:Grid.Store#"grid.navigate.focus.on"
      */
-    focusRightModuleCell: function(gridName) {
-        this.focusNextModuleCell(gridName, 'getRightCell');
+    focusRightModuleCell: function(gridName, useModuleIndex) {
+        if (useModuleIndex) {
+            this.focusNextModuleCellByIndex(gridName, 1);
+        } else {
+            this.focusNextModuleCell(gridName, 'getRightCell');
+        }
     },
 
     /**
@@ -1529,8 +1567,12 @@ var Private = {
      * @fires module:Grid.Store#"grid.navigate.focus.off"
      * @fires module:Grid.Store#"grid.navigate.focus.on"
      */
-    focusLeftModuleCell: function(gridName) {
-        this.focusNextModuleCell(gridName, 'getLeftCell');
+    focusLeftModuleCell: function(gridName, useModuleIndex) {
+        if (useModuleIndex) {
+            this.focusNextModuleCellByIndex(gridName, -1);
+        } else {
+            this.focusNextModuleCell(gridName, 'getLeftCell');
+        }
     },
 
     /**
