@@ -1,9 +1,9 @@
 var _ = require('lodash');
 
-var Manipulator = require('../../app/Grid/Manipulator.js');
+var Manipulator = require('../../app/Grid/Manipulator');
 
-var customMatchers = require('./custom-matchers.js');
-var Utils = require('../Utils.js');
+var customMatchers = require('./custom-matchers');
+var Utils = require('../Utils');
 
 
 describe("Grid.Manipulator", function() {

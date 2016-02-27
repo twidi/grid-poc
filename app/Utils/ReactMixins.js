@@ -4,7 +4,7 @@
  * @memberOf module:Utils
  */
 var ReactMixins = {
-    DocumentEvents: require('./Utils/ReactMixins/DocumentEvents.jsx'),
+    DocumentEvents: require('./Utils/ReactMixins/DocumentEvents'),
 };
 
 module.exports = ReactMixins;

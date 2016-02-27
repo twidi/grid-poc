@@ -1,7 +1,7 @@
 /** @jsx React.DOM */
 var React = require('react/addons');  // react + addons
 
-var Store = require('../../Store.js');
+var Store = require('../../Store');
 
 
 /**

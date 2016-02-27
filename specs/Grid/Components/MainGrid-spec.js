@@ -3,16 +3,16 @@ var jasmineReact = require('jasmine-react-helpers');
 var React = require('react/addons');  // react + addons
 var TestUtils = React.addons.TestUtils;
 
-var Actions = require('../../../app/Grid/Actions.js');
-var Manipulator = require('../../../app/Grid/Manipulator.js');
-var Store = require('../../../app/Grid/Store.js');
+var Actions = require('../../../app/Grid/Actions');
+var Manipulator = require('../../../app/Grid/Manipulator');
+var Store = require('../../../app/Grid/Store');
 
-var MainGrid = require('../../../app/Grid/Components/MainGrid.jsx');
-var Row = require('../../../app/Grid/Components/Row.jsx');
+var MainGrid = require('../../../app/Grid/Components/MainGrid');
+var Row = require('../../../app/Grid/Components/Row');
 
-var componentUtils = require('./Utils.js');
-var TestDocumentEventsMixin = require('../../Utils/ReactMixins/DocumentEvents.js');
-var Utils = require('../../Utils.js');
+var componentUtils = require('./Utils');
+var TestDocumentEventsMixin = require('../../Utils/ReactMixins/DocumentEvents');
+var Utils = require('../../Utils');
 
 
 describe("Grid.Components.MainGrid", function() {

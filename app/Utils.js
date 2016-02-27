@@ -2,7 +2,7 @@
  * @module Utils
  */
 var Utils = {
-    ReactMixins: require('./Utils/ReactMixins.js'),
+    ReactMixins: require('./Utils/ReactMixins'),
 };
 
 module.exports = Utils;

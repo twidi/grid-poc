@@ -4,12 +4,12 @@ var React = require('react/addons');  // react + addons
 var cx = React.addons.classSet;
 var stringify = require('json-stable-stringify');
 
-var Actions = require('../Actions.js');
-var Store = require('../Store.js');
+var Actions = require('../Actions');
+var Store = require('../Store');
 
-var ModulesCache = require('./ModulesCache.js');
+var ModulesCache = require('./ModulesCache');
 
-var NodesHolderMixin = require('./Mixins/NodesHolder.jsx');
+var NodesHolderMixin = require('./Mixins/NodesHolder');
 
 
 /**

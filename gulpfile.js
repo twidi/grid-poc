@@ -58,9 +58,8 @@ var browserifyTask = function (options) {
     console.log('Building APP bundle');
     appBundler.bundle()
       .on('error', gutil.log)
-      .pipe(source('main.jsx'))
+      .pipe(source('main.js'))
       .pipe(gulpif(!options.development, streamify(uglify())))
-      .pipe(gulpif(/\.jsx$/, rename({extname: '.js'})))
       .pipe(gulp.dest(options.dest))
       .pipe(gulpif(options.live_update, livereload()))
       .pipe(notify(function () {
@@ -177,7 +176,7 @@ gulp.task('default', function () {
     development: true,
     live_update: true,
     vendors: false,
-    src: './app/main.jsx',
+    src: './app/main.js',
     dest: './build'
   });
 
@@ -195,7 +194,7 @@ gulp.task('vendors', function() {
     development: true,
     live_update: false,
     vendors: true,
-    src: './app/main.jsx',
+    src: './app/main.js',
     dest: './build'
   });
 
@@ -213,7 +212,7 @@ gulp.task('deploy', function () {
     development: false,
     live_update: false,
     vendors: true,
-    src: './app/main.jsx',
+    src: './app/main.js',
     dest: './dist'
   });
 
@@ -246,9 +245,8 @@ gulp.task('doc', function() {
         'plugins/markdown.js'
       ]
     };
-    gulp.src(["./app/**/*.jsx", "./app/**/*.js"])
-        .pipe(gulpif(/\.jsx$/, rename({suffix: '.jsx', extname: '.js'})))
+    gulp.src("./app/**/*.js")
         .pipe(reacttransform({harmony: true}))
-        .pipe(gulpif(/\.jsx\.js$/, gulp.dest('./dist-doc')))
+        .pipe(gulpif(/\.js$/, gulp.dest('./dist-doc')))
         .pipe(jsdoc(docDir, docTemplate, docInfos));
 });

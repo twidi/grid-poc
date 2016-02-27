@@ -1,18 +1,18 @@
 /** @jsx React.DOM */
 var React = require('react/addons');  // react + addons
 
-var ModuleMixin = require('./Mixins/Module.jsx');
+var ModuleMixin = require('./Mixins/Module');
 
 
-var Test2 = {
+var Test1 = {
     mixins: [
         ModuleMixin,
     ],
 
     renderModule: function() {
-        return 'Module.Test2: ' + this.props.text;
+        return 'Module.Test1: ' + this.props.text;
     }
 };
 
-module.exports = Test2 = React.createClass(Test2);
+module.exports = Test1 = React.createClass(Test1);
 

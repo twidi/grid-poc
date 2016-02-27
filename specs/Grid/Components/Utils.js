@@ -1,12 +1,12 @@
 var React = require('react/addons');  // react + addons
 var TestUtils = React.addons.TestUtils;
 
-var Actions = require('../../../app/Grid/Actions.js');
-var Manipulator = require('../../../app/Grid/Manipulator.js');
-var Store = require('../../../app/Grid/Store.js');
+var Actions = require('../../../app/Grid/Actions');
+var Manipulator = require('../../../app/Grid/Manipulator');
+var Store = require('../../../app/Grid/Store');
 
-var Row = require('../../../app/Grid/Components/Row.jsx');
-var SubGrid = require('../../../app/Grid/Components/SubGrid.jsx');
+var Row = require('../../../app/Grid/Components/Row');
+var SubGrid = require('../../../app/Grid/Components/SubGrid');
 
 
 var componentUtils = {
@@ -101,7 +101,7 @@ var componentUtils = {
     },
 
     clearModulesCache: function() {
-        var ModulesCache = require('../../../app/Grid/Components/ModulesCache.js');
+        var ModulesCache = require('../../../app/Grid/Components/ModulesCache');
         ModulesCache._cache ={};
     },
 

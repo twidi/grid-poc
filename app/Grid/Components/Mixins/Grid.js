@@ -3,7 +3,7 @@ var _ = require('lodash');
 var React = require('react/addons');  // react + addons
 var cx = React.addons.classSet;
 
-var Store = require('../../Store.js');
+var Store = require('../../Store');
 
 
 /**
@@ -38,8 +38,8 @@ var Grid = {
      * @return {module:Grid.Components.Row[]} - An array of {@link module:Grid.Components.Row Row} components
      */
     renderRows: function() {
-        var Resizer = require('../Resizer.jsx');
-        var Row = require('../Row.jsx');
+        var Resizer = require('../Resizer');
+        var Row = require('../Row');
 
         return _.map(this.getRows(), function(row){
             var type = row.tagName;

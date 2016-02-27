@@ -2,15 +2,15 @@ var _ = require('lodash');
 var jasmineReact = require('jasmine-react-helpers');
 var React = require('react/addons');  // react + addons
 
-var Manipulator = require('../../../app/Grid/Manipulator.js');
-var Store = require('../../../app/Grid/Store.js');
+var Manipulator = require('../../../app/Grid/Manipulator');
+var Store = require('../../../app/Grid/Store');
 
-var Cell = require('../../../app/Grid/Components/Cell.jsx');
-var ModuleHolder = require('../../../app/Grid/Components/ModuleHolder.jsx');
-var ModulesCache = require('../../../app/Grid/Components/ModulesCache.js');
+var Cell = require('../../../app/Grid/Components/Cell');
+var ModuleHolder = require('../../../app/Grid/Components/ModuleHolder');
+var ModulesCache = require('../../../app/Grid/Components/ModulesCache');
 
-var Utils = require('../../Utils.js');
-var componentUtils = require('./Utils.js');
+var Utils = require('../../Utils');
+var componentUtils = require('./Utils');
 
 
 describe("Grid.Components.ModulesCache", function() {

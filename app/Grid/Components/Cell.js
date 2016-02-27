@@ -3,15 +3,15 @@ var _ = require('lodash');
 var React = require('react/addons');  // react + addons
 var cx = React.addons.classSet;
 
-var Actions = require('../Actions.js');
-var Store = require('../Store.js');
+var Actions = require('../Actions');
+var Store = require('../Store');
 
-var ModulesCache = require('./ModulesCache.js');
+var ModulesCache = require('./ModulesCache');
 
-var ModuleHolder = require('./ModuleHolder.jsx')
-var NodesHolderMixin = require('./Mixins/NodesHolder.jsx');
-var NodeMixin = require('./Mixins/Node.jsx');
-var Placeholder = require('./Placeholder.jsx');
+var ModuleHolder = require('./ModuleHolder')
+var NodesHolderMixin = require('./Mixins/NodesHolder');
+var NodeMixin = require('./Mixins/Node');
+var Placeholder = require('./Placeholder');
 
 
 /**
@@ -140,7 +140,7 @@ var Cell = {
      * @return {module:Grid.Components.SubGrid} - The rendered {@link module:Grid.Components.SubGrid SubGrid} component
      */
     renderAsSubGrid: function() {
-        var SubGrid = require('./SubGrid.jsx');
+        var SubGrid = require('./SubGrid');
         return <SubGrid node={this.state.node} />
     },
 

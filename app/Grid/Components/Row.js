@@ -3,10 +3,10 @@ var _ = require('lodash');
 var React = require('react/addons');  // react + addons
 var cx = React.addons.classSet;
 
-var Actions = require('../Actions.js');
-var Store = require('../Store.js');
+var Actions = require('../Actions');
+var Store = require('../Store');
 
-var NodeMixin = require('./Mixins/Node.jsx');
+var NodeMixin = require('./Mixins/Node');
 
 
 /**
@@ -45,8 +45,8 @@ var Row = {
      * @return {module:Grid.Components.Cell[]} - An array of {@link module:Grid.Components.Cell Cell} components
      */
     renderCells: function() {
-        var Cell = require('./Cell.jsx');
-        var Resizer = require('./Resizer.jsx');
+        var Cell = require('./Cell');
+        var Resizer = require('./Resizer');
 
         return _.map(this.getCells(), function(cell){
             var type = cell.tagName;

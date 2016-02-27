@@ -4,9 +4,9 @@
  * @memberOf module:Grid.Components
  */
 var Mixins = {
-    Grid: require('./Mixins/Grid.jsx'),
-    Node: require('./Mixins/Node.jsx'),
-    NodesHolder: require('./Mixins/NodesHolder.jsx'),
+    Grid: require('./Mixins/Grid'),
+    Node: require('./Mixins/Node'),
+    NodesHolder: require('./Mixins/NodesHolder'),
 };
 
 module.exports = Mixins;

@@ -2,7 +2,7 @@ var _ = require('lodash');
 var React = require('react/addons');  // react + addons
 var stringify = require('json-stable-stringify');
 
-var Modules = require('../Modules.js');
+var Modules = require('../Modules');
 
 /**
  * This JS module will manage the cache of the module and the module holders,
@@ -141,7 +141,7 @@ var ModulesCache = {
             ////// create the holder to hold the module in design mode
 
             // create  a react *element* for the holder
-            var ModuleHolder = require('./ModuleHolder.jsx');
+            var ModuleHolder = require('./ModuleHolder');
             var holderElement = React.createElement(ModuleHolder, {
                 uniqueKey: key,
                 gridName: cell.getGridName(),

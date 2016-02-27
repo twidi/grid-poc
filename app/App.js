@@ -3,11 +3,11 @@ var React = require('react/addons');  // react + addons
 
 var flux = require('flux-react');
 
-var Actions = require('./Grid/Actions.js');
-var Manipulator = require('./Grid/Manipulator.js');
-var Store = require('./Grid/Store.js');
+var Actions = require('./Grid/Actions');
+var Manipulator = require('./Grid/Manipulator');
+var Store = require('./Grid/Store');
 
-var MainGrid = require('./Grid/Components/MainGrid.jsx');
+var MainGrid = require('./Grid/Components/MainGrid');
 
 
 var App = React.createClass({

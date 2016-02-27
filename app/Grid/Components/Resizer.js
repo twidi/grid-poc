@@ -3,11 +3,11 @@ var _ = require('lodash');
 var React = require('react/addons');  // react + addons
 var cx = React.addons.classSet;
 
-var Actions = require('../Actions.js');
-var Store = require('../Store.js');
+var Actions = require('../Actions');
+var Store = require('../Store');
 
-var DocumentEventsMixin = require('../../Utils/ReactMixins/DocumentEvents.jsx');
-var NodeMixin = require('./Mixins/Node.jsx');
+var DocumentEventsMixin = require('../../Utils/ReactMixins/DocumentEvents');
+var NodeMixin = require('./Mixins/Node');
 
 
 /**

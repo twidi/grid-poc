@@ -2,8 +2,8 @@
 var _ = require('lodash');
 var React = require('react/addons');  // react + addons
 
-var GridMixin = require('./Mixins/Grid.jsx');
-var NodeMixin = require('./Mixins/Node.jsx');
+var GridMixin = require('./Mixins/Grid');
+var NodeMixin = require('./Mixins/Node');
 
 
 /**

@@ -3,15 +3,15 @@ var jasmineReact = require('jasmine-react-helpers');
 var React = require('react/addons');  // react + addons
 var TestUtils = React.addons.TestUtils;
 
-var Actions = require('../../../app/Grid/Actions.js');
-var Manipulator = require('../../../app/Grid/Manipulator.js');
-var Placeholder = require('../../../app/Grid/Components/Placeholder.jsx');
-var Store = require('../../../app/Grid/Store.js');
+var Actions = require('../../../app/Grid/Actions');
+var Manipulator = require('../../../app/Grid/Manipulator');
+var Placeholder = require('../../../app/Grid/Components/Placeholder');
+var Store = require('../../../app/Grid/Store');
 
 
-var componentUtils = require('./Utils.js');
-var TestDocumentEventsMixin = require('../../Utils/ReactMixins/DocumentEvents.js');
-var Utils = require('../../Utils.js');
+var componentUtils = require('./Utils');
+var TestDocumentEventsMixin = require('../../Utils/ReactMixins/DocumentEvents');
+var Utils = require('../../Utils');
 
 
 describe("Grid.Components.Placeholder", function() {

@@ -1,11 +1,11 @@
 var _ = require('lodash');
 
-var Actions = require('../../app/Grid/Actions.js');
-var Manipulator = require('../../app/Grid/Manipulator.js');
-var Store = require('../../app/Grid/Store.js');
+var Actions = require('../../app/Grid/Actions');
+var Manipulator = require('../../app/Grid/Manipulator');
+var Store = require('../../app/Grid/Store');
 
-var customMatchers = require('./custom-matchers.js');
-var Utils = require('../Utils.js');
+var customMatchers = require('./custom-matchers');
+var Utils = require('../Utils');
 
 
 describe("Grid.Store", function() {

@@ -4,17 +4,17 @@ var React = require('react/addons');  // react + addons
 var stringify = require('json-stable-stringify');
 var TestUtils = React.addons.TestUtils;
 
-var Manipulator = require('../../../app/Grid/Manipulator.js');
-var Modules = require('../../../app/Grid/Modules.js');
-var Store = require('../../../app/Grid/Store.js');
+var Manipulator = require('../../../app/Grid/Manipulator');
+var Modules = require('../../../app/Grid/Modules');
+var Store = require('../../../app/Grid/Store');
 
-var Cell = require('../../../app/Grid/Components/Cell.jsx');
-var ModulesCache = require('../../../app/Grid/Components/ModulesCache.js');
-var Placeholder = require('../../../app/Grid/Components/Placeholder.jsx');
-var SubGrid = require('../../../app/Grid/Components/SubGrid.jsx');
+var Cell = require('../../../app/Grid/Components/Cell');
+var ModulesCache = require('../../../app/Grid/Components/ModulesCache');
+var Placeholder = require('../../../app/Grid/Components/Placeholder');
+var SubGrid = require('../../../app/Grid/Components/SubGrid');
 
-var Utils = require('../../Utils.js');
-var componentUtils = require('./Utils.js');
+var Utils = require('../../Utils');
+var componentUtils = require('./Utils');
 
 
 describe("Grid.Components.Cell", function() {

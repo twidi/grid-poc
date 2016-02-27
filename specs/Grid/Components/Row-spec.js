@@ -3,14 +3,14 @@ var React = require('react/addons');  // react + addons
 var TestUtils = React.addons.TestUtils;
 
 
-var Cell = require('../../../app/Grid/Components/Cell.jsx');
-var Manipulator = require('../../../app/Grid/Manipulator.js');
-var Resizer = require('../../../app/Grid/Components/Resizer.jsx');
-var Row = require('../../../app/Grid/Components/Row.jsx');
-var Store = require('../../../app/Grid/Store.js');
+var Cell = require('../../../app/Grid/Components/Cell');
+var Manipulator = require('../../../app/Grid/Manipulator');
+var Resizer = require('../../../app/Grid/Components/Resizer');
+var Row = require('../../../app/Grid/Components/Row');
+var Store = require('../../../app/Grid/Store');
 
-var Utils = require('../../Utils.js');
-var componentUtils = require('./Utils.js');
+var Utils = require('../../Utils');
+var componentUtils = require('./Utils');
 
 
 describe("Grid.Components.Row", function() {

@@ -1,8 +1,8 @@
 var _ = require('lodash');
 var flux = require('flux-react');
 
-var Actions = require('./Actions.js');
-var Manipulator = require('./Manipulator.js');
+var Actions = require('./Actions');
+var Manipulator = require('./Manipulator');
 
 
 /**

@@ -2,11 +2,11 @@
  * @module Grid
  */
 var Grid = {
-    Actions: require('./Grid/Actions.js'),
-    Components: require('./Grid/Components.js'),
-    Manipulator: require('./Grid/Manipulator.js'),
-    Modules: require('./Grid/Modules.js'),
-    Store: require('./Grid/Store.js'),
+    Actions: require('./Grid/Actions'),
+    Components: require('./Grid/Components'),
+    Manipulator: require('./Grid/Manipulator'),
+    Modules: require('./Grid/Modules'),
+    Store: require('./Grid/Store'),
 };
 
 module.exports = Grid;

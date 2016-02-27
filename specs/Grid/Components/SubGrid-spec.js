@@ -2,15 +2,15 @@ var _ = require('lodash');
 var React = require('react/addons');  // react + addons
 var TestUtils = React.addons.TestUtils;
 
-var Manipulator = require('../../../app/Grid/Manipulator.js');
+var Manipulator = require('../../../app/Grid/Manipulator');
 
-var Resizer = require('../../../app/Grid/Components/Resizer.jsx');
-var Row = require('../../../app/Grid/Components/Row.jsx');
-var Store = require('../../../app/Grid/Store.js');
-var SubGrid = require('../../../app/Grid/Components/SubGrid.jsx');
+var Resizer = require('../../../app/Grid/Components/Resizer');
+var Row = require('../../../app/Grid/Components/Row');
+var Store = require('../../../app/Grid/Store');
+var SubGrid = require('../../../app/Grid/Components/SubGrid');
 
-var Utils = require('../../Utils.js');
-var componentUtils = require('./Utils.js');
+var Utils = require('../../Utils');
+var componentUtils = require('./Utils');
 
 
 describe("Grid.Components.SubGrid", function() {
