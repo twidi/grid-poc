@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 var React = require('react/addons');  // react + addons
 
 var ModuleMixin = require('./Mixins/Module');
@@ -15,4 +14,3 @@ var Test1 = {
 };
 
 module.exports = Test1 = React.createClass(Test1);
-

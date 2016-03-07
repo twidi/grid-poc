@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 var _ = require('lodash');
 var React = require('react/addons');  // react + addons
 var cx = React.addons.classSet;
@@ -158,7 +157,7 @@ var ModuleHolder = {
      * as a child, a div used as a cover over the module (attached via
      * {@link module:Grid.Components.Mixins.NodesHolder NodesHolderMixin}) to
      * drag the dom node without any risk of interacting with the module content.
-     * This cover contain a "delete" button in design mode to delete the 
+     * This cover contain a "delete" button in design mode to delete the
      */
     render: function() {
         var delButton;

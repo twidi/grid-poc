@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 var React = require('react/addons');  // react + addons
 var cx = React.addons.classSet;
 
@@ -112,7 +111,7 @@ var Placeholder = {
     /**
      * When a fake drop is detected, via a mousedown or mousemove event, if the event target is the
      * current placeholder:
-     * 
+     *
      * - stop detecting document events
      * - firing `fakedragend` to tell all components that the drag and drop is finished
      * - call {@link module:Grid.Actions.startDragging drop}

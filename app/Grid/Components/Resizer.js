@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 var _ = require('lodash');
 var React = require('react/addons');  // react + addons
 var cx = React.addons.classSet;
@@ -90,7 +89,7 @@ var Resizer = {
     },
 
     /**
-     * Called before detaching the component from the dom, to stop watching for 
+     * Called before detaching the component from the dom, to stop watching for
      * events related to resizing
      */
     componentWillUnmount: function () {

@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 var React = require('react/addons');  // react + addons
 var stringify = require('json-stable-stringify');
 

@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 var _ = require('lodash');
 var React = require('react/addons');  // react + addons
 var cx = React.addons.classSet;
@@ -54,7 +53,7 @@ var MainGrid = {
     /**
      * Update the grid when a `grid.designMode` event is caught, only when the given name is the
      * one of the grid we have
-     * 
+     *
      * It is called on some events on the store after an update of a grid.
      *
      * On some events, some actions are done, related to dragging:

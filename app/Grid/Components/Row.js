@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 var _ = require('lodash');
 var React = require('react/addons');  // react + addons
 var cx = React.addons.classSet;
