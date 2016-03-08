@@ -1273,6 +1273,7 @@ var Private = {
 
         // add the grid in history if it really changed
         var resizer = this.getSavedNode(gridName, 'resizing');
+        if (!resizer) return;
         var currentPreviousRelativeSize = this.getRelativeSize(resizer.previousSibling);
         var currentNextRelativeSize = this.getRelativeSize(resizer.nextSibling);
         var resizing = this.getGridEntry(gridName).resizing;

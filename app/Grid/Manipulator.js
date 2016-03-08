@@ -705,7 +705,7 @@ var Manipulator = {
      */
     createModuleNode: function(params) {
         var node = this.XMLStringToXMLGrid('<content/>');
-        for (key in params) {
+        for (var key in params) {
             node.setAttribute(key, params[key]);
         }
         return node
