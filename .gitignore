@@ -1,18 +1,5 @@
-# Node downloaded packages
 node_modules
 npm-debug.log
 
-# Used for guard-livereload
-Gemfile.lock
-Gemfile
-Guardfile
-
-# Don't commit builded files
-build/*.css
-build/*.js
-dist/*.css
-dist/*.js
-
-# Ignore doc directory
-/doc/
-/dist-doc/
+dist
+doc
