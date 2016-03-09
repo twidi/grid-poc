@@ -5,10 +5,12 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "build": "webpack",
-    "doc": "jsdoc -t node_modules/jaguarjs-jsdoc -c jsdoc.json -d dist-doc app/**/*.js",
+    "build": "webpack --env=dist && cp app/index.html dist/",
+    "doc": "jsdoc -t node_modules/jaguarjs-jsdoc -c jsdoc.json -d doc app/**/*.js",
     "test": "karma start",
-    "start": "node ./dev-server"
+    "start": "npm run serve",
+    "serve": "node ./dev-server",
+    "serve-dist": "node ./dev-server --env=dist"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.3",
