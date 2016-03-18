@@ -52,7 +52,8 @@
     "json-stable-stringify": "~1.0.0",
     "jxon": "twidi/jxon#twidi-current",
     "lodash": "~2.4.1",
-    "react": "^0.12.0",
+    "react": "^0.14.7",
+    "react-dom": "^0.14.7",
     "scopedQuerySelectorShim": "twidi/scopedQuerySelectorShim",
     "xmldom": "~0.1.19"
   }

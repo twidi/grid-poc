@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var React = require('react/addons');  // react + addons
+var ReactDOM = require('react-dom');
 var TestUtils = React.addons.TestUtils;
 
 var Manipulator = require('../../../app/Grid/Manipulator');
@@ -128,7 +129,7 @@ describe("Grid.Components.SubGrid", function() {
     it("should render a grid", function() {
         var element = React.createElement(SubGrid, {node: subGrid});
         var component = componentUtils.renderIntoDocument(element);
-        var domNode = component.getDOMNode();
+        var domNode = ReactDOM.findDOMNode(component);
         expect(domNode.tagName).toEqual('DIV');
         expect(domNode.classList.contains('grid')).toBe(true);
         expect(domNode.classList.contains('grid-main')).toBe(false);
@@ -152,7 +153,7 @@ describe("Grid.Components.SubGrid", function() {
 
         var element = React.createElement(SubGrid, {node: subGrid});
         var component = componentUtils.renderIntoDocument(element);
-        var domNode = component.getDOMNode();
+        var domNode = ReactDOM.findDOMNode(component);
         expect(domNode.tagName).toEqual('DIV');
         expect(domNode.classList.contains('grid')).toBe(true);
         expect(domNode.classList.contains('grid-main')).toBe(false);

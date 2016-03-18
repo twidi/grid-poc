@@ -1,6 +1,7 @@
 var _ = require('lodash');
 var jasmineReact = require('jasmine-react-helpers-hotfix-0.14');
 var React = require('react/addons');  // react + addons
+var ReactDOM = require('react-dom');
 var TestUtils = React.addons.TestUtils;
 
 var Actions = require('../../../app/Grid/Actions');
@@ -53,7 +54,7 @@ describe("Grid.Components.Placeholder", function() {
     it("should render a placeholder", function() {
         var element = React.createElement(Placeholder, {node: gridPlaceholder});
         var component = componentUtils.renderIntoDocument(element);
-        var domNode = component.getDOMNode();
+        var domNode = ReactDOM.findDOMNode(component);
         expect(domNode.tagName).toEqual('DIV');
         expect(domNode.classList.contains('grid-cell')).toBe(true);
         expect(domNode.classList.contains('grid-cell-placeholder')).toBe(true);
@@ -68,7 +69,7 @@ describe("Grid.Components.Placeholder", function() {
         var gridPlaceholderSurround = testGrid.querySelector('cell[type=placeholder][surround]');
         element = React.createElement(Placeholder, {node: gridPlaceholderSurround});
         component = componentUtils.renderIntoDocument(element);
-        domNode = component.getDOMNode();
+        domNode = ReactDOM.findDOMNode(component);
         expect(domNode.tagName).toEqual('DIV');
         expect(domNode.classList.contains('grid-cell')).toBe(true);
         expect(domNode.classList.contains('grid-cell-placeholder')).toBe(true);
@@ -136,7 +137,7 @@ describe("Grid.Components.Placeholder", function() {
 
         var element = React.createElement(Placeholder, {node: gridPlaceholder});
         var component = componentUtils.renderIntoDocument(element);
-        var domNode = component.getDOMNode();
+        var domNode = ReactDOM.findDOMNode(component);
 
         componentUtils.simulateDragEvent(domNode, 'dragEnter');
 
@@ -160,7 +161,7 @@ describe("Grid.Components.Placeholder", function() {
         var element = React.createElement(Placeholder, {node: gridPlaceholder});
         var component = componentUtils.renderIntoDocument(element);
 
-        var domNode = component.getDOMNode();
+        var domNode = ReactDOM.findDOMNode(component);
         componentUtils.simulateDragEvent(domNode, 'dragOver');
 
         // event callback should have been called
@@ -183,7 +184,7 @@ describe("Grid.Components.Placeholder", function() {
         var element = React.createElement(Placeholder, {node: gridPlaceholder});
         var component = componentUtils.renderIntoDocument(element);
 
-        var domNode = component.getDOMNode();
+        var domNode = ReactDOM.findDOMNode(component);
         componentUtils.simulateDragEvent(domNode, 'dragLeave');
 
         // event callback should have been called
@@ -223,7 +224,7 @@ describe("Grid.Components.Placeholder", function() {
         var element = React.createElement(Placeholder, {node: gridPlaceholder});
         var component = componentUtils.renderIntoDocument(element);
 
-        var domNode = component.getDOMNode();
+        var domNode = ReactDOM.findDOMNode(component);
         // we need the node to be attached to the document for bubbling
         domNode.parentNode.style.display = 'none';
         document.body.appendChild(domNode.parentNode);

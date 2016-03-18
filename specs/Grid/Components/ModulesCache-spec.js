@@ -1,7 +1,7 @@
 var _ = require('lodash');
 var jasmineReact = require('jasmine-react-helpers-hotfix-0.14');
 var React = require('react/addons');  // react + addons
-
+var ReactDOM = require('react-dom');
 var Manipulator = require('../../../app/Grid/Manipulator');
 var Store = require('../../../app/Grid/Store');
 
@@ -140,7 +140,7 @@ describe("Grid.Components.ModulesCache", function() {
             expect(React.render.calls.count()).toEqual(0);
 
             expect(newContainer).toBe(container);
-            expect(component.getDOMNode()).toBe(container.children[0]);
+            expect(ReactDOM.findDOMNode(component)).toBe(container.children[0]);
 
             done();
 
@@ -173,7 +173,7 @@ describe("Grid.Components.ModulesCache", function() {
                 expect(component.setProps.calls.count()).toEqual(0);
 
                 expect(newContainer).toBe(container);
-                expect(component.getDOMNode()).toBe(container.children[0]);
+                expect(ReactDOM.findDOMNode(component)).toBe(container.children[0]);
 
                 done();
 
@@ -209,7 +209,7 @@ describe("Grid.Components.ModulesCache", function() {
                 expect(component.forceUpdate.calls.count()).toEqual(1);
 
                 expect(newContainer).toBe(container);
-                expect(component.getDOMNode()).toBe(container.children[0]);
+                expect(ReactDOM.findDOMNode(component)).toBe(container.children[0]);
 
                 done();
 
@@ -251,7 +251,7 @@ describe("Grid.Components.ModulesCache", function() {
                     expect(component.setProps.calls.count()).toEqual(1);
 
                     expect(newContainer).toBe(container);
-                    expect(component.getDOMNode()).toBe(container.children[0]);
+                    expect(ReactDOM.findDOMNode(component)).toBe(container.children[0]);
 
                     done();
 
@@ -299,7 +299,7 @@ describe("Grid.Components.ModulesCache", function() {
             expect(React.render.calls.count()).toEqual(0);
 
             expect(newContainer).toBe(container);
-            expect(component.getDOMNode()).toBe(container.children[0]);
+            expect(ReactDOM.findDOMNode(component)).toBe(container.children[0]);
 
             done();
 
@@ -321,7 +321,7 @@ describe("Grid.Components.ModulesCache", function() {
             expect(React.render.calls.count()).toEqual(0);
 
             expect(newContainer).toBe(container);
-            expect(component.getDOMNode()).toBe(container.children[0]);
+            expect(ReactDOM.findDOMNode(component)).toBe(container.children[0]);
 
             done();
 

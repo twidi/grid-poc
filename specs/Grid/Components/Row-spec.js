@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var React = require('react/addons');  // react + addons
+var ReactDOM = require('react-dom');
 var TestUtils = React.addons.TestUtils;
 
 
@@ -122,7 +123,7 @@ describe("Grid.Components.Row", function() {
     it("should render a row", function() {
         var element = React.createElement(Row, {node: gridRow});
         var component = componentUtils.renderIntoDocument(element);
-        var domNode = component.getDOMNode();
+        var domNode = ReactDOM.findDOMNode(component);
         expect(domNode.tagName).toEqual('DIV');
         expect(domNode.classList.contains('grid-row')).toBe(true);
         expect(domNode.classList.contains('grid-row-placeholder')).toBe(false);
@@ -144,7 +145,7 @@ describe("Grid.Components.Row", function() {
         var placeholderGridRow = testGrid.querySelector('row[type=placeholder]');
         var element = React.createElement(Row, {node: placeholderGridRow});
         var component = componentUtils.renderIntoDocument(element);
-        var domNode = component.getDOMNode();
+        var domNode = ReactDOM.findDOMNode(component);
         expect(domNode.tagName).toEqual('DIV');
         expect(domNode.classList.contains('grid-row')).toBe(true);
         expect(domNode.classList.contains('grid-row-placeholder')).toBe(true);

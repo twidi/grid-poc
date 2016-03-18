@@ -1,4 +1,5 @@
 var React = require('react/addons');  // react + addons
+var ReactDOM = require('react-dom');
 var TestUtils = React.addons.TestUtils;
 
 var Actions = require('../../../app/Grid/Actions');
@@ -106,7 +107,7 @@ var componentUtils = {
     },
 
     getTextContent: function(component) {
-        return component.getDOMNode().textContent;
+        return ReactDOM.findDOMNode(component).textContent;
     },
 
     renderIntoDocument: function(element) {
@@ -120,7 +121,7 @@ var componentUtils = {
         // jasmine-react, but we cannot use it as it seems that we have in this
         // case many React instances that doesn't share mounted components
         if(component.isMounted()){
-            return React.unmountComponentAtNode(component.getDOMNode().parentNode);
+            return React.unmountComponentAtNode(ReactDOM.findDOMNode(component).parentNode);
         } else {
             return false;
         }

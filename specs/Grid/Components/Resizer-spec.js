@@ -1,6 +1,7 @@
 var _ = require('lodash');
 var jasmineReact = require('jasmine-react-helpers-hotfix-0.14');
 var React = require('react/addons');  // react + addons
+var ReactDOM = require('react-dom');
 var TestUtils = React.addons.TestUtils;
 
 var MainGrid = require('../../../app/Grid/Components/MainGrid');
@@ -104,7 +105,7 @@ describe("Grid.Components.Resizer", function() {
     it("should render a vertical resizer", function() {
         var element = React.createElement(Resizer, {node: verticalResizer});
         var component = componentUtils.renderIntoDocument(element);
-        var domNode = component.getDOMNode();
+        var domNode = ReactDOM.findDOMNode(component);
         expect(domNode.tagName).toEqual('DIV');
         expect(domNode.classList.contains('grid-resizer')).toBe(true);
         expect(domNode.classList.contains('grid-resizer-vertical')).toBe(true);
@@ -114,7 +115,7 @@ describe("Grid.Components.Resizer", function() {
     it("should render a horizontal resizer", function() {
         var element = React.createElement(Resizer, {node: horizontalResizer});
         var component = componentUtils.renderIntoDocument(element);
-        var domNode = component.getDOMNode();
+        var domNode = ReactDOM.findDOMNode(component);
         expect(domNode.tagName).toEqual('DIV');
         expect(domNode.classList.contains('grid-resizer')).toBe(true);
         expect(domNode.classList.contains('grid-resizer-vertical')).toBe(false);
@@ -127,7 +128,7 @@ describe("Grid.Components.Resizer", function() {
 
         var element = React.createElement(Resizer, {node: horizontalResizer});
         var component = componentUtils.renderIntoDocument(element);
-        var domNode = component.getDOMNode();
+        var domNode = ReactDOM.findDOMNode(component);
 
         // we are not in design mode..,
         expect(component.getRenderAttrs()).toEqual({});
@@ -175,7 +176,7 @@ describe("Grid.Components.Resizer", function() {
         var gridComponent = componentUtils.renderIntoDocument(gridElement);
 
         // we need the node to be attached to the document for bubbling
-        var gridDomNode = gridComponent.getDOMNode();
+        var gridDomNode = ReactDOM.findDOMNode(gridComponent);
         gridDomNode.parentNode.style.display = 'none';
         document.body.appendChild(gridDomNode.parentNode);
 
@@ -218,7 +219,7 @@ describe("Grid.Components.Resizer", function() {
         // render the full grid, we'll need elements around the resizer
         var gridElement = React.createElement(MainGrid, {node: testGrid});
         var gridComponent = componentUtils.renderIntoDocument(gridElement);
-        var gridDomNode = gridComponent.getDOMNode();
+        var gridDomNode = ReactDOM.findDOMNode(gridComponent);
 
         // mouse down on a resizer
         React.addons.TestUtils.Simulate.mouseDown(
@@ -254,7 +255,7 @@ describe("Grid.Components.Resizer", function() {
         var gridComponent = componentUtils.renderIntoDocument(gridElement);
 
         // we need the node to be attached to the document for bubbling
-        var gridDomNode = gridComponent.getDOMNode();
+        var gridDomNode = ReactDOM.findDOMNode(gridComponent);
         gridDomNode.parentNode.style.display = 'none';
         document.body.appendChild(gridDomNode.parentNode);
 
@@ -300,7 +301,7 @@ describe("Grid.Components.Resizer", function() {
         var gridComponent = componentUtils.renderIntoDocument(gridElement);
 
         // we need the node to be attached to the document for bubbling
-        var gridDomNode = gridComponent.getDOMNode();
+        var gridDomNode = ReactDOM.findDOMNode(gridComponent);
         gridDomNode.parentNode.style.display = 'none';
         document.body.appendChild(gridDomNode.parentNode);
 
@@ -347,7 +348,7 @@ describe("Grid.Components.Resizer", function() {
         var gridComponent = componentUtils.renderIntoDocument(gridElement);
 
         // we need the node to be attached to the document for bubbling
-        var gridDomNode = gridComponent.getDOMNode();
+        var gridDomNode = ReactDOM.findDOMNode(gridComponent);
         gridDomNode.parentNode.style.display = 'none';
         document.body.appendChild(gridDomNode.parentNode);
 
@@ -355,7 +356,7 @@ describe("Grid.Components.Resizer", function() {
         var resizerComponent = TestUtils.scryRenderedComponentsWithType(gridComponent, Resizer)[0];
 
         // get the resizer and its elements to resize
-        var resizerDomNode = resizerComponent.getDOMNode();
+        var resizerDomNode = ReactDOM.findDOMNode(resizerComponent);
         var previous = resizerDomNode.previousSibling;
         var next = resizerDomNode.nextSibling;
 

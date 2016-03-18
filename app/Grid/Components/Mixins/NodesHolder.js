@@ -1,5 +1,5 @@
 var React = require('react/addons');  // react + addons
-
+var ReactDOM = require('react-dom')
 
 /**
  * A mixin to be used by components that want to attach an external dom node to
@@ -80,7 +80,7 @@ var NodesHolder = {
      */
     _attachExternalNodes: function() {
         if (!this.canHoldExternalNodes()) { return; }
-        var domNode = this.getDOMNode();
+        var domNode = ReactDOM.findDOMNode(this);
 
         for (var i = 0; i < this.externalNodesClassNames.length; i++) {
             var className = this.externalNodesClassNames[i];
@@ -94,7 +94,7 @@ var NodesHolder = {
     /**
      * Will attach a dom node, forcing the given class name, to the given parent node.
      *
-     * If the parentNode if not given, `this.getDOMNode()` will be used;
+     * If the parentNode if not given, `ReactDOM.findDOMNode(this)` will be used;
      *
      * @param  {DomNode} domNode - The dom node to add
      * @param  {string} className - The class name to force the dom node to add to have
@@ -106,7 +106,7 @@ var NodesHolder = {
         if (!domNode.classList.contains(className)) {
             domNode.add(className);
         }
-        (parentNode || this.getDOMNode()).appendChild(domNode);
+        (parentNode || ReactDOM.findDOMNode(this)).appendChild(domNode);
     },
 
     /**
@@ -116,7 +116,7 @@ var NodesHolder = {
      */
     _detachExternalNodes: function() {
         if (!this.canHoldExternalNodes()) { return; }
-        var domNode = this.getDOMNode();
+        var domNode = ReactDOM.findDOMNode(this);
         for (var i = this.externalNodesClassNames.length - 1; i >= 0; i--) {
             var className = this.externalNodesClassNames[i];
             var externalNode = domNode.querySelector(':scope > .' + className);
@@ -130,7 +130,7 @@ var NodesHolder = {
     /**
      * Will detach a dom node having the given class name, from the given dom node.
      *
-     * If the domNode if not given, `this.getDOMNode()` will be used;
+     * If the domNode if not given, `ReactDOM.findDOMNode(this)` will be used;
      *
      * @param  {string} domNode - The dom node to remove
      * @param  {DomNode} [parentNode] - The dom node holding the one to remove
@@ -138,7 +138,7 @@ var NodesHolder = {
      * @private
      */
     _detachExternalNode: function(domNode, parentNode) {
-        (parentNode || this.getDOMNode()).removeChild(domNode);
+        (parentNode || ReactDOM.findDOMNode(this)).removeChild(domNode);
     },
 
     /**

@@ -72,7 +72,7 @@ var Resizer = {
      */
     onResizingMove: function(gridName, resizeData) {
         if (!Store.isMovingResizer(gridName, this.state.node)) { return; }
-        var domNode = this.getDOMNode();
+        var domNode = this.refs['resizer'];
         this.setDomNodeRelativeSise(domNode.previousSibling, resizeData.previousRelativeSize);
         this.setDomNodeRelativeSise(domNode.nextSibling, resizeData.nextRelativeSize);
 
@@ -147,7 +147,7 @@ var Resizer = {
         event.stopPropagation();
         event.preventDefault();
 
-        var domNode = this.getDOMNode();
+        var domNode = this.refs['resizer'];
 
         // compute the total size of the nodes before and after the resizer
         var fullSize = this.getDomNodeSize(domNode.previousSibling) + this.getDomNodeSize(domNode.nextSibling);
@@ -208,7 +208,7 @@ var Resizer = {
      * @returns {div} - A empty div with classes defined by `getResizerClasses`
      */
     render: function() {
-        return <div className={this.getResizerClasses()} {...this.getRenderAttrs()}/>
+        return <div ref="resizer" className={this.getResizerClasses()} {...this.getRenderAttrs()}/>
     }
 
 };

@@ -122,7 +122,7 @@ var Placeholder = {
      * @param  {event} event - The event that triggered this method
      */
     onDocumentDetectDrop: function(event) {
-        if (Store.isDragging(this.getGridName()) && event.target == this.getDOMNode()) {
+        if (Store.isDragging(this.getGridName()) && event.target == this.refs['placeholder']) {
             this.deactivateDropDetection();
             document.dispatchEvent(new Event('fakedragend'));
             Actions.drop(this.getGridName(), this.state.node);
@@ -173,6 +173,7 @@ var Placeholder = {
      */
     render: function() {
         return <div className={this.getClasses()}
+                    ref="placeholder"
                     onDragEnter={this.onDragEnter}
                     onDragOver={this.onDragOver}
                     onDragLeave={this.onDragLeave} />

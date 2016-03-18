@@ -1,6 +1,7 @@
 var _ = require('lodash');
 var jasmineReact = require('jasmine-react-helpers-hotfix-0.14');
 var React = require('react/addons');  // react + addons
+var ReactDOM = require('react-dom')
 var stringify = require('json-stable-stringify');
 var TestUtils = React.addons.TestUtils;
 
@@ -122,7 +123,7 @@ describe("Grid.Components.Cell", function() {
         expect(jasmineReact.classPrototype(Cell).renderAsSubGrid.calls.count()).toEqual(1);
 
         // default relative size => flex-grow=1
-        expect(component.getDOMNode().getAttribute('style')).toMatch(/\bflex-grow\s*:\s*1\b/);
+        expect(ReactDOM.findDOMNode(component).getAttribute('style')).toMatch(/\bflex-grow\s*:\s*1\b/);
 
         var subGrid = component.renderAsSubGrid();
         expect(TestUtils.isElementOfType(subGrid, SubGrid)).toBe(true);
@@ -134,7 +135,7 @@ describe("Grid.Components.Cell", function() {
 
         var element = React.createElement(Cell, {node: moduleGridCell});
         var component = componentUtils.renderIntoDocument(element);
-        var domNode = component.getDOMNode();
+        var domNode = ReactDOM.findDOMNode(component);
 
         expect(jasmineReact.classPrototype(Cell).renderAsModule.calls.count()).toEqual(1);
 
@@ -167,7 +168,7 @@ describe("Grid.Components.Cell", function() {
         Store.__private.setDesignModeStep('Test grid', 'enabled');
         var element = React.createElement(Cell, {node: moduleGridCell});
         var component = componentUtils.renderIntoDocument(element);
-        var domNode = component.getDOMNode();
+        var domNode = ReactDOM.findDOMNode(component);
 
         expect(domNode.tagName).toEqual('DIV');
         expect(domNode.classList.contains('grid-cell')).toBe(true);
@@ -204,7 +205,7 @@ describe("Grid.Components.Cell", function() {
         var placeholderGridCell = testGrid.querySelector('cell[type=placeholder]');
         var element = React.createElement(Cell, {node: placeholderGridCell});
         var component = componentUtils.renderIntoDocument(element);
-        var domNode = component.getDOMNode();
+        var domNode = ReactDOM.findDOMNode(component);
 
         expect(jasmineReact.classPrototype(Cell).renderAsPlaceholder.calls.count()).toEqual(1);
 

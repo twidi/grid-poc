@@ -1,6 +1,7 @@
 var _ = require('lodash');
 var jasmineReact = require('jasmine-react-helpers-hotfix-0.14');
 var React = require('react/addons');  // react + addons
+var ReactDOM = require('react-dom');
 var stringify = require('json-stable-stringify');
 var TestUtils = React.addons.TestUtils;
 
@@ -80,7 +81,7 @@ describe("Grid.Components.ModuleHolder", function() {
 
             expect(jasmineReact.classPrototype(ModuleHolder).getRenderAttrs).toHaveBeenCalled();
 
-            var domNode = component.getDOMNode();
+            var domNode = ReactDOM.findDOMNode(component);
             expect(domNode.className).toEqual('module-holder');
             expect(domNode.children[0].tagName).toEqual('DIV');
             expect(domNode.children[0].className).toEqual('module-cover');
@@ -204,22 +205,22 @@ describe("Grid.Components.ModuleHolder", function() {
         // check in normal mode
         var element = createCacheEntry().holderElement;
         var component = componentUtils.renderIntoDocument(element);
-        expect(component.getDOMNode().querySelectorAll('.module-cover button').length).toEqual(0);
+        expect(ReactDOM.findDOMNode(component).querySelectorAll('.module-cover button').length).toEqual(0);
 
         // check in design mode "enabled"
         Store.__private.setDesignModeStep('Test grid', 'enabled');
         component.forceUpdate();
-        expect(component.getDOMNode().querySelectorAll('.module-cover button').length).toEqual(1);
+        expect(ReactDOM.findDOMNode(component).querySelectorAll('.module-cover button').length).toEqual(1);
 
         // check in design mode "dragging"
         Store.__private.setDesignModeStep('Test grid', 'dragging');
         component.forceUpdate();
-        expect(component.getDOMNode().querySelectorAll('.module-cover button').length).toEqual(0);
+        expect(ReactDOM.findDOMNode(component).querySelectorAll('.module-cover button').length).toEqual(0);
 
         // check in design mode "resizing"
         Store.__private.setDesignModeStep('Test grid', 'resizing');
         component.forceUpdate();
-        expect(component.getDOMNode().querySelectorAll('.module-cover button').length).toEqual(0);
+        expect(ReactDOM.findDOMNode(component).querySelectorAll('.module-cover button').length).toEqual(0);
 
     });
 
@@ -244,7 +245,7 @@ describe("Grid.Components.ModuleHolder", function() {
         Store.on('grid.designMode.module.remove', callback);
 
         // simulate the startDrag event
-        React.addons.TestUtils.Simulate.click(component.getDOMNode().querySelector('.module-cover button'));
+        React.addons.TestUtils.Simulate.click(ReactDOM.findDOMNode(component).querySelector('.module-cover button'));
 
         // leave some time to render the component
         setTimeout(function() {
@@ -283,7 +284,7 @@ describe("Grid.Components.ModuleHolder", function() {
         Store.on('grid.designMode.dragging.start', callback);
 
         // simulate the startDrag event
-        componentUtils.simulateDragEvent(component.getDOMNode(), 'dragStart');
+        componentUtils.simulateDragEvent(ReactDOM.findDOMNode(component), 'dragStart');
 
         // leave some time to render the component
         setTimeout(function() {
@@ -328,7 +329,7 @@ describe("Grid.Components.ModuleHolder", function() {
         component.dragLeaveTimeout = 0;
 
         // simulate the startDrag event
-        componentUtils.simulateDragEvent(component.getDOMNode(), 'dragLeave');
+        componentUtils.simulateDragEvent(ReactDOM.findDOMNode(component), 'dragLeave');
 
         // leave some time to render the component
         setTimeout(function() {

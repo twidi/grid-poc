@@ -1,6 +1,7 @@
 var _ = require('lodash');
 var jasmineReact = require('jasmine-react-helpers-hotfix-0.14');
 var React = require('react/addons');  // react + addons
+var ReactDOM = require('react-dom');
 var TestUtils = React.addons.TestUtils;
 
 var Actions = require('../../../app/Grid/Actions');
@@ -127,7 +128,7 @@ describe("Grid.Components.MainGrid", function() {
     it("should render a grid", function() {
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = componentUtils.renderIntoDocument(element);
-        var domNode = component.getDOMNode();
+        var domNode = ReactDOM.findDOMNode(component);
         expect(domNode.tagName).toEqual('DIV');
         expect(domNode.classList.contains('grid-container')).toBe(true);
         expect(domNode.classList.contains('grid-container-design-mode')).toBe(false);
@@ -219,7 +220,7 @@ describe("Grid.Components.MainGrid", function() {
     it("should change when toggling design mode, managing resizers", function(done) {
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = componentUtils.renderIntoDocument(element);
-        var domNode = component.getDOMNode();
+        var domNode = ReactDOM.findDOMNode(component);
         expect(domNode.classList.contains('grid-container-design-mode')).toBe(false);
         expect(domNode.classList.contains('grid-container-with-placeholders')).toBe(false);
         expect(domNode.classList.contains('grid-container-with-resizers')).toBe(false);
@@ -237,7 +238,7 @@ describe("Grid.Components.MainGrid", function() {
             expect(component.forceUpdate).toHaveBeenCalled();
             expect(component.forceUpdate.calls.count()).toEqual(1);
 
-            var domNode = component.getDOMNode();
+            var domNode = ReactDOM.findDOMNode(component);
             expect(domNode.classList.contains('grid-container-design-mode')).toBe(true);
             expect(domNode.classList.contains('grid-container-with-placeholders')).toBe(false);
             expect(domNode.classList.contains('grid-container-with-resizers')).toBe(true);
@@ -260,7 +261,7 @@ describe("Grid.Components.MainGrid", function() {
                 expect(component.forceUpdate).toHaveBeenCalled();
                 expect(component.forceUpdate.calls.count()).toEqual(1);
 
-                var domNode = component.getDOMNode();
+                var domNode = ReactDOM.findDOMNode(component);
                 expect(domNode.classList.contains('grid-container-design-mode')).toBe(false);
                 expect(domNode.classList.contains('grid-container-with-placeholders')).toBe(false);
                 expect(domNode.classList.contains('grid-container-with-resizers')).toBe(false);
@@ -282,7 +283,7 @@ describe("Grid.Components.MainGrid", function() {
     it("should have placeholders when going in dragging mode", function(done) {
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = componentUtils.renderIntoDocument(element);
-        expect(component.getDOMNode().classList.contains('grid-container-design-mode')).toBe(false);
+        expect(ReactDOM.findDOMNode(component).classList.contains('grid-container-design-mode')).toBe(false);
 
         component.toggleDesignMode();
 
@@ -300,7 +301,7 @@ describe("Grid.Components.MainGrid", function() {
                 expect(component.forceUpdate).toHaveBeenCalled();
                 expect(component.forceUpdate.calls.count()).toEqual(1);
 
-                var domNode = component.getDOMNode();
+                var domNode = ReactDOM.findDOMNode(component);
                 expect(domNode.classList.contains('grid-container-design-mode')).toBe(true);
                 expect(domNode.classList.contains('grid-container-with-placeholders')).toBe(true);
                 expect(domNode.classList.contains('grid-container-with-resizers')).toBe(false);
@@ -464,7 +465,7 @@ describe("Grid.Components.MainGrid", function() {
         var component = componentUtils.renderIntoDocument(element);
 
         // we need the node to be attached to the document for bubbling
-        var domNode = component.getDOMNode();
+        var domNode = ReactDOM.findDOMNode(component);
         domNode.parentNode.style.display = 'none';
         document.body.appendChild(domNode.parentNode);
 
@@ -539,7 +540,7 @@ describe("Grid.Components.MainGrid", function() {
         var component = componentUtils.renderIntoDocument(element);
 
         // we need the node to be attached to the document for bubbling
-        var domNode = component.getDOMNode();
+        var domNode = ReactDOM.findDOMNode(component);
         domNode.parentNode.style.display = 'none';
         document.body.appendChild(domNode.parentNode);
 
@@ -613,7 +614,7 @@ describe("Grid.Components.MainGrid", function() {
         var component = componentUtils.renderIntoDocument(element);
 
         // we need the node to be attached to the document for bubbling
-        var domNode = component.getDOMNode();
+        var domNode = ReactDOM.findDOMNode(component);
         domNode.parentNode.style.display = 'none';
         document.body.appendChild(domNode.parentNode);
 

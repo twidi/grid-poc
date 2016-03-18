@@ -82,7 +82,7 @@ var ModuleHolder = {
         // hack to hide the del button on the dragged view (rendered by the browser
         // before we can render the holder).
         // It's removed on the next update, via componentDidUpdate
-        this.getDOMNode().classList.add('module-holder-browser-dragging');
+        this.refs['module-holder'].classList.add('module-holder-browser-dragging');
 
         Actions.startDragging(this.props.gridName, this.props.gridCell);
         event.dataTransfer.setData('application/x-grid-module', this.props.gridName);
@@ -149,7 +149,7 @@ var ModuleHolder = {
      * as we now need to have the delete button displayed
      */
     componentDidUpdate: function() {
-        this.getDOMNode().classList.remove('module-holder-browser-dragging');
+        this.refs['module-holder'].classList.remove('module-holder-browser-dragging');
     },
 
     /**
@@ -165,6 +165,7 @@ var ModuleHolder = {
             delButton = <button onClick={this.removeModule} title="Remove this module">X</button>;
         }
         return <div className='module-holder'
+                    ref="module-holder"
                     {...this.getRenderAttrs()}>
                     <div className="module-cover">
                     {delButton}
