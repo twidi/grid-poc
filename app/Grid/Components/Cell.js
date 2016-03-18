@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var React = require('react/addons');  // react + addons
-var cx = React.addons.classSet;
+var classnames = require('classnames')
 
 var Actions = require('../Actions');
 var Store = require('../Store');
@@ -146,7 +146,7 @@ var Cell = {
     /**
      * Return the classes to use when rendering the current module cell
      *
-     * @return {React.addons.classSet}
+     * @return {string} - A string containing classes
      *
      * One or more of these classes:
      *
@@ -161,7 +161,7 @@ var Cell = {
             'grid-cell-module': this.isModule(),
             'grid-cell-module-dragging': Store.isDraggingCell(this.getGridName(), this.state.node),
         };
-        return cx(classes);
+        return classnames(classes);
     },
 
     /**

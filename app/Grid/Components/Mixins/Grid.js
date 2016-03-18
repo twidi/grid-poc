@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var React = require('react/addons');  // react + addons
-var cx = React.addons.classSet;
+var classnames = require('classnames')
 
 var Store = require('../../Store');
 
@@ -53,7 +53,7 @@ var Grid = {
     /**
      * Return the classes to use when rendering the current grid
      *
-     * @return {React.addons.classSet}
+     * @return {string} - A string containing classes
      *
      * One or more of these classes:
      *
@@ -70,7 +70,7 @@ var Grid = {
                                               && !Store.containsSubGrid(this.state.node)
                                               && Store.hasPlaceholders(this.getGridName()),
         };
-        return cx(classes);
+        return classnames(classes);
     },
 
     /**

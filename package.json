@@ -47,6 +47,7 @@
   },
   "dependencies": {
     "babel-polyfill": "^6.5.0",
+    "classnames": "^2.2.3",
     "flux-react": "codeheroics/flux-react#no-deep-cloning",
     "json-stable-stringify": "~1.0.0",
     "jxon": "twidi/jxon#twidi-current",

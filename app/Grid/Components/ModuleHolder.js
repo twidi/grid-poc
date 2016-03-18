@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var React = require('react/addons');  // react + addons
-var cx = React.addons.classSet;
+var classnames = require('classnames')
 var stringify = require('json-stable-stringify');
 
 var Actions = require('../Actions');

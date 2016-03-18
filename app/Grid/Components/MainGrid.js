@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var React = require('react/addons');  // react + addons
-var cx = React.addons.classSet;
+var classnames = require('classnames')
 
 var Actions = require('../Actions');
 var Store = require('../Store');
@@ -292,7 +292,7 @@ var MainGrid = {
     /**
      * Return the classes to use when rendering the container of the current main grid
      *
-     * @return {React.addons.classSet}
+     * @return {string} - A string containing classes
      *
      * One or more of these classes:
      *
@@ -311,7 +311,7 @@ var MainGrid = {
             'grid-container-with-resizers': Store.hasResizers(this.state.gridName),
         };
         classes['grid-container-design-mode-step-' + this.getDesignModeStep()] = inDesignMode;
-        return cx(classes);
+        return classnames(classes);
     },
 
     /**

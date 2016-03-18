@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var React = require('react/addons');  // react + addons
-var cx = React.addons.classSet;
+var classnames = require('classnames')
 
 var Actions = require('../Actions');
 var Store = require('../Store');
@@ -43,7 +43,7 @@ var Resizer = {
     /**
      * Return the classes to use when rendering the current resizer.
      *
-     * @return {React.addons.classSet}
+     * @return {string} - A string containing classes
      *
      * One or more of these classes:
      *
@@ -54,7 +54,7 @@ var Resizer = {
      */
     getResizerClasses: function() {
         var isVertical = this.isVertical();
-        return cx({
+        return classnames({
             'grid-resizer': true,
             'grid-resizer-vertical': isVertical,
             'grid-resizer-horizontal': !isVertical,

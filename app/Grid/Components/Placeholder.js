@@ -1,5 +1,5 @@
 var React = require('react/addons');  // react + addons
-var cx = React.addons.classSet;
+var classnames = require('classnames')
 
 var Actions = require('../Actions');
 var Store = require('../Store');
@@ -142,7 +142,7 @@ var Placeholder = {
     /**
      * Return the classes to use when rendering the current placeholder
      *
-     * @return {React.addons.classSet}
+     * @return {string} - A string containing classes
      *
      * One or more of these classes:
      *
@@ -159,7 +159,7 @@ var Placeholder = {
             'grid-cell-placeholder-surround': this.state.node.hasAttribute('surround'),
         };
         classes['grid-cell-placeholder-prehovering'] = (this.getDesignModeStep() == 'prehovering' && Store.isHoveringPlaceholder(this.getGridName(), this.state.node));
-        return cx(classes);
+        return classnames(classes);
     },
 
     /**
