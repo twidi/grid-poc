@@ -1,5 +1,5 @@
 var _ = require('lodash');
-var jasmineReact = require('jasmine-react-helpers');
+var jasmineReact = require('jasmine-react-helpers-hotfix-0.14');
 var React = require('react/addons');  // react + addons
 var stringify = require('json-stable-stringify');
 var TestUtils = React.addons.TestUtils;
