@@ -161,7 +161,7 @@ describe("Grid.Components.Cell", function() {
         expect(domNode.getAttribute('style')).toMatch(/\bflex-grow\s*:\s*2\b/);
 
         var module = component.renderAsModule();
-        expect(TestUtils.isElementOfType(module, React.DOM.div)).toBe(true);
+        expect(module.type).toBe('div');
     });
 
     it("should render a module in design mode", function() {
