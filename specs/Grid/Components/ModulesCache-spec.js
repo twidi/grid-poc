@@ -16,15 +16,23 @@ var componentUtils = require('./Utils');
 describe("Grid.Components.ModulesCache", function() {
 
     // Test grid and cell component, defined in beforeEach
-    var testGrid, cellComponent;
+    var testGrid, cellElement, cellComponent, updateCellComponentProps;
 
+    function makeCellComponent(Cell, props) {
+        cellElement = React.createElement(Cell, props)
+        cellComponent = componentUtils.renderIntoDocument(cellElement)
+        updateCellComponentProps = function(newProps) {
+            cellElement = React.createElement(Cell, Object.assign({}, props, newProps))
+            cellComponent = componentUtils.renderIntoDocument(cellElement)
+        }
+    }
 
     beforeEach(function(done) {
         // we want to start each test with a fresh list of grids
         Store.__removeAllGrids();
 
         // we mock the uniqueId function of lodash to know the value to expect
-        uniqueIdMock = Utils.mockUniqueId();
+        Utils.mockUniqueId();
 
         // reset the modules cache for every test
         componentUtils.clearModulesCache();
@@ -32,11 +40,8 @@ describe("Grid.Components.ModulesCache", function() {
         // we add a grid with some content
         testGrid = componentUtils.makeTestGrid();
         var moduleGridCell = testGrid.querySelector('cell[type=module]');
-        var cellElement = React.createElement(Cell, {node: moduleGridCell});
-
-        // we don't want the cell to call the ModulesCache
         jasmineReact.spyOnClass(Cell, 'canHoldExternalNodes').and.returnValue(false);
-        cellComponent = componentUtils.renderIntoDocument(cellElement);
+        makeCellComponent(Cell, {node: moduleGridCell})
 
         setTimeout(done, 0.01);
     });
@@ -76,7 +81,7 @@ describe("Grid.Components.ModulesCache", function() {
     });
 
     it("should get a module component", function(done) {
-        spyOn(React, 'render').and.callThrough();
+        spyOn(ReactDOM, 'render').and.callThrough();
 
         var container = ModulesCache.getModuleComponent(cellComponent);
 
@@ -84,7 +89,7 @@ describe("Grid.Components.ModulesCache", function() {
         setTimeout(function() {
 
             // the module was rendered
-            expect(React.render.calls.count()).toEqual(1);
+            expect(ReactDOM.render.calls.count()).toEqual(1);
 
             expect(container.tagName).toEqual('DIV');
             expect(container.className).toEqual('module-container');
@@ -98,7 +103,7 @@ describe("Grid.Components.ModulesCache", function() {
     });
 
     it("should get a module holder component", function(done) {
-        spyOn(React, 'render').and.callThrough();
+        spyOn(ReactDOM, 'render').and.callThrough();
 
         var container = ModulesCache.getHolderComponent(cellComponent);
 
@@ -106,7 +111,7 @@ describe("Grid.Components.ModulesCache", function() {
         setTimeout(function() {
 
             // the module holder and the module were rendered
-            expect(React.render.calls.count()).toEqual(2);
+            expect(ReactDOM.render.calls.count()).toEqual(2);
 
             expect(container.tagName).toEqual('DIV');
             expect(container.className).toEqual('module-holder-container');
@@ -132,12 +137,12 @@ describe("Grid.Components.ModulesCache", function() {
         // give some time to render the module component
         setTimeout(function() {
 
-            spyOn(React, 'render').and.callThrough();
+            spyOn(ReactDOM, 'render').and.callThrough();
 
             var newContainer = ModulesCache.getModuleComponent(cellComponent);
 
             // nothing was rendered again
-            expect(React.render.calls.count()).toEqual(0);
+            expect(ReactDOM.render.calls.count()).toEqual(0);
 
             expect(newContainer).toBe(container);
             expect(ReactDOM.findDOMNode(component)).toBe(container.children[0]);
@@ -154,9 +159,8 @@ describe("Grid.Components.ModulesCache", function() {
         // give some time to render
         setTimeout(function() {
 
-            spyOn(React, 'render').and.callThrough();
+            spyOn(ReactDOM, 'render').and.callThrough();
             spyOn(component, 'forceUpdate').and.callThrough();
-            spyOn(component, 'setProps').and.callThrough();
 
             var newContainer = ModulesCache.getHolderComponent(cellComponent);
 
@@ -164,13 +168,11 @@ describe("Grid.Components.ModulesCache", function() {
             setTimeout(function() {
 
                 // render was not called again
-                expect(React.render.calls.count()).toEqual(0);
+                expect(ReactDOM.render.calls.count()).toEqual(0);
                 // idem for forceUpdate
                 // see TODO in ModulesCache.getHolderComponent
                 // expect(component.forceUpdate.calls.count()).toEqual(0);
                 expect(component.forceUpdate.calls.count()).toEqual(1);
-                // idem for setProps
-                expect(component.setProps.calls.count()).toEqual(0);
 
                 expect(newContainer).toBe(container);
                 expect(ReactDOM.findDOMNode(component)).toBe(container.children[0]);
@@ -192,9 +194,8 @@ describe("Grid.Components.ModulesCache", function() {
             // remove the module from the holder
             container.children[0].removeChild(container.children[0].querySelector('.module-container'));
 
-            spyOn(React, 'render').and.callThrough();
+            spyOn(ReactDOM, 'render').and.callThrough();
             spyOn(component, 'forceUpdate').and.callThrough();
-            spyOn(component, 'setProps').and.callThrough();
 
             var newContainer = ModulesCache.getHolderComponent(cellComponent);
 
@@ -202,9 +203,7 @@ describe("Grid.Components.ModulesCache", function() {
             setTimeout(function() {
 
                 // render was not called again
-                expect(React.render.calls.count()).toEqual(0);
-                // idem for setProps
-                expect(component.setProps.calls.count()).toEqual(0);
+                expect(ReactDOM.render.calls.count()).toEqual(0);
                 // but a forceUpdate was called
                 expect(component.forceUpdate.calls.count()).toEqual(1);
 
@@ -229,26 +228,23 @@ describe("Grid.Components.ModulesCache", function() {
             // change cell props
             var clonedGrid = Manipulator.clone(testGrid);
             var clonedCell = clonedGrid.querySelector('cell[type=module]');
-            cellComponent.setProps({node: clonedCell});
+            updateCellComponentProps({node: clonedCell})
 
             // give some time to propagate the props update
             setTimeout(function() {
 
-                spyOn(React, 'render').and.callThrough();
+                spyOn(ReactDOM, 'render').and.callThrough();
                 spyOn(component, 'forceUpdate').and.callThrough();
-                spyOn(component, 'setProps').and.callThrough();
 
                 var newContainer = ModulesCache.getHolderComponent(cellComponent);
 
                 // give some time to render the holder component again
                 setTimeout(function() {
 
-                    // render was not called again
-                    expect(React.render.calls.count()).toEqual(0);
-                    // idem for forceUpdate
+                    // forceUpdate was not called
                     expect(component.forceUpdate.calls.count()).toEqual(0);
-                    // but a setProps was called
-                    expect(component.setProps.calls.count()).toEqual(1);
+                    // but a setProps was called (createElement + render) was called
+                    expect(ReactDOM.render.calls.count()).toEqual(1);
 
                     expect(newContainer).toBe(container);
                     expect(ReactDOM.findDOMNode(component)).toBe(container.children[0]);
@@ -291,12 +287,12 @@ describe("Grid.Components.ModulesCache", function() {
         // give some time to render the module component
         setTimeout(function() {
 
-            spyOn(React, 'render').and.callThrough();
+            spyOn(ReactDOM, 'render').and.callThrough();
 
             var newContainer = ModulesCache.getModuleComponent(null, getCacheKey());
 
             // nothing was rendered again
-            expect(React.render.calls.count()).toEqual(0);
+            expect(ReactDOM.render.calls.count()).toEqual(0);
 
             expect(newContainer).toBe(container);
             expect(ReactDOM.findDOMNode(component)).toBe(container.children[0]);
@@ -313,12 +309,12 @@ describe("Grid.Components.ModulesCache", function() {
         // give some time to render the module component
         setTimeout(function() {
 
-            spyOn(React, 'render').and.callThrough();
+            spyOn(ReactDOM, 'render').and.callThrough();
 
             var newContainer = ModulesCache.getHolderComponent(null, getCacheKey());
 
             // nothing was rendered again
-            expect(React.render.calls.count()).toEqual(0);
+            expect(ReactDOM.render.calls.count()).toEqual(0);
 
             expect(newContainer).toBe(container);
             expect(ReactDOM.findDOMNode(component)).toBe(container.children[0]);

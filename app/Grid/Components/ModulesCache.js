@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var React = require('react/addons');  // react + addons
+var ReactDOM = require('react-dom')
 var stringify = require('json-stable-stringify');
 
 var Modules = require('../Modules');
@@ -203,7 +204,7 @@ var ModulesCache = {
             cache.moduleParent.className = this.moduleContainerClassName;
 
             // render the module component once for all
-            cache.moduleComponent = React.render(cache.moduleElement, cache.moduleParent);
+            cache.moduleComponent = ReactDOM.render(cache.moduleElement, cache.moduleParent);
 
         }
 
@@ -270,7 +271,7 @@ var ModulesCache = {
             cache.holderParent.className = this.holderContainerClassName;
 
             // render the module component once for all
-            cache.holderComponent = React.render(cache.holderElement, cache.holderParent);
+            cache.holderComponent = ReactDOM.render(cache.holderElement, cache.holderParent);
 
         } else {
             // if the component exists in cache, update its props
@@ -278,7 +279,9 @@ var ModulesCache = {
             var newProps = this._getNewHolderProps(cache, component.props);
             if (_.size(newProps)) {
                 // we have new props, so we apply them, the component will be re-rendered
-                component.setProps(newProps);
+                var ModuleHolder = require('./ModuleHolder');
+                var element = React.createElement(ModuleHolder, Object.assign({}, component.props, newProps))
+                cache.holderComponent = ReactDOM.render(element, cache.holderParent);
             } else {
                 // no new props, but ask for a rerender if the the module is not inside the component
                 // TODO: for now we always rerender the holder, it needs to change on some cases
