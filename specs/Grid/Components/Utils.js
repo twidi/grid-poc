@@ -121,7 +121,7 @@ var componentUtils = {
         // jasmine-react, but we cannot use it as it seems that we have in this
         // case many React instances that doesn't share mounted components
         if(component.isMounted()){
-            return React.unmountComponentAtNode(ReactDOM.findDOMNode(component).parentNode);
+            return ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(component).parentNode);
         } else {
             return false;
         }
