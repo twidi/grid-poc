@@ -1,8 +1,8 @@
 var _ = require('lodash');
 var jasmineReact = require('jasmine-react-helpers-hotfix-0.14');
-var React = require('react/addons');  // react + addons
+var React = require('react');
 var ReactDOM = require('react-dom');
-var TestUtils = React.addons.TestUtils;
+var TestUtils = require('react-addons-test-utils');
 
 var MainGrid = require('../../../app/Grid/Components/MainGrid');
 var Resizer = require('../../../app/Grid/Components/Resizer');
@@ -134,7 +134,7 @@ describe("Grid.Components.Resizer", function() {
         expect(component.getRenderAttrs()).toEqual({});
 
         // now, click
-        React.addons.TestUtils.Simulate.mouseDown(domNode);
+        TestUtils.Simulate.mouseDown(domNode);
 
         // leave time for the event to propagate
         setTimeout(function() {
@@ -148,7 +148,7 @@ describe("Grid.Components.Resizer", function() {
             component.forceUpdate();
 
             // now, click
-            React.addons.TestUtils.Simulate.mouseDown(domNode);
+            TestUtils.Simulate.mouseDown(domNode);
 
             // leave time for the event to propagate
             setTimeout(function() {
@@ -181,7 +181,7 @@ describe("Grid.Components.Resizer", function() {
         document.body.appendChild(gridDomNode.parentNode);
 
         // mouse down on a resizer
-        React.addons.TestUtils.Simulate.mouseDown(gridDomNode.querySelector('.grid-resizer'));
+        TestUtils.Simulate.mouseDown(gridDomNode.querySelector('.grid-resizer'));
 
         // leave time for the event to propagate
         setTimeout(function() {
@@ -222,7 +222,7 @@ describe("Grid.Components.Resizer", function() {
         var gridDomNode = ReactDOM.findDOMNode(gridComponent);
 
         // mouse down on a resizer
-        React.addons.TestUtils.Simulate.mouseDown(
+        TestUtils.Simulate.mouseDown(
             gridDomNode.querySelector('.grid-resizer-vertical'),
             { screenX: 100, screenY: 200}
         );
@@ -260,7 +260,7 @@ describe("Grid.Components.Resizer", function() {
         document.body.appendChild(gridDomNode.parentNode);
 
         // mouse down on a resizer
-        React.addons.TestUtils.Simulate.mouseDown(
+        TestUtils.Simulate.mouseDown(
             gridDomNode.querySelector('.grid-resizer-vertical'),
             { screenX: 100, screenY: 200}
         );
@@ -306,7 +306,7 @@ describe("Grid.Components.Resizer", function() {
         document.body.appendChild(gridDomNode.parentNode);
 
         // mouse down on a resizer
-        React.addons.TestUtils.Simulate.mouseDown(
+        TestUtils.Simulate.mouseDown(
             gridDomNode.querySelector('.grid-resizer-vertical'),
             { screenX: 100, screenY: 200}
         );
@@ -361,7 +361,7 @@ describe("Grid.Components.Resizer", function() {
         var next = resizerDomNode.nextSibling;
 
         // mouse down on a resizer
-        React.addons.TestUtils.Simulate.mouseDown(
+        TestUtils.Simulate.mouseDown(
             gridDomNode.querySelector('.grid-resizer-vertical'),
             { screenX: 100, screenY: 200}
         );

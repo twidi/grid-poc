@@ -1,7 +1,7 @@
 var _ = require('lodash');
-var React = require('react/addons');  // react + addons
+var React = require('react');
 var ReactDOM = require('react-dom');
-var TestUtils = React.addons.TestUtils;
+var TestUtils = require('react-addons-test-utils');
 
 
 var Cell = require('../../../app/Grid/Components/Cell');

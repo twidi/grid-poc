@@ -1,5 +1,5 @@
 var _ = require('lodash');
-var React = require('react/addons');  // react + addons
+var React = require('react');
 var classnames = require('classnames')
 
 var Store = require('../../Store');

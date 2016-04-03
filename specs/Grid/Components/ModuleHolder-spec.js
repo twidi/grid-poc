@@ -1,9 +1,9 @@
 var _ = require('lodash');
 var jasmineReact = require('jasmine-react-helpers-hotfix-0.14');
-var React = require('react/addons');  // react + addons
+var React = require('react');
 var ReactDOM = require('react-dom');
 var stringify = require('json-stable-stringify');
-var TestUtils = React.addons.TestUtils;
+var TestUtils = require('react-addons-test-utils');
 
 var Manipulator = require('../../../app/Grid/Manipulator');
 var Modules = require('../../../app/Grid/Modules');
@@ -245,7 +245,7 @@ describe("Grid.Components.ModuleHolder", function() {
         Store.on('grid.designMode.module.remove', callback);
 
         // simulate the startDrag event
-        React.addons.TestUtils.Simulate.click(ReactDOM.findDOMNode(component).querySelector('.module-cover button'));
+        TestUtils.Simulate.click(ReactDOM.findDOMNode(component).querySelector('.module-cover button'));
 
         // leave some time to render the component
         setTimeout(function() {

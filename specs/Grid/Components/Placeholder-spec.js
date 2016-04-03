@@ -1,8 +1,8 @@
 var _ = require('lodash');
 var jasmineReact = require('jasmine-react-helpers-hotfix-0.14');
-var React = require('react/addons');  // react + addons
+var React = require('react');
 var ReactDOM = require('react-dom');
-var TestUtils = React.addons.TestUtils;
+var TestUtils = require('react-addons-test-utils');
 
 var Actions = require('../../../app/Grid/Actions');
 var Manipulator = require('../../../app/Grid/Manipulator');

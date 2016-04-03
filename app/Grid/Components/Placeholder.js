@@ -1,4 +1,4 @@
-var React = require('react/addons');  // react + addons
+var React = require('react');
 var classnames = require('classnames')
 
 var Actions = require('../Actions');

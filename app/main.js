@@ -2,7 +2,7 @@
 require('../styles/main.css')
 import 'babel-polyfill';
 
-var React = require('react/addons');  // react + addons
+var React = require('react');
 
 var App = require('./App');
 
