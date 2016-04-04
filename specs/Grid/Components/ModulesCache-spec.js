@@ -1,16 +1,16 @@
-var _ = require('lodash');
-var jasmineReact = require('jasmine-react-helpers-hotfix-0.14');
-var React = require('react');
-var ReactDOM = require('react-dom');
-var Manipulator = require('../../../app/Grid/Manipulator');
-var Store = require('../../../app/Grid/Store');
+import _ from 'lodash';
+import jasmineReact from 'jasmine-react-helpers-hotfix-0.14';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Manipulator } from '../../../app/Grid/Manipulator';
+import { Store } from '../../../app/Grid/Store';
 
-var Cell = require('../../../app/Grid/Components/Cell');
-var ModuleHolder = require('../../../app/Grid/Components/ModuleHolder');
-var ModulesCache = require('../../../app/Grid/Components/ModulesCache');
+import { Cell } from '../../../app/Grid/Components/Cell';
+import { ModuleHolder } from '../../../app/Grid/Components/ModuleHolder';
+import { ModulesCache } from '../../../app/Grid/Components/ModulesCache';
 
-var Utils = require('../../Utils');
-var componentUtils = require('./Utils');
+import { Utils } from '../../Utils';
+import { componentUtils } from './Utils';
 
 
 describe("Grid.Components.ModulesCache", function() {

@@ -1,6 +1,5 @@
-
-var React = require('react');
-var _ = require('lodash');
+import React from 'react';
+import _ from 'lodash';
 
 
 /**
@@ -16,12 +15,12 @@ var _ = require('lodash');
  * @memberOf module:Utils.ReactMixins
  * @summary A mixin to be used by components that need to react to document events
  */
-var DocumentEvents = {
+export const DocumentEventsMixin = {
 
     /**
      * Return a bound method for the given methodName.
      *
-     * The bounded function is cached to always have the same result to use in 
+     * The bounded function is cached to always have the same result to use in
      * addEventListener and removeEventListener
      *
      * @param  {string} methodName - The name of the method to bind
@@ -89,5 +88,3 @@ var DocumentEvents = {
 
 
 };
-
-module.exports = DocumentEvents;

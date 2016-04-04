@@ -1,9 +1,10 @@
-var _ = require('lodash');
-var React = require('react');
-var ReactDOM = require('react-dom')
-var stringify = require('json-stable-stringify');
+import _ from 'lodash';
+import React from 'react';
+import ReactDOM from 'react-dom'
+import stringify from 'json-stable-stringify';
 
-var Modules = require('../Modules');
+import { Modules } from '../Modules';
+import { ModuleHolder } from './ModuleHolder';
 
 /**
  * This JS module will manage the cache of the module and the module holders,
@@ -24,7 +25,7 @@ var Modules = require('../Modules');
  * @memberOf module:Grid.Components
  *
  */
-var ModulesCache = {
+export const ModulesCache = {
 
     /**
      * The class name for the nodes holding the modules react components.
@@ -98,7 +99,7 @@ var ModulesCache = {
      *   - update the grid name and the actual cell using this cache entry
      *
      *
-     * 
+     *
      * @private
      *
      * @return {object} - The cache entry for the given cell/key
@@ -142,7 +143,6 @@ var ModulesCache = {
             ////// create the holder to hold the module in design mode
 
             // create  a react *element* for the holder
-            var ModuleHolder = require('./ModuleHolder');
             var holderElement = React.createElement(ModuleHolder, {
                 uniqueKey: key,
                 gridName: cell.getGridName(),
@@ -247,7 +247,7 @@ var ModulesCache = {
      * the`forceUpdate` method is called. Each of these two actions will trigger a
      * rerender of the `ModuleHolder` component, to reattach the `module` component
      * if it was used elsewhere.
-     * 
+     *
      * The `cell` and `key` parameters are exclusive
      *
      * @param  {module:Grid.Components.Cell} cell - A cell for which we want the module
@@ -279,7 +279,6 @@ var ModulesCache = {
             var newProps = this._getNewHolderProps(cache, component.props);
             if (_.size(newProps)) {
                 // we have new props, so we apply them, the component will be re-rendered
-                var ModuleHolder = require('./ModuleHolder');
                 var element = React.createElement(ModuleHolder, Object.assign({}, component.props, newProps))
                 cache.holderComponent = ReactDOM.render(element, cache.holderParent);
             } else {
@@ -295,5 +294,3 @@ var ModulesCache = {
     },
 
 };
-
-module.exports = ModulesCache;

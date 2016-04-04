@@ -1,8 +1,8 @@
-var _ = require('lodash');
-var React = require('react');
+import _ from 'lodash';
+import React from 'react';
 
-var GridMixin = require('./Mixins/Grid');
-var NodeMixin = require('./Mixins/Node');
+import { GridMixin } from './Mixins/Grid';
+import { NodeMixin } from './Mixins/Node';
 
 
 /**
@@ -14,7 +14,7 @@ var NodeMixin = require('./Mixins/Node');
  * @mixes module:Grid.Components.Mixins.Grid
  */
 
-var SubGrid = {
+export const SubGrid = React.createClass({
     mixins: [
         NodeMixin,
         GridMixin
@@ -26,6 +26,4 @@ var SubGrid = {
     render: function() {
         return this.renderGrid();
     }
-};
-
-module.exports = SubGrid = React.createClass(SubGrid);
+});

@@ -1,4 +1,4 @@
-var _ = require('lodash');
+import _ from 'lodash';
 
 
 /**
@@ -6,7 +6,7 @@ var _ = require('lodash');
  * @namespace
  * @memberOf module:Grid
  */
-var Manipulator = {
+const Manipulator = {
     XMLSerializer: new XMLSerializer(),
     DOMParser: new DOMParser(),
 
@@ -848,4 +848,4 @@ _(Manipulator.Exceptions).forEach(function(exceptionClass, exceptionName) {
     exceptionClass.displayName = exceptionName;
 });
 
-module.exports = Manipulator;
+export { Manipulator };

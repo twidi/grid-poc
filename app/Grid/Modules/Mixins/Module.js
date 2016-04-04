@@ -1,14 +1,9 @@
-var React = require('react');
-var stringify = require('json-stable-stringify');
+import React from 'react';
+import stringify from 'json-stable-stringify';
 
 
-var ModuleMixin = {
-
+export const ModuleMixin = {
     render: function() {
         return <div className="module"><span>{this.renderModule()}</span></div>;
     }
-
 };
-
-
-module.exports = ModuleMixin;

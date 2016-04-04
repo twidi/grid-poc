@@ -1,16 +1,17 @@
-var _ = require('lodash');
-var React = require('react');
-var classnames = require('classnames')
+import _ from 'lodash';
+import React from 'react';
+import classnames from 'classnames'
 
-var Actions = require('../Actions');
-var Store = require('../Store');
+import { Actions } from '../Actions';
+import { Store } from '../Store';
 
-var ModulesCache = require('./ModulesCache');
+import { ModulesCache } from './ModulesCache';
 
-var ModuleHolder = require('./ModuleHolder')
-var NodesHolderMixin = require('./Mixins/NodesHolder');
-var NodeMixin = require('./Mixins/Node');
-var Placeholder = require('./Placeholder');
+import { ModuleHolder } from './ModuleHolder'
+import { NodesHolderMixin } from './Mixins/NodesHolder';
+import { NodeMixin } from './Mixins/Node';
+import { Placeholder } from './Placeholder';
+import { SubGrid } from './SubGrid';
 
 
 /**
@@ -44,7 +45,7 @@ var Placeholder = require('./Placeholder');
  * @mixes module:Grid.Components.Mixins.Node
  * @mixes module:Grid.Components.Mixins.NodesHolder
  */
-var Cell = {
+export const Cell = React.createClass({
 
     mixins: [
         NodeMixin,
@@ -139,7 +140,6 @@ var Cell = {
      * @return {module:Grid.Components.SubGrid} - The rendered {@link module:Grid.Components.SubGrid SubGrid} component
      */
     renderAsSubGrid: function() {
-        var SubGrid = require('./SubGrid');
         return <SubGrid node={this.state.node} />
     },
 
@@ -212,6 +212,4 @@ var Cell = {
         }
     }
 
-};
-
-module.exports = Cell = React.createClass(Cell);
+});

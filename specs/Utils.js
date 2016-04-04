@@ -1,6 +1,6 @@
-var _ = require('lodash');
+import _ from 'lodash';
 
-var Utils = {
+export const Utils = {
     /**
      * Mock _.uniqueId from lodash, but with a reseted counter, for the duration
      * of the test. With an helper to help reset in the same test function.
@@ -41,5 +41,3 @@ var Utils = {
         }
     }
 };
-
-module.exports = Utils;

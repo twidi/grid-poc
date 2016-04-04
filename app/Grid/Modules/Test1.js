@@ -1,9 +1,9 @@
-var React = require('react');
+import React from 'react';
 
-var ModuleMixin = require('./Mixins/Module');
+import { ModuleMixin } from './Mixins/Module';
 
 
-var Test1 = {
+export const Test1 = React.createClass({
     mixins: [
         ModuleMixin,
     ],
@@ -11,6 +11,4 @@ var Test1 = {
     renderModule: function() {
         return 'Module.Test1: ' + this.props.text;
     }
-};
-
-module.exports = Test1 = React.createClass(Test1);
+});

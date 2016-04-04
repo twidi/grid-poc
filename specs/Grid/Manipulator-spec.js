@@ -1,9 +1,9 @@
-var _ = require('lodash');
+import _ from 'lodash';
 
-var Manipulator = require('../../app/Grid/Manipulator');
+import { Manipulator } from '../../app/Grid/Manipulator';
 
-var customMatchers = require('./custom-matchers');
-var Utils = require('../Utils');
+import { customMatchers } from './custom-matchers';
+import { Utils } from '../Utils';
 
 
 describe("Grid.Manipulator", function() {
@@ -75,7 +75,7 @@ describe("Grid.Manipulator", function() {
         Manipulator.removeCell(cell);
 
         // the cell should be removed, and the grid cleaned
-        var expected = 
+        var expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row>' +

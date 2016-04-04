@@ -1,15 +1,14 @@
-var _ = require('lodash');
-var React = require('react');
-var classnames = require('classnames')
-var stringify = require('json-stable-stringify');
+import _ from 'lodash';
+import React from 'react';
+import classnames from 'classnames'
+import stringify from 'json-stable-stringify';
 
-var Actions = require('../Actions');
-var Store = require('../Store');
+import { Actions } from '../Actions';
+import { Store } from '../Store';
 
-var ModulesCache = require('./ModulesCache');
+import { ModulesCache } from './ModulesCache';
 
-var NodesHolderMixin = require('./Mixins/NodesHolder');
-
+import { NodesHolderMixin } from './Mixins/NodesHolder';
 
 /**
  * This react component will hold a module in design mode, managing dragging, to
@@ -25,7 +24,7 @@ var NodesHolderMixin = require('./Mixins/NodesHolder');
  *
  * @summary A component to hold a module in design mode
  */
-var ModuleHolder = {
+export const ModuleHolder = React.createClass({
 
     mixins: [
         NodesHolderMixin,
@@ -40,9 +39,13 @@ var ModuleHolder = {
      *
      * @type {Array}
      */
-    externalNodesClassNames: [
-        ModulesCache.moduleContainerClassName
-    ],
+    externalNodesClassNames: [],
+
+    // Workaround to avoid issue due to circular dependencies between ModulesCache
+    // and ModuleHolder
+    componentWillMount: function() {
+        this.externalNodesClassNames = [ModulesCache.moduleContainerClassName]
+    },
 
     /**
      * Tell {@link module:Grid.Components.Mixins.NodesHolder NodesHolderMixin}
@@ -173,6 +176,4 @@ var ModuleHolder = {
                 </div>;
     }
 
-};
-
-module.exports = ModuleHolder = React.createClass(ModuleHolder);
+});

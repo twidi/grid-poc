@@ -1,13 +1,12 @@
-var _ = require('lodash');
+import _ from 'lodash';
 
-var Manipulator = require('./../../app/Grid/Manipulator');
-
+import { Manipulator } from './../../app/Grid/Manipulator';
 
 /**
  * Jasmine custom matchers for the whole Grid test suite
  * @type {Object}
  */
-var customMatchers = {
+export const customMatchers = {
     /**
      * Easily compare two XML grids, given as string or XML nodes.
      * If no match, produce the error with actual and expected on both lines to
@@ -18,7 +17,7 @@ var customMatchers = {
      *
      * @example
 
-     * var customMatchers = require('./custom-matchers');
+     * import { customMatchers } from './custom-matchers';
      *
      * describe("Grid.Manipulator", function() {
      *
@@ -63,5 +62,3 @@ var customMatchers = {
         };
     }
 };
-
-module.exports = customMatchers;

@@ -1,6 +1,6 @@
-var React = require('react');
+import React from 'react';
 
-var Store = require('../../Store');
+import { Store } from '../../Store';
 
 
 /**
@@ -10,7 +10,7 @@ var Store = require('../../Store');
  * @memberOf module:Grid.Components.Mixins
  * @summary A mixin to use for all grid components based on a XML grid node
  */
-var Node = {
+export const NodeMixin = {
 
     /**
      * When the component is created, set the node in the state based on the
@@ -94,5 +94,3 @@ var Node = {
         return (this.getDesignModeStep() != 'disabled');
     },
 };
-
-module.exports = Node;

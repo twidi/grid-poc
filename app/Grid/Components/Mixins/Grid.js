@@ -1,9 +1,10 @@
-var _ = require('lodash');
-var React = require('react');
-var classnames = require('classnames')
+import _ from 'lodash';
+import React from 'react';
+import classnames from 'classnames'
 
-var Store = require('../../Store');
-
+import { Store } from '../../Store';
+import { Resizer } from '../Resizer';
+import { Row } from '../Row';
 
 /**
  * A mixin to use for MainGrid and Grid components
@@ -11,7 +12,7 @@ var Store = require('../../Store');
  * @memberOf module:Grid.Components.Mixins
  * @summary A mixin to use for MainGrid and Grid components
  */
-var Grid = {
+export const GridMixin = {
 
     /**
      * Tell if the grid is "main grid"
@@ -37,9 +38,6 @@ var Grid = {
      * @return {module:Grid.Components.Row[]} - An array of {@link module:Grid.Components.Row Row} components
      */
     renderRows: function() {
-        var Resizer = require('../Resizer');
-        var Row = require('../Row');
-
         return _.map(this.getRows(), function(row){
             var type = row.tagName;
             if (type == 'row') {
@@ -101,5 +99,3 @@ var Grid = {
     },
 
 };
-
-module.exports = Grid;

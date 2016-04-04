@@ -1,22 +1,21 @@
-var _ = require('lodash');
-var jasmineReact = require('jasmine-react-helpers-hotfix-0.14');
-var React = require('react');
-var ReactDOM = require('react-dom')
-var stringify = require('json-stable-stringify');
-var TestUtils = require('react-addons-test-utils');
+import _ from 'lodash';
+import jasmineReact from 'jasmine-react-helpers-hotfix-0.14';
+import React from 'react';
+import ReactDOM from 'react-dom'
+import stringify from 'json-stable-stringify';
+import TestUtils from 'react-addons-test-utils';
 
-var Manipulator = require('../../../app/Grid/Manipulator');
-var Modules = require('../../../app/Grid/Modules');
-var Store = require('../../../app/Grid/Store');
+import { Manipulator } from '../../../app/Grid/Manipulator';
+import { Modules } from '../../../app/Grid/Modules';
+import { Store } from '../../../app/Grid/Store';
 
-var Cell = require('../../../app/Grid/Components/Cell');
-var ModulesCache = require('../../../app/Grid/Components/ModulesCache');
-var Placeholder = require('../../../app/Grid/Components/Placeholder');
-var SubGrid = require('../../../app/Grid/Components/SubGrid');
+import { Cell } from '../../../app/Grid/Components/Cell';
+import { ModulesCache } from '../../../app/Grid/Components/ModulesCache';
+import { Placeholder } from '../../../app/Grid/Components/Placeholder';
+import { SubGrid } from '../../../app/Grid/Components/SubGrid';
 
-var Utils = require('../../Utils');
-var componentUtils = require('./Utils');
-
+import { Utils } from '../../Utils';
+import { componentUtils } from './Utils';
 
 describe("Grid.Components.Cell", function() {
     var uniqueIdMock;

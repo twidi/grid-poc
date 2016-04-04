@@ -1,12 +1,13 @@
-var _ = require('lodash');
-var React = require('react');
-var classnames = require('classnames')
+import _ from 'lodash';
+import React from 'react';
+import classnames from 'classnames'
 
-var Actions = require('../Actions');
-var Store = require('../Store');
+import { Actions } from '../Actions';
+import { Store } from '../Store';
 
-var NodeMixin = require('./Mixins/Node');
-
+import { NodeMixin } from './Mixins/Node';
+import { Cell } from './Cell';
+import { Resizer } from './Resizer';
 
 /**
  * Row component, a row of a grid, composed of cells
@@ -15,7 +16,7 @@ var NodeMixin = require('./Mixins/Node');
  * @summary The Row component, a row of a grid
  * @mixes module:Grid.Components.Mixins.Node
  */
-var Row = {
+export const Row = React.createClass({
     mixins: [
         NodeMixin
     ],
@@ -44,9 +45,6 @@ var Row = {
      * @return {module:Grid.Components.Cell[]} - An array of {@link module:Grid.Components.Cell Cell} components
      */
     renderCells: function() {
-        var Cell = require('./Cell');
-        var Resizer = require('./Resizer');
-
         return _.map(this.getCells(), function(cell){
             var type = cell.tagName;
             if (type == 'cell') {
@@ -102,6 +100,4 @@ var Row = {
         return <div className={this.getRowClasses()} style={this.getRowStyle()}>{this.renderCells()}</div>
     }
 
-};
-
-module.exports = Row = React.createClass(Row);
+});

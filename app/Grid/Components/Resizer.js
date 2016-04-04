@@ -1,12 +1,12 @@
-var _ = require('lodash');
-var React = require('react');
-var classnames = require('classnames')
+import _ from 'lodash';
+import React from 'react';
+import classnames from 'classnames'
 
-var Actions = require('../Actions');
-var Store = require('../Store');
+import { Actions } from '../Actions';
+import { Store } from '../Store';
 
-var DocumentEventsMixin = require('../../Utils/ReactMixins/DocumentEvents');
-var NodeMixin = require('./Mixins/Node');
+import { DocumentEventsMixin } from '../../Utils/ReactMixins/DocumentEvents';
+import { NodeMixin } from './Mixins/Node';
 
 
 /**
@@ -16,7 +16,7 @@ var NodeMixin = require('./Mixins/Node');
  * @summary Resizer component
  * @mixes module:Grid.Components.Mixins.Node
  */
-var Resizer = {
+export const Resizer = React.createClass({
     mixins: [
         DocumentEventsMixin,
         NodeMixin
@@ -211,6 +211,4 @@ var Resizer = {
         return <div ref="resizer" className={this.getResizerClasses()} {...this.getRenderAttrs()}/>
     }
 
-};
-
-module.exports = Resizer = React.createClass(Resizer);
+});

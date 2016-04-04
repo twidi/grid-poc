@@ -1,5 +1,5 @@
-var React = require('react');
-var ReactDOM = require('react-dom')
+import React from 'react';
+import ReactDOM from 'react-dom'
 
 /**
  * A mixin to be used by components that want to attach an external dom node to
@@ -16,7 +16,7 @@ var ReactDOM = require('react-dom')
  * @memberOf module:Grid.Components.Mixins
  * @summary A mixin to help components attaching an external dom node to their react one.
  */
-var NodesHolder = {
+export const NodesHolderMixin = {
 
     /**
      * The list of classNames of dom nodes to attach/detach.
@@ -170,5 +170,3 @@ var NodesHolder = {
     },
 
 };
-
-module.exports = NodesHolder;

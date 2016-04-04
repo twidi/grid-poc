@@ -1,13 +1,13 @@
-var _ = require('lodash');
-var React = require('react');
-var classnames = require('classnames')
+import _ from 'lodash';
+import React from 'react';
+import classnames from 'classnames'
 
-var Actions = require('../Actions');
-var Store = require('../Store');
+import { Actions } from '../Actions';
+import { Store } from '../Store';
 
-var DocumentEventsMixin = require('../../Utils/ReactMixins/DocumentEvents');
-var GridMixin = require('./Mixins/Grid');
-var NodeMixin = require('./Mixins/Node');
+import { DocumentEventsMixin } from '../../Utils/ReactMixins/DocumentEvents';
+import { GridMixin } from './Mixins/Grid';
+import { NodeMixin } from './Mixins/Node';
 
 
 /**
@@ -19,7 +19,7 @@ var NodeMixin = require('./Mixins/Node');
  * @mixes module:Grid.Components.Mixins.Grid
  */
 
-var MainGrid = {
+export const MainGrid = React.createClass({
     mixins: [
         DocumentEventsMixin,
         NodeMixin,
@@ -346,6 +346,4 @@ var MainGrid = {
         </div>;
     }
 
-};
-
-module.exports = MainGrid = React.createClass(MainGrid);
+});

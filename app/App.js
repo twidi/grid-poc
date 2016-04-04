@@ -1,16 +1,15 @@
 
-var React = require('react');
+import React from 'react';
 
-var flux = require('flux-react');
+import flux from 'flux-react';
 
-var Actions = require('./Grid/Actions');
-var Manipulator = require('./Grid/Manipulator');
-var Store = require('./Grid/Store');
+import { Actions } from './Grid/Actions';
+import { Manipulator } from './Grid/Manipulator';
+import { Store } from './Grid/Store';
 
-var MainGrid = require('./Grid/Components/MainGrid');
+import { MainGrid } from './Grid/Components/MainGrid';
 
-
-var App = React.createClass({
+export const App = React.createClass({
     getInitialState: function () {
         return {
             gridName: null,
@@ -59,5 +58,3 @@ var App = React.createClass({
     },
 
 });
-
-module.exports = App;

@@ -1,8 +1,8 @@
-var _ = require('lodash');
-var flux = require('flux-react');
+import _ from 'lodash';
+import flux from 'flux-react';
 
-var Actions = require('./Actions');
-var Manipulator = require('./Manipulator');
+import { Actions } from './Actions';
+import { Manipulator } from './Manipulator';
 
 
 /**
@@ -10,7 +10,7 @@ var Manipulator = require('./Manipulator');
  * @namespace
  * @memberOf module:Grid
  */
-var Store = {
+let Store = {
 
     /**
      * Exceptions for the Store module
@@ -343,7 +343,7 @@ var Store = {
  * @inner
  *
  */
-var Private = {
+let Private = {
 
     /**
      * Duration (in ms) to take an hovering into account
@@ -1086,7 +1086,7 @@ var Private = {
      * {@link module:Grid.Actions.drop Grid.Actions.drop}
      *
      * @param {string} gridName - The name of the grid for witch we want to start dragging
-     * @param {XML} [placeholderCell] - The "placeholder" cell we want the dragging cell 
+     * @param {XML} [placeholderCell] - The "placeholder" cell we want the dragging cell
      * to be dropped on. If defined, will replace the one saved in the store.
      *
      * @fires module:Grid.Store#"grid.designMode.drop"
@@ -1429,4 +1429,4 @@ Store.__private = Private;
 // exceptions must be accessible via the private api too
 Private.Exceptions = Store.Exceptions;
 
-module.exports = Store;
+export { Store };

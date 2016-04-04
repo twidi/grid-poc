@@ -1,16 +1,16 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
-var TestUtils = require('react-addons-test-utils');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import TestUtils from 'react-addons-test-utils';
 
-var Actions = require('../../../app/Grid/Actions');
-var Manipulator = require('../../../app/Grid/Manipulator');
-var Store = require('../../../app/Grid/Store');
+import { Actions } from '../../../app/Grid/Actions';
+import { Manipulator } from '../../../app/Grid/Manipulator';
+import { Store } from '../../../app/Grid/Store';
 
-var Row = require('../../../app/Grid/Components/Row');
-var SubGrid = require('../../../app/Grid/Components/SubGrid');
+import { Row } from '../../../app/Grid/Components/Row';
+import { SubGrid } from '../../../app/Grid/Components/SubGrid';
+import { ModulesCache } from '../../../app/Grid/Components/ModulesCache';
 
-
-var componentUtils = {
+export const componentUtils = {
     _componentsCache: [],
 
     makeTestGrid: function() {
@@ -102,7 +102,6 @@ var componentUtils = {
     },
 
     clearModulesCache: function() {
-        var ModulesCache = require('../../../app/Grid/Components/ModulesCache');
         ModulesCache._cache ={};
     },
 
@@ -117,7 +116,7 @@ var componentUtils = {
     },
 
     unmountComponent: function(component){
-        // used in unmountAllComponents, it's a copy of the same function in 
+        // used in unmountAllComponents, it's a copy of the same function in
         // jasmine-react, but we cannot use it as it seems that we have in this
         // case many React instances that doesn't share mounted components
         if(component.isMounted()){
@@ -144,6 +143,3 @@ var componentUtils = {
     },
 
 };
-
-
-module.exports = componentUtils;

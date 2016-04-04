@@ -1,19 +1,19 @@
-var _ = require('lodash');
-var jasmineReact = require('jasmine-react-helpers-hotfix-0.14');
-var React = require('react');
-var ReactDOM = require('react-dom');
-var TestUtils = require('react-addons-test-utils');
+import _ from 'lodash';
+import jasmineReact from 'jasmine-react-helpers-hotfix-0.14';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import TestUtils from 'react-addons-test-utils';
 
-var Actions = require('../../../app/Grid/Actions');
-var Manipulator = require('../../../app/Grid/Manipulator');
-var Store = require('../../../app/Grid/Store');
+import { Actions } from '../../../app/Grid/Actions';
+import { Manipulator } from '../../../app/Grid/Manipulator';
+import { Store } from '../../../app/Grid/Store';
 
-var MainGrid = require('../../../app/Grid/Components/MainGrid');
-var Row = require('../../../app/Grid/Components/Row');
+import { MainGrid } from '../../../app/Grid/Components/MainGrid';
+import { Row } from '../../../app/Grid/Components/Row';
 
-var componentUtils = require('./Utils');
-var TestDocumentEventsMixin = require('../../Utils/ReactMixins/DocumentEvents');
-var Utils = require('../../Utils');
+import { componentUtils } from './Utils';
+import { TestDocumentEventsMixin } from '../../Utils/ReactMixins/DocumentEvents';
+import { Utils } from '../../Utils';
 
 
 describe("Grid.Components.MainGrid", function() {

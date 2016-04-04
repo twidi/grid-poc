@@ -1,6 +1,6 @@
-var _ = require('lodash');
+import _ from 'lodash';
 
-var TestDocumentEventsMixin = function(obj, done) {
+export const TestDocumentEventsMixin = function(obj, done) {
 
     // backup existing cache
     var existingCache = _.clone(obj._documentEventCache);
@@ -81,5 +81,3 @@ var TestDocumentEventsMixin = function(obj, done) {
     }, 0.01);
 
 };
-
-module.exports = TestDocumentEventsMixin;

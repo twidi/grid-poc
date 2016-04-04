@@ -1,11 +1,11 @@
-var React = require('react');
-var classnames = require('classnames')
+import React from 'react';
+import classnames from 'classnames'
 
-var Actions = require('../Actions');
-var Store = require('../Store');
+import { Actions } from '../Actions';
+import { Store } from '../Store';
 
-var DocumentEventsMixin = require('../../Utils/ReactMixins/DocumentEvents');
-var NodeMixin = require('./Mixins/Node');
+import { DocumentEventsMixin } from '../../Utils/ReactMixins/DocumentEvents';
+import { NodeMixin } from './Mixins/Node';
 
 
 /**
@@ -17,7 +17,7 @@ var NodeMixin = require('./Mixins/Node');
  *
  * @summary A placeholder component to drop dragged modules
  */
-var Placeholder = {
+export const Placeholder = React.createClass({
     mixins: [
         DocumentEventsMixin,
         NodeMixin,
@@ -180,6 +180,4 @@ var Placeholder = {
     },
 
 
-};
-
-module.exports = Placeholder = React.createClass(Placeholder);
+});

@@ -1,5 +1,5 @@
-var _ = require('lodash');
-var flux = require('flux-react');
+import _ from 'lodash';
+import flux from 'flux-react';
 
 
 /**
@@ -7,7 +7,7 @@ var flux = require('flux-react');
  * @namespace
  * @memberOf module:Grid
  */
-var Actions = {
+export const Actions = flux.createActions(_.keys({
     // Here are just definitions of functions. There are really created by the
     // "flux.createActions" call
 
@@ -122,7 +122,7 @@ var Actions = {
      * @type {function}
      *
      * @param {string} gridName - The name of the grid for witch we want to start dragging
-     * @param {XML} [placeholderCell] - The "placeholder" cell we want the dragging cell 
+     * @param {XML} [placeholderCell] - The "placeholder" cell we want the dragging cell
      * to be dropped on. If defined, will replace the one saved in the store.
      *
      * @fires module:Grid.Store#"grid.designMode.drop"
@@ -188,6 +188,4 @@ var Actions = {
      * @fires module:Grid.Store#"grid.designMode.history.forward"
      */
     goForwardInHistory: function(gridName) {},
-};
-
-module.exports = flux.createActions(_.keys(Actions));
+}));

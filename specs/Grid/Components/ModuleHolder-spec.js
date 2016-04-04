@@ -1,19 +1,19 @@
-var _ = require('lodash');
-var jasmineReact = require('jasmine-react-helpers-hotfix-0.14');
-var React = require('react');
-var ReactDOM = require('react-dom');
-var stringify = require('json-stable-stringify');
-var TestUtils = require('react-addons-test-utils');
+import _ from 'lodash';
+import jasmineReact from 'jasmine-react-helpers-hotfix-0.14';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import stringify from 'json-stable-stringify';
+import TestUtils from 'react-addons-test-utils';
 
-var Manipulator = require('../../../app/Grid/Manipulator');
-var Modules = require('../../../app/Grid/Modules');
-var Store = require('../../../app/Grid/Store');
+import { Manipulator } from '../../../app/Grid/Manipulator';
+import { Modules } from '../../../app/Grid/Modules';
+import { Store } from '../../../app/Grid/Store';
 
-var ModulesCache = require('../../../app/Grid/Components/ModulesCache');
-var ModuleHolder = require('../../../app/Grid/Components/ModuleHolder');
+import { ModulesCache } from '../../../app/Grid/Components/ModulesCache';
+import { ModuleHolder } from '../../../app/Grid/Components/ModuleHolder';
 
-var Utils = require('../../Utils');
-var componentUtils = require('./Utils');
+import { Utils } from '../../Utils';
+import { componentUtils } from './Utils';
 
 
 describe("Grid.Components.ModuleHolder", function() {
