@@ -45,14 +45,15 @@ export const Row = React.createClass({
      * @return {module:Grid.Components.Cell[]} - An array of {@link module:Grid.Components.Cell Cell} components
      */
     renderCells() {
-        return _.map(this.getCells(), function(cell){
+        return _.map(this.getCells(), cell => {
             var type = cell.tagName;
             if (type == 'cell') {
                 return <Cell node={cell} key={Store.getNodeId(cell)}/>;
-            } else if (type == 'resizer') {
+            }
+            if (type == 'resizer') {
                 return <Resizer node={cell} key={Store.getNodeId(cell)}/>;
             }
-        }, this);
+        });
     },
 
     /**

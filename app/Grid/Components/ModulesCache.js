@@ -62,7 +62,7 @@ export const ModulesCache = {
     _extractAttributes(xmlNode) {
         return _.reduce(
             xmlNode.attributes,
-            function(r, a) { r[a.name] = a.value; return r; }, {}
+            (r, a) => { r[a.name] = a.value; return r; }, {}
         );
     },
 

@@ -38,14 +38,14 @@ export const GridMixin = {
      * @return {module:Grid.Components.Row[]} - An array of {@link module:Grid.Components.Row Row} components
      */
     renderRows() {
-        return _.map(this.getRows(), function(row){
+        return _.map(this.getRows(), row => {
             var type = row.tagName;
             if (type == 'row') {
                 return <Row node={row} key={Store.getNodeId(row)}/>;
             } else if (type == 'resizer') {
                 return <Resizer node={row} key={Store.getNodeId(row)}/>;
             }
-        }, this);
+        });
     },
 
     /**

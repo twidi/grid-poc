@@ -835,7 +835,7 @@ let Private = {
      */
     setHoveringTimeout(gridName) {
         this.clearHoveringTimeout(gridName);
-        this.getGridEntry(gridName).hoveringTimeout = setTimeout(_.bind(function() {
+        this.getGridEntry(gridName).hoveringTimeout = setTimeout(() => {
             try {
                 // the grid may not exist anymore
                 this.checkConsistency(gridName);
@@ -843,7 +843,7 @@ let Private = {
                 return;
             }
             this.stayHovering(gridName);
-        }, this), this.hoveringDelay);
+        }, this.hoveringDelay);
     },
 
     /**
@@ -1415,7 +1415,7 @@ Private.exports.__private = Private;
 
 
 // Exceptions must be based on the Error class
-_(Store.Exceptions).forEach(function(exceptionClass, exceptionName) {
+_(Store.Exceptions).forEach((exceptionClass, exceptionName) => {
     exceptionClass.prototype = new Error();
     exceptionClass.prototype.constructor = exceptionClass;
     exceptionClass.displayName = exceptionName;

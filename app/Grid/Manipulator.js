@@ -315,26 +315,26 @@ const Manipulator = {
                 somethingRemoved = false;
 
                 // remove all empty cells (assume only possible children is "content")
-                _(contentNode.querySelectorAll('cell:empty')).forEach(function(cell) {
+                _(contentNode.querySelectorAll('cell:empty')).forEach(cell => {
                     cell.parentNode.removeChild(cell);
                     somethingRemoved = true;
                 });
 
                 // remove all empty rows (assume only possible children are "cells")
-                _(contentNode.querySelectorAll('row:empty')).forEach(function(row) {
+                _(contentNode.querySelectorAll('row:empty')).forEach(row => {
                     row.parentNode.removeChild(row);
                     somethingRemoved = true;
                 });
 
                 // remove all grid withtout rows
-                _(contentNode.querySelectorAll('cell[type=grid] > content:empty')).forEach(function(content) {
+                _(contentNode.querySelectorAll('cell[type=grid] > content:empty')).forEach(content => {
                     content.parentNode.removeChild(content);
                     somethingRemoved = true;
                 });
 
                 // remove rows having only placeholders cells (and more than one: the other ones used to
                 // hold real cells not here anymore)
-                _(contentNode.querySelectorAll('row:not([type=placeholder])')).forEach(function(row) {
+                _(contentNode.querySelectorAll('row:not([type=placeholder])')).forEach(row => {
                     var nbPlaceholderCells = row.querySelectorAll(':scope > cell[type=placeholder]').length;
                     if (nbPlaceholderCells > 1) {
                         var nbCells = row.querySelectorAll(':scope > cell').length;
@@ -381,9 +381,7 @@ const Manipulator = {
                     }
                     if (cells.length == 1 && cells[0].getAttribute('type') == 'grid') {
                         // add all sub rows to the current grid
-                        _(cells[0].querySelectorAll(':scope > content > row')).forEach(function(cellRow) {
-                            contentNode.appendChild(cellRow);
-                        });
+                        _(cells[0].querySelectorAll(':scope > content > row')).forEach(cellRow => contentNode.appendChild(cellRow));
                         // our original row is now empty, we can remove it
                         contentNode.removeChild(rows[0]);
                     } else if (this.reGridType.test(nodeType)) {  // maybe it's a module now
@@ -391,9 +389,7 @@ const Manipulator = {
                         var parentRow = grid.parentNode;
                         if (parentRow && parentRow.querySelectorAll(':scope > cell').length == 1) {
                             // ok so we move our cells in our parent row
-                            _(cells).forEach(function(cell) {
-                                parentRow.appendChild(cell);
-                            });
+                            _(cells).forEach(cell => parentRow.appendChild(cell));
                             parentRow.removeChild(grid);
                             parentGrid = parentRow.parentNode.parentNode;
                         }
@@ -559,29 +555,23 @@ const Manipulator = {
         }
 
         // remove each placeholders rows except ones with a module in
-        _(grid.querySelectorAll('row[type=placeholder]')).forEach(function(row) {
+        _(grid.querySelectorAll('row[type=placeholder]')).forEach(row => {
             if (row.querySelectorAll('cell[type=module]').length) { return; }
             row.parentNode.removeChild(row);
         });
         // remove each placeholders cells except ones with a module in
-        _(grid.querySelectorAll('cell[type=placeholder]')).forEach(function(cell) {
+        _(grid.querySelectorAll('cell[type=placeholder]')).forEach(cell => {
             if (cell.querySelectorAll('cell[type=module]').length) { return; }
             cell.parentNode.removeChild(cell);
         });
         // remove type=placeholder attribute for trees with a module (ie, all nodes left having type=placeholder)
-        _(grid.querySelectorAll('[type=placeholder]')).forEach(function(node) {
-            node.removeAttribute('type');
-        });
+        _(grid.querySelectorAll('[type=placeholder]')).forEach(node => node.removeAttribute('type'));
 
         // clean all module cells
-        _(grid.querySelectorAll('cell[type=grid]')).forEach(function(cell) {
-            Manipulator.cleanGrid(cell);
-        });
+        _(grid.querySelectorAll('cell[type=grid]')).forEach(cell => Manipulator.cleanGrid(cell));
 
         // remove all 'surround' attributes
-        _(grid.querySelectorAll('[surround]')).forEach(function(cell) {
-            cell.removeAttribute('surround');
-        });
+        _(grid.querySelectorAll('[surround]')).forEach(cell => cell.removeAttribute('surround'));
         grid.removeAttribute('surround');
 
         grid.removeAttribute('hasPlaceholders');
@@ -722,9 +712,7 @@ const Manipulator = {
         if (!node.getAttribute('id')) {
             nodes.unshift(node);
         }
-        _(nodes).forEach(function(subnode) {
-            subnode.setAttribute('id', _.uniqueId(subnode.tagName + '-'));
-        });
+        _(nodes).forEach(subnode => subnode.setAttribute('id', _.uniqueId(subnode.tagName + '-')));
     },
 
 
@@ -833,16 +821,14 @@ const Manipulator = {
         }
 
         // remove each resizers
-        _(grid.querySelectorAll('resizer')).forEach(function(resizer) {
-            resizer.parentNode.removeChild(resizer);
-        });
+        _(grid.querySelectorAll('resizer')).forEach(resizer => resizer.parentNode.removeChild(resizer));
 
         grid.removeAttribute('hasResizers');
     },
 };
 
 // Exceptions must be based on the Error class
-_(Manipulator.Exceptions).forEach(function(exceptionClass, exceptionName) {
+_(Manipulator.Exceptions).forEach((exceptionClass, exceptionName) => {
     exceptionClass.prototype = new Error();
     exceptionClass.prototype.constructor = exceptionClass;
     exceptionClass.displayName = exceptionName;

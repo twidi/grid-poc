@@ -103,11 +103,11 @@ export const ModuleHolder = React.createClass({
      */
     onDragLeave(event) {
         // in case of fake drop, the dragleave event may occur just before, so w'ill wait a little
-        setTimeout(function() {
+        setTimeout(() => {
             if (Store.getDesignModeStep(this.props.gridName) == 'hovering') {
                 Actions.stopHovering(this.props.gridName);
             }
-        }.bind(this), this.dragLeaveTimeout);
+        }, this.dragLeaveTimeout);
     },
 
     /**
