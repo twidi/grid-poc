@@ -123,7 +123,7 @@ let Store = {
         }
         const node = grid.querySelector('#' + nodeId);
         if (!node) {
-            throw new this.Exceptions.NodeDoesNotExist("No node with the ID <" + nodeId + ">");
+            throw new this.Exceptions.NodeDoesNotExist('No node with the ID <' + nodeId + '>');
         }
         return node;
     },
@@ -457,7 +457,7 @@ const Private = {
      */
     getGridEntry(gridName) {
         if (!_.has(this.grids, gridName)) {
-            throw new this.Exceptions.GridDoesNotExist("No grid with the name <" + gridName + ">");
+            throw new this.Exceptions.GridDoesNotExist('No grid with the name <' + gridName + '>');
         }
         return this.grids[gridName];
     },
@@ -474,7 +474,7 @@ const Private = {
     addGrid(grid) {
         const name = grid.getAttribute('name');
         if (_.has(this.grids, name)) {
-            throw new this.Exceptions.GridDoesNotExist("There is already a grid the name <" + name + ">");
+            throw new this.Exceptions.GridDoesNotExist('There is already a grid the name <' + name + '>');
         }
         this.grids[name] = {
             name: name,
@@ -649,7 +649,7 @@ const Private = {
         const grid = this.getGrid(gridName);
 
         if (typeof this.designModeValidSteps[step] == 'undefined') {
-            throw new this.Exceptions.InvalidDesignModeStep("The given design mode step <" + step + "> is not a valid one");
+            throw new this.Exceptions.InvalidDesignModeStep('The given design mode step <' + step + '> is not a valid one');
         }
 
         const currentStep = this.getDesignModeStep(gridName);
@@ -659,23 +659,23 @@ const Private = {
         }
 
         if (!_.contains(this.designModeValidSteps[currentStep], step)) {
-            throw new this.Exceptions.InvalidDesignModeStep("The given design mode step <" + step + "> is not valid step to go after the current one which is <" + currentStep + ">");
+            throw new this.Exceptions.InvalidDesignModeStep('The given design mode step <' + step + '> is not valid step to go after the current one which is <' + currentStep + '>');
         }
 
         if (!dontManageGrid) {
             const gridHasPlaceholders = Manipulator.hasPlaceholders(grid);
             const gridHasResizers = Manipulator.hasResizers(grid);
 
-            if (!(step == 'dragging' ||  step == 'prehovering') && gridHasPlaceholders) {
+            if (!(step == 'dragging' || step == 'prehovering') && gridHasPlaceholders) {
                 Manipulator.removePlaceholders(grid);
             }
-            if (!(step == 'enabled' ||  step == 'resizing') && gridHasResizers) {
+            if (!(step == 'enabled' || step == 'resizing') && gridHasResizers) {
                 Manipulator.removeResizers(grid);
             }
-            if ((step == 'dragging' ||  step == 'prehovering') && !gridHasPlaceholders) {
+            if ((step == 'dragging' || step == 'prehovering') && !gridHasPlaceholders) {
                 Manipulator.addPlaceholders(grid);
             }
-            if ((step == 'enabled' ||  step == 'resizing') && !gridHasResizers) {
+            if ((step == 'enabled' || step == 'resizing') && !gridHasResizers) {
                 Manipulator.addResizers(grid);
             }
 
@@ -713,8 +713,8 @@ const Private = {
         if (node) {
             try {
                 const actualNode = this.getSameNodeInActualGrid(gridName, node);
-            } catch(e) {
-                throw new this.Exceptions.Inconsistency("The given cell is not contained in the grid <" + gridName + ">");
+            } catch (e) {
+                throw new this.Exceptions.Inconsistency('The given cell is not contained in the grid <' + gridName + '>');
             }
         }
         return node;
@@ -747,7 +747,7 @@ const Private = {
         if (backup) {
             this.grids[gridName].grid = backup;
             this.clearBackupedGrid(gridName, backupName);
-            return this.grids[gridName].grid
+            return this.grids[gridName].grid;
         }
     },
 
@@ -760,7 +760,7 @@ const Private = {
     clearBackupedGrid(gridName, backupName) {
         try {
             delete this.grids[gridName].backups[backupName];
-        } catch(e) {};
+        } catch (e) {}
     },
 
     /**
@@ -825,7 +825,7 @@ const Private = {
     clearSavedNode(gridName, saveName) {
         try {
             delete this.grids[gridName].nodes[saveName];
-        } catch(e) {};
+        } catch (e) {}
     },
 
     /**
@@ -839,7 +839,7 @@ const Private = {
             try {
                 // the grid may not exist anymore
                 this.checkConsistency(gridName);
-            } catch(e) {
+            } catch (e) {
                 return;
             }
             this.stayHovering(gridName);
@@ -899,7 +899,7 @@ const Private = {
              */
             this.emit('grid.designMode.dragging.start', gridName);
 
-        } catch(e) {
+        } catch (e) {
             // we had an error, restore to the previous state
             this.restoreGrid(gridName, 'dragging');
             this.clearSavedNode('dragging');
@@ -964,7 +964,7 @@ const Private = {
         const currentHovering = this.getSavedNode(gridName, 'hovering');
 
         // we already have an hovering cell...
-        if (currentHovering){
+        if (currentHovering) {
            // do nothing if existing hovering is the same
             if (currentHovering == placeholderCell
                     || currentHovering.getAttribute('id') == placeholderCell.getAttribute('id')) {
@@ -1301,7 +1301,7 @@ const Private = {
         const gridEntry = this.getGridEntry(gridName);
 
         // remove everything after the current index in the history => no forward possible
-        gridEntry.history.splice(gridEntry.currentHistoryIndex+1);
+        gridEntry.history.splice(gridEntry.currentHistoryIndex + 1);
 
         // add the current grid in the history
         gridEntry.history.push(gridEntry.grid);
@@ -1357,7 +1357,7 @@ const Private = {
      */
     goBackInHistory(gridName) {
         if (!this.canGoBackInHistory(gridName)) {
-            throw new this.Exceptions.HistoryOutOfBound("Cannot go backward in history for grid <" + gridName + ">");
+            throw new this.Exceptions.HistoryOutOfBound('Cannot go backward in history for grid <' + gridName + '>');
         }
 
         const gridEntry = this.getGridEntry(gridName);
@@ -1387,7 +1387,7 @@ const Private = {
      */
     goForwardInHistory(gridName) {
         if (!this.canGoForwardInHistory(gridName)) {
-            throw new this.Exceptions.HistoryOutOfBound("Cannot go forward in history for grid <" + gridName + ">");
+            throw new this.Exceptions.HistoryOutOfBound('Cannot go forward in history for grid <' + gridName + '>');
         }
 
         const gridEntry = this.getGridEntry(gridName);

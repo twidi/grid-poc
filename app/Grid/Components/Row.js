@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import classnames from 'classnames'
+import classnames from 'classnames';
 
 import { Actions } from '../Actions';
 import { Store } from '../Store';
@@ -48,10 +48,10 @@ export const Row = React.createClass({
         return _.map(this.getCells(), cell => {
             const type = cell.tagName;
             if (type == 'cell') {
-                return <Cell node={cell} key={Store.getNodeId(cell)}/>;
+                return <Cell node={cell} key={Store.getNodeId(cell)} />;
             }
             if (type == 'resizer') {
-                return <Resizer node={cell} key={Store.getNodeId(cell)}/>;
+                return <Resizer node={cell} key={Store.getNodeId(cell)} />;
             }
         });
     },
@@ -98,7 +98,7 @@ export const Row = React.createClass({
      * cells, including resizers, returned by `renderCells`
      */
     render() {
-        return <div className={this.getRowClasses()} style={this.getRowStyle()}>{this.renderCells()}</div>
+        return <div className={this.getRowClasses()} style={this.getRowStyle()}>{this.renderCells()}</div>;
     }
 
 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames'
+import classnames from 'classnames';
 
 import { Actions } from '../Actions';
 import { Store } from '../Store';
@@ -172,11 +172,11 @@ export const Placeholder = React.createClass({
      * The `drop` event is managed on the document, by the grid itself
      */
     render() {
-        return <div className={this.getClasses()}
-                    ref="placeholder"
-                    onDragEnter={this.onDragEnter}
-                    onDragOver={this.onDragOver}
-                    onDragLeave={this.onDragLeave} />
+        return (<div className={this.getClasses()}
+          ref="placeholder"
+          onDragEnter={this.onDragEnter}
+          onDragOver={this.onDragOver}
+          onDragLeave={this.onDragLeave} />);
     },
 
 

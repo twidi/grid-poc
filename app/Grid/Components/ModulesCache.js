@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import ReactDOM from 'react-dom'
+import ReactDOM from 'react-dom';
 import stringify from 'json-stable-stringify';
 
 import { Modules } from '../Modules';
@@ -128,7 +128,7 @@ export const ModulesCache = {
         if (typeof this._cache[key] === 'undefined') {
             // initialize the cache for this key
 
-            ////// create the module
+            // Create the module
 
             // will be something like "Modules.foo"
             const componentPath = attributes.component;
@@ -140,7 +140,7 @@ export const ModulesCache = {
             // attributes as props
             const moduleElement = React.createElement(Modules[modulePath], attributes);
 
-            ////// create the holder to hold the module in design mode
+            // Create the holder to hold the module in design mode
 
             // create  a react *element* for the holder
             const holderElement = React.createElement(ModuleHolder, {
@@ -150,7 +150,7 @@ export const ModulesCache = {
             });
 
 
-            ////// save in cache
+            // Save in cache
             this._cache[key] = {
                 // keep grid related data
                 gridName: holderElement.props.gridName,
@@ -279,7 +279,7 @@ export const ModulesCache = {
             const newProps = this._getNewHolderProps(cache, component.props);
             if (_.size(newProps)) {
                 // we have new props, so we apply them, the component will be re-rendered
-                const element = React.createElement(ModuleHolder, Object.assign({}, component.props, newProps))
+                const element = React.createElement(ModuleHolder, Object.assign({}, component.props, newProps));
                 cache.holderComponent = ReactDOM.render(element, cache.holderParent);
             } else {
                 // no new props, but ask for a rerender if the the module is not inside the component

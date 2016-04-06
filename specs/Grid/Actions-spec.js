@@ -6,7 +6,7 @@ import { customMatchers } from './custom-matchers';
 import { Utils } from '../Utils';
 
 
-describe("Grid.Actions", function() {
+describe('Grid.Actions', function() {
     var uniqueIdMock;
     var defaultHoveringDelay = Store.__private.hoveringDelay;
     var hoveringDelay = 10;
@@ -53,7 +53,7 @@ describe("Grid.Actions", function() {
     });
 
 
-    it("should add a grid", function(done) {
+    it('should add a grid', function(done) {
         // will set this to True when the callback is called
         var callbackCalled = false;
         // will store the grid name received via the "add" event
@@ -108,7 +108,7 @@ describe("Grid.Actions", function() {
         }
     });
 
-    it("should enter design mode", function(done) {
+    it('should enter design mode', function(done) {
         // will set this to True when the callback is called
         var callbackCalled = false;
         // will store the grid name received via the tested event
@@ -159,7 +159,7 @@ describe("Grid.Actions", function() {
         }
     });
 
-    it("should add a module", function(done) {
+    it('should add a module', function(done) {
         // will set this to True when the callback is called
         var callbackCalled = false;
         // will store the grid name received via the tested event
@@ -222,7 +222,7 @@ describe("Grid.Actions", function() {
         }
     });
 
-    it("should remove a module", function(done) {
+    it('should remove a module', function(done) {
         // will set this to True when the callback is called
         var callbackCalled = false;
         // will store the grid name received via the tested event
@@ -282,7 +282,7 @@ describe("Grid.Actions", function() {
         }
     });
 
-    it("should start dragging", function(done) {
+    it('should start dragging', function(done) {
         // will set this to True when the callback is called
         var callbackCalled = false;
         // will store the grid name received via the tested event
@@ -345,7 +345,7 @@ describe("Grid.Actions", function() {
         }
     });
 
-    it("should restore state if startDragging fail", function(done) {
+    it('should restore state if startDragging fail', function(done) {
         // will set this to True when the callback is called
         var callbackCalled = false;
         // will store the grid name received via the tested event
@@ -391,7 +391,7 @@ describe("Grid.Actions", function() {
     });
 
 
-    it("should cancel dragging", function(done) {
+    it('should cancel dragging', function(done) {
         // will set this to True when the callback is called
         var callbackCalled = false;
         // will store the grid name received via the tested event
@@ -459,7 +459,7 @@ describe("Grid.Actions", function() {
 
     });
 
-    it("should start hovering then stay", function(done) {
+    it('should start hovering then stay', function(done) {
         // will set this to True when the callback is called
         var callbackCalled = false;
         // will store the grid name received via the tested event
@@ -572,7 +572,7 @@ describe("Grid.Actions", function() {
         }, 0.01);
     });
 
-    it("should change hovering placeholder", function(done) {
+    it('should change hovering placeholder', function(done) {
 
         // will set this to True when the callback is called, on hovering.start and stop
         var callbackCalled1 = false;
@@ -647,7 +647,7 @@ describe("Grid.Actions", function() {
         }, 0.01);
     });
 
-    it("should not start hovering if already hovering the same placeholder", function(done) {
+    it('should not start hovering if already hovering the same placeholder', function(done) {
 
         // here we don't want a fast "hovering delay" to avoid fire the "stayHovering" too fast
         Store.__private.hoveringDelay = defaultHoveringDelay;
@@ -709,7 +709,7 @@ describe("Grid.Actions", function() {
         }, 0.01);
     });
 
-    it("should not start hovering if no placeholder", function(done) {
+    it('should not start hovering if no placeholder', function(done) {
 
         // will set this to True when the callback is called
         var callbackCalled = false;
@@ -858,8 +858,8 @@ describe("Grid.Actions", function() {
 
     };
 
-    itShouldStopHovering("should stop hovering when pre-hovering", 0.01, false);
-    itShouldStopHovering("should stop hovering when real (stay) hovering", hoveringDelay, true);
+    itShouldStopHovering('should stop hovering when pre-hovering', 0.01, false);
+    itShouldStopHovering('should stop hovering when real (stay) hovering', hoveringDelay, true);
 
     var itShouldDrop = function(text, delay, stayCalled, otherPlaceholder) {
 
@@ -980,11 +980,11 @@ describe("Grid.Actions", function() {
 
     };
 
-    itShouldDrop("should drop module in placeholder when pre-hovering", 0.01, false, false);
-    itShouldDrop("should drop module in placeholder when real (stay) hovering", hoveringDelay, true, false);
-    itShouldDrop("should drop module in forced placeholder when pre-hovering", 0.01, false, true);
+    itShouldDrop('should drop module in placeholder when pre-hovering', 0.01, false, false);
+    itShouldDrop('should drop module in placeholder when real (stay) hovering', hoveringDelay, true, false);
+    itShouldDrop('should drop module in forced placeholder when pre-hovering', 0.01, false, true);
 
-    it("should cancel drop if in dragging mode", function(done) {
+    it('should cancel drop if in dragging mode', function(done) {
         // will set this to True when the callback is called
         var callbackCalled = false;
 
@@ -1051,7 +1051,7 @@ describe("Grid.Actions", function() {
 
     });
 
-    it("should exit design mode", function(done) {
+    it('should exit design mode', function(done) {
         // will set this to True when the callback is called
         var callbackCalled = false;
         // will store the grid name received via the tested event
@@ -1107,7 +1107,7 @@ describe("Grid.Actions", function() {
         }
     });
 
-    it("should start resizing", function(done) {
+    it('should start resizing', function(done) {
         // will set this to True when the callback is called
         var callbackCalled = false;
         // will store the grid name received via the tested event
@@ -1162,7 +1162,7 @@ describe("Grid.Actions", function() {
         }
     });
 
-    it("should continue resizing", function(done) {
+    it('should continue resizing', function(done) {
         // will set this to True when the callback is called
         var callbackCalled = false;
         // will store the grid name received via the tested event
@@ -1238,7 +1238,7 @@ describe("Grid.Actions", function() {
         }, 0.01);
     });
 
-    it("should ignore resizing if out of bound", function(done) {
+    it('should ignore resizing if out of bound', function(done) {
         // will set this to True when the callback is called
         var callbackCalled = false;
         var callback = function(gridName) {
@@ -1288,7 +1288,7 @@ describe("Grid.Actions", function() {
         }, 0.01);
     });
 
-    it("should stop resizing", function(done) {
+    it('should stop resizing', function(done) {
         // will set this to True when the callback is called
         var callbackCalled = false;
         // will store the grid name received via the tested event
@@ -1365,7 +1365,7 @@ describe("Grid.Actions", function() {
         }, 0.01);
     });
 
-    it("should go through in history", function(done) {
+    it('should go through in history', function(done) {
         // will set this to True when the callbacks are called
         var addCallbackCalled = false;
         var backCallbackCalled = false;

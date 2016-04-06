@@ -325,14 +325,14 @@ export const MainGrid = React.createClass({
 
         // manage the "Add a module" button
         if (designModeStep == 'enabled') {
-            addButton = <button onClick={this.addRandomModule}>Add a random module</button>
+            addButton = <button onClick={this.addRandomModule}>Add a random module</button>;
         }
 
         // manage the "enter/exit design mode" button
         if (designModeStep == 'enabled' || designModeStep == 'disabled') {
             toggleButton = (
                 <button onClick={this.toggleDesignMode}>
-                    {this.isInDesignMode() ? "Exit" : "Enter"} design mode
+                    {this.isInDesignMode() ? 'Exit' : 'Enter'} design mode
                 </button>
             );
         }
@@ -343,13 +343,13 @@ export const MainGrid = React.createClass({
             redoButton = <button onClick={this.redo} disabled={!Store.canGoForwardInHistory(this.state.gridName)}>Redo</button>;
         }
 
-        return <div className={this.getContainerClasses()}>
+        return (<div className={this.getContainerClasses()}>
             <nav className="grid-toolbar">
                 <label>{this.state.gridName}</label>
                 {undoButton}{redoButton}{addButton}{toggleButton}
             </nav>
             {this.renderGrid()}
-        </div>;
+        </div>);
     }
 
 });

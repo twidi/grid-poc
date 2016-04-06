@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import classnames from 'classnames'
+import classnames from 'classnames';
 import stringify from 'json-stable-stringify';
 
 import { Actions } from '../Actions';
@@ -44,7 +44,7 @@ export const ModuleHolder = React.createClass({
     // Workaround to avoid issue due to circular dependencies between ModulesCache
     // and ModuleHolder
     componentWillMount() {
-        this.externalNodesClassNames = [ModulesCache.moduleContainerClassName]
+        this.externalNodesClassNames = [ModulesCache.moduleContainerClassName];
     },
 
     /**
@@ -68,7 +68,7 @@ export const ModuleHolder = React.createClass({
     getExternalNode(className) {
         if (className == ModulesCache.moduleContainerClassName) {
             return ModulesCache.getModuleComponent(null, this.props.uniqueKey);
-        };
+        }
     },
 
     /**
@@ -167,13 +167,13 @@ export const ModuleHolder = React.createClass({
         if (Store.getDesignModeStep(this.props.gridName) == 'enabled' && !Store.isResizing(this.props.gridName)) {
             delButton = <button onClick={this.removeModule} title="Remove this module">X</button>;
         }
-        return <div className='module-holder'
+        return (<div className='module-holder'
                     ref="module-holder"
                     {...this.getRenderAttrs()}>
                     <div className="module-cover">
                     {delButton}
                     </div>
-                </div>;
+                </div>);
     }
 
 });

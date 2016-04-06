@@ -33,7 +33,7 @@ export const App = React.createClass({
     onGridAdded(gridName) {
         this.setState({
             gridName: gridName
-        })
+        });
     },
 
     initGrid() {
@@ -51,9 +51,9 @@ export const App = React.createClass({
 
     render() {
         if (this.state.gridName) {
-            return <MainGrid node={this.getGrid()}/>
+            return <MainGrid node={this.getGrid()} />;
         } else {
-            return <button onClick={this.initGrid}>Initialize the grid</button>
+            return <button onClick={this.initGrid}>Initialize the grid</button>;
         }
     },
 

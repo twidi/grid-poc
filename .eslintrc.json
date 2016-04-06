@@ -33,6 +33,7 @@
             "error",
             "always"
         ],
+        "space-before-function-paren": 0,
         "consistent-return": 0,
         "default-case": 0,
         "eqeqeq": 0,
