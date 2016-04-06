@@ -38,7 +38,7 @@ export const App = React.createClass({
 
     initGrid() {
         // create a base empty grid
-        var grid = Manipulator.createBaseGrid('Test grid');
+        const grid = Manipulator.createBaseGrid('Test grid');
         // with ids
         Manipulator.setIds(grid);
         // and make it usable

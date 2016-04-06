@@ -59,8 +59,8 @@ export const DocumentEventsMixin = {
      */
     clearAllDocumentEventsCache() {
         if (!this._documentEventCache) { return; }
-        var names = _.keys(this._documentEventCache);
-        for (var i = names.length - 1; i >= 0; i--) {
+        const names = _.keys(this._documentEventCache);
+        for (let i = names.length - 1; i >= 0; i--) {
             delete this._documentEventCache[names[i]];
         }
     },

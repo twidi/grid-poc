@@ -46,7 +46,7 @@ export const Row = React.createClass({
      */
     renderCells() {
         return _.map(this.getCells(), cell => {
-            var type = cell.tagName;
+            const type = cell.tagName;
             if (type == 'cell') {
                 return <Cell node={cell} key={Store.getNodeId(cell)}/>;
             }
@@ -84,7 +84,7 @@ export const Row = React.createClass({
      * - `flexGrow`: the relative size of the row as defined in the grid if this is not a row placeholder
      */
     getRowStyle() {
-        var style = {};
+        const style = {};
         if (!this.isPlaceholder()) {
             style.flexGrow = Store.getRelativeSize(this.state.node);
         }

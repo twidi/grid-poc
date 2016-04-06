@@ -1,6 +1,5 @@
-import _ from 'lodash';
 import React from 'react';
-import classnames from 'classnames'
+import classnames from 'classnames';
 
 import { Actions } from '../Actions';
 import { Store } from '../Store';
@@ -42,7 +41,7 @@ export const MainGrid = React.createClass({
      * on the grid from the new props, to be able to update it later
      */
     componentWillReceiveProps(nextProps) {
-        var newName = nextProps.node.getAttribute('name');
+        const newName = nextProps.node.getAttribute('name');
         if (newName != this.state.gridName) {
             this.setState({
                 gridName: newName,
@@ -69,7 +68,7 @@ export const MainGrid = React.createClass({
     onDesignModeChange(eventName, gridName) {
         if (gridName != this.state.gridName) { return; }
 
-        var actualGrid = Store.getGrid(this.state.gridName);
+        const actualGrid = Store.getGrid(this.state.gridName);
 
         if (actualGrid != this.state.node) {
             // if the grid is different, update the state, it will rerender
@@ -148,7 +147,7 @@ export const MainGrid = React.createClass({
      *
      * @param  {event} event - The `fakedragend` event
      */
-    onDocumentDragEnd(event) {
+    onDocumentDragEnd() {
         this.deactivateDropDetection();
     },
 
@@ -191,7 +190,7 @@ export const MainGrid = React.createClass({
      * @param  {DomNode} placeholderNode - The placeholder dom node
      */
     emitFakeDrop(placeholderNode) {
-        var fakeDropEvent = new Event('fakedrop', {view: window, bubbles: true, target: placeholderNode, });
+        const fakeDropEvent = new Event('fakedrop', {view: window, bubbles: true, target: placeholderNode, });
         placeholderNode.dispatchEvent(fakeDropEvent);
     },
 
@@ -232,11 +231,11 @@ export const MainGrid = React.createClass({
      */
     componentWillMount() {
         // hack to pass the original event to onDesignModeChange
-        var self = this;
+        const self = this;
         this.__onDesignModeChange = this.__onDesignModeChange || function(gridName) {
             // `this` is the eventEmitter server, with `event`, the triggered event
             self.onDesignModeChange(this.event, gridName);
-        }
+        };
         Store.on('grid.designMode.**', this.__onDesignModeChange);
     },
 
@@ -265,13 +264,13 @@ export const MainGrid = React.createClass({
      * Add a random module to the grid, with random content text.
      */
     addRandomModule() {
-        var availableModules = [
+        const availableModules = [
             'Modules.Test1',
             'Modules.Test2',
         ];
-        var randomModule = availableModules[Math.floor(availableModules.length * Math.random())];
-        var modulesCount = Store.getGrid(this.state.gridName).querySelectorAll('cell[type=module]').length;
-        var randomText = 'test.' + modulesCount;
+        const randomModule = availableModules[Math.floor(availableModules.length * Math.random())];
+        const modulesCount = Store.getGrid(this.state.gridName).querySelectorAll('cell[type=module]').length;
+        const randomText = 'test.' + modulesCount;
         Actions.addModule(this.state.gridName, randomModule, {text: randomText});
     },
 
@@ -303,8 +302,8 @@ export const MainGrid = React.createClass({
      * - `grid-container-with-resizers`: if the grid has resizers
      */
     getContainerClasses() {
-        var inDesignMode = this.isInDesignMode();
-        var classes = {
+        const inDesignMode = this.isInDesignMode();
+        const classes = {
             'grid-container': true,
             'grid-container-design-mode': inDesignMode,
             'grid-container-with-placeholders': Store.hasPlaceholders(this.state.gridName),
@@ -318,8 +317,11 @@ export const MainGrid = React.createClass({
      * Will render the component
      */
     render() {
-        var addButton, toggleButton, undoButton, redoButton;
-        var designModeStep = this.getDesignModeStep();
+        let addButton;
+        let toggleButton;
+        let undoButton;
+        let redoButton;
+        const designModeStep = this.getDesignModeStep();
 
         // manage the "Add a module" button
         if (designModeStep == 'enabled') {
@@ -328,7 +330,11 @@ export const MainGrid = React.createClass({
 
         // manage the "enter/exit design mode" button
         if (designModeStep == 'enabled' || designModeStep == 'disabled') {
-            toggleButton = <button onClick={this.toggleDesignMode}>{this.isInDesignMode() ? "Exit" : "Enter"} design mode</button>;
+            toggleButton = (
+                <button onClick={this.toggleDesignMode}>
+                    {this.isInDesignMode() ? "Exit" : "Enter"} design mode
+                </button>
+            );
         }
 
         // manage the "undo" and "redo" buttons

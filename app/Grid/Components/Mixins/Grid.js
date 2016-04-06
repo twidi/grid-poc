@@ -39,7 +39,7 @@ export const GridMixin = {
      */
     renderRows() {
         return _.map(this.getRows(), row => {
-            var type = row.tagName;
+            const type = row.tagName;
             if (type == 'row') {
                 return <Row node={row} key={Store.getNodeId(row)}/>;
             } else if (type == 'resizer') {
@@ -61,7 +61,7 @@ export const GridMixin = {
      *                                        and we have placeholders (only if it's not the main grid)
      */
     getGridClasses() {
-        var classes = {
+        const classes = {
             'grid': true,
             'grid-main': this.isMainGrid(),
             'grid-last-level-with-placeholders': !this.isMainGrid()
@@ -81,7 +81,7 @@ export const GridMixin = {
      * - `flexGrow`: the relative size of the grid as defined in the grid if this is not a main grid, only a subgrid
      */
     getGridStyle() {
-        var style = {};
+        const style = {};
         if (!this.isMainGrid()) {
             style.flexGrow = Store.getRelativeSize(this.state.node);
         }

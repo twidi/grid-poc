@@ -99,7 +99,7 @@ let Store = {
      * @return {XML} - The wanted XML grid
      */
     getGrid(gridName) {
-        var grid = this.getGridEntry(gridName);
+        const grid = this.getGridEntry(gridName);
         Manipulator.setIds(grid.grid);
         return grid.grid;
     },
@@ -117,11 +117,11 @@ let Store = {
      * @throws {module:Grid.Store.Exceptions.NodeDoesNotExist} If the given id does not match an existing node id
      */
     getGridNodeById(gridName, nodeId) {
-        var grid = this.getGrid(gridName);
+        const grid = this.getGrid(gridName);
         if (grid.getAttribute('id') == nodeId) {
             return grid;
         }
-        var node = grid.querySelector('#' + nodeId);
+        const node = grid.querySelector('#' + nodeId);
         if (!node) {
             throw new this.Exceptions.NodeDoesNotExist("No node with the ID <" + nodeId + ">");
         }
@@ -169,7 +169,7 @@ let Store = {
      * @return {string} - The current design mode step of the grid
      */
     getDesignModeStep(gridName) {
-        var grid = this.getGridEntry(gridName);
+        const grid = this.getGridEntry(gridName);
         return grid.designModeStep;
     },
 
@@ -181,7 +181,7 @@ let Store = {
      * @return {Boolean} - `true` if the grid is in dragging mode, else `false`
      */
     isDragging(gridName) {
-        var draggingNode = this.grids[gridName].nodes.dragging;
+        const draggingNode = this.grids[gridName].nodes.dragging;
         return !!draggingNode;
     },
 
@@ -194,7 +194,7 @@ let Store = {
      * @return {Boolean} - `true` if the cell is the currently dragged one,or `false`
      */
     isDraggingCell(gridName, cell) {
-        var draggingNode = this.grids[gridName].nodes.dragging;
+        const draggingNode = this.grids[gridName].nodes.dragging;
         if (!draggingNode) { return false; }
         return draggingNode.getAttribute('id') == cell.querySelector(':scope > content').getAttribute('id');
     },
@@ -207,7 +207,7 @@ let Store = {
      * @return {Boolean} - `true` if the grid is in hovering mode, else `false`
      */
     isHovering(gridName) {
-        var hoveringNode = this.grids[gridName].nodes.hovering;
+        const hoveringNode = this.grids[gridName].nodes.hovering;
         return !!hoveringNode;
     },
 
@@ -220,7 +220,7 @@ let Store = {
      * @return {Boolean} - `true` if the placeholder is the currently hovered one,or `false`
      */
     isHoveringPlaceholder(gridName, placeholder) {
-        var hoveringNode = this.grids[gridName].nodes.hovering;
+        const hoveringNode = this.grids[gridName].nodes.hovering;
         if (!hoveringNode) { return false; }
         return hoveringNode.getAttribute('id') == placeholder.getAttribute('id');
     },
@@ -233,7 +233,7 @@ let Store = {
      * @return {Boolean} - `true` if the grid is in resizing mode, else `false`
      */
     isResizing(gridName) {
-        var resizingNode = this.grids[gridName].nodes.resizing;
+        const resizingNode = this.grids[gridName].nodes.resizing;
         return !!resizingNode;
     },
 
@@ -246,7 +246,7 @@ let Store = {
      * @return {Boolean} - `true` if the resizer is the currently dragged one,or `false`
      */
     isMovingResizer(gridName, resizer) {
-        var resizingNode = this.grids[gridName].nodes.resizing;
+        const resizingNode = this.grids[gridName].nodes.resizing;
         if (!resizingNode) { return false; }
         return resizingNode.getAttribute('id') == resizer.getAttribute('id');
     },
@@ -270,7 +270,7 @@ let Store = {
      * @return {Boolean} - `true` if the grid has placeholders, else `false`
      */
     hasPlaceholders(gridName) {
-        var grid = this.getGrid(gridName);
+        const grid = this.getGrid(gridName);
         return Manipulator.hasPlaceholders(grid);
     },
 
@@ -282,7 +282,7 @@ let Store = {
      * @return {Boolean} - `true` if the grid has resizers, else `false`
      */
     hasResizers(gridName) {
-        var grid = this.getGrid(gridName);
+        const grid = this.getGrid(gridName);
         return Manipulator.hasResizers(grid);
     },
 
@@ -305,7 +305,7 @@ let Store = {
      * @return {Boolean} - `true` if an "undo" can be done, or `false`
      */
     canGoBackInHistory(gridName) {
-        var gridEntry = this.getGridEntry(gridName);
+        const gridEntry = this.getGridEntry(gridName);
         return (gridEntry.currentHistoryIndex > 0);
     },
 
@@ -317,7 +317,7 @@ let Store = {
      * @return {Boolean} - `true` if a "redo" can be done, or `false`
      */
     canGoForwardInHistory(gridName) {
-        var gridEntry = this.getGridEntry(gridName);
+        const gridEntry = this.getGridEntry(gridName);
         return (gridEntry.currentHistoryIndex < gridEntry.history.length - 1);
     },
 
@@ -329,7 +329,7 @@ let Store = {
      * @returns {} - Returns nothing
      */
     __removeAllGrids() {
-        for (var gridName in this.grids) {
+        for (const gridName in this.grids) {
             delete this.grids[gridName];
         }
     },
@@ -343,7 +343,7 @@ let Store = {
  * @inner
  *
  */
-let Private = {
+const Private = {
 
     /**
      * Duration (in ms) to take an hovering into account
@@ -472,7 +472,7 @@ let Private = {
      * @fires module:Grid.Store#"grid.add"
      */
     addGrid(grid) {
-        var name = grid.getAttribute('name');
+        const name = grid.getAttribute('name');
         if (_.has(this.grids, name)) {
             throw new this.Exceptions.GridDoesNotExist("There is already a grid the name <" + name + ">");
         }
@@ -514,9 +514,9 @@ let Private = {
      * @fires module:Grid.Store#"grid.designMode.module.add"
      */
     addModule(gridName, module, params) {
-        var grid = this.getGrid(gridName);
+        const grid = this.getGrid(gridName);
 
-        var hasResizers = Manipulator.hasResizers(grid);
+        const hasResizers = Manipulator.hasResizers(grid);
 
         // remove resizers for now
         if (hasResizers) {
@@ -524,13 +524,13 @@ let Private = {
         }
 
         // create a content node, including the module name as an attribute
-        var attributes = _.extend({component: module}, params);
-        var contentNode = Manipulator.createContentNode(grid, attributes);
+        const attributes = _.extend({component: module}, params);
+        const contentNode = Manipulator.createContentNode(grid, attributes);
 
         // add a row with this module only
-        var firstRow = grid.querySelector('row');
-        var newRow = Manipulator.addRow(grid, firstRow);
-        var newCell = Manipulator.addCell(newRow, null, 'module', contentNode);
+        const firstRow = grid.querySelector('row');
+        const newRow = Manipulator.addRow(grid, firstRow);
+        const newCell = Manipulator.addCell(newRow, null, 'module', contentNode);
 
         // put the grid in a good state
         if (hasResizers) {
@@ -563,9 +563,9 @@ let Private = {
      * @fires module:Grid.Store#"grid.designMode.module.remove"
      */
     removeModule(gridName, moduleCell) {
-        var grid = this.getGrid(gridName);
+        const grid = this.getGrid(gridName);
 
-        var hasResizers = Manipulator.hasResizers(grid);
+        const hasResizers = Manipulator.hasResizers(grid);
 
         // remove resizers for now
         if (hasResizers) {
@@ -646,13 +646,13 @@ let Private = {
      * @return {} - Returns nothing
      */
     changeDesignModeStep(gridName, step, dontManageGrid) {
-        var grid = this.getGrid(gridName);
+        const grid = this.getGrid(gridName);
 
         if (typeof this.designModeValidSteps[step] == 'undefined') {
             throw new this.Exceptions.InvalidDesignModeStep("The given design mode step <" + step + "> is not a valid one");
         }
 
-        var currentStep = this.getDesignModeStep(gridName);
+        const currentStep = this.getDesignModeStep(gridName);
 
         if (currentStep == step) {
             return;
@@ -663,8 +663,8 @@ let Private = {
         }
 
         if (!dontManageGrid) {
-            var gridHasPlaceholders = Manipulator.hasPlaceholders(grid);
-            var gridHasResizers = Manipulator.hasResizers(grid);
+            const gridHasPlaceholders = Manipulator.hasPlaceholders(grid);
+            const gridHasResizers = Manipulator.hasResizers(grid);
 
             if (!(step == 'dragging' ||  step == 'prehovering') && gridHasPlaceholders) {
                 Manipulator.removePlaceholders(grid);
@@ -693,7 +693,7 @@ let Private = {
      * @param {string} step - The new design mode step for the grid
      */
     setDesignModeStep(gridName, step) {
-        var grid = this.getGridEntry(gridName);
+        const grid = this.getGridEntry(gridName);
         grid.designModeStep = step;
     },
 
@@ -709,10 +709,10 @@ let Private = {
      * @throws {module:Grid.Store.Exceptions.Inconsistency} If the given node does not belongs to the grid
      */
     checkConsistency(gridName, node) {
-        var grid = this.getGrid(gridName);
+        const grid = this.getGrid(gridName);
         if (node) {
             try {
-                var actualNode = this.getSameNodeInActualGrid(gridName, node);
+                const actualNode = this.getSameNodeInActualGrid(gridName, node);
             } catch(e) {
                 throw new this.Exceptions.Inconsistency("The given cell is not contained in the grid <" + gridName + ">");
             }
@@ -728,7 +728,7 @@ let Private = {
      * @param  {string} backupName - The name of this backup. Should be "dragging" or "hovering"
      */
     backupGrid(gridName, backupName) {
-        var actualGrid = this.grids[gridName].grid;
+        const actualGrid = this.grids[gridName].grid;
         this.grids[gridName].backups[backupName] = actualGrid;
         this.grids[gridName].grid = Manipulator.clone(actualGrid);
     },
@@ -743,7 +743,7 @@ let Private = {
      * @return {XML} - The backuped grid now restored
      */
     restoreGrid(gridName, backupName) {
-        var backup = this.grids[gridName].backups[backupName];
+        const backup = this.grids[gridName].backups[backupName];
         if (backup) {
             this.grids[gridName].grid = backup;
             this.clearBackupedGrid(gridName, backupName);
@@ -799,7 +799,7 @@ let Private = {
      */
     getSavedNode(gridName, saveName, dontUpdate) {
         // get the reference actually saved
-        var oldNode = this.grids[gridName].nodes[saveName];
+        const oldNode = this.grids[gridName].nodes[saveName];
         // Stop if we don't have this node
         if (!oldNode) {
             return null;
@@ -810,7 +810,7 @@ let Private = {
         }
         // search for one with the same id in the actual grid (which may be different, if
         // backuped for example)
-        var newNode = this.getSameNodeInActualGrid(gridName, oldNode);
+        const newNode = this.getSameNodeInActualGrid(gridName, oldNode);
         // save the new node
         this.saveNode(gridName, newNode, saveName);
         // return the node in the actual grid
@@ -852,7 +852,7 @@ let Private = {
      * @param {string} gridName - The grid we work with
      */
     clearHoveringTimeout(gridName) {
-        var timeout = this.getGridEntry(gridName).hoveringTimeout;
+        const timeout = this.getGridEntry(gridName).hoveringTimeout;
         if (timeout) {
             clearTimeout(timeout);
             this.getGridEntry(gridName).hoveringTimeout = null;
@@ -881,7 +881,7 @@ let Private = {
             moduleCell = this.getSameNodeInActualGrid(gridName, moduleCell);
 
             // remove the cell from the grid
-            var contentNode = moduleCell.querySelector(':scope > content');
+            const contentNode = moduleCell.querySelector(':scope > content');
             Manipulator.removeContentNode(contentNode);
 
             // save the cell as the dragging one for this grid
@@ -961,7 +961,7 @@ let Private = {
 
         if (!placeholderCell) { return; }
 
-        var currentHovering = this.getSavedNode(gridName, 'hovering');
+        const currentHovering = this.getSavedNode(gridName, 'hovering');
 
         // we already have an hovering cell...
         if (currentHovering){
@@ -1018,10 +1018,10 @@ let Private = {
         this.backupGrid(gridName, 'hovering');
 
         // use placeholder from the new grid
-        var placeholderCell = this.getSavedNode(gridName, 'hovering');
+        const placeholderCell = this.getSavedNode(gridName, 'hovering');
 
         // attach the dragged module to the placeholder
-        var draggedContent = this.getSavedNode(gridName, 'dragging', true);
+        const draggedContent = this.getSavedNode(gridName, 'dragging', true);
         Manipulator.moveContentToPlaceholder(draggedContent, placeholderCell);
 
         // save the cell as the hovering one for this grid
@@ -1101,7 +1101,7 @@ let Private = {
         }
 
         // retrieve the currently hovered placeholder
-        var existingPlaceholderCell = this.getSavedNode(gridName, 'hovering');
+        const existingPlaceholderCell = this.getSavedNode(gridName, 'hovering');
 
         // if there is an existing placeholder, but the one given differs, use the one given
         if (placeholderCell && placeholderCell != existingPlaceholderCell) {
@@ -1113,7 +1113,7 @@ let Private = {
             this.checkConsistency(gridName);
         }
 
-        var designModeStep = this.getDesignModeStep(gridName);
+        const designModeStep = this.getDesignModeStep(gridName);
 
         // cancel drop if we are back in dragging mode (we may have dropped after
         // exiting a placeholder)
@@ -1128,7 +1128,7 @@ let Private = {
         // attach the dragged module to the placeholder if we were in dragging mode
         // it happens it the drop came before the stay-hoveringTimeout
         if (designModeStep == 'prehovering') {
-            var draggedContent = this.getSavedNode(gridName, 'dragging', true);
+            const draggedContent = this.getSavedNode(gridName, 'dragging', true);
             Manipulator.moveContentToPlaceholder(draggedContent, placeholderCell);
         }
 
@@ -1174,11 +1174,11 @@ let Private = {
         this.saveNode(gridName, resizer, 'resizing');
 
         // get existing relative size information
-        var previousRelativeSize = this.getRelativeSize(resizer.previousSibling);
-        var nextRelativeSize = this.getRelativeSize(resizer.nextSibling);
+        const previousRelativeSize = this.getRelativeSize(resizer.previousSibling);
+        const nextRelativeSize = this.getRelativeSize(resizer.nextSibling);
 
         // and save computed data
-        var gridEntry = this.getGridEntry(gridName);
+        const gridEntry = this.getGridEntry(gridName);
         gridEntry.resizing = {
             initialPos: initialPos,
             previousRelativeSize:  previousRelativeSize,
@@ -1214,19 +1214,19 @@ let Private = {
     resize(gridName, currentPos) {
         this.checkConsistency(gridName);
 
-        var resizing = this.getGridEntry(gridName).resizing;
+        const resizing = this.getGridEntry(gridName).resizing;
 
         // compute new related sizes based on the new position
-        var relatedDiff = (currentPos - resizing.initialPos) * resizing.sizeRatio;
-        var newPreviousRelativeSize = resizing.previousRelativeSize + relatedDiff;
-        var newNextRelativeSize = resizing.nextRelativeSize - relatedDiff;
+        const relatedDiff = (currentPos - resizing.initialPos) * resizing.sizeRatio;
+        const newPreviousRelativeSize = resizing.previousRelativeSize + relatedDiff;
+        const newNextRelativeSize = resizing.nextRelativeSize - relatedDiff;
 
         // we are out of bound, so we don't do anything
         if (newPreviousRelativeSize <= 0 || newNextRelativeSize <= 0) {
             return;
         }
 
-        var eventData = {
+        const eventData = {
             previousRelativeSize: newPreviousRelativeSize,
             nextRelativeSize: newNextRelativeSize,
         };
@@ -1241,7 +1241,7 @@ let Private = {
         this.emit('grid.designMode.resizing.move', gridName, eventData);
 
         // save relative sizes in the grid
-        var resizer = this.getSavedNode(gridName, 'resizing');
+        const resizer = this.getSavedNode(gridName, 'resizing');
         resizer.previousSibling.setAttribute('relativeSize', newPreviousRelativeSize);
         resizer.nextSibling.setAttribute('relativeSize', newNextRelativeSize);
     },
@@ -1272,11 +1272,11 @@ let Private = {
         this.emit('grid.designMode.resizing.stop', gridName);
 
         // add the grid in history if it really changed
-        var resizer = this.getSavedNode(gridName, 'resizing');
+        const resizer = this.getSavedNode(gridName, 'resizing');
         if (!resizer) return;
-        var currentPreviousRelativeSize = this.getRelativeSize(resizer.previousSibling);
-        var currentNextRelativeSize = this.getRelativeSize(resizer.nextSibling);
-        var resizing = this.getGridEntry(gridName).resizing;
+        const currentPreviousRelativeSize = this.getRelativeSize(resizer.previousSibling);
+        const currentNextRelativeSize = this.getRelativeSize(resizer.nextSibling);
+        const resizing = this.getGridEntry(gridName).resizing;
         if (resizing.previousRelativeSize != currentPreviousRelativeSize || resizing.nextRelativeSize != currentNextRelativeSize) {
             this.addCurrentGridToHistory(gridName);
         }
@@ -1298,7 +1298,7 @@ let Private = {
      * @param {String} gridName - The name of the grid for which we want to update the history
      */
     addCurrentGridToHistory(gridName) {
-        var gridEntry = this.getGridEntry(gridName);
+        const gridEntry = this.getGridEntry(gridName);
 
         // remove everything after the current index in the history => no forward possible
         gridEntry.history.splice(gridEntry.currentHistoryIndex+1);
@@ -1333,7 +1333,7 @@ let Private = {
      * @param {String} gridName - The name of the grid for which we want to restore from the history
      */
     restoreFromCurrentHistoryIndex(gridName) {
-        var gridEntry = this.getGridEntry(gridName);
+        const gridEntry = this.getGridEntry(gridName);
         gridEntry.grid = Manipulator.clone(gridEntry.history[gridEntry.currentHistoryIndex]);
         if (Manipulator.hasPlaceholders(gridEntry.grid)) {
             Manipulator.removePlaceholders(gridEntry.grid);
@@ -1360,7 +1360,7 @@ let Private = {
             throw new this.Exceptions.HistoryOutOfBound("Cannot go backward in history for grid <" + gridName + ">");
         }
 
-        var gridEntry = this.getGridEntry(gridName);
+        const gridEntry = this.getGridEntry(gridName);
         gridEntry.currentHistoryIndex--;
 
         this.restoreFromCurrentHistoryIndex(gridName);
@@ -1390,7 +1390,7 @@ let Private = {
             throw new this.Exceptions.HistoryOutOfBound("Cannot go forward in history for grid <" + gridName + ">");
         }
 
-        var gridEntry = this.getGridEntry(gridName);
+        const gridEntry = this.getGridEntry(gridName);
         gridEntry.currentHistoryIndex++;
 
         this.restoreFromCurrentHistoryIndex(gridName);

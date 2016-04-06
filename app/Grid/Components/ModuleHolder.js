@@ -129,7 +129,7 @@ export const ModuleHolder = React.createClass({
      * @return {object} - A "dict" with the attributes
      */
     getRenderAttrs() {
-        var attrs = {};
+        const attrs = {};
 
         if (Store.getDesignModeStep(this.props.gridName) == 'enabled') {
             // design mode activated, we can activate dragging
@@ -163,7 +163,7 @@ export const ModuleHolder = React.createClass({
      * This cover contain a "delete" button in design mode to delete the
      */
     render() {
-        var delButton;
+        let delButton;
         if (Store.getDesignModeStep(this.props.gridName) == 'enabled' && !Store.isResizing(this.props.gridName)) {
             delButton = <button onClick={this.removeModule} title="Remove this module">X</button>;
         }

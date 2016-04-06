@@ -153,7 +153,7 @@ export const Placeholder = React.createClass({
      *
      */
     getClasses() {
-        var classes = {
+        const classes = {
             'grid-cell': true,
             'grid-cell-placeholder': true,
             'grid-cell-placeholder-surround': this.state.node.hasAttribute('surround'),

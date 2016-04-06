@@ -1,13 +1,9 @@
-import _ from 'lodash';
 import React from 'react';
-import classnames from 'classnames'
+import classnames from 'classnames';
 
-import { Actions } from '../Actions';
 import { Store } from '../Store';
 
 import { ModulesCache } from './ModulesCache';
-
-import { ModuleHolder } from './ModuleHolder'
 import { NodesHolderMixin } from './Mixins/NodesHolder';
 import { NodeMixin } from './Mixins/Node';
 import { Placeholder } from './Placeholder';
@@ -140,7 +136,7 @@ export const Cell = React.createClass({
      * @return {module:Grid.Components.SubGrid} - The rendered {@link module:Grid.Components.SubGrid SubGrid} component
      */
     renderAsSubGrid() {
-        return <SubGrid node={this.state.node} />
+        return <SubGrid node={this.state.node} />;
     },
 
     /**
@@ -156,7 +152,7 @@ export const Cell = React.createClass({
      *
      */
     getModuleCellClasses() {
-        var classes = {
+        const classes = {
             'grid-cell': true,
             'grid-cell-module': this.isModule(),
             'grid-cell-module-dragging': Store.isDraggingCell(this.getGridName(), this.state.node),
@@ -174,7 +170,7 @@ export const Cell = React.createClass({
      * - `flexGrow`: the relative size of the cell as defined in the grid
      */
     getModuleStyle() {
-        var style = {
+        const style = {
             flexGrow: Store.getRelativeSize(this.state.node),
         };
         return style;
@@ -182,10 +178,11 @@ export const Cell = React.createClass({
 
     /**
      * Render the cell as a standalone component: a empty div that, if it's a module, will hold
-     * the real module component (not directly rendered), via {@link module:Grid.Components.Mixins.NodesHolder NodesHolderMixin}
+     * the real module component (not directly rendered),
+     * via {@link module:Grid.Components.Mixins.NodesHolder NodesHolderMixin}
      */
     renderAsModule() {
-        return <div className={this.getModuleCellClasses()} style={this.getModuleStyle()}/>
+        return <div className={this.getModuleCellClasses()} style={this.getModuleStyle()} />;
     },
 
     /**
@@ -199,16 +196,13 @@ export const Cell = React.createClass({
      * Render the cell depending on its type
      */
     render() {
-        switch(this.getType()) {
+        switch (this.getType()) {
             case 'grid':
                 return this.renderAsSubGrid();
-                break;
             case 'placeholder':
                 return this.renderAsPlaceholder();
-                break;
             case 'module':
                 return this.renderAsModule();
-                break;
         }
     }
 

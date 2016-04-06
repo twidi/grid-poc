@@ -80,11 +80,11 @@ export const NodesHolderMixin = {
      */
     _attachExternalNodes() {
         if (!this.canHoldExternalNodes()) { return; }
-        var domNode = ReactDOM.findDOMNode(this);
+        const domNode = ReactDOM.findDOMNode(this);
 
-        for (var i = 0; i < this.externalNodesClassNames.length; i++) {
-            var className = this.externalNodesClassNames[i];
-            var externalNode = this.getExternalNode(className);
+        for (let i = 0; i < this.externalNodesClassNames.length; i++) {
+            const className = this.externalNodesClassNames[i];
+            const externalNode = this.getExternalNode(className);
             if (externalNode) {
                 this._attachExternalNode(externalNode, className, domNode);
             }
@@ -116,10 +116,10 @@ export const NodesHolderMixin = {
      */
     _detachExternalNodes() {
         if (!this.canHoldExternalNodes()) { return; }
-        var domNode = ReactDOM.findDOMNode(this);
-        for (var i = this.externalNodesClassNames.length - 1; i >= 0; i--) {
-            var className = this.externalNodesClassNames[i];
-            var externalNode = domNode.querySelector(':scope > .' + className);
+        const domNode = ReactDOM.findDOMNode(this);
+        for (let i = this.externalNodesClassNames.length - 1; i >= 0; i--) {
+            const className = this.externalNodesClassNames[i];
+            const externalNode = domNode.querySelector(':scope > .' + className);
             if (externalNode) {
                 this._detachExternalNode(externalNode, domNode);
             }

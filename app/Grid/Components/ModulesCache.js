@@ -105,7 +105,7 @@ export const ModulesCache = {
      * @return {object} - The cache entry for the given cell/key
      */
     _getFromCache(cell, key) {
-        var attributes;
+        let attributes;
 
         if (key) {
             // extract atributes from the key if we have it
@@ -115,7 +115,7 @@ export const ModulesCache = {
             // compose the key if not given (expect the cell)
 
             // it's where the module information are
-            var contentNode = cell.state.node.querySelector(':scope > content');
+            const contentNode = cell.state.node.querySelector(':scope > content');
 
             // get all attributes of the content node, to use as props for the
             // module component
@@ -131,19 +131,19 @@ export const ModulesCache = {
             ////// create the module
 
             // will be something like "Modules.foo"
-            var componentPath = attributes.component;
+            const componentPath = attributes.component;
 
             // Remove the "Modules." part, as they are all hold in the "Modules" module
-            var modulePath = componentPath.split('.').splice(1).join('/');
+            const modulePath = componentPath.split('.').splice(1).join('/');
 
             // create a react *element* for the wanted module, with the content
             // attributes as props
-            var moduleElement = React.createElement(Modules[modulePath], attributes);
+            const moduleElement = React.createElement(Modules[modulePath], attributes);
 
             ////// create the holder to hold the module in design mode
 
             // create  a react *element* for the holder
-            var holderElement = React.createElement(ModuleHolder, {
+            const holderElement = React.createElement(ModuleHolder, {
                 uniqueKey: key,
                 gridName: cell.getGridName(),
                 gridCell: cell.state.node,
@@ -167,7 +167,7 @@ export const ModulesCache = {
 
             // if the cache exists update grid related data
             if (cell) {
-                var cache = this._cache[key];
+                const cache = this._cache[key];
                 cache.gridName = cell.getGridName();
                 cache.gridCell = cell.state.node;
             }
@@ -195,7 +195,7 @@ export const ModulesCache = {
      * @return {DomNode} - A dom node holding the module react component
      */
     getModuleComponent(cell, key) {
-        var cache = this._getFromCache(cell, key);
+        const cache = this._getFromCache(cell, key);
 
         if (typeof cache.moduleComponent === 'undefined') {
 
@@ -223,8 +223,8 @@ export const ModulesCache = {
      * @private
      */
     _getNewHolderProps(cache, props) {
-        var newProps = {};
-        for (var key in props) {
+        const newProps = {};
+        for (const key in props) {
             if (typeof cache[key] === 'undefined') { continue; }
             if (props[key] == cache[key]) { continue; }
             newProps[key] = cache[key];
@@ -257,13 +257,13 @@ export const ModulesCache = {
      * {@link module:Grid.Components.ModuleHolder ModuleHolder} react component
      */
     getHolderComponent(cell, key) {
-        var cache = this._getFromCache(cell, key);
+        const cache = this._getFromCache(cell, key);
 
         if (typeof cache.holderComponent === 'undefined') {
             // the component does not exist in cache, so we create it
 
             // update element props if needed
-            var newProps = this._getNewHolderProps(cache, cache.holderElement.props);
+            const newProps = this._getNewHolderProps(cache, cache.holderElement.props);
             _.extend(cache.holderElement.props, newProps);
 
             // will hold the rendered module component
@@ -275,11 +275,11 @@ export const ModulesCache = {
 
         } else {
             // if the component exists in cache, update its props
-            var component = cache.holderComponent;
-            var newProps = this._getNewHolderProps(cache, component.props);
+            const component = cache.holderComponent;
+            const newProps = this._getNewHolderProps(cache, component.props);
             if (_.size(newProps)) {
                 // we have new props, so we apply them, the component will be re-rendered
-                var element = React.createElement(ModuleHolder, Object.assign({}, component.props, newProps))
+                const element = React.createElement(ModuleHolder, Object.assign({}, component.props, newProps))
                 cache.holderComponent = ReactDOM.render(element, cache.holderParent);
             } else {
                 // no new props, but ask for a rerender if the the module is not inside the component

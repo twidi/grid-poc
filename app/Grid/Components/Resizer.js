@@ -53,7 +53,7 @@ export const Resizer = React.createClass({
      *
      */
     getResizerClasses() {
-        var isVertical = this.isVertical();
+        const isVertical = this.isVertical();
         return classnames({
             'grid-resizer': true,
             'grid-resizer-vertical': isVertical,
@@ -72,7 +72,7 @@ export const Resizer = React.createClass({
      */
     onResizingMove(gridName, resizeData) {
         if (!Store.isMovingResizer(gridName, this.state.node)) { return; }
-        var domNode = this.refs['resizer'];
+        const domNode = this.refs['resizer'];
         this.setDomNodeRelativeSise(domNode.previousSibling, resizeData.previousRelativeSize);
         this.setDomNodeRelativeSise(domNode.nextSibling, resizeData.nextRelativeSize);
 
@@ -147,13 +147,13 @@ export const Resizer = React.createClass({
         event.stopPropagation();
         event.preventDefault();
 
-        var domNode = this.refs['resizer'];
+        const domNode = this.refs['resizer'];
 
         // compute the total size of the nodes before and after the resizer
-        var fullSize = this.getDomNodeSize(domNode.previousSibling) + this.getDomNodeSize(domNode.nextSibling);
+        const fullSize = this.getDomNodeSize(domNode.previousSibling) + this.getDomNodeSize(domNode.nextSibling);
 
         // look at where is located the mouse, to use it as a starting point
-        var position = this.getScreenMousePosition(event);
+        const position = this.getScreenMousePosition(event);
 
         // indicate the store that the user want to start a resizing
         Actions.startResizing(this.getGridName(), this.state.node, fullSize, position);
@@ -195,7 +195,7 @@ export const Resizer = React.createClass({
      * @return {object} - A "dict" with the attributes
      */
     getRenderAttrs() {
-        var attrs = {};
+        const attrs = {};
         if (this.getDesignModeStep() == 'enabled') {
             attrs.onMouseDown = this.onMouseDown;
         }
