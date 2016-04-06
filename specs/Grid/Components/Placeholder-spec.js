@@ -15,7 +15,7 @@ import { TestDocumentEventsMixin } from '../../Utils/ReactMixins/DocumentEvents'
 import { Utils } from '../../Utils';
 
 
-describe("Grid.Components.Placeholder", function() {
+describe('Grid.Components.Placeholder', function() {
     var uniqueIdMock;
 
     // main grid, and the placeholder to test defined in beforeEach
@@ -45,13 +45,13 @@ describe("Grid.Components.Placeholder", function() {
         componentUtils.unmountAllComponents();
     });
 
-    it("should manage document events", function(done) {
+    it('should manage document events', function(done) {
         var element = React.createElement(Placeholder, {node: gridPlaceholder});
         var component = componentUtils.renderIntoDocument(element);
         TestDocumentEventsMixin(component, done);
     });
 
-    it("should render a placeholder", function() {
+    it('should render a placeholder', function() {
         var element = React.createElement(Placeholder, {node: gridPlaceholder});
         var component = componentUtils.renderIntoDocument(element);
         var domNode = ReactDOM.findDOMNode(component);
@@ -81,7 +81,7 @@ describe("Grid.Components.Placeholder", function() {
         expect(domNode.classList.contains('grid-cell-placeholder-prehovering')).toBe(true);
     });
 
-    it("should activate/deactivate drop detection", function() {
+    it('should activate/deactivate drop detection', function() {
         jasmineReact.spyOnClass(Placeholder, 'activateDropDetection').and.callThrough();
         jasmineReact.spyOnClass(Placeholder, 'deactivateDropDetection').and.callThrough();
         var placeholderProto = jasmineReact.classPrototype(Placeholder);
@@ -98,8 +98,8 @@ describe("Grid.Components.Placeholder", function() {
         expect(_.has(component._documentEventCache, 'onDocumentDetectDrop')).toBe(true);
         expect(_.has(component._documentEventCache, 'onDocumentDragEnd')).toBe(true);
 
-        placeholderProto.activateDropDetection.calls.reset()
-        placeholderProto.deactivateDropDetection.calls.reset()
+        placeholderProto.activateDropDetection.calls.reset();
+        placeholderProto.deactivateDropDetection.calls.reset();
 
         // an update should deactivate then reactivate
         component.forceUpdate();
@@ -107,8 +107,8 @@ describe("Grid.Components.Placeholder", function() {
         expect(placeholderProto.deactivateDropDetection.calls.count()).toEqual(1);
 
 
-        placeholderProto.activateDropDetection.calls.reset()
-        placeholderProto.deactivateDropDetection.calls.reset()
+        placeholderProto.activateDropDetection.calls.reset();
+        placeholderProto.deactivateDropDetection.calls.reset();
 
 
         // unmouting should deactivate
@@ -118,7 +118,7 @@ describe("Grid.Components.Placeholder", function() {
 
     });
 
-    it("should deactivate drop detection when drag is finished", function() {
+    it('should deactivate drop detection when drag is finished', function() {
         jasmineReact.spyOnClass(Placeholder, 'deactivateDropDetection').and.callThrough();
         var placeholderProto = jasmineReact.classPrototype(Placeholder);
 
@@ -130,7 +130,7 @@ describe("Grid.Components.Placeholder", function() {
 
     });
 
-    it("should start hovering on drag enter", function() {
+    it('should start hovering on drag enter', function() {
         jasmineReact.spyOnClass(Placeholder, 'onDragEnter').and.callThrough();
         var placeholderProto = jasmineReact.classPrototype(Placeholder);
         spyOn(Actions, 'startHovering').and.returnValue(false);
@@ -153,7 +153,7 @@ describe("Grid.Components.Placeholder", function() {
         expect(args[1]).toEqual(gridPlaceholder);
     });
 
-    it("should start hovering on drag over", function() {
+    it('should start hovering on drag over', function() {
         jasmineReact.spyOnClass(Placeholder, 'onDragOver').and.callThrough();
         var placeholderProto = jasmineReact.classPrototype(Placeholder);
         spyOn(Actions, 'startHovering').and.returnValue(false);
@@ -176,7 +176,7 @@ describe("Grid.Components.Placeholder", function() {
         expect(args[1]).toEqual(gridPlaceholder);
     });
 
-    it("should stop hovering on drag leave", function() {
+    it('should stop hovering on drag leave', function() {
         jasmineReact.spyOnClass(Placeholder, 'onDragLeave').and.callThrough();
         var placeholderProto = jasmineReact.classPrototype(Placeholder);
         spyOn(Actions, 'stopHovering').and.returnValue(false);
@@ -208,7 +208,7 @@ describe("Grid.Components.Placeholder", function() {
         expect(args[0]).toEqual('Test grid');
     });
 
-    it("should drop when a fake drop is triggered", function() {
+    it('should drop when a fake drop is triggered', function() {
         jasmineReact.spyOnClass(Placeholder, 'onDocumentDetectDrop').and.callThrough();
         jasmineReact.spyOnClass(Placeholder, 'deactivateDropDetection').and.callThrough();
         var placeholderProto = jasmineReact.classPrototype(Placeholder);

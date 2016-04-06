@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import classnames from 'classnames'
+import classnames from 'classnames';
 
 import { Store } from '../../Store';
 import { Resizer } from '../Resizer';
@@ -41,9 +41,9 @@ export const GridMixin = {
         return _.map(this.getRows(), row => {
             const type = row.tagName;
             if (type == 'row') {
-                return <Row node={row} key={Store.getNodeId(row)}/>;
+                return <Row node={row} key={Store.getNodeId(row)} />;
             } else if (type == 'resizer') {
-                return <Resizer node={row} key={Store.getNodeId(row)}/>;
+                return <Resizer node={row} key={Store.getNodeId(row)} />;
             }
         });
     },
@@ -95,7 +95,7 @@ export const GridMixin = {
      * rows, including resizers, returned by `renderRows`
      */
     renderGrid() {
-        return <div className={this.getGridClasses()} style={this.getGridStyle()}>{this.renderRows()}</div>
+        return <div className={this.getGridClasses()} style={this.getGridStyle()}>{this.renderRows()}</div>;
     },
 
 };

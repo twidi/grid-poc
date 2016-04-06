@@ -16,7 +16,7 @@ import { TestDocumentEventsMixin } from '../../Utils/ReactMixins/DocumentEvents'
 import { Utils } from '../../Utils';
 
 
-describe("Grid.Components.Resizer", function() {
+describe('Grid.Components.Resizer', function() {
     var uniqueIdMock;
 
     // main grid, and the resizers to test defined in beforeEach
@@ -48,31 +48,31 @@ describe("Grid.Components.Resizer", function() {
         componentUtils.unmountAllComponents();
     });
 
-    it("should manage document events", function(done) {
+    it('should manage document events', function(done) {
         var element = React.createElement(Resizer, {node: verticalResizer});
         var component = componentUtils.renderIntoDocument(element);
         TestDocumentEventsMixin(component, done);
     });
 
-    it("should access its main grid", function() {
+    it('should access its main grid', function() {
         var element = React.createElement(Resizer, {node: verticalResizer});
         var component = componentUtils.renderIntoDocument(element);
         expect(component.getGrid()).toBe(testGrid);
     });
 
-    it("should get its id", function() {
+    it('should get its id', function() {
         var element = React.createElement(Resizer, {node: verticalResizer});
         var component = componentUtils.renderIntoDocument(element);
         expect(component.getNodeId()).toBe(verticalResizer.getAttribute('id'));
     });
 
-    it("should get the main grid name", function() {
+    it('should get the main grid name', function() {
         var element = React.createElement(Resizer, {node: verticalResizer});
         var component = componentUtils.renderIntoDocument(element);
         expect(component.getGridName()).toEqual('Test grid');
     });
 
-    it("should get the design mode step", function() {
+    it('should get the design mode step', function() {
         var element = React.createElement(Resizer, {node: verticalResizer});
         var component = componentUtils.renderIntoDocument(element);
         expect(component.getDesignModeStep()).toEqual('disabled');
@@ -81,7 +81,7 @@ describe("Grid.Components.Resizer", function() {
         expect(component.getDesignModeStep()).toEqual('enabled');
     });
 
-    it("should know if it's in design mode", function() {
+    it('should know if it\'s in design mode', function() {
         var element = React.createElement(Resizer, {node: verticalResizer});
         var component = componentUtils.renderIntoDocument(element);
         expect(component.isInDesignMode()).toBe(false);
@@ -90,7 +90,7 @@ describe("Grid.Components.Resizer", function() {
         expect(component.isInDesignMode()).toBe(true);
     });
 
-    it("should know if it's a vertical or horizontal placeholder", function() {
+    it('should know if it\'s a vertical or horizontal placeholder', function() {
         var element = React.createElement(Resizer, {node: verticalResizer});
         var component = componentUtils.renderIntoDocument(element);
         expect(component.isVertical()).toBe(true);
@@ -102,7 +102,7 @@ describe("Grid.Components.Resizer", function() {
         expect(component.isHorizontal()).toBe(true);
     });
 
-    it("should render a vertical resizer", function() {
+    it('should render a vertical resizer', function() {
         var element = React.createElement(Resizer, {node: verticalResizer});
         var component = componentUtils.renderIntoDocument(element);
         var domNode = ReactDOM.findDOMNode(component);
@@ -112,7 +112,7 @@ describe("Grid.Components.Resizer", function() {
         expect(domNode.classList.contains('grid-resizer-horizontal')).toBe(false);
     });
 
-    it("should render a horizontal resizer", function() {
+    it('should render a horizontal resizer', function() {
         var element = React.createElement(Resizer, {node: horizontalResizer});
         var component = componentUtils.renderIntoDocument(element);
         var domNode = ReactDOM.findDOMNode(component);
@@ -122,7 +122,7 @@ describe("Grid.Components.Resizer", function() {
         expect(domNode.classList.contains('grid-resizer-horizontal')).toBe(true);
     });
 
-    it("should handle mouse down event in design mode", function(done) {
+    it('should handle mouse down event in design mode', function(done) {
         jasmineReact.spyOnClass(Resizer, 'onMouseDown').and.returnValue();
         var resizerProto = jasmineReact.classPrototype(Resizer);
 
@@ -157,12 +157,12 @@ describe("Grid.Components.Resizer", function() {
 
                 // tell jasmine we're done
                 done();
-            }, 0.01)
-        }, 0.01)
+            }, 0.01);
+        }, 0.01);
 
     });
 
-    it("should activate/deactivate document resize detection on mouse down/up", function(done) {
+    it('should activate/deactivate document resize detection on mouse down/up', function(done) {
         jasmineReact.spyOnClass(Resizer, 'activateResizingDetection').and.callThrough();
         jasmineReact.spyOnClass(Resizer, 'deactivateResizingDetection').and.callThrough();
         var resizerProto = jasmineReact.classPrototype(Resizer);
@@ -205,11 +205,11 @@ describe("Grid.Components.Resizer", function() {
 
                 // tell jasmine we're done
                 done();
-            }, 0.01)
-        }, 0.01)
+            }, 0.01);
+        }, 0.01);
     });
 
-    it("should activate resizing on mouse down", function(done) {
+    it('should activate resizing on mouse down', function(done) {
         spyOn(Actions, 'startResizing').and.returnValue();
         jasmineReact.spyOnClass(Resizer, 'getDomNodeSize').and.returnValue(150);
 
@@ -240,10 +240,10 @@ describe("Grid.Components.Resizer", function() {
 
             // tell jasmine we're done
             done();
-        }, 0.01)
+        }, 0.01);
     });
 
-    it("should continue resizing on mouse move", function(done) {
+    it('should continue resizing on mouse move', function(done) {
         spyOn(Actions, 'resize').and.returnValue();
         jasmineReact.spyOnClass(Resizer, 'getDomNodeSize').and.returnValue(150);
 
@@ -285,11 +285,11 @@ describe("Grid.Components.Resizer", function() {
 
                 // tell jasmine we're done
                 done();
-            }, 0.01)
-        }, 0.01)
+            }, 0.01);
+        }, 0.01);
     });
 
-    it("should stop resizing on mouse up", function(done) {
+    it('should stop resizing on mouse up', function(done) {
         spyOn(Actions, 'stopResizing').and.returnValue();
         jasmineReact.spyOnClass(Resizer, 'getDomNodeSize').and.returnValue(150);
 
@@ -330,11 +330,11 @@ describe("Grid.Components.Resizer", function() {
 
                 // tell jasmine we're done
                 done();
-            }, 0.01)
-        }, 0.01)
+            }, 0.01);
+        }, 0.01);
     });
 
-    it("should resize elements around", function(done) {
+    it('should resize elements around', function(done) {
         jasmineReact.spyOnClass(Resizer, 'onResizingMove').and.callThrough();
         jasmineReact.spyOnClass(Resizer, 'setDomNodeRelativeSise').and.returnValue();
         var resizerProto = jasmineReact.classPrototype(Resizer);
@@ -385,8 +385,8 @@ describe("Grid.Components.Resizer", function() {
 
                 // tell jasmine we're done
                 done();
-            }, 0.01)
-        }, 0.01)
+            }, 0.01);
+        }, 0.01);
     });
 
 });

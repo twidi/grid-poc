@@ -47,62 +47,62 @@ export const componentUtils = {
     countRows(component) {
         try {
             return TestUtils.scryRenderedComponentsWithType(component, Row).length;
-        } catch(e) {
+        } catch (e) {
             return 0;
-        };
+        }
     },
     countSubGrids(component) {
         try {
             return TestUtils.scryRenderedComponentsWithType(component, SubGrid).length;
-        } catch(e) {
+        } catch (e) {
             return 0;
-        };
+        }
     },
     countModules(component) {
         try {
             return TestUtils.scryRenderedDOMComponentsWithClass(component, 'grid-cell-module').length;
-        } catch(e) {
+        } catch (e) {
             return 0;
-        };
+        }
     },
     countRowPlaceholders(component) {
         try {
             return TestUtils.scryRenderedDOMComponentsWithClass(component, 'grid-row-placeholder').length;
-        } catch(e) {
+        } catch (e) {
             return 0;
-        };
+        }
     },
     countCellPlaceholders(component) {
         try {
             return TestUtils.scryRenderedDOMComponentsWithClass(component, 'grid-cell-placeholder').length;
-        } catch(e) {
+        } catch (e) {
             return 0;
-        };
+        }
     },
     countResizers(component) {
         try {
             return TestUtils.scryRenderedDOMComponentsWithClass(component, 'grid-resizer').length;
-        } catch(e) {
+        } catch (e) {
             return 0;
-        };
+        }
     },
     countVerticalResizers(component) {
         try {
             return TestUtils.scryRenderedDOMComponentsWithClass(component, 'grid-resizer-vertical').length;
-        } catch(e) {
+        } catch (e) {
             return 0;
-        };
+        }
     },
     countHorizontalResizers(component) {
         try {
             return TestUtils.scryRenderedDOMComponentsWithClass(component, 'grid-resizer-horizontal').length;
-        } catch(e) {
+        } catch (e) {
             return 0;
-        };
+        }
     },
 
     clearModulesCache() {
-        ModulesCache._cache ={};
+        ModulesCache._cache = {};
     },
 
     getTextContent(component) {
@@ -115,11 +115,11 @@ export const componentUtils = {
         return component;
     },
 
-    unmountComponent(component){
+    unmountComponent(component) {
         // used in unmountAllComponents, it's a copy of the same function in
         // jasmine-react, but we cannot use it as it seems that we have in this
         // case many React instances that doesn't share mounted components
-        if(component.isMounted()){
+        if (component.isMounted()) {
             return ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(component).parentNode);
         } else {
             return false;
@@ -131,15 +131,15 @@ export const componentUtils = {
             var component = this._componentsCache[i];
             try {
                 this.unmountComponent(component);
-            } catch(e) {
+            } catch (e) {
                 console.log('Unable to unmount component', component, e);
             }
-        };
+        }
         this._componentsCache = [];
     },
 
     simulateDragEvent(domNode, eventName, setDataFunction) {
-        TestUtils.Simulate[eventName](domNode, {dataTransfer: {setData: setDataFunction || function(){} }});
+        TestUtils.Simulate[eventName](domNode, {dataTransfer: {setData: setDataFunction || function() {} }});
     },
 
 };

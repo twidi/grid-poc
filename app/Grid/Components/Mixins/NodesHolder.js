@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom'
+import ReactDOM from 'react-dom';
 
 /**
  * A mixin to be used by components that want to attach an external dom node to
@@ -35,7 +35,7 @@ export const NodesHolderMixin = {
      * @type {Array}
      */
 
-    //The array to override must not include the prefix `_`
+    // The array to override must not include the prefix `_`
     _externalNodesClassNames: [],
 
     /**
@@ -51,7 +51,7 @@ export const NodesHolderMixin = {
      * @return {boolean} - `true` if the component can handle external nodes, or `false` if not
      */
 
-     //The method to override must not include the prefix `_`
+     // The method to override must not include the prefix `_`
     _canHoldExternalNodes() {},
 
 
@@ -70,7 +70,7 @@ export const NodesHolderMixin = {
      * @return {DomMode|nothing} - The dom node to insert, or nothing
      */
 
-     //The method to override must not include the prefix `_`
+     // The method to override must not include the prefix `_`
     _getExternalNode(className) {},
 
     /**

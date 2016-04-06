@@ -16,7 +16,7 @@ import { Utils } from '../../Utils';
 import { componentUtils } from './Utils';
 
 
-describe("Grid.Components.ModuleHolder", function() {
+describe('Grid.Components.ModuleHolder', function() {
     var uniqueIdMock;
 
     // main grid, the module cell we need, and cache stuff, defined in beforeEach
@@ -70,7 +70,7 @@ describe("Grid.Components.ModuleHolder", function() {
         return ModulesCache._cache[cacheKey];
     };
 
-    it("should render a component with a cover and a module", function(done) {
+    it('should render a component with a cover and a module', function(done) {
         jasmineReact.spyOnClass(ModuleHolder, 'getRenderAttrs').and.callThrough();
 
         var element = createCacheEntry().holderElement;
@@ -93,7 +93,7 @@ describe("Grid.Components.ModuleHolder", function() {
         }, 0.01);
     });
 
-    it("should make the dom node draggable in design mode", function() {
+    it('should make the dom node draggable in design mode', function() {
         var element = createCacheEntry().holderElement;
         var component = componentUtils.renderIntoDocument(element);
 
@@ -107,7 +107,7 @@ describe("Grid.Components.ModuleHolder", function() {
         expect(attrs['onDragStart']).toBe(component.onDragStart);
     });
 
-    it("should handle the dragleave event if in dragging mode", function() {
+    it('should handle the dragleave event if in dragging mode', function() {
         var element = createCacheEntry().holderElement;
         var component = componentUtils.renderIntoDocument(element);
 
@@ -122,7 +122,7 @@ describe("Grid.Components.ModuleHolder", function() {
     });
 
 
-    it("should attach the module component after being mounted", function(done) {
+    it('should attach the module component after being mounted', function(done) {
         jasmineReact.spyOnClass(ModuleHolder, '_attachExternalNode').and.callThrough();
         jasmineReact.spyOnClass(ModuleHolder, '_detachExternalNode').and.callThrough();
 
@@ -131,7 +131,7 @@ describe("Grid.Components.ModuleHolder", function() {
 
         // leave some time to render the component
         setTimeout(function() {
-            var ModuleHolderProto = jasmineReact.classPrototype(ModuleHolder)
+            var ModuleHolderProto = jasmineReact.classPrototype(ModuleHolder);
             expect(ModuleHolderProto._attachExternalNode.calls.count()).toEqual(1);
             expect(ModuleHolderProto._attachExternalNode.calls.argsFor(0)[1]).toEqual('module-container');
             expect(ModuleHolderProto._detachExternalNode.calls.count()).toEqual(0);
@@ -140,7 +140,7 @@ describe("Grid.Components.ModuleHolder", function() {
     });
 
 
-    it("should detach/attach the module component during update", function(done) {
+    it('should detach/attach the module component during update', function(done) {
         jasmineReact.spyOnClass(ModuleHolder, '_attachExternalNode').and.callThrough();
         jasmineReact.spyOnClass(ModuleHolder, '_detachExternalNode').and.callThrough();
 
@@ -154,7 +154,7 @@ describe("Grid.Components.ModuleHolder", function() {
 
             // leave some time to update the component
             setTimeout(function() {
-                var ModuleHolderProto = jasmineReact.classPrototype(ModuleHolder)
+                var ModuleHolderProto = jasmineReact.classPrototype(ModuleHolder);
                 expect(ModuleHolderProto._attachExternalNode.calls.count()).toEqual(2);  // includes initial
                 expect(ModuleHolderProto._attachExternalNode.calls.argsFor(0)[1]).toEqual('module-container');
                 expect(ModuleHolderProto._attachExternalNode.calls.argsFor(1)[1]).toEqual('module-container');
@@ -168,13 +168,13 @@ describe("Grid.Components.ModuleHolder", function() {
         }, 0.01);
     });
 
-    it("should always accept to attach a module", function() {
+    it('should always accept to attach a module', function() {
         var element = createCacheEntry().holderElement;
         var component = componentUtils.renderIntoDocument(element);
         expect(component.canHoldExternalNodes()).toBe(true);
     });
 
-    it("should always return the module to attach", function() {
+    it('should always return the module to attach', function() {
         var element = createCacheEntry().holderElement;
         var component = componentUtils.renderIntoDocument(element);
 
@@ -187,7 +187,7 @@ describe("Grid.Components.ModuleHolder", function() {
     });
 
 
-    it("should not return a module to attach if it's not a valid className", function() {
+    it('should not return a module to attach if it\'s not a valid className', function() {
         var element = createCacheEntry().holderElement;
         var component = componentUtils.renderIntoDocument(element);
 
@@ -201,7 +201,7 @@ describe("Grid.Components.ModuleHolder", function() {
         expect(container).toBe(undefined);
     });
 
-    it("should include a delete button in design mode", function() {
+    it('should include a delete button in design mode', function() {
         // check in normal mode
         var element = createCacheEntry().holderElement;
         var component = componentUtils.renderIntoDocument(element);
@@ -224,7 +224,7 @@ describe("Grid.Components.ModuleHolder", function() {
 
     });
 
-    it("should ask to remove the module when the delete button is clicked", function(done) {
+    it('should ask to remove the module when the delete button is clicked', function(done) {
         // removing a module is only valid in design mode
         Store.__private.setDesignModeStep('Test grid', 'enabled');
 
@@ -262,7 +262,7 @@ describe("Grid.Components.ModuleHolder", function() {
 
     });
 
-    it("should start the dragging", function(done) {
+    it('should start the dragging', function(done) {
 
         // dragging is only valid in design mode
         Store.__private.setDesignModeStep('Test grid', 'enabled');
@@ -300,7 +300,7 @@ describe("Grid.Components.ModuleHolder", function() {
         }, 0.01);
     });
 
-    it("should stop hovering when leaving the holder", function(done) {
+    it('should stop hovering when leaving the holder', function(done) {
         // when the holder stay a "long time" on a placeholder, the grid goes
         // in "stayhovering" mode and the placeholder is replaced by the holder
         // itself, so moving the mouse out of the holder should stop the hovering

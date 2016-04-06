@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import classnames from 'classnames'
+import classnames from 'classnames';
 
 import { Actions } from '../Actions';
 import { Store } from '../Store';
@@ -128,7 +128,7 @@ export const Resizer = React.createClass({
      * @return {Integer} - Size in pixels (without unit)
      */
     getDomNodeSize(domNode) {
-        return domNode[this.isHorizontal() ? 'clientHeight' : 'clientWidth']
+        return domNode[this.isHorizontal() ? 'clientHeight' : 'clientWidth'];
     },
 
     /**
@@ -208,7 +208,7 @@ export const Resizer = React.createClass({
      * @returns {div} - A empty div with classes defined by `getResizerClasses`
      */
     render() {
-        return <div ref="resizer" className={this.getResizerClasses()} {...this.getRenderAttrs()}/>
+        return <div ref="resizer" className={this.getResizerClasses()} {...this.getRenderAttrs()} />;
     }
 
 });

@@ -28,7 +28,7 @@ export const Utils = {
         var original = _.uniqueId;
 
         // do the mocking
-        spyOn(_, "uniqueId").and.callFake(uniqueId);
+        spyOn(_, 'uniqueId').and.callFake(uniqueId);
 
         // returns an object with the original function, the mocked one, and
         // a reset helper
@@ -38,6 +38,6 @@ export const Utils = {
             reset() {
                 idCounter = 0;
             }
-        }
+        };
     }
 };

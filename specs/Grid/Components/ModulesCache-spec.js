@@ -13,18 +13,18 @@ import { Utils } from '../../Utils';
 import { componentUtils } from './Utils';
 
 
-describe("Grid.Components.ModulesCache", function() {
+describe('Grid.Components.ModulesCache', function() {
 
     // Test grid and cell component, defined in beforeEach
     var testGrid, cellElement, cellComponent, updateCellComponentProps;
 
     function makeCellComponent(Cell, props) {
-        cellElement = React.createElement(Cell, props)
-        cellComponent = componentUtils.renderIntoDocument(cellElement)
+        cellElement = React.createElement(Cell, props);
+        cellComponent = componentUtils.renderIntoDocument(cellElement);
         updateCellComponentProps = function(newProps) {
-            cellElement = React.createElement(Cell, Object.assign({}, props, newProps))
-            cellComponent = componentUtils.renderIntoDocument(cellElement)
-        }
+            cellElement = React.createElement(Cell, Object.assign({}, props, newProps));
+            cellComponent = componentUtils.renderIntoDocument(cellElement);
+        };
     }
 
     beforeEach(function(done) {
@@ -41,7 +41,7 @@ describe("Grid.Components.ModulesCache", function() {
         testGrid = componentUtils.makeTestGrid();
         var moduleGridCell = testGrid.querySelector('cell[type=module]');
         jasmineReact.spyOnClass(Cell, 'canHoldExternalNodes').and.returnValue(false);
-        makeCellComponent(Cell, {node: moduleGridCell})
+        makeCellComponent(Cell, {node: moduleGridCell});
 
         setTimeout(done, 0.01);
     });
@@ -60,16 +60,16 @@ describe("Grid.Components.ModulesCache", function() {
     };
 
     var getModuleComponent = function() {
-        return getCacheEntry().moduleComponent
+        return getCacheEntry().moduleComponent;
 
     };
 
     var getHolderComponent = function() {
-        return getCacheEntry().holderComponent
+        return getCacheEntry().holderComponent;
 
     };
 
-    it("should extract attributes from a dom node", function() {
+    it('should extract attributes from a dom node', function() {
         var domNode = document.createElement('div');
         domNode.setAttribute('foo', 'bar');
         domNode.setAttribute('baz', 'quz');
@@ -80,7 +80,7 @@ describe("Grid.Components.ModulesCache", function() {
         });
     });
 
-    it("should get a module component", function(done) {
+    it('should get a module component', function(done) {
         spyOn(ReactDOM, 'render').and.callThrough();
 
         var container = ModulesCache.getModuleComponent(cellComponent);
@@ -102,7 +102,7 @@ describe("Grid.Components.ModulesCache", function() {
         }, 0.01);
     });
 
-    it("should get a module holder component", function(done) {
+    it('should get a module holder component', function(done) {
         spyOn(ReactDOM, 'render').and.callThrough();
 
         var container = ModulesCache.getHolderComponent(cellComponent);
@@ -130,7 +130,7 @@ describe("Grid.Components.ModulesCache", function() {
         }, 0.01);
     });
 
-    it("should get a module component from cache if called again with a cell", function(done) {
+    it('should get a module component from cache if called again with a cell', function(done) {
         var container = ModulesCache.getModuleComponent(cellComponent);
         var component = getModuleComponent();
 
@@ -152,7 +152,7 @@ describe("Grid.Components.ModulesCache", function() {
         }, 0.01);
     });
 
-    it("should get a module holder component from cache if called again with a cell", function(done) {
+    it('should get a module holder component from cache if called again with a cell', function(done) {
         var container = ModulesCache.getHolderComponent(cellComponent);
         var component = getHolderComponent();
 
@@ -184,7 +184,7 @@ describe("Grid.Components.ModulesCache", function() {
         }, 0.01);
     });
 
-    it("should rerender the holder component if the module was moved elsewhere", function(done) {
+    it('should rerender the holder component if the module was moved elsewhere', function(done) {
         var container = ModulesCache.getHolderComponent(cellComponent);
         var component = getHolderComponent();
 
@@ -218,7 +218,7 @@ describe("Grid.Components.ModulesCache", function() {
 
     });
 
-    it("should rerender the holder component if the cell props was updated", function(done) {
+    it('should rerender the holder component if the cell props was updated', function(done) {
         var container = ModulesCache.getHolderComponent(cellComponent);
         var component = getHolderComponent();
 
@@ -228,7 +228,7 @@ describe("Grid.Components.ModulesCache", function() {
             // change cell props
             var clonedGrid = Manipulator.clone(testGrid);
             var clonedCell = clonedGrid.querySelector('cell[type=module]');
-            updateCellComponentProps({node: clonedCell})
+            updateCellComponentProps({node: clonedCell});
 
             // give some time to propagate the props update
             setTimeout(function() {
@@ -259,7 +259,7 @@ describe("Grid.Components.ModulesCache", function() {
 
     });
 
-    it("should get only new props for the holder component", function(done) {
+    it('should get only new props for the holder component', function(done) {
         var container = ModulesCache.getHolderComponent(cellComponent);
 
         // give some time to render the holder component
@@ -280,7 +280,7 @@ describe("Grid.Components.ModulesCache", function() {
         }, 0.01);
     });
 
-    it("should return a module from cache from a key", function(done) {
+    it('should return a module from cache from a key', function(done) {
         var container = ModulesCache.getModuleComponent(cellComponent);
         var component = getModuleComponent();
 
@@ -302,7 +302,7 @@ describe("Grid.Components.ModulesCache", function() {
         }, 0.01);
     });
 
-    it("should return a module holder from cache from a key", function(done) {
+    it('should return a module holder from cache from a key', function(done) {
         var container = ModulesCache.getHolderComponent(cellComponent);
         var component = getHolderComponent();
 

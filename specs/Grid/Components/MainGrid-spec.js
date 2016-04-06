@@ -16,7 +16,7 @@ import { TestDocumentEventsMixin } from '../../Utils/ReactMixins/DocumentEvents'
 import { Utils } from '../../Utils';
 
 
-describe("Grid.Components.MainGrid", function() {
+describe('Grid.Components.MainGrid', function() {
     var uniqueIdMock;
 
     // main grid defined in beforeEach
@@ -42,45 +42,45 @@ describe("Grid.Components.MainGrid", function() {
         componentUtils.unmountAllComponents();
     });
 
-    it("should manage document events", function(done) {
+    it('should manage document events', function(done) {
         var grid = Store.getGrid('Test grid');
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = componentUtils.renderIntoDocument(element);
         TestDocumentEventsMixin(component, done);
     });
 
-    it("should have a grid", function() {
+    it('should have a grid', function() {
         var grid = Store.getGrid('Test grid');
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = componentUtils.renderIntoDocument(element);
         expect(component.props.node).toBe(testGrid);
     });
 
-    it("should have a grid name", function() {
+    it('should have a grid name', function() {
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = componentUtils.renderIntoDocument(element);
         expect(component.state.gridName).toEqual('Test grid');
     });
 
-    it("should access its own grid as the main grid", function() {
+    it('should access its own grid as the main grid', function() {
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = componentUtils.renderIntoDocument(element);
         expect(component.getGrid()).toBe(testGrid);
     });
 
-    it("should get its id", function() {
+    it('should get its id', function() {
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = componentUtils.renderIntoDocument(element);
         expect(component.getNodeId()).toBe(testGrid.getAttribute('id'));
     });
 
-    it("should get the main grid name", function() {
+    it('should get the main grid name', function() {
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = componentUtils.renderIntoDocument(element);
         expect(component.getGridName()).toEqual('Test grid');
     });
 
-    it("should get the design mode step", function() {
+    it('should get the design mode step', function() {
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = componentUtils.renderIntoDocument(element);
         expect(component.getDesignModeStep()).toEqual('disabled');
@@ -89,7 +89,7 @@ describe("Grid.Components.MainGrid", function() {
         expect(component.getDesignModeStep()).toEqual('enabled');
     });
 
-    it("should know if it's in design mode", function() {
+    it('should know if it\'s in design mode', function() {
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = componentUtils.renderIntoDocument(element);
         expect(component.isInDesignMode()).toBe(false);
@@ -98,7 +98,7 @@ describe("Grid.Components.MainGrid", function() {
         expect(component.isInDesignMode()).toBe(true);
     });
 
-    it("should be able to get its grid rows if no resizers", function() {
+    it('should be able to get its grid rows if no resizers', function() {
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = componentUtils.renderIntoDocument(element);
         var rows = component.getRows();
@@ -109,7 +109,7 @@ describe("Grid.Components.MainGrid", function() {
         expect(rows[1].tagName).toEqual('row');
     });
 
-    it("should be able to get its grid rows and resizers if any", function() {
+    it('should be able to get its grid rows and resizers if any', function() {
         Manipulator.addResizers(testGrid);
         Manipulator.setIds(testGrid);
 
@@ -125,7 +125,7 @@ describe("Grid.Components.MainGrid", function() {
     });
 
 
-    it("should render a grid", function() {
+    it('should render a grid', function() {
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = componentUtils.renderIntoDocument(element);
         var domNode = ReactDOM.findDOMNode(component);
@@ -147,7 +147,7 @@ describe("Grid.Components.MainGrid", function() {
         expect(gridDomNode.getAttribute('style')).toBe(null);
     });
 
-    it("should be able to render its rows", function() {
+    it('should be able to render its rows', function() {
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = componentUtils.renderIntoDocument(element);
         var rows = component.renderRows();
@@ -157,7 +157,7 @@ describe("Grid.Components.MainGrid", function() {
         });
     });
 
-    it("should render sub components", function() {
+    it('should render sub components', function() {
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = componentUtils.renderIntoDocument(element);
         expect(componentUtils.countRows(component)).toEqual(4);
@@ -165,7 +165,7 @@ describe("Grid.Components.MainGrid", function() {
         expect(componentUtils.countSubGrids(component)).toEqual(1);
     });
 
-    it("should update the grid when a design mode event is triggered", function(done) {
+    it('should update the grid when a design mode event is triggered', function(done) {
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = componentUtils.renderIntoDocument(element);
 
@@ -217,7 +217,7 @@ describe("Grid.Components.MainGrid", function() {
 
     });
 
-    it("should change when toggling design mode, managing resizers", function(done) {
+    it('should change when toggling design mode, managing resizers', function(done) {
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = componentUtils.renderIntoDocument(element);
         var domNode = ReactDOM.findDOMNode(component);
@@ -280,7 +280,7 @@ describe("Grid.Components.MainGrid", function() {
         }, 0.01);
     });
 
-    it("should have placeholders when going in dragging mode", function(done) {
+    it('should have placeholders when going in dragging mode', function(done) {
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = componentUtils.renderIntoDocument(element);
         expect(ReactDOM.findDOMNode(component).classList.contains('grid-container-design-mode')).toBe(false);
@@ -326,7 +326,7 @@ describe("Grid.Components.MainGrid", function() {
         }, 0.01);
     });
 
-    it("should start/stop listening to dragover/drop event on the document when entering/exiting design mode", function(done) {
+    it('should start/stop listening to dragover/drop event on the document when entering/exiting design mode', function(done) {
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = componentUtils.renderIntoDocument(element);
 
@@ -356,7 +356,7 @@ describe("Grid.Components.MainGrid", function() {
         }, 0.01);
     });
 
-    it("should activate/deactivate drop detection when dragging start/stop (or drop occurs)", function(done) {
+    it('should activate/deactivate drop detection when dragging start/stop (or drop occurs)', function(done) {
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = componentUtils.renderIntoDocument(element);
 
@@ -404,7 +404,7 @@ describe("Grid.Components.MainGrid", function() {
 
     });
 
-    it("should dispatch fakedragend event when dragging stops or drop occurs", function(done) {
+    it('should dispatch fakedragend event when dragging stops or drop occurs', function(done) {
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = componentUtils.renderIntoDocument(element);
 
@@ -460,7 +460,7 @@ describe("Grid.Components.MainGrid", function() {
 
     });
 
-    it("should react to a mouse move/down event as drop if dragging mode is enabled", function(done) {
+    it('should react to a mouse move/down event as drop if dragging mode is enabled', function(done) {
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = componentUtils.renderIntoDocument(element);
 
@@ -535,7 +535,7 @@ describe("Grid.Components.MainGrid", function() {
         }, 0.01);
     });
 
-    it("should apply a fake drop event if a drop detected by a mouse move/down event occurs on a placeholder", function(done) {
+    it('should apply a fake drop event if a drop detected by a mouse move/down event occurs on a placeholder', function(done) {
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = componentUtils.renderIntoDocument(element);
 
@@ -609,7 +609,7 @@ describe("Grid.Components.MainGrid", function() {
         }, 0.01);
     });
 
-    it("should apply drop on (real or fake) drop detected not on a placeholder", function(done) {
+    it('should apply drop on (real or fake) drop detected not on a placeholder', function(done) {
         var element = React.createElement(MainGrid, {node: testGrid});
         var component = componentUtils.renderIntoDocument(element);
 

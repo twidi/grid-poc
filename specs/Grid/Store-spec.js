@@ -8,7 +8,7 @@ import { customMatchers } from './custom-matchers';
 import { Utils } from '../Utils';
 
 
-describe("Grid.Store", function() {
+describe('Grid.Store', function() {
     var uniqueIdMock;
 
     beforeEach(function() {
@@ -35,13 +35,13 @@ describe("Grid.Store", function() {
         return Store.getGrid('foo');
     };
 
-    it("should raise if a grid is not available", function() {
+    it('should raise if a grid is not available', function() {
         expect(function() {
             Store.getGrid('bar');
-        }).toThrowError(Store.Exceptions.GridDoesNotExist, "No grid with the name <bar>");
+        }).toThrowError(Store.Exceptions.GridDoesNotExist, 'No grid with the name <bar>');
     });
 
-    it("should return a grid by its name", function(done) {
+    it('should return a grid by its name', function(done) {
         var grid = Manipulator.createBaseGrid('foo', 5);
         Actions.addGrid(grid);
 
@@ -60,7 +60,7 @@ describe("Grid.Store", function() {
         });
     });
 
-    it("should return a node by its id", function() {
+    it('should return a node by its id', function() {
         var grid = createSimpleGrid();
         _(_.toArray(grid.querySelectorAll('*')).concat([grid])).forEach(function(node) {
             expect(Store.getGridNodeById('foo', node.getAttribute('id'))).toBe(node);
@@ -68,7 +68,7 @@ describe("Grid.Store", function() {
 
     });
 
-    it("should return the main grid of a node", function() {
+    it('should return the main grid of a node', function() {
         var grid = createSimpleGrid();
         _(grid.querySelectorAll('*')).forEach(function(node) {
             expect(Store.getMainGrid(node)).toBe(grid);
@@ -77,7 +77,7 @@ describe("Grid.Store", function() {
     });
 
 
-    it("should return the id attribute of a node", function() {
+    it('should return the id attribute of a node', function() {
         var grid = createSimpleGrid();
         _(grid.querySelectorAll('*')).forEach(function(node) {
             expect(Store.getNodeId(node)).toBe(node.getAttribute('id'));
@@ -85,7 +85,7 @@ describe("Grid.Store", function() {
         expect(Store.getNodeId(grid)).toBe(grid.getAttribute('id'));
     });
 
-    it("should return the name of the main grid for a node", function() {
+    it('should return the name of the main grid for a node', function() {
         var grid = createSimpleGrid();
         _(grid.querySelectorAll('*')).forEach(function(node) {
             expect(Store.getMainGridName(node)).toBe('foo');
@@ -93,12 +93,12 @@ describe("Grid.Store", function() {
         expect(Store.getMainGridName(grid)).toBe('foo');
     });
 
-    it("should return the design mode step for a node", function() {
+    it('should return the design mode step for a node', function() {
         var grid = createSimpleGrid();
         expect(Store.getDesignModeStep('foo')).toBe('disabled');
     });
 
-    it("should tell if the grid is in dragging mode", function() {
+    it('should tell if the grid is in dragging mode', function() {
         var grid = createSimpleGrid();
         expect(Store.isDragging('foo')).toBe(false);
         // it's in dragging mode if there is a node currently dragged
@@ -106,10 +106,10 @@ describe("Grid.Store", function() {
         expect(Store.isDragging('foo')).toBe(true);
     });
 
-    it("should tell if it's the dragging cell", function() {
+    it('should tell if it\'s the dragging cell', function() {
         var grid = createSimpleGrid();
 
-        var row  = grid.querySelector('row');
+        var row = grid.querySelector('row');
         var cell = grid.querySelector('cell[type=module]');
         var otherCell = Manipulator.addCell(row, null, 'module');
 
@@ -123,7 +123,7 @@ describe("Grid.Store", function() {
         expect(Store.isDraggingCell('foo', otherCell)).toBe(false);
     });
 
-    it("should tell if the grid is in hovering mode", function() {
+    it('should tell if the grid is in hovering mode', function() {
         var grid = createSimpleGrid();
         expect(Store.isHovering('foo')).toBe(false);
         // it's in dragging mode if there is a node currently hovered
@@ -131,10 +131,10 @@ describe("Grid.Store", function() {
         expect(Store.isHovering('foo')).toBe(true);
     });
 
-    it("should tell if it's the hovering cell", function() {
+    it('should tell if it\'s the hovering cell', function() {
         var grid = createSimpleGrid();
 
-        var row  = grid.querySelector('row');
+        var row = grid.querySelector('row');
         var cell = grid.querySelector('cell[type=module]');
         var otherCell = Manipulator.addCell(row, null, 'module');
 
@@ -147,7 +147,7 @@ describe("Grid.Store", function() {
         expect(Store.isHoveringPlaceholder('foo', otherCell)).toBe(false);
     });
 
-    it("should tell if the grid is in resizing mode", function() {
+    it('should tell if the grid is in resizing mode', function() {
         var grid = createSimpleGrid();
         expect(Store.isResizing('foo')).toBe(false);
         // it's in resizing mode if there is a resizer node currently moved
@@ -155,7 +155,7 @@ describe("Grid.Store", function() {
         expect(Store.isResizing('foo')).toBe(true);
     });
 
-    it("should tell if it's the moving resizer", function() {
+    it('should tell if it\'s the moving resizer', function() {
         var grid = createSimpleGrid();
         // add two rows to have two resizers between them
         Manipulator.addRow(grid);
@@ -178,7 +178,7 @@ describe("Grid.Store", function() {
         expect(Store.isMovingResizer('foo', resizer2)).toBe(false);
     });
 
-    it("should tell if a grid has a subgrid", function() {
+    it('should tell if a grid has a subgrid', function() {
         var grid = Manipulator.createBaseGrid('foo');
         Store.__private.addGrid(grid);
         expect(Store.containsSubGrid(grid)).toBe(false);
@@ -202,21 +202,21 @@ describe("Grid.Store", function() {
         expect(Store.containsSubGrid(subSubGrid)).toBe(false);
     });
 
-    it("should tell if the grid has placeholders", function() {
+    it('should tell if the grid has placeholders', function() {
         var grid = createSimpleGrid();
         expect(Store.hasPlaceholders('foo')).toBe(false);
         Manipulator.addPlaceholders(grid);
         expect(Store.hasPlaceholders('foo')).toBe(true);
     });
 
-    it("should tell if the grid has resizers", function() {
+    it('should tell if the grid has resizers', function() {
         var grid = createSimpleGrid();
         expect(Store.hasResizers('foo')).toBe(false);
         Manipulator.addResizers(grid);
         expect(Store.hasResizers('foo')).toBe(true);
     });
 
-    it("should get the relative size of a node", function() {
+    it('should get the relative size of a node', function() {
         var grid = createSimpleGrid();
         var row = grid.querySelector('row');
 
@@ -230,7 +230,7 @@ describe("Grid.Store", function() {
         expect(Store.getRelativeSize(row)).toEqual(1.234);
     });
 
-    it("should tell if possible to go through history", function() {
+    it('should tell if possible to go through history', function() {
         var grid = createSimpleGrid();
         var gridEntry = Store.__private.getGridEntry('foo');
 
@@ -266,7 +266,7 @@ describe("Grid.Store", function() {
 
     describe('Private api', function() {
 
-        it("should return a grid entry", function() {
+        it('should return a grid entry', function() {
             var grid = createSimpleGrid();
 
             var entry = Store.__private.getGridEntry('foo');
@@ -284,28 +284,28 @@ describe("Grid.Store", function() {
             expect(_.size(entry)).toEqual(9);
         });
 
-        it("should raise if a grid entry is not available", function() {
+        it('should raise if a grid entry is not available', function() {
             expect(function() {
                 Store.__private.getGridEntry('bar');
-            }).toThrowError(Store.Exceptions.GridDoesNotExist, "No grid with the name <bar>");
+            }).toThrowError(Store.Exceptions.GridDoesNotExist, 'No grid with the name <bar>');
         });
 
-        it("should raise if a asking to change design mode step for a grid that doesn't exist", function() {
+        it('should raise if a asking to change design mode step for a grid that doesn\'t exist', function() {
             expect(function() {
                 Store.__private.changeDesignModeStep('foo', 'bar', true);
-            }).toThrowError(Store.Exceptions.GridDoesNotExist, "No grid with the name <foo>");
+            }).toThrowError(Store.Exceptions.GridDoesNotExist, 'No grid with the name <foo>');
         });
 
-        it("should raise if a design mode step doesn't exist", function() {
+        it('should raise if a design mode step doesn\'t exist', function() {
             var grid = createSimpleGrid();
 
             expect(function() {
                 Store.__private.changeDesignModeStep('foo', 'bar', true);
-            }).toThrowError(Store.Exceptions.InvalidDesignModeStep, "The given design mode step <bar> is not a valid one");
+            }).toThrowError(Store.Exceptions.InvalidDesignModeStep, 'The given design mode step <bar> is not a valid one');
 
         });
 
-        it("should ignore setting the current design mode step", function() {
+        it('should ignore setting the current design mode step', function() {
             var grid = createSimpleGrid();
             ['disabled', 'enabled', 'dragging', 'prehovering', 'hovering'].forEach(function(step) {
                 Store.__private.setDesignModeStep('foo', step);
@@ -316,7 +316,7 @@ describe("Grid.Store", function() {
             });
         });
 
-        it("should allow changing ony allowed design mode steps", function() {
+        it('should allow changing ony allowed design mode steps', function() {
             var grid = createSimpleGrid();
 
             var tests = {
@@ -349,7 +349,7 @@ describe("Grid.Store", function() {
 
                     expect(function() {
                         Store.__private.changeDesignModeStep('foo', invalidStep, true);
-                    }).toThrowError(Store.Exceptions.InvalidDesignModeStep, "The given design mode step <" + invalidStep + "> is not valid step to go after the current one which is <" + initialStep + ">");
+                    }).toThrowError(Store.Exceptions.InvalidDesignModeStep, 'The given design mode step <' + invalidStep + '> is not valid step to go after the current one which is <' + initialStep + '>');
 
                     // we should still have the same initial step
                     expect(Store.__private.getDesignModeStep('foo')).toEqual(initialStep);
@@ -370,7 +370,7 @@ describe("Grid.Store", function() {
             });
         });
 
-        describe("it should add placeholders if missing when changing design mode step", function() {
+        describe('it should add placeholders if missing when changing design mode step', function() {
             // allowed changes that should end with placeholders
             var tests = {
                 'enabled': ['dragging'],
@@ -381,7 +381,7 @@ describe("Grid.Store", function() {
 
             _.each(tests, function(steps, initialStep) {
                 steps.forEach(function(step) {
-                    it("should add/keep them from `" + initialStep + "` to `" + step + "`", function(){
+                    it('should add/keep them from `' + initialStep + '` to `' + step + '`', function() {
                         var grid = createSimpleGrid();
 
                         spyOn(Manipulator, 'addPlaceholders').and.callThrough();
@@ -420,7 +420,7 @@ describe("Grid.Store", function() {
             });
         });
 
-        describe("it should remove placeholders if present when changing design mode step", function() {
+        describe('it should remove placeholders if present when changing design mode step', function() {
             // allowed changes that should end with no placeholders
             var tests = {
                 'disabled': ['enabled'],
@@ -433,7 +433,7 @@ describe("Grid.Store", function() {
 
             _.each(tests, function(steps, initialStep) {
                 steps.forEach(function(step) {
-                    it("should remove/ignore them from `" + initialStep + "` to `" + step + "`", function(){
+                    it('should remove/ignore them from `' + initialStep + '` to `' + step + '`', function() {
                         var grid = createSimpleGrid();
                         Manipulator.addPlaceholders(grid);
 
@@ -473,9 +473,9 @@ describe("Grid.Store", function() {
             });
         });
 
-       describe("it should add resizers if missing when changing design mode step", function() {
+        describe('it should add resizers if missing when changing design mode step', function() {
             // allowed changes that should end with resizers
-            var tests = {
+           var tests = {
                 'disabled': ['enabled'],
                 'enabled': ['resizing'],
                 'resizing': ['enabled'],
@@ -484,9 +484,9 @@ describe("Grid.Store", function() {
                 'hovering': ['enabled']
             };
 
-            _.each(tests, function(steps, initialStep) {
+           _.each(tests, function(steps, initialStep) {
                 steps.forEach(function(step) {
-                    it("should add/keep them from `" + initialStep + "` to `" + step + "`", function(){
+                    it('should add/keep them from `' + initialStep + '` to `' + step + '`', function() {
                         var grid = createSimpleGrid();
 
                         spyOn(Manipulator, 'addResizers').and.callThrough();
@@ -523,9 +523,9 @@ describe("Grid.Store", function() {
                     });
                 });
             });
-        });
+       });
 
-        describe("it should remove resizers if present when changing design mode step", function() {
+        describe('it should remove resizers if present when changing design mode step', function() {
             // allowed changes that should end with no resizers
             var tests = {
                 'enabled': ['disabled', 'dragging'],
@@ -536,7 +536,7 @@ describe("Grid.Store", function() {
 
             _.each(tests, function(steps, initialStep) {
                 steps.forEach(function(step) {
-                    it("should remove/ignore them from `" + initialStep + "` to `" + step + "`", function(){
+                    it('should remove/ignore them from `' + initialStep + '` to `' + step + '`', function() {
                         var grid = createSimpleGrid();
                         Manipulator.addResizers(grid);
 
@@ -576,11 +576,11 @@ describe("Grid.Store", function() {
             });
         });
 
-        it("should set the design step mode", function() {
+        it('should set the design step mode', function() {
             // without grid, should raise
             expect(function() {
                 Store.__private.setDesignModeStep('bar', 'enabled');
-            }).toThrowError(Store.Exceptions.GridDoesNotExist, "No grid with the name <bar>");
+            }).toThrowError(Store.Exceptions.GridDoesNotExist, 'No grid with the name <bar>');
 
             // create a grid
             var grid = createSimpleGrid();
@@ -591,18 +591,18 @@ describe("Grid.Store", function() {
                 expect(Store.__private.grids['foo'].designModeStep).toEqual(step);
             });
 
-        })
+        });
 
-        it("should check consistency of grid name and node", function() {
+        it('should check consistency of grid name and node', function() {
 
             // bad for inexistent grid
             expect(function() {
                 Store.__private.checkConsistency('absent');
-            }).toThrowError(Store.Exceptions.GridDoesNotExist, "No grid with the name <absent>");
+            }).toThrowError(Store.Exceptions.GridDoesNotExist, 'No grid with the name <absent>');
             // bad for inexistent grid
             expect(function() {
                 Store.__private.checkConsistency('absent', node);
-            }).toThrowError(Store.Exceptions.GridDoesNotExist, "No grid with the name <absent>");
+            }).toThrowError(Store.Exceptions.GridDoesNotExist, 'No grid with the name <absent>');
 
             var grid = createSimpleGrid();
             var node = grid.querySelector('cell');
@@ -618,10 +618,10 @@ describe("Grid.Store", function() {
 
             expect(function() {
                 Store.__private.checkConsistency('bar');
-            }).toThrowError(Store.Exceptions.GridDoesNotExist, "No grid with the name <bar>");
+            }).toThrowError(Store.Exceptions.GridDoesNotExist, 'No grid with the name <bar>');
             expect(function() {
                 Store.__private.checkConsistency('bar', node2);
-            }).toThrowError(Store.Exceptions.GridDoesNotExist, "No grid with the name <bar>");
+            }).toThrowError(Store.Exceptions.GridDoesNotExist, 'No grid with the name <bar>');
 
             // now add the grid in the store
             Actions.addGrid(grid2);
@@ -636,7 +636,7 @@ describe("Grid.Store", function() {
             // bad for node not in the grid
             expect(function() {
                 Store.__private.checkConsistency('foo', node2);
-            }).toThrowError(Store.Exceptions.Inconsistency, "The given cell is not contained in the grid <foo>");
+            }).toThrowError(Store.Exceptions.Inconsistency, 'The given cell is not contained in the grid <foo>');
 
             // ok for valid grid, and no node
             expect(function() {
@@ -644,7 +644,7 @@ describe("Grid.Store", function() {
             }).not.toThrow();
         });
 
-        it("should backup a grid", function() {
+        it('should backup a grid', function() {
             var grid = createSimpleGrid();
 
             // save a first backup
@@ -659,7 +659,7 @@ describe("Grid.Store", function() {
             // both are different objects
             expect(firstClone).not.toBe(grid);
             // check that both grids have the same xml
-            expect(firstClone).toEqualXML(grid)
+            expect(firstClone).toEqualXML(grid);
 
             // we can save another backup
             Store.__private.backupGrid('foo', 'second');
@@ -680,7 +680,7 @@ describe("Grid.Store", function() {
 
         });
 
-        it("should restore a grid", function() {
+        it('should restore a grid', function() {
 
             var grid = createSimpleGrid();
 
@@ -727,7 +727,7 @@ describe("Grid.Store", function() {
             expect(restored).toBe(grid);
         });
 
-        it("should clear a backup grid", function() {
+        it('should clear a backup grid', function() {
             var grid = createSimpleGrid();
 
             // should do nothing if no such backup
@@ -743,7 +743,7 @@ describe("Grid.Store", function() {
             expect(_.size(Store.__private.grids['foo'].backups)).toEqual(0);
         });
 
-        it("should save a node", function() {
+        it('should save a node', function() {
             var grid = createSimpleGrid();
             var row = grid.querySelector('row');
             var cell = grid.querySelector('cell[type=module]');
@@ -761,7 +761,7 @@ describe("Grid.Store", function() {
 
         });
 
-        it("should find a saved node in another grid using its id", function() {
+        it('should find a saved node in another grid using its id', function() {
             var grid = createSimpleGrid();
             var row = grid.querySelector('row');
             var cell = grid.querySelector('cell[type=module]');
@@ -792,7 +792,7 @@ describe("Grid.Store", function() {
 
         });
 
-        it("should get the saved node", function() {
+        it('should get the saved node', function() {
             var grid = createSimpleGrid();
             var row = grid.querySelector('row');
             var cell = grid.querySelector('cell[type=module]');
@@ -836,7 +836,7 @@ describe("Grid.Store", function() {
 
         });
 
-        it("should clear a saved node", function() {
+        it('should clear a saved node', function() {
             var grid = createSimpleGrid();
             var row = grid.querySelector('row');
             var cell = grid.querySelector('cell[type=module]');
@@ -861,10 +861,10 @@ describe("Grid.Store", function() {
 
         });
 
-        it("should set the hovering timeout", function(done) {
+        it('should set the hovering timeout', function(done) {
             var grid = createSimpleGrid();
 
-            spyOn(Store.__private, "stayHovering").and.callThrough();
+            spyOn(Store.__private, 'stayHovering').and.callThrough();
 
             // reduce the delay
             var defaultHoveringDelay = Store.__private.hoveringDelay;
@@ -880,17 +880,17 @@ describe("Grid.Store", function() {
                     // the function should have cleared the timeout
                     expect(Store.__private.grids['foo'].hoveringTimeout).toBe(null);
                     done();
-                }, 0.02)
+                }, 0.02);
                 // restore the original delay
                 Store.__private.hoveringDelay = defaultHoveringDelay;
             }
 
         });
 
-        it("should clear the hovering timeout", function(done) {
+        it('should clear the hovering timeout', function(done) {
             var grid = createSimpleGrid();
 
-            spyOn(Store.__private, "stayHovering").and.callThrough();
+            spyOn(Store.__private, 'stayHovering').and.callThrough();
 
             // reduce the delay
             var defaultHoveringDelay = Store.__private.hoveringDelay;
@@ -901,7 +901,7 @@ describe("Grid.Store", function() {
                 Store.__private.setHoveringTimeout('foo');
                 expect(Store.__private.grids['foo'].hoveringTimeout).not.toBe(null);
                 // but clear it just after
-                Store.__private.clearHoveringTimeout('foo')
+                Store.__private.clearHoveringTimeout('foo');
                 // we should not have a timeout set anymore
                 expect(Store.__private.grids['foo'].hoveringTimeout).toBe(null);
             } finally {
@@ -911,7 +911,7 @@ describe("Grid.Store", function() {
                     // there should be no timeout set
                     expect(Store.__private.grids['foo'].hoveringTimeout).toBe(null);
                     done();
-                }, 0.02)
+                }, 0.02);
                 // restore the original delay
                 Store.__private.hoveringDelay = defaultHoveringDelay;
             }
@@ -919,7 +919,7 @@ describe("Grid.Store", function() {
 
         });
 
-        it("should add an updated grid in the history", function() {
+        it('should add an updated grid in the history', function() {
             var grid = createSimpleGrid();
             var gridEntry = Store.__private.getGridEntry('foo');
 
@@ -928,7 +928,7 @@ describe("Grid.Store", function() {
             // and we should be at the first/last one
             expect(gridEntry.currentHistoryIndex).toEqual(0);
             // having one row
-            expect(gridEntry.history[0].querySelectorAll(':scope > content > row').length).toEqual(1)
+            expect(gridEntry.history[0].querySelectorAll(':scope > content > row').length).toEqual(1);
 
             // add a second row to have a different grid
             Manipulator.addRow(grid);
@@ -944,7 +944,7 @@ describe("Grid.Store", function() {
             // the last entry should be our updated grid
             expect(gridEntry.history[1]).toBe(grid);
             // having two rows
-            expect(gridEntry.history[1].querySelectorAll(':scope > content > row').length).toEqual(2)
+            expect(gridEntry.history[1].querySelectorAll(':scope > content > row').length).toEqual(2);
 
             // it should not be the one that was there
             expect(newGrid).not.toBe(grid);
@@ -964,7 +964,7 @@ describe("Grid.Store", function() {
             // and we should be at the last one
             expect(gridEntry.currentHistoryIndex).toEqual(2);
             // which has a grid with 3 rows
-            expect(gridEntry.history[2].querySelectorAll(':scope > content > row').length).toEqual(3)
+            expect(gridEntry.history[2].querySelectorAll(':scope > content > row').length).toEqual(3);
 
             // go to first entry
             Store.__private.goBackInHistory('foo');
@@ -972,7 +972,7 @@ describe("Grid.Store", function() {
             gridEntry.currentHistoryIndex = 0;
 
             // we still have one row in the first entry which didn't change
-            expect(gridEntry.history[0].querySelectorAll(':scope > content > row').length).toEqual(1)
+            expect(gridEntry.history[0].querySelectorAll(':scope > content > row').length).toEqual(1);
 
             // and still 3 entries in the history
             expect(gridEntry.history.length).toEqual(3);
@@ -995,10 +995,10 @@ describe("Grid.Store", function() {
             // the last entry should be our updated grid
             expect(gridEntry.history[1]).toBe(grid);
             // having four rows
-            expect(gridEntry.history[1].querySelectorAll(':scope > content > row').length).toEqual(4)
+            expect(gridEntry.history[1].querySelectorAll(':scope > content > row').length).toEqual(4);
         });
 
-        it("should restore a ready and usable grid from history", function() {
+        it('should restore a ready and usable grid from history', function() {
             var grid = createSimpleGrid();
 
             // no placeholders by default
@@ -1036,18 +1036,18 @@ describe("Grid.Store", function() {
 
         });
 
-        it("should fail when goiing out of history bound", function() {
+        it('should fail when goiing out of history bound', function() {
             var grid = createSimpleGrid();
 
             // cannot go back
             expect(function() {
                 Store.__private.goBackInHistory('foo');
-            }).toThrowError(Store.Exceptions.HistoryOutOfBound, "Cannot go backward in history for grid <foo>");
+            }).toThrowError(Store.Exceptions.HistoryOutOfBound, 'Cannot go backward in history for grid <foo>');
 
             // neigher forward
             expect(function() {
                 Store.__private.goForwardInHistory('foo');
-            }).toThrowError(Store.Exceptions.HistoryOutOfBound, "Cannot go forward in history for grid <foo>");
+            }).toThrowError(Store.Exceptions.HistoryOutOfBound, 'Cannot go forward in history for grid <foo>');
 
         });
 
