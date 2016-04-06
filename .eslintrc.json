@@ -1,0 +1,47 @@
+{
+    "env": {
+        "browser": true,
+        "es6": true,
+        "node": true
+    },
+    "extends": "airbnb",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "experimentalObjectRestSpread": true,
+            "jsx": true
+        },
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react"
+    ],
+    "rules": {
+        "indent": [
+            "error",
+            4,
+            {"SwitchCase": 1}
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "consistent-return": 0,
+        "default-case": 0,
+        "eqeqeq": 0,
+        "padded-blocks": 0,
+        "object-curly-spacing": 0,
+        "space-in-parens": 0,
+        "max-len": [2, 120],
+        "react/prefer-es6-class": [2, "never"],
+        "react/prop-types": 0,
+        "react/sort-comp": 0
+    }
+}
