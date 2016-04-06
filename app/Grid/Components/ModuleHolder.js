@@ -43,7 +43,7 @@ export const ModuleHolder = React.createClass({
 
     // Workaround to avoid issue due to circular dependencies between ModulesCache
     // and ModuleHolder
-    componentWillMount: function() {
+    componentWillMount() {
         this.externalNodesClassNames = [ModulesCache.moduleContainerClassName]
     },
 
@@ -53,7 +53,7 @@ export const ModuleHolder = React.createClass({
      *
      * @return {boolean} - `true`
      */
-    canHoldExternalNodes: function() {
+    canHoldExternalNodes() {
         return true;
     },
 
@@ -65,7 +65,7 @@ export const ModuleHolder = React.createClass({
      * @param  {string} className - The class name of the dom node to return
      * @return {DomNode} - The module dom node
      */
-    getExternalNode: function(className) {
+    getExternalNode(className) {
         if (className == ModulesCache.moduleContainerClassName) {
             return ModulesCache.getModuleComponent(null, this.props.uniqueKey);
         };
@@ -81,7 +81,7 @@ export const ModuleHolder = React.createClass({
      *
      * @param  {event} event - The dragStart event
      */
-    onDragStart: function(event) {
+    onDragStart(event) {
         // hack to hide the del button on the dragged view (rendered by the browser
         // before we can render the holder).
         // It's removed on the next update, via componentDidUpdate
@@ -101,7 +101,7 @@ export const ModuleHolder = React.createClass({
      *
      * @param  {event} event - The dragLeave event
      */
-    onDragLeave: function(event) {
+    onDragLeave(event) {
         // in case of fake drop, the dragleave event may occur just before, so w'ill wait a little
         setTimeout(function() {
             if (Store.getDesignModeStep(this.props.gridName) == 'hovering') {
@@ -114,7 +114,7 @@ export const ModuleHolder = React.createClass({
      * Called when the "delete" button is clicked, to call the actions asking the
      * Store to remove the cell linked to this holder
      */
-    removeModule: function() {
+    removeModule() {
         Actions.removeModule(this.props.gridName, this.props.gridCell);
     },
 
@@ -128,7 +128,7 @@ export const ModuleHolder = React.createClass({
      *
      * @return {object} - A "dict" with the attributes
      */
-    getRenderAttrs: function() {
+    getRenderAttrs() {
         var attrs = {};
 
         if (Store.getDesignModeStep(this.props.gridName) == 'enabled') {
@@ -151,7 +151,7 @@ export const ModuleHolder = React.createClass({
      * Called just after an update, remove the class temporarily set in onDragStart,
      * as we now need to have the delete button displayed
      */
-    componentDidUpdate: function() {
+    componentDidUpdate() {
         this.refs['module-holder'].classList.remove('module-holder-browser-dragging');
     },
 
@@ -162,7 +162,7 @@ export const ModuleHolder = React.createClass({
      * drag the dom node without any risk of interacting with the module content.
      * This cover contain a "delete" button in design mode to delete the
      */
-    render: function() {
+    render() {
         var delButton;
         if (Store.getDesignModeStep(this.props.gridName) == 'enabled' && !Store.isResizing(this.props.gridName)) {
             delButton = <button onClick={this.removeModule} title="Remove this module">X</button>;

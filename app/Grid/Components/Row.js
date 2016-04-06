@@ -26,7 +26,7 @@ export const Row = React.createClass({
      *
      * @return {Boolean} - true if a placeholder
      */
-    isPlaceholder: function() {
+    isPlaceholder() {
         return this.state.node.getAttribute('type') == 'placeholder';
     },
 
@@ -35,7 +35,7 @@ export const Row = React.createClass({
      *
      * @return {array} - An array of XML grid cells, including resizers
      */
-    getCells: function() {
+    getCells() {
         return _.toArray(this.state.node.querySelectorAll(':scope > cell, :scope > resizer'));
     },
 
@@ -44,7 +44,7 @@ export const Row = React.createClass({
      *
      * @return {module:Grid.Components.Cell[]} - An array of {@link module:Grid.Components.Cell Cell} components
      */
-    renderCells: function() {
+    renderCells() {
         return _.map(this.getCells(), function(cell){
             var type = cell.tagName;
             if (type == 'cell') {
@@ -66,7 +66,7 @@ export const Row = React.createClass({
      * - `grid-row-placeholder`: if it's a row placeholder
      *
      */
-    getRowClasses: function() {
+    getRowClasses() {
         return classnames({
             'grid-row': true,
             'grid-row-placeholder': this.isPlaceholder(),
@@ -82,7 +82,7 @@ export const Row = React.createClass({
      *
      * - `flexGrow`: the relative size of the row as defined in the grid if this is not a row placeholder
      */
-    getRowStyle: function() {
+    getRowStyle() {
         var style = {};
         if (!this.isPlaceholder()) {
             style.flexGrow = Store.getRelativeSize(this.state.node);
@@ -96,7 +96,7 @@ export const Row = React.createClass({
      * @returns {div} - A div with classes defined by `getRowClasses`, containing
      * cells, including resizers, returned by `renderCells`
      */
-    render: function() {
+    render() {
         return <div className={this.getRowClasses()} style={this.getRowStyle()}>{this.renderCells()}</div>
     }
 

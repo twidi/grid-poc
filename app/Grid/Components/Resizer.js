@@ -27,7 +27,7 @@ export const Resizer = React.createClass({
      *
      * @return {Boolean} - true if a the resizer is vertical
      */
-    isVertical: function() {
+    isVertical() {
         return this.state.node.getAttribute('type') == 'vertical';
     },
 
@@ -36,7 +36,7 @@ export const Resizer = React.createClass({
      *
      * @return {Boolean} - true if a the resizer is horizontal
      */
-    isHorizontal: function() {
+    isHorizontal() {
         return this.state.node.getAttribute('type') == 'horizontal';
     },
 
@@ -52,7 +52,7 @@ export const Resizer = React.createClass({
      * - `grid-resizer-horizontal`: if it's a horizontal resizer
      *
      */
-    getResizerClasses: function() {
+    getResizerClasses() {
         var isVertical = this.isVertical();
         return classnames({
             'grid-resizer': true,
@@ -70,7 +70,7 @@ export const Resizer = React.createClass({
      * event (`previousRelativeSize` and `nextRelativeSize, the related sizes of
      * the nodes arround the resizer, on which to apply these values as "flex grow")
      */
-    onResizingMove: function(gridName, resizeData) {
+    onResizingMove(gridName, resizeData) {
         if (!Store.isMovingResizer(gridName, this.state.node)) { return; }
         var domNode = this.refs['resizer'];
         this.setDomNodeRelativeSise(domNode.previousSibling, resizeData.previousRelativeSize);
@@ -84,7 +84,7 @@ export const Resizer = React.createClass({
      * @param {DomNode} domNode - The dom node tu update
      * @param {Float} relativeSize - The new relative size to apply
      */
-    setDomNodeRelativeSise: function(domNode, relativeSize) {
+    setDomNodeRelativeSise(domNode, relativeSize) {
         domNode.style.flexGrow = relativeSize;
     },
 
@@ -92,7 +92,7 @@ export const Resizer = React.createClass({
      * Called before detaching the component from the dom, to stop watching for
      * events related to resizing
      */
-    componentWillUnmount: function () {
+    componentWillUnmount() {
         this.deactivateResizingDetection();
     },
 
@@ -103,7 +103,7 @@ export const Resizer = React.createClass({
      * Also watch from the move event from the Store to do the resizing on
      * previous and next siblings
      */
-    activateResizingDetection: function() {
+    activateResizingDetection() {
         Store.on('grid.designMode.resizing.move', this.onResizingMove);
         this.addDocumentListener('mousemove', 'onDocumentMouseMove');
         this.addDocumentListener('mouseup', 'onDocumentMouseUp');
@@ -113,7 +113,7 @@ export const Resizer = React.createClass({
      * Stop listening to events defined in `activateResizingDetection`, and to
      * the move event from the store
      */
-    deactivateResizingDetection: function() {
+    deactivateResizingDetection() {
         Store.off('grid.designMode.resizing.move', this.onResizingMove);
         this.removeDocumentListener('mousemove', 'onDocumentMouseMove');
         this.removeDocumentListener('mouseup', 'onDocumentMouseUp');
@@ -127,7 +127,7 @@ export const Resizer = React.createClass({
      *
      * @return {Integer} - Size in pixels (without unit)
      */
-    getDomNodeSize: function(domNode) {
+    getDomNodeSize(domNode) {
         return domNode[this.isHorizontal() ? 'clientHeight' : 'clientWidth']
     },
 
@@ -138,11 +138,11 @@ export const Resizer = React.createClass({
      * @param  {event} event - The event that must have a `screenX` and `screenY` attributes
      * @return {Integer} - The asked mouse position
      */
-    getScreenMousePosition: function(event) {
+    getScreenMousePosition(event) {
         return event[this.isHorizontal() ? 'screenY' : 'screenX'];
     },
 
-    onMouseDown: function(event) {
+    onMouseDown(event) {
         // say the world that we intercepted the event
         event.stopPropagation();
         event.preventDefault();
@@ -169,7 +169,7 @@ export const Resizer = React.createClass({
      *
      * @param  {event} event - The event that triggered this method
      */
-    onDocumentMouseMove: function(event) {
+    onDocumentMouseMove(event) {
         Actions.resize(this.getGridName(), this.getScreenMousePosition(event));
     },
 
@@ -179,7 +179,7 @@ export const Resizer = React.createClass({
      *
      * @param  {event} event - The event that triggered this method
      */
-    onDocumentMouseUp: function(ev) {
+    onDocumentMouseUp(ev) {
         this.deactivateResizingDetection();
         Actions.stopResizing(this.getGridName());
     },
@@ -194,7 +194,7 @@ export const Resizer = React.createClass({
      *
      * @return {object} - A "dict" with the attributes
      */
-    getRenderAttrs: function() {
+    getRenderAttrs() {
         var attrs = {};
         if (this.getDesignModeStep() == 'enabled') {
             attrs.onMouseDown = this.onMouseDown;
@@ -207,7 +207,7 @@ export const Resizer = React.createClass({
      *
      * @returns {div} - A empty div with classes defined by `getResizerClasses`
      */
-    render: function() {
+    render() {
         return <div ref="resizer" className={this.getResizerClasses()} {...this.getRenderAttrs()}/>
     }
 

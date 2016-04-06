@@ -13,7 +13,7 @@ import { ModulesCache } from '../../../app/Grid/Components/ModulesCache';
 export const componentUtils = {
     _componentsCache: [],
 
-    makeTestGrid: function() {
+    makeTestGrid() {
         var testGrid = Manipulator.XMLStringToXMLGrid(
             '<grid name="Test grid" space="5px" type="mainGrid">' +
                 '<content>' +
@@ -44,56 +44,56 @@ export const componentUtils = {
         return Store.getGrid('Test grid');
     },
 
-    countRows: function(component) {
+    countRows(component) {
         try {
             return TestUtils.scryRenderedComponentsWithType(component, Row).length;
         } catch(e) {
             return 0;
         };
     },
-    countSubGrids: function(component) {
+    countSubGrids(component) {
         try {
             return TestUtils.scryRenderedComponentsWithType(component, SubGrid).length;
         } catch(e) {
             return 0;
         };
     },
-    countModules: function(component) {
+    countModules(component) {
         try {
             return TestUtils.scryRenderedDOMComponentsWithClass(component, 'grid-cell-module').length;
         } catch(e) {
             return 0;
         };
     },
-    countRowPlaceholders: function(component) {
+    countRowPlaceholders(component) {
         try {
             return TestUtils.scryRenderedDOMComponentsWithClass(component, 'grid-row-placeholder').length;
         } catch(e) {
             return 0;
         };
     },
-    countCellPlaceholders: function(component) {
+    countCellPlaceholders(component) {
         try {
             return TestUtils.scryRenderedDOMComponentsWithClass(component, 'grid-cell-placeholder').length;
         } catch(e) {
             return 0;
         };
     },
-    countResizers: function(component) {
+    countResizers(component) {
         try {
             return TestUtils.scryRenderedDOMComponentsWithClass(component, 'grid-resizer').length;
         } catch(e) {
             return 0;
         };
     },
-    countVerticalResizers: function(component) {
+    countVerticalResizers(component) {
         try {
             return TestUtils.scryRenderedDOMComponentsWithClass(component, 'grid-resizer-vertical').length;
         } catch(e) {
             return 0;
         };
     },
-    countHorizontalResizers: function(component) {
+    countHorizontalResizers(component) {
         try {
             return TestUtils.scryRenderedDOMComponentsWithClass(component, 'grid-resizer-horizontal').length;
         } catch(e) {
@@ -101,21 +101,21 @@ export const componentUtils = {
         };
     },
 
-    clearModulesCache: function() {
+    clearModulesCache() {
         ModulesCache._cache ={};
     },
 
-    getTextContent: function(component) {
+    getTextContent(component) {
         return ReactDOM.findDOMNode(component).textContent;
     },
 
-    renderIntoDocument: function(element) {
+    renderIntoDocument(element) {
         var component = TestUtils.renderIntoDocument(element);
         this._componentsCache.push(component);
         return component;
     },
 
-    unmountComponent: function(component){
+    unmountComponent(component){
         // used in unmountAllComponents, it's a copy of the same function in
         // jasmine-react, but we cannot use it as it seems that we have in this
         // case many React instances that doesn't share mounted components
@@ -126,7 +126,7 @@ export const componentUtils = {
         }
     },
 
-    unmountAllComponents: function() {
+    unmountAllComponents() {
         for (var i = this._componentsCache.length - 1; i >= 0; i--) {
             var component = this._componentsCache[i];
             try {
@@ -138,7 +138,7 @@ export const componentUtils = {
         this._componentsCache = [];
     },
 
-    simulateDragEvent: function(domNode, eventName, setDataFunction) {
+    simulateDragEvent(domNode, eventName, setDataFunction) {
         TestUtils.Simulate[eventName](domNode, {dataTransfer: {setData: setDataFunction || function(){} }});
     },
 

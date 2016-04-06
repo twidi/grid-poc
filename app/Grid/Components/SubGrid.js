@@ -23,7 +23,7 @@ export const SubGrid = React.createClass({
     /**
      * Render the component mainly by calling renderRows
      */
-    render: function() {
+    render() {
         return this.renderGrid();
     }
 });

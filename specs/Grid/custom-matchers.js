@@ -41,9 +41,9 @@ export const customMatchers = {
      *     });
      * });
      */
-    toEqualXML: function(util, customEqualityTesters) {
+    toEqualXML(util, customEqualityTesters) {
         return {
-            compare: function(actual, expected) {
+            compare(actual, expected) {
                 if (!_.isString(actual)) {
                     actual = Manipulator.XMLGridToXMLString(actual);
                 }

@@ -19,7 +19,7 @@ export const GridMixin = {
      *
      * @return {Boolean} - true if a "main grid", false for a subgrid
      */
-    isMainGrid: function() {
+    isMainGrid() {
         return this.getType() == 'mainGrid';
     },
 
@@ -28,7 +28,7 @@ export const GridMixin = {
      *
      * @return {array} - An array of XML grid rows, including resizers
      */
-    getRows: function() {
+    getRows() {
         return _.toArray(this.state.node.querySelectorAll(':scope > content > row, :scope > content > resizer'));
     },
 
@@ -37,7 +37,7 @@ export const GridMixin = {
      *
      * @return {module:Grid.Components.Row[]} - An array of {@link module:Grid.Components.Row Row} components
      */
-    renderRows: function() {
+    renderRows() {
         return _.map(this.getRows(), function(row){
             var type = row.tagName;
             if (type == 'row') {
@@ -60,7 +60,7 @@ export const GridMixin = {
      * - `grid-last-level-with-placeholders`: if the grid does not contain any sub grid,
      *                                        and we have placeholders (only if it's not the main grid)
      */
-    getGridClasses: function() {
+    getGridClasses() {
         var classes = {
             'grid': true,
             'grid-main': this.isMainGrid(),
@@ -80,7 +80,7 @@ export const GridMixin = {
      *
      * - `flexGrow`: the relative size of the grid as defined in the grid if this is not a main grid, only a subgrid
      */
-    getGridStyle: function() {
+    getGridStyle() {
         var style = {};
         if (!this.isMainGrid()) {
             style.flexGrow = Store.getRelativeSize(this.state.node);
@@ -94,7 +94,7 @@ export const GridMixin = {
      * @returns {div} - A div with classes defined by `getGridClasses`, containing
      * rows, including resizers, returned by `renderRows`
      */
-    renderGrid: function() {
+    renderGrid() {
         return <div className={this.getGridClasses()} style={this.getGridStyle()}>{this.renderRows()}</div>
     },
 

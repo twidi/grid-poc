@@ -3,7 +3,7 @@ import stringify from 'json-stable-stringify';
 
 
 export const ModuleMixin = {
-    render: function() {
+    render() {
         return <div className="module"><span>{this.renderModule()}</span></div>;
     }
 };

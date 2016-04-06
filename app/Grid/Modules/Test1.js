@@ -8,7 +8,7 @@ export const Test1 = React.createClass({
         ModuleMixin,
     ],
 
-    renderModule: function() {
+    renderModule() {
         return 'Module.Test1: ' + this.props.text;
     }
 });

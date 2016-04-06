@@ -27,7 +27,7 @@ export const DocumentEventsMixin = {
      *
      * @return {function} - The wanted function, bound to this
      */
-    boundMethod: function(methodName) {
+    boundMethod(methodName) {
         // object to  hold cached bounded function
         // cannot be defined in the mixin if we want to have each instance to have
         // its own entry
@@ -47,7 +47,7 @@ export const DocumentEventsMixin = {
      * @param  {string} methodName - The name of the method for which we want to bound version be removed from the cache
      * @return {} - nothing
      */
-    clearDocumentEventCache: function(methodName) {
+    clearDocumentEventCache(methodName) {
         if (!this._documentEventCache) { return; }
         delete this._documentEventCache[methodName];
     },
@@ -57,7 +57,7 @@ export const DocumentEventsMixin = {
      *
      * @return {} - nothing
      */
-    clearAllDocumentEventsCache: function() {
+    clearAllDocumentEventsCache() {
         if (!this._documentEventCache) { return; }
         var names = _.keys(this._documentEventCache);
         for (var i = names.length - 1; i >= 0; i--) {
@@ -71,7 +71,7 @@ export const DocumentEventsMixin = {
      * @param {string} eventName - The event name to listen to on the document
      * @param {string} methodName - The name of the method of `this` to call when the event is fired
      */
-    addDocumentListener: function(eventName, methodName) {
+    addDocumentListener(eventName, methodName) {
         document.addEventListener(eventName, this.boundMethod(methodName));
     },
 
@@ -82,7 +82,7 @@ export const DocumentEventsMixin = {
      * @param {string} eventName - The event name to stop listening to on the document
      * @param {string} methodName - The name of the method of `this` to stop calling call when the event is fired
      */
-    removeDocumentListener: function(eventName, methodName) {
+    removeDocumentListener(eventName, methodName) {
         document.removeEventListener(eventName, this.boundMethod(methodName));
     },
 

@@ -76,7 +76,7 @@ export const Cell = React.createClass({
      *
      * @return {boolean} - `true` if a module, or `false`
      */
-    canHoldExternalNodes: function() {
+    canHoldExternalNodes() {
         return this.isModule();
     },
 
@@ -91,7 +91,7 @@ export const Cell = React.createClass({
      * @param  {string} className - The class name of the dom node to return
      * @return {DomNode} - Either the module dom node, or the holder one, or nothing if it's not a module
      */
-    getExternalNode: function(className) {
+    getExternalNode(className) {
         // don't return anything if it's not a module (this shouldn't be necessary because
         // the check is done in `canHoldExternalNodes` which is called before, but...)
         if (!this.isModule()) { return; }
@@ -112,7 +112,7 @@ export const Cell = React.createClass({
      *
      * @return {Boolean} - `true` if a placeholder cell
      */
-    isPlaceholder: function() {
+    isPlaceholder() {
         return this.getType() == 'placeholder';
     },
 
@@ -121,7 +121,7 @@ export const Cell = React.createClass({
      *
      * @return {Boolean} - `true` if a "grid" cell (subgrid)
      */
-    isSubGrid: function() {
+    isSubGrid() {
         return this.getType() == 'grid';
     },
 
@@ -130,7 +130,7 @@ export const Cell = React.createClass({
      *
      * @return {Boolean} - `true` if a "module" cell
      */
-    isModule: function() {
+    isModule() {
         return this.getType() == 'module';
     },
 
@@ -139,7 +139,7 @@ export const Cell = React.createClass({
      *
      * @return {module:Grid.Components.SubGrid} - The rendered {@link module:Grid.Components.SubGrid SubGrid} component
      */
-    renderAsSubGrid: function() {
+    renderAsSubGrid() {
         return <SubGrid node={this.state.node} />
     },
 
@@ -155,7 +155,7 @@ export const Cell = React.createClass({
      * - `grid-cell-module`: if it's a module
      *
      */
-    getModuleCellClasses: function() {
+    getModuleCellClasses() {
         var classes = {
             'grid-cell': true,
             'grid-cell-module': this.isModule(),
@@ -173,7 +173,7 @@ export const Cell = React.createClass({
      *
      * - `flexGrow`: the relative size of the cell as defined in the grid
      */
-    getModuleStyle: function() {
+    getModuleStyle() {
         var style = {
             flexGrow: Store.getRelativeSize(this.state.node),
         };
@@ -184,21 +184,21 @@ export const Cell = React.createClass({
      * Render the cell as a standalone component: a empty div that, if it's a module, will hold
      * the real module component (not directly rendered), via {@link module:Grid.Components.Mixins.NodesHolder NodesHolderMixin}
      */
-    renderAsModule: function() {
+    renderAsModule() {
         return <div className={this.getModuleCellClasses()} style={this.getModuleStyle()}/>
     },
 
     /**
      * Render the cell as a {@link module:Grid.Components.Placeholder Placeholder component}
      */
-    renderAsPlaceholder: function() {
+    renderAsPlaceholder() {
         return <Placeholder node={this.state.node} />;
     },
 
     /**
      * Render the cell depending on its type
      */
-    render: function() {
+    render() {
         switch(this.getType()) {
             case 'grid':
                 return this.renderAsSubGrid();

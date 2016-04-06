@@ -88,7 +88,7 @@ const Manipulator = {
      *
      * @returns {string} - The stringified XML representation of the XML Grid
      */
-    XMLGridToXMLString: function(XMLGrid) {
+    XMLGridToXMLString(XMLGrid) {
         return this.XMLSerializer.serializeToString(XMLGrid);
     },
 
@@ -99,7 +99,7 @@ const Manipulator = {
      *
      * @returns {string} - The XML Grid based on the string representation
      */
-    XMLStringToXMLGrid: function(XMLString) {
+    XMLStringToXMLGrid(XMLString) {
         return this.DOMParser.parseFromString(XMLString, "text/xml").documentElement;
     },
 
@@ -110,7 +110,7 @@ const Manipulator = {
      *
      * @return {XML} - The clone of the original grid
      */
-    clone: function(grid) {
+    clone(grid) {
         return this.XMLStringToXMLGrid(this.XMLGridToXMLString(grid));
     },
 
@@ -122,7 +122,7 @@ const Manipulator = {
      *
      * @returns {XML} - The XML version of the new created grid
      */
-    createBaseGrid: function(name, space) {
+    createBaseGrid(name, space) {
         var grid = this.XMLStringToXMLGrid('<grid><content/></grid>');
         grid.setAttribute('name', name);
         grid.setAttribute('space', (space || 5) + 'px');
@@ -141,7 +141,7 @@ const Manipulator = {
      *
      * @return {XML} - The inner cell
      */
-    surroundCellWithGrid: function(cell) {
+    surroundCellWithGrid(cell) {
         var type = cell.getAttribute('type');
 
         // new types of both cells (existing, and new one inside)
@@ -175,7 +175,7 @@ const Manipulator = {
      * @throws {module:Grid.Manipulator.Exceptions.Inconsistency} If "beforeRow" is given but the node is not yet a grid
      * @throws {module:Grid.Manipulator.Exceptions.Inconsistency} If "beforeRow" is not in the content of the "node"
      */
-    addRow: function(node, beforeRow, type) {
+    addRow(node, beforeRow, type) {
         /* If this is not a grid node, create a first row this the actual
          * content in a cell */
         if (!this.reGridType.test(node.getAttribute('type'))) {
@@ -221,7 +221,7 @@ const Manipulator = {
      * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the given "type" is not "grid" or "module"
      * @throws {module:Grid.Manipulator.Exceptions.Inconsistency} If "beforeCell" is not in the "row"
      */
-    addCell: function(row, beforeCell, type, contentNode) {
+    addCell(row, beforeCell, type, contentNode) {
         if (!this.reCellType.test(type)) {
             throw new this.Exceptions.InvalidType("Cannot add cell of type <" + type + ">. Should be <grid> or <module>");
         }
@@ -247,7 +247,7 @@ const Manipulator = {
      *
      * @param  {XML} cell - The XML cell to remove
      */
-    removeCell: function(cell) {
+    removeCell(cell) {
         var parentGrid = this.getNearestGrid(cell);
         cell.parentNode.removeChild(cell);
         this.cleanGrid(parentGrid);
@@ -262,7 +262,7 @@ const Manipulator = {
      *
      * @return {XML} - The newly created <content> xml node
      */
-    createContentNode: function(grid, attributes) {
+    createContentNode(grid, attributes) {
         var contentNode = grid.ownerDocument.createElement('content');
         for (var key in attributes) {
             contentNode.setAttribute(key, attributes[key]);
@@ -285,7 +285,7 @@ const Manipulator = {
      *
      * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a grid (type nor "grid" nor "mainGrid")
      */
-    cleanGrid: function(grid) {
+    cleanGrid(grid) {
         var nodeType = grid.getAttribute('type');
         if (!this.reGridType.test(nodeType)) {
             throw new this.Exceptions.InvalidType("Cannot clean node of type <" + nodeType + ">. Should be <grid> or <mainGrid>");
@@ -425,7 +425,7 @@ const Manipulator = {
      *
      * @return {Boolean} - true if the grid has placeholders
      */
-    hasPlaceholders: function(grid) {
+    hasPlaceholders(grid) {
         return !!grid.getAttribute('hasPlaceholders');
     },
 
@@ -440,7 +440,7 @@ const Manipulator = {
      * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
      * @throws {module:Grid.Manipulator.Exceptions.InvalidState} If the grid already has placeholders or resizers
      */
-    addPlaceholders: function(grid) {
+    addPlaceholders(grid) {
         var nodeType = grid.getAttribute('type');
         if (nodeType != 'mainGrid') {
             throw new this.Exceptions.InvalidType("Cannot add placeholders in grid of type <" + nodeType + ">. Should be <mainGrid>");
@@ -549,7 +549,7 @@ const Manipulator = {
      * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
      * @throws {module:Grid.Manipulator.Exceptions.InvalidState} If the grid isn't marked as having placeholders
      */
-    removePlaceholders: function(grid) {
+    removePlaceholders(grid) {
         var nodeType = grid.getAttribute('type');
         if (nodeType != 'mainGrid') {
             throw new this.Exceptions.InvalidType("Cannot remove placeholders in grid of type <" + nodeType + ">. Should be <mainGrid>");
@@ -594,7 +594,7 @@ const Manipulator = {
      *
      * @returns {} - Returns nothing
      */
-    cleanPlaceholders: function(grid) {
+    cleanPlaceholders(grid) {
         this.removePlaceholders(grid);
         this.addPlaceholders(grid);
     },
@@ -607,7 +607,7 @@ const Manipulator = {
      *
      * @return {XML} - The found grid node, or null if none found (may not happen)
      */
-    getNearestGrid: function(node, includeCurrent) {
+    getNearestGrid(node, includeCurrent) {
         if (!includeCurrent) {
             node = node.parentNode;
         }
@@ -633,7 +633,7 @@ const Manipulator = {
      *
      * @return {Boolean} - `true` if the node contains at least one subgrid, or `false`
      */
-    containsSubGrid: function(node) {
+    containsSubGrid(node) {
         return !!node.querySelector('cell[type=grid]');
     },
 
@@ -643,7 +643,7 @@ const Manipulator = {
      * @param  {XML} contentNode - The "content" node we want to remove
      * @param {boolean} [dontClean] - Do not try to clean the parent grid node
      */
-    removeContentNode: function(contentNode, dontClean) {
+    removeContentNode(contentNode, dontClean) {
         // save actual grid parent to "clean" it after the move
         var gridNode = dontClean ? null : this.getNearestGrid(contentNode);
 
@@ -668,7 +668,7 @@ const Manipulator = {
      *
      * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the placeholder cell is not a placeholder (type "placeholder")
      */
-    moveContentToPlaceholder: function(contentNode, placeholderCell) {
+    moveContentToPlaceholder(contentNode, placeholderCell) {
         var placeholderType = placeholderCell.getAttribute('type');
         if (placeholderType != 'placeholder') {
             throw new this.Exceptions.InvalidType("Cannot move content in cell of type <" + placeholderType + ">. It must be <placeholder>");
@@ -703,7 +703,7 @@ const Manipulator = {
      *
      * @return {XML} - The XML content node
      */
-    createModuleNode: function(params) {
+    createModuleNode(params) {
         var node = this.XMLStringToXMLGrid('<content/>');
         for (var key in params) {
             node.setAttribute(key, params[key]);
@@ -717,7 +717,7 @@ const Manipulator = {
      *
      * @returns {} - Returns nothing
      */
-    setIds: function(node) {
+    setIds(node) {
         var nodes = _.toArray(node.querySelectorAll('*:not([id])'));
         if (!node.getAttribute('id')) {
             nodes.unshift(node);
@@ -735,7 +735,7 @@ const Manipulator = {
      *
      * @return {Boolean} - true if the grid has resizers
      */
-    hasResizers: function(grid) {
+    hasResizers(grid) {
         return !!grid.getAttribute('hasResizers');
     },
 
@@ -750,7 +750,7 @@ const Manipulator = {
      * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
      * @throws {module:Grid.Manipulator.Exceptions.InvalidState} If the grid already has resizers or placeholders
      */
-    addResizers: function(grid) {
+    addResizers(grid) {
         var nodeType = grid.getAttribute('type');
         if (nodeType != 'mainGrid') {
             throw new this.Exceptions.InvalidType("Cannot add resizers in grid of type <" + nodeType + ">. Should be <mainGrid>");
@@ -794,7 +794,7 @@ const Manipulator = {
      * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the given node is not a row neither a cell
      * @throws {module:Grid.Manipulator.Exceptions.Inconsistency} If the given node is the first child
      */
-    addResizer: function(beforeNode) {
+    addResizer(beforeNode) {
         var nodeType = beforeNode.tagName;
         var resizerType;
         if (nodeType == 'row') {
@@ -823,7 +823,7 @@ const Manipulator = {
      * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
      * @throws {module:Grid.Manipulator.Exceptions.InvalidState} If the grid isn't marked as having resizers
      */
-    removeResizers: function(grid) {
+    removeResizers(grid) {
         var nodeType = grid.getAttribute('type');
         if (nodeType != 'mainGrid') {
             throw new this.Exceptions.InvalidType("Cannot remove resizers in grid of type <" + nodeType + ">. Should be <mainGrid>");

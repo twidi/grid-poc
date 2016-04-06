@@ -11,7 +11,7 @@ export const Utils = {
      *   // need a new reset during the meme test function, call:
      *   mock.reset();
      */
-    mockUniqueId: function() {
+    mockUniqueId() {
         var idCounter = 0;
 
         /**
@@ -35,7 +35,7 @@ export const Utils = {
         return {
             original: original,
             mocked: uniqueId,
-            reset: function() {
+            reset() {
                 idCounter = 0;
             }
         }

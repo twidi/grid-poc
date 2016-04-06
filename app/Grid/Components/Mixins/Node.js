@@ -18,7 +18,7 @@ export const NodeMixin = {
      *
      * @return {object} - The initial state
      */
-    getInitialState: function() {
+    getInitialState() {
         return {
             node: this.props.node
         };
@@ -30,7 +30,7 @@ export const NodeMixin = {
      *
      * @param  {object} nextProps - The new props to be received
      */
-    componentWillReceiveProps: function(nextProps) {
+    componentWillReceiveProps(nextProps) {
         if (nextProps.node != this.props.node) {
             this.setState({
                 node: nextProps.node
@@ -43,7 +43,7 @@ export const NodeMixin = {
      * @return {string} - Either "mainGrid", or "placeholder" or nothing for a row,
      * or "grid", "module" or "placeholder" for a cell
      */
-    getType: function() {
+    getType() {
         return this.state.node.getAttribute('type');
     },
 
@@ -52,7 +52,7 @@ export const NodeMixin = {
      *
      * @return {string} - The ID of the node
      */
-    getNodeId: function() {
+    getNodeId() {
         return Store.getNodeId(this.state.node);
     },
 
@@ -61,7 +61,7 @@ export const NodeMixin = {
      *
      * @return {XML} - The main grid the current node belongs to
      */
-    getGrid: function() {
+    getGrid() {
         return Store.getMainGrid(this.state.node);
     },
 
@@ -70,7 +70,7 @@ export const NodeMixin = {
      *
      * @return {XML} - The name of the main grid the current node belongs to
      */
-    getGridName: function() {
+    getGridName() {
         return Store.getMainGridName(this.state.node);
     },
 
@@ -81,7 +81,7 @@ export const NodeMixin = {
      *
      * @todo: find a way to cache this to avoid calling the getAttribute method every time
      */
-    getDesignModeStep: function() {
+    getDesignModeStep() {
         return Store.getDesignModeStep(this.getGridName());
     },
 
@@ -90,7 +90,7 @@ export const NodeMixin = {
      *
      * @return {boolean} - True if the grid is in design mode, else False
      */
-    isInDesignMode: function() {
+    isInDesignMode() {
         return (this.getDesignModeStep() != 'disabled');
     },
 };

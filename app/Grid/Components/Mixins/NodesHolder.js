@@ -52,7 +52,7 @@ export const NodesHolderMixin = {
      */
 
      //The method to override must not include the prefix `_`
-    _canHoldExternalNodes: function() {},
+    _canHoldExternalNodes() {},
 
 
     /**
@@ -71,14 +71,14 @@ export const NodesHolderMixin = {
      */
 
      //The method to override must not include the prefix `_`
-    _getExternalNode: function(className) {},
+    _getExternalNode(className) {},
 
     /**
      * Will attach some dom nodes to the actual react dom node
      *
      * @private
      */
-    _attachExternalNodes: function() {
+    _attachExternalNodes() {
         if (!this.canHoldExternalNodes()) { return; }
         var domNode = ReactDOM.findDOMNode(this);
 
@@ -102,7 +102,7 @@ export const NodesHolderMixin = {
      *
      * @private
      */
-    _attachExternalNode: function(domNode, className, parentNode) {
+    _attachExternalNode(domNode, className, parentNode) {
         if (!domNode.classList.contains(className)) {
             domNode.add(className);
         }
@@ -114,7 +114,7 @@ export const NodesHolderMixin = {
      *
      * @private
      */
-    _detachExternalNodes: function() {
+    _detachExternalNodes() {
         if (!this.canHoldExternalNodes()) { return; }
         var domNode = ReactDOM.findDOMNode(this);
         for (var i = this.externalNodesClassNames.length - 1; i >= 0; i--) {
@@ -137,35 +137,35 @@ export const NodesHolderMixin = {
      *
      * @private
      */
-    _detachExternalNode: function(domNode, parentNode) {
+    _detachExternalNode(domNode, parentNode) {
         (parentNode || ReactDOM.findDOMNode(this)).removeChild(domNode);
     },
 
     /**
      * Detach external nodes before unmounting the react component
      */
-    componentWillUnmount: function() {
+    componentWillUnmount() {
         this._detachExternalNodes();
     },
 
     /**
      * Attach external nodes after mounting the react component
      */
-    componentDidMount: function() {
+    componentDidMount() {
         this._attachExternalNodes();
     },
 
     /**
      * Detach external nodes before updating the react component
      */
-    componentWillUpdate: function() {
+    componentWillUpdate() {
         this._detachExternalNodes();
     },
 
     /**
      * Attach external nodes after updating the react component
      */
-    componentDidUpdate: function() {
+    componentDidUpdate() {
         this._attachExternalNodes();
     },
 

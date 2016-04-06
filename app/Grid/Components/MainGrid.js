@@ -30,7 +30,7 @@ export const MainGrid = React.createClass({
      * When the component is created, set the gridName in the state based on the
      * grid from the props, to be able to update it later
      */
-    getInitialState: function() {
+    getInitialState() {
         return {
             // we don't have `this.state.node` yet
             gridName: this.props.node.getAttribute('name'),
@@ -41,7 +41,7 @@ export const MainGrid = React.createClass({
      * When the component props are updated, set the gridName in the state based
      * on the grid from the new props, to be able to update it later
      */
-    componentWillReceiveProps: function(nextProps) {
+    componentWillReceiveProps(nextProps) {
         var newName = nextProps.node.getAttribute('name');
         if (newName != this.state.gridName) {
             this.setState({
@@ -66,7 +66,7 @@ export const MainGrid = React.createClass({
      * @param {string} eventName - The name of the event that called this function (`grid.designMode.**`)
      * @param {string} gridName - The name of the grid for which the event was triggered
      */
-    onDesignModeChange: function (eventName, gridName) {
+    onDesignModeChange(eventName, gridName) {
         if (gridName != this.state.gridName) { return; }
 
         var actualGrid = Store.getGrid(this.state.gridName);
@@ -127,7 +127,7 @@ export const MainGrid = React.createClass({
      *
      * This method also listen for a `fakedragend` event, triggered when a drop operation is done.
      */
-    activateDropDetection: function() {
+    activateDropDetection() {
         this.addDocumentListener('mousemove', 'onDocumentDetectDrop');
         this.addDocumentListener('mousedown', 'onDocumentDetectDrop');
         this.addDocumentListener('fakedragend', 'onDocumentDragEnd');
@@ -136,7 +136,7 @@ export const MainGrid = React.createClass({
     /**
      * Stop listening to events defined in `activateDropDetection`
      */
-    deactivateDropDetection: function() {
+    deactivateDropDetection() {
         this.removeDocumentListener('mousemove', 'onDocumentDetectDrop');
         this.removeDocumentListener('mousedown', 'onDocumentDetectDrop');
         this.removeDocumentListener('fakedragend', 'onDocumentDragEnd');
@@ -148,7 +148,7 @@ export const MainGrid = React.createClass({
      *
      * @param  {event} event - The `fakedragend` event
      */
-    onDocumentDragEnd: function(event) {
+    onDocumentDragEnd(event) {
         this.deactivateDropDetection();
     },
 
@@ -161,7 +161,7 @@ export const MainGrid = React.createClass({
 
      * @param  {event} event - The event that triggered this method
      */
-    onDocumentDetectDrop: function(event) {
+    onDocumentDetectDrop(event) {
         if (Store.isDragging(this.state.gridName)) {
             if (event.target && event.target.classList && event.target.classList.contains('grid-cell-placeholder')) {
                 this.emitFakeDrop(event.target);
@@ -177,7 +177,7 @@ export const MainGrid = React.createClass({
      * The event propagation is stopped, then the `applyDrop` method is called
      * @param  {event} event - The `drop` event
      */
-    onDocumentDrop: function(event) {
+    onDocumentDrop(event) {
         event.preventDefault();
         event.stopPropagation();
         this.applyDrop();
@@ -190,7 +190,7 @@ export const MainGrid = React.createClass({
      *
      * @param  {DomNode} placeholderNode - The placeholder dom node
      */
-    emitFakeDrop: function(placeholderNode) {
+    emitFakeDrop(placeholderNode) {
         var fakeDropEvent = new Event('fakedrop', {view: window, bubbles: true, target: placeholderNode, });
         placeholderNode.dispatchEvent(fakeDropEvent);
     },
@@ -199,7 +199,7 @@ export const MainGrid = React.createClass({
      * Emit a fake drag end event on the document, to tell the world that the whole
      * drag and drop operation is finished
      */
-    emitFakeDragEnd: function() {
+    emitFakeDragEnd() {
         document.dispatchEvent(new Event('fakedragend'));
     },
 
@@ -210,7 +210,7 @@ export const MainGrid = React.createClass({
      * - tell the world that the drag is finish by triggering a `fakedragend` event
      * - apply the drop by calling {@link module:Grid.Actions.drop drop}
      */
-    applyDrop: function() {
+    applyDrop() {
         this.deactivateDropDetection();
         this.emitFakeDragEnd();
         Actions.drop(this.state.gridName);
@@ -222,7 +222,7 @@ export const MainGrid = React.createClass({
      *
      * @param  {event} event - The `dragover` event
      */
-    onDocumentDragOver: function(event) {
+    onDocumentDragOver(event) {
         event.preventDefault();
     },
 
@@ -230,7 +230,7 @@ export const MainGrid = React.createClass({
      * Called before attaching the component to the dom, to watch changes of the
      * store that impact the component
      */
-    componentWillMount: function () {
+    componentWillMount() {
         // hack to pass the original event to onDesignModeChange
         var self = this;
         this.__onDesignModeChange = this.__onDesignModeChange || function(gridName) {
@@ -244,7 +244,7 @@ export const MainGrid = React.createClass({
      * Called before detaching the component from the dom, to stop watching
      * changes of the store that impact the component
      */
-    componentWillUnmount: function () {
+    componentWillUnmount() {
         // this.__onDesignModeChange was defined in componentWillMount
         Store.off('grid.designMode.**', this.__onDesignModeChange);
         this.deactivateDropDetection();
@@ -253,7 +253,7 @@ export const MainGrid = React.createClass({
     /**
      * Enter or exit the design mode of the grid depending of its current status
      */
-    toggleDesignMode: function() {
+    toggleDesignMode() {
         if (this.isInDesignMode()) {
             Actions.exitDesignMode(this.state.gridName);
         } else {
@@ -264,7 +264,7 @@ export const MainGrid = React.createClass({
     /**
      * Add a random module to the grid, with random content text.
      */
-    addRandomModule: function() {
+    addRandomModule() {
         var availableModules = [
             'Modules.Test1',
             'Modules.Test2',
@@ -278,14 +278,14 @@ export const MainGrid = React.createClass({
     /**
      * Ask the store to restore the previous version of the grid in its history
      */
-    undo: function() {
+    undo() {
         Actions.goBackInHistory(this.state.gridName);
     },
 
     /**
      * Ask the store to restore the next version of the grid in its history
      */
-    redo: function() {
+    redo() {
         Actions.goForwardInHistory(this.state.gridName);
     },
 
@@ -302,7 +302,7 @@ export const MainGrid = React.createClass({
      * - `grid-container-with-placeholders`: if the grid has placeholders
      * - `grid-container-with-resizers`: if the grid has resizers
      */
-    getContainerClasses: function() {
+    getContainerClasses() {
         var inDesignMode = this.isInDesignMode();
         var classes = {
             'grid-container': true,
@@ -317,7 +317,7 @@ export const MainGrid = React.createClass({
     /**
      * Will render the component
      */
-    render: function() {
+    render() {
         var addButton, toggleButton, undoButton, redoButton;
         var designModeStep = this.getDesignModeStep();
 

@@ -10,33 +10,33 @@ import { Store } from './Grid/Store';
 import { MainGrid } from './Grid/Components/MainGrid';
 
 export const App = React.createClass({
-    getInitialState: function () {
+    getInitialState() {
         return {
             gridName: null,
         };
     },
 
-    componentWillMount: function () {
+    componentWillMount() {
         Store.on('grid.add', this.onGridAdded);
     },
 
-    componentWillUnmount: function () {
+    componentWillUnmount() {
         Store.off('grid.add', this.onGridAdded);
     },
 
-    componentDidMount: function() {
+    componentDidMount() {
         if (!this.state.gridName) {
             this.initGrid();
         }
     },
 
-    onGridAdded: function(gridName) {
+    onGridAdded(gridName) {
         this.setState({
             gridName: gridName
         })
     },
 
-    initGrid: function() {
+    initGrid() {
         // create a base empty grid
         var grid = Manipulator.createBaseGrid('Test grid');
         // with ids
@@ -45,11 +45,11 @@ export const App = React.createClass({
         Actions.addGrid(grid);
     },
 
-    getGrid: function() {
+    getGrid() {
         return Store.getGrid(this.state.gridName);
     },
 
-    render: function() {
+    render() {
         if (this.state.gridName) {
             return <MainGrid node={this.getGrid()}/>
         } else {

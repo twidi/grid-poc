@@ -29,7 +29,7 @@ export const Placeholder = React.createClass({
      *
      * @param  {event} event - The dragEnter event
      */
-    onDragEnter: function(event) {
+    onDragEnter(event) {
         event.preventDefault();
         Actions.startHovering(this.getGridName(), this.state.node);
     },
@@ -42,7 +42,7 @@ export const Placeholder = React.createClass({
      *
      * @param  {event} event - The dragOver event
      */
-    onDragOver: function(event) {
+    onDragOver(event) {
         event.preventDefault();
         // onDragEnter may have not been called. will do nothing if it's already the hovered placeholder
         Actions.startHovering(this.getGridName(), this.state.node);
@@ -54,7 +54,7 @@ export const Placeholder = React.createClass({
      *
      * @param  {event} event - The dragLeave event
      */
-    onDragLeave: function(event) {
+    onDragLeave(event) {
         if (Store.isHoveringPlaceholder(this.getGridName(), this.state.node)) {
             Actions.stopHovering(this.getGridName());
         }
@@ -64,28 +64,28 @@ export const Placeholder = React.createClass({
     /**
      * Stop trying to detect the drop on the document when unmounting the react component
      */
-    componentWillUnmount: function() {
+    componentWillUnmount() {
         this.deactivateDropDetection();
     },
 
     /**
      * Start trying to detect the drop on the document when mounting the react component
      */
-    componentDidMount: function() {
+    componentDidMount() {
         this.activateDropDetection();
     },
 
     /**
      * Stop trying to detect the drop on the document before updating the react component
      */
-    componentWillUpdate: function() {
+    componentWillUpdate() {
         this.deactivateDropDetection();
     },
 
     /**
      * Start trying to detect the drop on the document after updating the react component
      */
-    componentDidUpdate: function() {
+    componentDidUpdate() {
         this.activateDropDetection();
     },
 
@@ -95,7 +95,7 @@ export const Placeholder = React.createClass({
      *
      * And it also listen for a `fakedragend` event, triggered when a drop operation is done.
      */
-    activateDropDetection: function() {
+    activateDropDetection() {
         this.addDocumentListener('fakedrop', 'onDocumentDetectDrop');
         this.addDocumentListener('fakedragend', 'onDocumentDragEnd');
     },
@@ -103,7 +103,7 @@ export const Placeholder = React.createClass({
     /**
      * Stop listening to events defined in `activateDropDetection`
      */
-    deactivateDropDetection: function() {
+    deactivateDropDetection() {
         this.removeDocumentListener('fakedrop', 'onDocumentDetectDrop');
         this.removeDocumentListener('fakedragend', 'onDocumentDragEnd');
     },
@@ -121,7 +121,7 @@ export const Placeholder = React.createClass({
      *
      * @param  {event} event - The event that triggered this method
      */
-    onDocumentDetectDrop: function(event) {
+    onDocumentDetectDrop(event) {
         if (Store.isDragging(this.getGridName()) && event.target == this.refs['placeholder']) {
             this.deactivateDropDetection();
             document.dispatchEvent(new Event('fakedragend'));
@@ -135,7 +135,7 @@ export const Placeholder = React.createClass({
      *
      * @param  {event} event - The fakedragend event
      */
-    onDocumentDragEnd: function(event) {
+    onDocumentDragEnd(event) {
         this.deactivateDropDetection();
     },
 
@@ -152,7 +152,7 @@ export const Placeholder = React.createClass({
      * - `grid-cell-placeholder-prehovering`: if in "prehovering" mode, and it's the hovered placeholder
      *
      */
-    getClasses: function() {
+    getClasses() {
         var classes = {
             'grid-cell': true,
             'grid-cell-placeholder': true,
@@ -171,7 +171,7 @@ export const Placeholder = React.createClass({
      *
      * The `drop` event is managed on the document, by the grid itself
      */
-    render: function() {
+    render() {
         return <div className={this.getClasses()}
                     ref="placeholder"
                     onDragEnter={this.onDragEnter}

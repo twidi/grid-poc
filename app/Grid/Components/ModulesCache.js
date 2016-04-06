@@ -59,7 +59,7 @@ export const ModulesCache = {
      * @param  {XMLNode} xmlNode - The xml node from which we want to extract attributes
      * @return {object}  - The object with all attributes
      */
-    _extractAttributes: function(xmlNode) {
+    _extractAttributes(xmlNode) {
         return _.reduce(
             xmlNode.attributes,
             function(r, a) { r[a.name] = a.value; return r; }, {}
@@ -104,7 +104,7 @@ export const ModulesCache = {
      *
      * @return {object} - The cache entry for the given cell/key
      */
-    _getFromCache: function(cell, key) {
+    _getFromCache(cell, key) {
         var attributes;
 
         if (key) {
@@ -194,7 +194,7 @@ export const ModulesCache = {
      *
      * @return {DomNode} - A dom node holding the module react component
      */
-    getModuleComponent: function(cell, key) {
+    getModuleComponent(cell, key) {
         var cache = this._getFromCache(cell, key);
 
         if (typeof cache.moduleComponent === 'undefined') {
@@ -222,7 +222,7 @@ export const ModulesCache = {
      *
      * @private
      */
-    _getNewHolderProps: function(cache, props) {
+    _getNewHolderProps(cache, props) {
         var newProps = {};
         for (var key in props) {
             if (typeof cache[key] === 'undefined') { continue; }
@@ -256,7 +256,7 @@ export const ModulesCache = {
      * @return {DomNode} - A dom node holding the
      * {@link module:Grid.Components.ModuleHolder ModuleHolder} react component
      */
-    getHolderComponent: function(cell, key) {
+    getHolderComponent(cell, key) {
         var cache = this._getFromCache(cell, key);
 
         if (typeof cache.holderComponent === 'undefined') {
