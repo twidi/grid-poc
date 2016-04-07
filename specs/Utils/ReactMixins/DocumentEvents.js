@@ -3,12 +3,12 @@ import _ from 'lodash';
 export const TestDocumentEventsMixin = function(obj, done) {
 
     // backup existing cache
-    var existingCache = _.clone(obj._documentEventCache);
+    let existingCache = _.clone(obj._documentEventCache);
     // and clear it
     obj._documentEventCache = {};
 
-    var callbackCalled = false;
-    var calledEvent = null;
+    let callbackCalled = false;
+    let calledEvent = null;
     obj.testCallback = function(event) {
         callbackCalled = true;
         calledEvent = event;
@@ -17,7 +17,7 @@ export const TestDocumentEventsMixin = function(obj, done) {
     spyOn(obj, 'testCallback').and.callThrough();
 
     // add an bound method
-    var callback1 = obj.boundMethod('testCallback');
+    let callback1 = obj.boundMethod('testCallback');
 
     // should be one entry in the cache
     expect(_.size(obj._documentEventCache)).toEqual(1);
@@ -32,7 +32,7 @@ export const TestDocumentEventsMixin = function(obj, done) {
     expect(_.size(obj._documentEventCache)).toEqual(0);
 
     // add it again, should not be the same
-    var callback2 = obj.boundMethod('testCallback');
+    let callback2 = obj.boundMethod('testCallback');
     expect(callback2).not.toBe(callback1);
 
     // clear all cache

@@ -13,7 +13,7 @@ export const componentUtils = {
     _componentsCache: [],
 
     makeTestGrid() {
-        var testGrid = Manipulator.XMLStringToXMLGrid(
+        let testGrid = Manipulator.XMLStringToXMLGrid(
             '<grid name="Test grid" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row>' +
@@ -109,7 +109,7 @@ export const componentUtils = {
     },
 
     renderIntoDocument(element) {
-        var component = TestUtils.renderIntoDocument(element);
+        let component = TestUtils.renderIntoDocument(element);
         this._componentsCache.push(component);
         return component;
     },
@@ -126,8 +126,8 @@ export const componentUtils = {
     },
 
     unmountAllComponents() {
-        for (var i = this._componentsCache.length - 1; i >= 0; i--) {
-            var component = this._componentsCache[i];
+        for (let i = this._componentsCache.length - 1; i >= 0; i--) {
+            let component = this._componentsCache[i];
             try {
                 this.unmountComponent(component);
             } catch (e) {

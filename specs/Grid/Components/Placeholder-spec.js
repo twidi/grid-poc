@@ -15,11 +15,11 @@ import { Utils } from '../../Utils';
 
 
 describe('Grid.Components.Placeholder', function() {
-    var uniqueIdMock;
+    let uniqueIdMock;
 
     // main grid, and the placeholder to test defined in beforeEach
-    var testGrid;
-    var gridPlaceholder;
+    let testGrid;
+    let gridPlaceholder;
 
     beforeEach(function(done) {
         // we want to start each test with a fresh list of grids
@@ -45,15 +45,15 @@ describe('Grid.Components.Placeholder', function() {
     });
 
     it('should manage document events', function(done) {
-        var element = React.createElement(Placeholder, {node: gridPlaceholder});
-        var component = componentUtils.renderIntoDocument(element);
+        const element = React.createElement(Placeholder, {node: gridPlaceholder});
+        const component = componentUtils.renderIntoDocument(element);
         TestDocumentEventsMixin(component, done);
     });
 
     it('should render a placeholder', function() {
-        var element = React.createElement(Placeholder, {node: gridPlaceholder});
-        var component = componentUtils.renderIntoDocument(element);
-        var domNode = ReactDOM.findDOMNode(component);
+        let element = React.createElement(Placeholder, {node: gridPlaceholder});
+        let component = componentUtils.renderIntoDocument(element);
+        let domNode = ReactDOM.findDOMNode(component);
         expect(domNode.tagName).toEqual('DIV');
         expect(domNode.classList.contains('grid-cell')).toBe(true);
         expect(domNode.classList.contains('grid-cell-placeholder')).toBe(true);
@@ -65,7 +65,7 @@ describe('Grid.Components.Placeholder', function() {
         component.forceUpdate();
         expect(domNode.classList.contains('grid-cell-placeholder-prehovering')).toBe(true);
 
-        var gridPlaceholderSurround = testGrid.querySelector('cell[type=placeholder][surround]');
+        const gridPlaceholderSurround = testGrid.querySelector('cell[type=placeholder][surround]');
         element = React.createElement(Placeholder, {node: gridPlaceholderSurround});
         component = componentUtils.renderIntoDocument(element);
         domNode = ReactDOM.findDOMNode(component);
@@ -83,10 +83,10 @@ describe('Grid.Components.Placeholder', function() {
     it('should activate/deactivate drop detection', function() {
         jasmineReact.spyOnClass(Placeholder, 'activateDropDetection').and.callThrough();
         jasmineReact.spyOnClass(Placeholder, 'deactivateDropDetection').and.callThrough();
-        var placeholderProto = jasmineReact.classPrototype(Placeholder);
+        const placeholderProto = jasmineReact.classPrototype(Placeholder);
 
-        var element = React.createElement(Placeholder, {node: gridPlaceholder});
-        var component = componentUtils.renderIntoDocument(element);
+        const element = React.createElement(Placeholder, {node: gridPlaceholder});
+        const component = componentUtils.renderIntoDocument(element);
 
         // should be activated on mount
         expect(placeholderProto.activateDropDetection.calls.count()).toEqual(1);
@@ -119,10 +119,10 @@ describe('Grid.Components.Placeholder', function() {
 
     it('should deactivate drop detection when drag is finished', function() {
         jasmineReact.spyOnClass(Placeholder, 'deactivateDropDetection').and.callThrough();
-        var placeholderProto = jasmineReact.classPrototype(Placeholder);
+        const placeholderProto = jasmineReact.classPrototype(Placeholder);
 
-        var element = React.createElement(Placeholder, {node: gridPlaceholder});
-        var component = componentUtils.renderIntoDocument(element);
+        const element = React.createElement(Placeholder, {node: gridPlaceholder});
+        const component = componentUtils.renderIntoDocument(element);
 
         document.dispatchEvent(new Event('fakedragend'));
         expect(placeholderProto.deactivateDropDetection.calls.count()).toEqual(1);
@@ -131,12 +131,12 @@ describe('Grid.Components.Placeholder', function() {
 
     it('should start hovering on drag enter', function() {
         jasmineReact.spyOnClass(Placeholder, 'onDragEnter').and.callThrough();
-        var placeholderProto = jasmineReact.classPrototype(Placeholder);
+        const placeholderProto = jasmineReact.classPrototype(Placeholder);
         spyOn(Actions, 'startHovering').and.returnValue(false);
 
-        var element = React.createElement(Placeholder, {node: gridPlaceholder});
-        var component = componentUtils.renderIntoDocument(element);
-        var domNode = ReactDOM.findDOMNode(component);
+        const element = React.createElement(Placeholder, {node: gridPlaceholder});
+        const component = componentUtils.renderIntoDocument(element);
+        const domNode = ReactDOM.findDOMNode(component);
 
         componentUtils.simulateDragEvent(domNode, 'dragEnter');
 
@@ -147,20 +147,20 @@ describe('Grid.Components.Placeholder', function() {
 
         // and the action been called too
         expect(Actions.startHovering.calls.count()).toBe(1);
-        var args = Actions.startHovering.calls.mostRecent().args;
+        const args = Actions.startHovering.calls.mostRecent().args;
         expect(args[0]).toEqual('Test grid');
         expect(args[1]).toEqual(gridPlaceholder);
     });
 
     it('should start hovering on drag over', function() {
         jasmineReact.spyOnClass(Placeholder, 'onDragOver').and.callThrough();
-        var placeholderProto = jasmineReact.classPrototype(Placeholder);
+        const placeholderProto = jasmineReact.classPrototype(Placeholder);
         spyOn(Actions, 'startHovering').and.returnValue(false);
 
-        var element = React.createElement(Placeholder, {node: gridPlaceholder});
-        var component = componentUtils.renderIntoDocument(element);
+        const element = React.createElement(Placeholder, {node: gridPlaceholder});
+        const component = componentUtils.renderIntoDocument(element);
 
-        var domNode = ReactDOM.findDOMNode(component);
+        const domNode = ReactDOM.findDOMNode(component);
         componentUtils.simulateDragEvent(domNode, 'dragOver');
 
         // event callback should have been called
@@ -170,20 +170,20 @@ describe('Grid.Components.Placeholder', function() {
 
         // and the action been called too
         expect(Actions.startHovering.calls.count()).toBe(1);
-        var args = Actions.startHovering.calls.mostRecent().args;
+        const args = Actions.startHovering.calls.mostRecent().args;
         expect(args[0]).toEqual('Test grid');
         expect(args[1]).toEqual(gridPlaceholder);
     });
 
     it('should stop hovering on drag leave', function() {
         jasmineReact.spyOnClass(Placeholder, 'onDragLeave').and.callThrough();
-        var placeholderProto = jasmineReact.classPrototype(Placeholder);
+        const placeholderProto = jasmineReact.classPrototype(Placeholder);
         spyOn(Actions, 'stopHovering').and.returnValue(false);
 
-        var element = React.createElement(Placeholder, {node: gridPlaceholder});
-        var component = componentUtils.renderIntoDocument(element);
+        const element = React.createElement(Placeholder, {node: gridPlaceholder});
+        const component = componentUtils.renderIntoDocument(element);
 
-        var domNode = ReactDOM.findDOMNode(component);
+        const domNode = ReactDOM.findDOMNode(component);
         componentUtils.simulateDragEvent(domNode, 'dragLeave');
 
         // event callback should have been called
@@ -203,27 +203,27 @@ describe('Grid.Components.Placeholder', function() {
 
         // the action should have been called
         expect(Actions.stopHovering.calls.count()).toBe(1);
-        var args = Actions.stopHovering.calls.mostRecent().args;
+        const args = Actions.stopHovering.calls.mostRecent().args;
         expect(args[0]).toEqual('Test grid');
     });
 
     it('should drop when a fake drop is triggered', function() {
         jasmineReact.spyOnClass(Placeholder, 'onDocumentDetectDrop').and.callThrough();
         jasmineReact.spyOnClass(Placeholder, 'deactivateDropDetection').and.callThrough();
-        var placeholderProto = jasmineReact.classPrototype(Placeholder);
+        const placeholderProto = jasmineReact.classPrototype(Placeholder);
         spyOn(Actions, 'drop').and.returnValue(false);
 
-        var fakeDragEndCalled = 0;
-        var fakeDragEndCallback = function() {
+        let fakeDragEndCalled = 0;
+        const fakeDragEndCallback = function() {
             fakeDragEndCalled++;
         };
 
         document.addEventListener('fakedragend', fakeDragEndCallback);
 
-        var element = React.createElement(Placeholder, {node: gridPlaceholder});
-        var component = componentUtils.renderIntoDocument(element);
+        const element = React.createElement(Placeholder, {node: gridPlaceholder});
+        const component = componentUtils.renderIntoDocument(element);
 
-        var domNode = ReactDOM.findDOMNode(component);
+        const domNode = ReactDOM.findDOMNode(component);
         // we need the node to be attached to the document for bubbling
         domNode.parentNode.style.display = 'none';
         document.body.appendChild(domNode.parentNode);
@@ -231,7 +231,7 @@ describe('Grid.Components.Placeholder', function() {
         try {
 
              // cannot use react event simulator for fake events
-            var fakeDropEvent = new Event('fakedrop', {view: window, bubbles: true, target: domNode, });
+            let fakeDropEvent = new Event('fakedrop', {view: window, bubbles: true, target: domNode, });
             domNode.dispatchEvent(fakeDropEvent);
 
             // event callback should have been called
@@ -247,12 +247,12 @@ describe('Grid.Components.Placeholder', function() {
             Store.__private.grids['Test grid'].nodes.dragging = testGrid.querySelector('cell[type=module] > content');
 
             // then drop
-            var fakeDropEvent = new Event('fakedrop', {view: window, bubbles: true, target: domNode, });
+            fakeDropEvent = new Event('fakedrop', {view: window, bubbles: true, target: domNode, });
             domNode.dispatchEvent(fakeDropEvent);
 
             // the action should have been called
             expect(Actions.drop.calls.count()).toBe(1);
-            var args = Actions.drop.calls.mostRecent().args;
+            const args = Actions.drop.calls.mostRecent().args;
             expect(args[0]).toEqual('Test grid');
             expect(args[1]).toEqual(gridPlaceholder);
 
