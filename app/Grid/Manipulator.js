@@ -59,7 +59,7 @@ const Manipulator = {
         InvalidState: function InvalidState(message) {
             this.name = 'InvalidState';
             this.message = message || 'Invalid state detected';
-        },
+        }
     },
 
     /**
@@ -206,7 +206,6 @@ const Manipulator = {
     },
 
 
-
     /**
      * Add a cell to the given XML grid row. Update the row in place.
      *
@@ -225,7 +224,7 @@ const Manipulator = {
         if (!this.reCellType.test(type)) {
             throw new this.Exceptions.InvalidType('Cannot add cell of type <' + type + '>. Should be <grid> or <module>');
         }
-        let cell = row.ownerDocument.createElement('cell');
+        const cell = row.ownerDocument.createElement('cell');
         cell.setAttribute('type', type);
         if (!contentNode) {
             contentNode = row.ownerDocument.createElement('content');
@@ -265,7 +264,9 @@ const Manipulator = {
     createContentNode(grid, attributes) {
         const contentNode = grid.ownerDocument.createElement('content');
         for (const key in attributes) {
-            contentNode.setAttribute(key, attributes[key]);
+            if (attributes.hasOwnProperty(key)) {
+                contentNode.setAttribute(key, attributes[key]);
+            }
         }
         return contentNode;
     },
@@ -449,7 +450,7 @@ const Manipulator = {
             throw new this.Exceptions.InvalidState('Cannot add resizers on a grid which already have placeholders');
         }
 
-        let placeholder, row, cell, cells, grids, subGrid, modules, isSurround, displayLeftRightPlaceholders;
+        let placeholder, row, cells, grids, subGrid, isSurround, displayLeftRightPlaceholders;
 
         // surround all grid, including current if it matches
         grids = grid.parentNode.querySelectorAll('grid, cell[type=grid]');
@@ -464,7 +465,7 @@ const Manipulator = {
         }
 
         // surround all modules if more than one in the grid
-        modules = grid.querySelectorAll('cell[type=module]');
+        const modules = grid.querySelectorAll('cell[type=module]');
         if (modules.length > 1) {
             for (let j = 0; j < modules.length; j++) {
                 this.surroundCellWithGrid(modules[j]);
@@ -696,7 +697,9 @@ const Manipulator = {
     createModuleNode(params) {
         const node = this.XMLStringToXMLGrid('<content/>');
         for (const key in params) {
-            node.setAttribute(key, params[key]);
+            if (params.hasOwnProperty(key)) {
+                node.setAttribute(key, params[key]);
+            }
         }
         return node;
     },
@@ -750,7 +753,7 @@ const Manipulator = {
             throw new this.Exceptions.InvalidState('Cannot add resizers on a grid which already have placeholders');
         }
 
-        let rows, cells, resizer;
+        let rows, cells;
 
         // add a resizer between each row of a grid
         const grids = grid.parentNode.querySelectorAll('grid, cell[type=grid]');
@@ -824,7 +827,7 @@ const Manipulator = {
         _(grid.querySelectorAll('resizer')).forEach(resizer => resizer.parentNode.removeChild(resizer));
 
         grid.removeAttribute('hasResizers');
-    },
+    }
 };
 
 // Exceptions must be based on the Error class

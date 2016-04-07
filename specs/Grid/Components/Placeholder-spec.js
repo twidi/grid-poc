@@ -2,7 +2,6 @@ import _ from 'lodash';
 import jasmineReact from 'jasmine-react-helpers-hotfix-0.14';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import TestUtils from 'react-addons-test-utils';
 
 import { Actions } from '../../../app/Grid/Actions';
 import { Manipulator } from '../../../app/Grid/Manipulator';

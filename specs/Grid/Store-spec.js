@@ -320,26 +320,26 @@ describe('Grid.Store', function() {
             var grid = createSimpleGrid();
 
             var tests = {
-                'disabled': {
-                    'allowed': ['enabled'],
-                    'denied': ['dragging', 'prehovering', 'hovering'],
+                disabled: {
+                    allowed: ['enabled'],
+                    denied: ['dragging', 'prehovering', 'hovering']
                 },
-                'enabled': {
-                    'allowed': ['disabled', 'dragging'],
-                    'denied': ['prehovering', 'hovering'],
+                enabled: {
+                    allowed: ['disabled', 'dragging'],
+                    denied: ['prehovering', 'hovering']
                 },
-                'dragging': {
-                    'allowed': ['enabled', 'prehovering'],
-                    'denied': ['disabled', 'hovering'],
+                dragging: {
+                    allowed: ['enabled', 'prehovering'],
+                    denied: ['disabled', 'hovering']
                 },
-                'prehovering': {
-                    'allowed': ['dragging', 'hovering', 'enabled'],
-                    'denied': ['disabled'],
+                prehovering: {
+                    allowed: ['dragging', 'hovering', 'enabled'],
+                    denied: ['disabled']
                 },
-                'hovering': {
-                    'allowed': ['dragging', 'enabled'],
-                    'denied': ['disabled', 'prehovering'],
-                },
+                hovering: {
+                    allowed: ['dragging', 'enabled'],
+                    denied: ['disabled', 'prehovering']
+                }
             };
 
             _.each(tests, function(rules, initialStep) {
@@ -373,10 +373,10 @@ describe('Grid.Store', function() {
         describe('it should add placeholders if missing when changing design mode step', function() {
             // allowed changes that should end with placeholders
             var tests = {
-                'enabled': ['dragging'],
-                'dragging': ['prehovering'],
-                'prehovering': ['dragging'],
-                'hovering': ['dragging']
+                enabled: ['dragging'],
+                dragging: ['prehovering'],
+                prehovering: ['dragging'],
+                hovering: ['dragging']
             };
 
             _.each(tests, function(steps, initialStep) {
@@ -423,12 +423,12 @@ describe('Grid.Store', function() {
         describe('it should remove placeholders if present when changing design mode step', function() {
             // allowed changes that should end with no placeholders
             var tests = {
-                'disabled': ['enabled'],
-                'enabled': ['disabled', 'resizing'],
-                'resizing': ['enabled'],
-                'dragging': ['enabled'],
-                'prehovering': ['enabled', 'hovering'],
-                'hovering': ['enabled']
+                disabled: ['enabled'],
+                enabled: ['disabled', 'resizing'],
+                resizing: ['enabled'],
+                dragging: ['enabled'],
+                prehovering: ['enabled', 'hovering'],
+                hovering: ['enabled']
             };
 
             _.each(tests, function(steps, initialStep) {
@@ -475,17 +475,17 @@ describe('Grid.Store', function() {
 
         describe('it should add resizers if missing when changing design mode step', function() {
             // allowed changes that should end with resizers
-           var tests = {
-                'disabled': ['enabled'],
-                'enabled': ['resizing'],
-                'resizing': ['enabled'],
-                'dragging': ['enabled'],
-                'prehovering': ['enabled'],
-                'hovering': ['enabled']
+            var tests = {
+                disabled: ['enabled'],
+                enabled: ['resizing'],
+                resizing: ['enabled'],
+                dragging: ['enabled'],
+                prehovering: ['enabled'],
+                hovering: ['enabled']
             };
 
-           _.each(tests, function(steps, initialStep) {
-                steps.forEach(function(step) {
+            _.each(tests, function(steps, initialStep) {
+               steps.forEach(function(step) {
                     it('should add/keep them from `' + initialStep + '` to `' + step + '`', function() {
                         var grid = createSimpleGrid();
 
@@ -522,16 +522,16 @@ describe('Grid.Store', function() {
                         expect(Manipulator.removeResizers.calls.count()).toEqual(0, 'already have resizers');
                     });
                 });
-            });
-       });
+           });
+        });
 
         describe('it should remove resizers if present when changing design mode step', function() {
             // allowed changes that should end with no resizers
             var tests = {
-                'enabled': ['disabled', 'dragging'],
-                'dragging': ['prehovering'],
-                'prehovering': ['dragging', 'hovering'],
-                'hovering': ['dragging']
+                enabled: ['disabled', 'dragging'],
+                dragging: ['prehovering'],
+                prehovering: ['dragging', 'hovering'],
+                hovering: ['dragging']
             };
 
             _.each(tests, function(steps, initialStep) {

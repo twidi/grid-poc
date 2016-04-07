@@ -8,5 +8,5 @@ import { Test2 } from './Modules/Test2';
  */
 export const Modules = {
     Test1,
-    Test2,
+    Test2
 };

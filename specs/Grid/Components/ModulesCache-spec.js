@@ -6,7 +6,6 @@ import { Manipulator } from '../../../app/Grid/Manipulator';
 import { Store } from '../../../app/Grid/Store';
 
 import { Cell } from '../../../app/Grid/Components/Cell';
-import { ModuleHolder } from '../../../app/Grid/Components/ModuleHolder';
 import { ModulesCache } from '../../../app/Grid/Components/ModulesCache';
 
 import { Utils } from '../../Utils';
