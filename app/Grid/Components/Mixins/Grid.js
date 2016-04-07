@@ -4,7 +4,6 @@ import classnames from 'classnames';
 
 import { Store } from '../../Store';
 import { Resizer } from '../Resizer';
-import { Row } from '../Row';
 
 /**
  * A mixin to use for MainGrid and Grid components
@@ -38,6 +37,8 @@ export const GridMixin = {
      * @return {module:Grid.Components.Row[]} - An array of {@link module:Grid.Components.Row Row} components
      */
     renderRows() {
+        const { Row } = require('../Row');
+
         return _.map(this.getRows(), row => {
             const type = row.tagName;
             if (type == 'row') {
