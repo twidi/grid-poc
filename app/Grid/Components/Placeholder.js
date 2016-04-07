@@ -20,7 +20,7 @@ import { NodeMixin } from './Mixins/Node';
 export const Placeholder = React.createClass({
     mixins: [
         DocumentEventsMixin,
-        NodeMixin,
+        NodeMixin
     ],
 
     /**
@@ -54,7 +54,7 @@ export const Placeholder = React.createClass({
      *
      * @param  {event} event - The dragLeave event
      */
-    onDragLeave(event) {
+    onDragLeave() {
         if (Store.isHoveringPlaceholder(this.getGridName(), this.state.node)) {
             Actions.stopHovering(this.getGridName());
         }
@@ -122,7 +122,7 @@ export const Placeholder = React.createClass({
      * @param  {event} event - The event that triggered this method
      */
     onDocumentDetectDrop(event) {
-        if (Store.isDragging(this.getGridName()) && event.target == this.refs['placeholder']) {
+        if (Store.isDragging(this.getGridName()) && event.target == this.refs.placeholder) {
             this.deactivateDropDetection();
             document.dispatchEvent(new Event('fakedragend'));
             Actions.drop(this.getGridName(), this.state.node);
@@ -135,7 +135,7 @@ export const Placeholder = React.createClass({
      *
      * @param  {event} event - The fakedragend event
      */
-    onDocumentDragEnd(event) {
+    onDocumentDragEnd() {
         this.deactivateDropDetection();
     },
 
@@ -156,7 +156,7 @@ export const Placeholder = React.createClass({
         const classes = {
             'grid-cell': true,
             'grid-cell-placeholder': true,
-            'grid-cell-placeholder-surround': this.state.node.hasAttribute('surround'),
+            'grid-cell-placeholder-surround': this.state.node.hasAttribute('surround')
         };
         classes['grid-cell-placeholder-prehovering'] = (this.getDesignModeStep() == 'prehovering' && Store.isHoveringPlaceholder(this.getGridName(), this.state.node));
         return classnames(classes);
@@ -177,7 +177,7 @@ export const Placeholder = React.createClass({
           onDragEnter={this.onDragEnter}
           onDragOver={this.onDragOver}
           onDragLeave={this.onDragLeave} />);
-    },
+    }
 
 
 });

@@ -187,5 +187,5 @@ export const Actions = flux.createActions(_.keys({
      *
      * @fires module:Grid.Store#"grid.designMode.history.forward"
      */
-    goForwardInHistory(gridName) {},
+    goForwardInHistory(gridName) {}
 }));

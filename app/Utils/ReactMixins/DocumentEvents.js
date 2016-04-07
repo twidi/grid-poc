@@ -1,4 +1,3 @@
-import React from 'react';
 import _ from 'lodash';
 
 
@@ -84,7 +83,7 @@ export const DocumentEventsMixin = {
      */
     removeDocumentListener(eventName, methodName) {
         document.removeEventListener(eventName, this.boundMethod(methodName));
-    },
+    }
 
 
 };

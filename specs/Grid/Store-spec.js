@@ -475,17 +475,17 @@ describe('Grid.Store', function() {
 
         describe('it should add resizers if missing when changing design mode step', function() {
             // allowed changes that should end with resizers
-           var tests = {
-                'disabled': ['enabled'],
-                'enabled': ['resizing'],
-                'resizing': ['enabled'],
-                'dragging': ['enabled'],
-                'prehovering': ['enabled'],
-                'hovering': ['enabled']
-            };
+            var tests = {
+               'disabled': ['enabled'],
+               'enabled': ['resizing'],
+               'resizing': ['enabled'],
+               'dragging': ['enabled'],
+               'prehovering': ['enabled'],
+               'hovering': ['enabled']
+           };
 
-           _.each(tests, function(steps, initialStep) {
-                steps.forEach(function(step) {
+            _.each(tests, function(steps, initialStep) {
+               steps.forEach(function(step) {
                     it('should add/keep them from `' + initialStep + '` to `' + step + '`', function() {
                         var grid = createSimpleGrid();
 
@@ -522,8 +522,8 @@ describe('Grid.Store', function() {
                         expect(Manipulator.removeResizers.calls.count()).toEqual(0, 'already have resizers');
                     });
                 });
-            });
-       });
+           });
+        });
 
         describe('it should remove resizers if present when changing design mode step', function() {
             // allowed changes that should end with no resizers

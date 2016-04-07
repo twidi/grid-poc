@@ -87,14 +87,16 @@ export const ModulesCache = {
      * How it works (assuming a cell, not a key):
      *
      * - get the content node inside the cell
-     * - extract all its attributes that will be used as attributes for the module (the `component` attribule will tell which module to create)
+     * - extract all its attributes that will be used as attributes for the module
+     * (the `component` attribule will tell which module to create)
      * - compute a key (string) based on these attributes
      * - if the cache is empty, fill it with:
      *   - a react element for the module (not rendered, only created)
      *   - a react element for the module holder (not rendered, only created)
      *   - the name of the current grid
      *   - the actual {@link module:Grid.Components.Cell Cell} using this cache entry
-     *   - (grid's name and cell are used to call the {@link module:Grid.Actions Actions}, as `startDragging` for example)
+     *   - (grid's name and cell are used to call the {@link module:Grid.Actions Actions},
+     * as `startDragging` for example)
      * - if the cache already existed:
      *   - update the grid name and the actual cell using this cache entry
      *
@@ -146,7 +148,7 @@ export const ModulesCache = {
             const holderElement = React.createElement(ModuleHolder, {
                 uniqueKey: key,
                 gridName: cell.getGridName(),
-                gridCell: cell.state.node,
+                gridCell: cell.state.node
             });
 
 
@@ -159,8 +161,8 @@ export const ModulesCache = {
                 // both react elements, to be converted as components later
 
                 // both needed react components
-                moduleElement: moduleElement,
-                holderElement: holderElement,
+                moduleElement,
+                holderElement
             };
 
         } else {
@@ -285,12 +287,12 @@ export const ModulesCache = {
                 // no new props, but ask for a rerender if the the module is not inside the component
                 // TODO: for now we always rerender the holder, it needs to change on some cases
                 // if (!component.getDOMNode().querySelector(':scope > .' + this.moduleContainerClassName)) {
-                    component.forceUpdate();
+                component.forceUpdate();
                 // }
             }
         }
 
         return cache.holderParent;
-    },
+    }
 
 };

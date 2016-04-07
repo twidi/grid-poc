@@ -1,8 +1,6 @@
 
 import React from 'react';
 
-import flux from 'flux-react';
-
 import { Actions } from './Grid/Actions';
 import { Manipulator } from './Grid/Manipulator';
 import { Store } from './Grid/Store';
@@ -12,7 +10,7 @@ import { MainGrid } from './Grid/Components/MainGrid';
 export const App = React.createClass({
     getInitialState() {
         return {
-            gridName: null,
+            gridName: null
         };
     },
 
@@ -32,7 +30,7 @@ export const App = React.createClass({
 
     onGridAdded(gridName) {
         this.setState({
-            gridName: gridName
+            gridName
         });
     },
 
@@ -52,9 +50,8 @@ export const App = React.createClass({
     render() {
         if (this.state.gridName) {
             return <MainGrid node={this.getGrid()} />;
-        } else {
-            return <button onClick={this.initGrid}>Initialize the grid</button>;
         }
-    },
+        return <button onClick={this.initGrid}>Initialize the grid</button>;
+    }
 
 });

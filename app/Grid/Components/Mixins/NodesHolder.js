@@ -1,4 +1,3 @@
-import React from 'react';
 import ReactDOM from 'react-dom';
 
 /**
@@ -71,7 +70,7 @@ export const NodesHolderMixin = {
      */
 
      // The method to override must not include the prefix `_`
-    _getExternalNode(className) {},
+    _getExternalNode() {},
 
     /**
      * Will attach some dom nodes to the actual react dom node
@@ -167,6 +166,6 @@ export const NodesHolderMixin = {
      */
     componentDidUpdate() {
         this._attachExternalNodes();
-    },
+    }
 
 };

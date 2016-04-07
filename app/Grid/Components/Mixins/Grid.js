@@ -66,7 +66,7 @@ export const GridMixin = {
             'grid-main': this.isMainGrid(),
             'grid-last-level-with-placeholders': !this.isMainGrid()
                                               && !Store.containsSubGrid(this.state.node)
-                                              && Store.hasPlaceholders(this.getGridName()),
+                                              && Store.hasPlaceholders(this.getGridName())
         };
         return classnames(classes);
     },
@@ -96,6 +96,6 @@ export const GridMixin = {
      */
     renderGrid() {
         return <div className={this.getGridClasses()} style={this.getGridStyle()}>{this.renderRows()}</div>;
-    },
+    }
 
 };

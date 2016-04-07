@@ -88,7 +88,7 @@ let Store = {
         HistoryOutOfBound: function HistoryOutOfBound(message) {
             this.name = 'HistoryOutOfBound';
             this.message = message || 'Operation out of bound on history';
-        },
+        }
     },
 
     /**
@@ -330,9 +330,11 @@ let Store = {
      */
     __removeAllGrids() {
         for (const gridName in this.grids) {
-            delete this.grids[gridName];
+            if (this.grids.hasOwnProperty(gridName)) {
+                delete this.grids[gridName];
+            }
         }
-    },
+    }
 };
 
 
@@ -429,12 +431,12 @@ const Private = {
      *
      */
     designModeValidSteps: {
-        'disabled': ['enabled'],
-        'enabled': ['disabled', 'dragging', 'resizing'],
-        'resizing': ['enabled'],
-        'dragging': ['enabled', 'prehovering'],
-        'prehovering': ['dragging', 'hovering', 'enabled'],
-        'hovering': ['dragging', 'enabled']
+        disabled: ['enabled'],
+        enabled: ['disabled', 'dragging', 'resizing'],
+        resizing: ['enabled'],
+        dragging: ['enabled', 'prehovering'],
+        prehovering: ['dragging', 'hovering', 'enabled'],
+        hovering: ['dragging', 'enabled']
     },
 
 
@@ -1180,10 +1182,10 @@ const Private = {
         // and save computed data
         const gridEntry = this.getGridEntry(gridName);
         gridEntry.resizing = {
-            initialPos: initialPos,
-            previousRelativeSize:  previousRelativeSize,
-            nextRelativeSize:  nextRelativeSize,
-            sizeRatio:  (previousRelativeSize + nextRelativeSize) / fullSize,
+            initialPos,
+            previousRelativeSize,
+            nextRelativeSize,
+            sizeRatio:  (previousRelativeSize + nextRelativeSize) / fullSize
         };
 
         // set design step to "resizing"
@@ -1228,7 +1230,7 @@ const Private = {
 
         const eventData = {
             previousRelativeSize: newPreviousRelativeSize,
-            nextRelativeSize: newNextRelativeSize,
+            nextRelativeSize: newNextRelativeSize
         };
 
         /**
@@ -1406,7 +1408,7 @@ const Private = {
     },
 
     // add the public interface
-    exports: Store,
+    exports: Store
 
 };
 

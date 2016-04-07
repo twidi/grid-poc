@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import React from 'react';
 import classnames from 'classnames';
 
@@ -57,7 +56,7 @@ export const Resizer = React.createClass({
         return classnames({
             'grid-resizer': true,
             'grid-resizer-vertical': isVertical,
-            'grid-resizer-horizontal': !isVertical,
+            'grid-resizer-horizontal': !isVertical
         });
     },
 
@@ -72,7 +71,7 @@ export const Resizer = React.createClass({
      */
     onResizingMove(gridName, resizeData) {
         if (!Store.isMovingResizer(gridName, this.state.node)) { return; }
-        const domNode = this.refs['resizer'];
+        const domNode = this.refs.resizer;
         this.setDomNodeRelativeSise(domNode.previousSibling, resizeData.previousRelativeSize);
         this.setDomNodeRelativeSise(domNode.nextSibling, resizeData.nextRelativeSize);
 
@@ -147,7 +146,7 @@ export const Resizer = React.createClass({
         event.stopPropagation();
         event.preventDefault();
 
-        const domNode = this.refs['resizer'];
+        const domNode = this.refs.resizer;
 
         // compute the total size of the nodes before and after the resizer
         const fullSize = this.getDomNodeSize(domNode.previousSibling) + this.getDomNodeSize(domNode.nextSibling);
@@ -179,7 +178,7 @@ export const Resizer = React.createClass({
      *
      * @param  {event} event - The event that triggered this method
      */
-    onDocumentMouseUp(ev) {
+    onDocumentMouseUp() {
         this.deactivateResizingDetection();
         Actions.stopResizing(this.getGridName());
     },

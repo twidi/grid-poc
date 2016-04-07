@@ -2,11 +2,9 @@ import _ from 'lodash';
 import jasmineReact from 'jasmine-react-helpers-hotfix-0.14';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import stringify from 'json-stable-stringify';
 import TestUtils from 'react-addons-test-utils';
 
 import { Manipulator } from '../../../app/Grid/Manipulator';
-import { Modules } from '../../../app/Grid/Modules';
 import { Store } from '../../../app/Grid/Store';
 
 import { Cell } from '../../../app/Grid/Components/Cell';

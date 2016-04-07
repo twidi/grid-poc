@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Store } from '../../Store';
 
 
@@ -92,5 +90,5 @@ export const NodeMixin = {
      */
     isInDesignMode() {
         return (this.getDesignModeStep() != 'disabled');
-    },
+    }
 };

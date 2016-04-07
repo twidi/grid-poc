@@ -22,7 +22,7 @@ export const MainGrid = React.createClass({
     mixins: [
         DocumentEventsMixin,
         NodeMixin,
-        GridMixin,
+        GridMixin
     ],
 
     /**
@@ -32,7 +32,7 @@ export const MainGrid = React.createClass({
     getInitialState() {
         return {
             // we don't have `this.state.node` yet
-            gridName: this.props.node.getAttribute('name'),
+            gridName: this.props.node.getAttribute('name')
         };
     },
 
@@ -44,7 +44,7 @@ export const MainGrid = React.createClass({
         const newName = nextProps.node.getAttribute('name');
         if (newName != this.state.gridName) {
             this.setState({
-                gridName: newName,
+                gridName: newName
             });
         }
     },
@@ -190,7 +190,7 @@ export const MainGrid = React.createClass({
      * @param  {DomNode} placeholderNode - The placeholder dom node
      */
     emitFakeDrop(placeholderNode) {
-        const fakeDropEvent = new Event('fakedrop', {view: window, bubbles: true, target: placeholderNode, });
+        const fakeDropEvent = new Event('fakedrop', {view: window, bubbles: true, target: placeholderNode });
         placeholderNode.dispatchEvent(fakeDropEvent);
     },
 
@@ -266,7 +266,7 @@ export const MainGrid = React.createClass({
     addRandomModule() {
         const availableModules = [
             'Modules.Test1',
-            'Modules.Test2',
+            'Modules.Test2'
         ];
         const randomModule = availableModules[Math.floor(availableModules.length * Math.random())];
         const modulesCount = Store.getGrid(this.state.gridName).querySelectorAll('cell[type=module]').length;
@@ -307,7 +307,7 @@ export const MainGrid = React.createClass({
             'grid-container': true,
             'grid-container-design-mode': inDesignMode,
             'grid-container-with-placeholders': Store.hasPlaceholders(this.state.gridName),
-            'grid-container-with-resizers': Store.hasResizers(this.state.gridName),
+            'grid-container-with-resizers': Store.hasResizers(this.state.gridName)
         };
         classes['grid-container-design-mode-step-' + this.getDesignModeStep()] = inDesignMode;
         return classnames(classes);
@@ -339,8 +339,16 @@ export const MainGrid = React.createClass({
 
         // manage the "undo" and "redo" buttons
         if (designModeStep == 'enabled') {
-            undoButton = <button onClick={this.undo} disabled={!Store.canGoBackInHistory(this.state.gridName)}>Undo</button>;
-            redoButton = <button onClick={this.redo} disabled={!Store.canGoForwardInHistory(this.state.gridName)}>Redo</button>;
+            undoButton = (
+                <button onClick={this.undo} disabled={!Store.canGoBackInHistory(this.state.gridName)}>
+                    Undo
+                </button>
+            );
+            redoButton = (
+                <button onClick={this.redo} disabled={!Store.canGoForwardInHistory(this.state.gridName)}>
+                    Redo
+                </button>
+            );
         }
 
         return (<div className={this.getContainerClasses()}>

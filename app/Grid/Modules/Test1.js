@@ -5,7 +5,7 @@ import { ModuleMixin } from './Mixins/Module';
 
 export const Test1 = React.createClass({
     mixins: [
-        ModuleMixin,
+        ModuleMixin
     ],
 
     renderModule() {

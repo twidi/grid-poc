@@ -2,7 +2,6 @@ import _ from 'lodash';
 import React from 'react';
 import classnames from 'classnames';
 
-import { Actions } from '../Actions';
 import { Store } from '../Store';
 
 import { NodeMixin } from './Mixins/Node';
@@ -70,7 +69,7 @@ export const Row = React.createClass({
     getRowClasses() {
         return classnames({
             'grid-row': true,
-            'grid-row-placeholder': this.isPlaceholder(),
+            'grid-row-placeholder': this.isPlaceholder()
         });
     },
 

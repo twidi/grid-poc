@@ -1,7 +1,4 @@
-import _ from 'lodash';
 import React from 'react';
-import classnames from 'classnames';
-import stringify from 'json-stable-stringify';
 
 import { Actions } from '../Actions';
 import { Store } from '../Store';
@@ -27,7 +24,7 @@ import { NodesHolderMixin } from './Mixins/NodesHolder';
 export const ModuleHolder = React.createClass({
 
     mixins: [
-        NodesHolderMixin,
+        NodesHolderMixin
     ],
 
     dragLeaveTimeout: 200,
@@ -101,7 +98,7 @@ export const ModuleHolder = React.createClass({
      *
      * @param  {event} event - The dragLeave event
      */
-    onDragLeave(event) {
+    onDragLeave() {
         // in case of fake drop, the dragleave event may occur just before, so w'ill wait a little
         setTimeout(() => {
             if (Store.getDesignModeStep(this.props.gridName) == 'hovering') {
@@ -167,9 +164,9 @@ export const ModuleHolder = React.createClass({
         if (Store.getDesignModeStep(this.props.gridName) == 'enabled' && !Store.isResizing(this.props.gridName)) {
             delButton = <button onClick={this.removeModule} title="Remove this module">X</button>;
         }
-        return (<div className='module-holder'
-                    ref="module-holder"
-                    {...this.getRenderAttrs()}>
+        return (<div className="module-holder"
+          ref="module-holder"
+          {...this.getRenderAttrs()}>
                     <div className="module-cover">
                     {delButton}
                     </div>

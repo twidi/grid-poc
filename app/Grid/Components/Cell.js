@@ -45,7 +45,7 @@ export const Cell = React.createClass({
 
     mixins: [
         NodeMixin,
-        NodesHolderMixin,
+        NodesHolderMixin
     ],
 
 
@@ -62,7 +62,7 @@ export const Cell = React.createClass({
      */
     externalNodesClassNames: [
         ModulesCache.moduleContainerClassName,
-        ModulesCache.holderContainerClassName,
+        ModulesCache.holderContainerClassName
     ],
 
 
@@ -155,7 +155,7 @@ export const Cell = React.createClass({
         const classes = {
             'grid-cell': true,
             'grid-cell-module': this.isModule(),
-            'grid-cell-module-dragging': Store.isDraggingCell(this.getGridName(), this.state.node),
+            'grid-cell-module-dragging': Store.isDraggingCell(this.getGridName(), this.state.node)
         };
         return classnames(classes);
     },
@@ -171,7 +171,7 @@ export const Cell = React.createClass({
      */
     getModuleStyle() {
         const style = {
-            flexGrow: Store.getRelativeSize(this.state.node),
+            flexGrow: Store.getRelativeSize(this.state.node)
         };
         return style;
     },
