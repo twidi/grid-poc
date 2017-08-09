@@ -17,10 +17,11 @@ import { Resizer } from './Resizer';
  */
 let Row = {
 
+    displayName: 'Row',
+
     mixins: [
         NodeMixin
     ],
-
     /**
      * Tell if the row is a placeholder
      *

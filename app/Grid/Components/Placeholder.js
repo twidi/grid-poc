@@ -19,6 +19,8 @@ import { NodeMixin } from './Mixins/Node';
  */
 let Placeholder = {
 
+    displayName: 'PlaceHolder',
+
     mixins: [
         DocumentEventsMixin,
         NodeMixin

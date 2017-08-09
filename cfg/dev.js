@@ -21,7 +21,7 @@ var config = _.merge({
 // Add needed loaders
 config.module.loaders.push({
   test: /\.jsx?$/,
-  loader: 'react-hot!babel?presets[]=react,presets[]=es2015',
+  loader: 'react-hot!babel?presets[]=react,presets[]=es2015,plugins[]=transform-react-display-name',
   exclude: /(node_modules|bower_components)/,
   include: path.join(__dirname, '/../app')
 });

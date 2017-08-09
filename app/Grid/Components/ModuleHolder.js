@@ -23,6 +23,8 @@ import { NodesHolderMixin } from './Mixins/NodesHolder';
  */
 let ModuleHolder = {
 
+    displayName: 'ModuleHolder',
+
     mixins: [
         NodesHolderMixin
     ],

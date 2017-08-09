@@ -43,6 +43,8 @@ import { SubGrid } from './SubGrid';
  */
 let Cell = {
 
+    displayName: 'Cell',
+
     mixins: [
         NodeMixin,
         NodesHolderMixin

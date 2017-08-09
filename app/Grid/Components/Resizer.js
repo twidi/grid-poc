@@ -17,6 +17,8 @@ import { NodeMixin } from './Mixins/Node';
  */
 let Resizer = {
 
+    displayName: 'Resizer',
+
     mixins: [
         DocumentEventsMixin,
         NodeMixin

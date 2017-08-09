@@ -19,6 +19,8 @@ import { NodeMixin } from './Mixins/Node';
  */
 let MainGrid = {
 
+    displayName: 'MainGrid',
+
     mixins: [
         DocumentEventsMixin,
         NodeMixin,
