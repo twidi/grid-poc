@@ -27,6 +27,8 @@ let MainGrid = {
         GridMixin
     ],
 
+    dropDetectionActivationTimeout: 200,
+
     /**
      * When the component is created, set the gridName in the state based on the
      * grid from the props, to be able to update it later
@@ -121,6 +123,7 @@ let MainGrid = {
      * Add some event handlers on the document to try to detect that a drop occurend even if the
      * `drop` event was not fired by the browser, using the fact that mouse events are only
      * triggered when the drag and drop operation is finished.
+     * The delay is needed in Firefox because a `mousemove` is triggered just after the `dragstart`
      *
      * So when a `mousemove` and `mousedown` event are listened, we consider that a drop is
      * detected. It works because we only start to listen to these events after the start of
@@ -129,9 +132,11 @@ let MainGrid = {
      * This method also listen for a `fakedragend` event, triggered when a drop operation is done.
      */
     activateDropDetection() {
-        this.addDocumentListener('mousemove', 'onDocumentDetectDrop');
-        this.addDocumentListener('mousedown', 'onDocumentDetectDrop');
-        this.addDocumentListener('fakedragend', 'onDocumentDragEnd');
+        setTimeout(() => {
+            this.addDocumentListener('mousemove', 'onDocumentDetectDrop');
+            this.addDocumentListener('mousedown', 'onDocumentDetectDrop');
+            this.addDocumentListener('fakedragend', 'onDocumentDragEnd');
+        }, this.dropDetectionActivationTimeout);
     },
 
     /**
