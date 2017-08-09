@@ -17,8 +17,8 @@ import { NodeMixin } from './Mixins/Node';
  * @mixes module:Grid.Components.Mixins.Node
  * @mixes module:Grid.Components.Mixins.Grid
  */
+let MainGrid = {
 
-export const MainGrid = React.createClass({
     mixins: [
         DocumentEventsMixin,
         NodeMixin,
@@ -360,4 +360,8 @@ export const MainGrid = React.createClass({
         </div>);
     }
 
-});
+};
+
+MainGrid = React.createClass(MainGrid);
+
+export { MainGrid };

@@ -14,7 +14,7 @@ import _ from 'lodash';
  * @memberOf module:Utils.ReactMixins
  * @summary A mixin to be used by components that need to react to document events
  */
-export const DocumentEventsMixin = {
+const DocumentEventsMixin = {
 
     /**
      * Return a bound method for the given methodName.
@@ -87,3 +87,5 @@ export const DocumentEventsMixin = {
 
 
 };
+
+export { DocumentEventsMixin };

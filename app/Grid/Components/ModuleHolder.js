@@ -21,7 +21,7 @@ import { NodesHolderMixin } from './Mixins/NodesHolder';
  *
  * @summary A component to hold a module in design mode
  */
-export const ModuleHolder = React.createClass({
+let ModuleHolder = {
 
     mixins: [
         NodesHolderMixin
@@ -173,4 +173,8 @@ export const ModuleHolder = React.createClass({
                 </div>);
     }
 
-});
+};
+
+ModuleHolder = React.createClass(ModuleHolder);
+
+export { ModuleHolder };

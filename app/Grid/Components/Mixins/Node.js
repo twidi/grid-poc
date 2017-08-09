@@ -8,7 +8,7 @@ import { Store } from '../../Store';
  * @memberOf module:Grid.Components.Mixins
  * @summary A mixin to use for all grid components based on a XML grid node
  */
-export const NodeMixin = {
+const NodeMixin = {
 
     /**
      * When the component is created, set the node in the state based on the
@@ -92,3 +92,5 @@ export const NodeMixin = {
         return (this.getDesignModeStep() != 'disabled');
     }
 };
+
+export {NodeMixin};

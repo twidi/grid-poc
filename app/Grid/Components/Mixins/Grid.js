@@ -11,7 +11,7 @@ import { Resizer } from '../Resizer';
  * @memberOf module:Grid.Components.Mixins
  * @summary A mixin to use for MainGrid and Grid components
  */
-export const GridMixin = {
+const GridMixin = {
 
     /**
      * Tell if the grid is "main grid"
@@ -100,3 +100,5 @@ export const GridMixin = {
     }
 
 };
+
+export {GridMixin};

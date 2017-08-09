@@ -15,7 +15,8 @@ import { NodeMixin } from './Mixins/Node';
  * @summary Resizer component
  * @mixes module:Grid.Components.Mixins.Node
  */
-export const Resizer = React.createClass({
+let Resizer = {
+
     mixins: [
         DocumentEventsMixin,
         NodeMixin
@@ -210,4 +211,8 @@ export const Resizer = React.createClass({
         return <div ref="resizer" className={this.getResizerClasses()} {...this.getRenderAttrs()} />;
     }
 
-});
+};
+
+Resizer = React.createClass(Resizer);
+
+export { Resizer };

@@ -15,7 +15,8 @@ import { Resizer } from './Resizer';
  * @summary The Row component, a row of a grid
  * @mixes module:Grid.Components.Mixins.Node
  */
-export const Row = React.createClass({
+let Row = {
+
     mixins: [
         NodeMixin
     ],
@@ -100,4 +101,8 @@ export const Row = React.createClass({
         return <div className={this.getRowClasses()} style={this.getRowStyle()}>{this.renderCells()}</div>;
     }
 
-});
+};
+
+Row = React.createClass(Row);
+
+export { Row };

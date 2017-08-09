@@ -41,7 +41,7 @@ import { SubGrid } from './SubGrid';
  * @mixes module:Grid.Components.Mixins.Node
  * @mixes module:Grid.Components.Mixins.NodesHolder
  */
-export const Cell = React.createClass({
+let Cell = {
 
     mixins: [
         NodeMixin,
@@ -206,4 +206,8 @@ export const Cell = React.createClass({
         }
     }
 
-});
+};
+
+Cell = React.createClass(Cell);
+
+export { Cell };

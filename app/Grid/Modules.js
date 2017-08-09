@@ -6,7 +6,9 @@ import { Test2 } from './Modules/Test2';
  * @namespace
  * @memberOf module:Grid
  */
-export const Modules = {
+const Modules = {
     Test1,
     Test2
 };
+
+export {Modules}

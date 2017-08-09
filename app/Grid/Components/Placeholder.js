@@ -17,7 +17,8 @@ import { NodeMixin } from './Mixins/Node';
  *
  * @summary A placeholder component to drop dragged modules
  */
-export const Placeholder = React.createClass({
+let Placeholder = {
+
     mixins: [
         DocumentEventsMixin,
         NodeMixin
@@ -180,4 +181,8 @@ export const Placeholder = React.createClass({
     }
 
 
-});
+};
+
+Placeholder = React.createClass(Placeholder);
+
+export { Placeholder };

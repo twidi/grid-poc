@@ -25,7 +25,7 @@ import { ModuleHolder } from './ModuleHolder';
  * @memberOf module:Grid.Components
  *
  */
-export const ModulesCache = {
+const ModulesCache = {
 
     /**
      * The class name for the nodes holding the modules react components.
@@ -296,3 +296,5 @@ export const ModulesCache = {
     }
 
 };
+
+export {ModulesCache};

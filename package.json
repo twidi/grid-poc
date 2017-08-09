@@ -6,7 +6,7 @@
   "license": "ISC",
   "scripts": {
     "build": "webpack --env=dist && cp app/index.html dist/",
-    "doc": "jsdoc -t node_modules/jaguarjs-jsdoc -c jsdoc.json -d doc app/**/*.js",
+    "doc": "jsdoc -t node_modules/jaguarjs-jsdoc -c jsdoc.json -d doc -r app/",
     "test": "karma start",
     "start": "npm run serve",
     "serve": "node ./dev-server",
@@ -28,7 +28,7 @@
     "jasmine": "^2.4.1",
     "jasmine-core": "^2.4.1",
     "jasmine-react-helpers-hotfix-0.14": "~0.2.2",
-    "jsdoc": "^3.4.0",
+    "jsdoc": "^3.5.4",
     "karma": "^0.13.21",
     "karma-chrome-launcher": "^0.2.2",
     "karma-jasmine": "^0.3.7",

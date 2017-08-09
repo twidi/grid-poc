@@ -15,7 +15,7 @@ import ReactDOM from 'react-dom';
  * @memberOf module:Grid.Components.Mixins
  * @summary A mixin to help components attaching an external dom node to their react one.
  */
-export const NodesHolderMixin = {
+const NodesHolderMixin = {
 
     /**
      * The list of classNames of dom nodes to attach/detach.
@@ -169,3 +169,5 @@ export const NodesHolderMixin = {
     }
 
 };
+
+export {NodesHolderMixin};

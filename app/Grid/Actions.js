@@ -7,7 +7,7 @@ import flux from 'flux-react';
  * @namespace
  * @memberOf module:Grid
  */
-export const Actions = flux.createActions(_.keys({
+let Actions = {
     // Here are just definitions of functions. There are really created by the
     // "flux.createActions" call
 
@@ -188,4 +188,8 @@ export const Actions = flux.createActions(_.keys({
      * @fires module:Grid.Store#"grid.designMode.history.forward"
      */
     goForwardInHistory(gridName) {}
-}));
+};
+
+Actions = flux.createActions(_.keys(Actions));
+
+export { Actions };
