@@ -9,7 +9,7 @@ import { Utils } from '../Utils';
 
 
 describe('Grid.Store', function() {
-    var uniqueIdMock;
+    let uniqueIdMock;
 
     beforeEach(function() {
         jasmine.addMatchers(customMatchers);
@@ -21,8 +21,8 @@ describe('Grid.Store', function() {
         uniqueIdMock = Utils.mockUniqueId();
     });
 
-    var createSimpleGrid = function() {
-        var grid = Manipulator.XMLStringToXMLGrid(
+    let createSimpleGrid = function() {
+        const grid = Manipulator.XMLStringToXMLGrid(
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row>' +
@@ -42,11 +42,11 @@ describe('Grid.Store', function() {
     });
 
     it('should return a grid by its name', function(done) {
-        var grid = Manipulator.createBaseGrid('foo', 5);
+        const grid = Manipulator.createBaseGrid('foo', 5);
         Actions.addGrid(grid);
 
         setTimeout(function() {
-            var gridEntry = Store.__private.getGridEntry('foo');
+            const gridEntry = Store.__private.getGridEntry('foo');
             expect(gridEntry.name).toEqual('foo');
             expect(gridEntry.designModeStep).toEqual('disabled');
             expect(gridEntry.history.length).toEqual(1);
@@ -61,7 +61,7 @@ describe('Grid.Store', function() {
     });
 
     it('should return a node by its id', function() {
-        var grid = createSimpleGrid();
+        const grid = createSimpleGrid();
         _(_.toArray(grid.querySelectorAll('*')).concat([grid])).forEach(function(node) {
             expect(Store.getGridNodeById('foo', node.getAttribute('id'))).toBe(node);
         });
@@ -69,7 +69,7 @@ describe('Grid.Store', function() {
     });
 
     it('should return the main grid of a node', function() {
-        var grid = createSimpleGrid();
+        const grid = createSimpleGrid();
         _(grid.querySelectorAll('*')).forEach(function(node) {
             expect(Store.getMainGrid(node)).toBe(grid);
         });
@@ -78,7 +78,7 @@ describe('Grid.Store', function() {
 
 
     it('should return the id attribute of a node', function() {
-        var grid = createSimpleGrid();
+        const grid = createSimpleGrid();
         _(grid.querySelectorAll('*')).forEach(function(node) {
             expect(Store.getNodeId(node)).toBe(node.getAttribute('id'));
         });
@@ -86,7 +86,7 @@ describe('Grid.Store', function() {
     });
 
     it('should return the name of the main grid for a node', function() {
-        var grid = createSimpleGrid();
+        const grid = createSimpleGrid();
         _(grid.querySelectorAll('*')).forEach(function(node) {
             expect(Store.getMainGridName(node)).toBe('foo');
         });
@@ -94,12 +94,12 @@ describe('Grid.Store', function() {
     });
 
     it('should return the design mode step for a node', function() {
-        var grid = createSimpleGrid();
+        const grid = createSimpleGrid();
         expect(Store.getDesignModeStep('foo')).toBe('disabled');
     });
 
     it('should tell if the grid is in dragging mode', function() {
-        var grid = createSimpleGrid();
+        const grid = createSimpleGrid();
         expect(Store.isDragging('foo')).toBe(false);
         // it's in dragging mode if there is a node currently dragged
         Store.__private.grids['foo'].nodes.dragging = true;
@@ -107,11 +107,11 @@ describe('Grid.Store', function() {
     });
 
     it('should tell if it\'s the dragging cell', function() {
-        var grid = createSimpleGrid();
+        const grid = createSimpleGrid();
 
-        var row = grid.querySelector('row');
-        var cell = grid.querySelector('cell[type=module]');
-        var otherCell = Manipulator.addCell(row, null, 'module');
+        const row = grid.querySelector('row');
+        const cell = grid.querySelector('cell[type=module]');
+        const otherCell = Manipulator.addCell(row, null, 'module');
 
         expect(Store.isDraggingCell('foo', cell)).toBe(false);
 
@@ -124,7 +124,7 @@ describe('Grid.Store', function() {
     });
 
     it('should tell if the grid is in hovering mode', function() {
-        var grid = createSimpleGrid();
+        const grid = createSimpleGrid();
         expect(Store.isHovering('foo')).toBe(false);
         // it's in dragging mode if there is a node currently hovered
         Store.__private.grids['foo'].nodes.hovering = true;
@@ -132,11 +132,11 @@ describe('Grid.Store', function() {
     });
 
     it('should tell if it\'s the hovering cell', function() {
-        var grid = createSimpleGrid();
+        const grid = createSimpleGrid();
 
-        var row = grid.querySelector('row');
-        var cell = grid.querySelector('cell[type=module]');
-        var otherCell = Manipulator.addCell(row, null, 'module');
+        const row = grid.querySelector('row');
+        const cell = grid.querySelector('cell[type=module]');
+        const otherCell = Manipulator.addCell(row, null, 'module');
 
         expect(Store.isHoveringPlaceholder('foo', cell)).toBe(false);
 
@@ -148,7 +148,7 @@ describe('Grid.Store', function() {
     });
 
     it('should tell if the grid is in resizing mode', function() {
-        var grid = createSimpleGrid();
+        const grid = createSimpleGrid();
         expect(Store.isResizing('foo')).toBe(false);
         // it's in resizing mode if there is a resizer node currently moved
         Store.__private.grids['foo'].nodes.resizing = true;
@@ -156,7 +156,7 @@ describe('Grid.Store', function() {
     });
 
     it('should tell if it\'s the moving resizer', function() {
-        var grid = createSimpleGrid();
+        const grid = createSimpleGrid();
         // add two rows to have two resizers between them
         Manipulator.addRow(grid);
         Manipulator.addRow(grid);
@@ -164,8 +164,8 @@ describe('Grid.Store', function() {
         Manipulator.addResizers(grid);
         Manipulator.setIds(grid);
 
-        var resizer1 = grid.querySelectorAll('resizer')[0];
-        var resizer2 = grid.querySelectorAll('resizer')[1];
+        const resizer1 = grid.querySelectorAll('resizer')[0];
+        const resizer2 = grid.querySelectorAll('resizer')[1];
 
         // not marked as moving
         expect(Store.isMovingResizer('foo', resizer1)).toBe(false);
@@ -179,15 +179,15 @@ describe('Grid.Store', function() {
     });
 
     it('should tell if a grid has a subgrid', function() {
-        var grid = Manipulator.createBaseGrid('foo');
+        const grid = Manipulator.createBaseGrid('foo');
         Store.__private.addGrid(grid);
         expect(Store.containsSubGrid(grid)).toBe(false);
 
-        var row = Manipulator.addRow(grid);
+        let row = Manipulator.addRow(grid);
         Manipulator.addCell(row, null, 'module');
         expect(Store.containsSubGrid(grid)).toBe(false);
 
-        var subGrid = Manipulator.addCell(row, null, 'grid');
+        const subGrid = Manipulator.addCell(row, null, 'grid');
         expect(Store.containsSubGrid(grid)).toBe(true);
         expect(Store.containsSubGrid(subGrid)).toBe(false);
 
@@ -196,29 +196,29 @@ describe('Grid.Store', function() {
         expect(Store.containsSubGrid(grid)).toBe(true);
         expect(Store.containsSubGrid(subGrid)).toBe(false);
 
-        var subSubGrid = Manipulator.addCell(row, null, 'grid');
+        const subSubGrid = Manipulator.addCell(row, null, 'grid');
         expect(Store.containsSubGrid(grid)).toBe(true);
         expect(Store.containsSubGrid(subGrid)).toBe(true);
         expect(Store.containsSubGrid(subSubGrid)).toBe(false);
     });
 
     it('should tell if the grid has placeholders', function() {
-        var grid = createSimpleGrid();
+        const grid = createSimpleGrid();
         expect(Store.hasPlaceholders('foo')).toBe(false);
         Manipulator.addPlaceholders(grid);
         expect(Store.hasPlaceholders('foo')).toBe(true);
     });
 
     it('should tell if the grid has resizers', function() {
-        var grid = createSimpleGrid();
+        const grid = createSimpleGrid();
         expect(Store.hasResizers('foo')).toBe(false);
         Manipulator.addResizers(grid);
         expect(Store.hasResizers('foo')).toBe(true);
     });
 
     it('should get the relative size of a node', function() {
-        var grid = createSimpleGrid();
-        var row = grid.querySelector('row');
+        const grid = createSimpleGrid();
+        const row = grid.querySelector('row');
 
         // not defined, 1 by default
         expect(Store.getRelativeSize(row)).toEqual(1);
@@ -231,8 +231,8 @@ describe('Grid.Store', function() {
     });
 
     it('should tell if possible to go through history', function() {
-        var grid = createSimpleGrid();
-        var gridEntry = Store.__private.getGridEntry('foo');
+        const grid = createSimpleGrid();
+        const gridEntry = Store.__private.getGridEntry('foo');
 
         // only one entry, cannot bo back
         expect(Store.canGoBackInHistory('foo')).toBe(false);
@@ -267,9 +267,9 @@ describe('Grid.Store', function() {
     describe('Private api', function() {
 
         it('should return a grid entry', function() {
-            var grid = createSimpleGrid();
+            const grid = createSimpleGrid();
 
-            var entry = Store.__private.getGridEntry('foo');
+            const entry = Store.__private.getGridEntry('foo');
 
             expect(entry.name).toBe('foo');
             expect(entry.grid).toBe(grid);
@@ -297,7 +297,7 @@ describe('Grid.Store', function() {
         });
 
         it('should raise if a design mode step doesn\'t exist', function() {
-            var grid = createSimpleGrid();
+            const grid = createSimpleGrid();
 
             expect(function() {
                 Store.__private.changeDesignModeStep('foo', 'bar', true);
@@ -306,7 +306,7 @@ describe('Grid.Store', function() {
         });
 
         it('should ignore setting the current design mode step', function() {
-            var grid = createSimpleGrid();
+            const grid = createSimpleGrid();
             ['disabled', 'enabled', 'dragging', 'prehovering', 'hovering'].forEach(function(step) {
                 Store.__private.setDesignModeStep('foo', step);
                 expect(function() {
@@ -317,9 +317,9 @@ describe('Grid.Store', function() {
         });
 
         it('should allow changing ony allowed design mode steps', function() {
-            var grid = createSimpleGrid();
+            const grid = createSimpleGrid();
 
-            var tests = {
+            const tests = {
                 disabled: {
                     allowed: ['enabled'],
                     denied: ['dragging', 'prehovering', 'hovering']
@@ -372,7 +372,7 @@ describe('Grid.Store', function() {
 
         describe('it should add placeholders if missing when changing design mode step', function() {
             // allowed changes that should end with placeholders
-            var tests = {
+            const tests = {
                 enabled: ['dragging'],
                 dragging: ['prehovering'],
                 prehovering: ['dragging'],
@@ -382,7 +382,7 @@ describe('Grid.Store', function() {
             _.each(tests, function(steps, initialStep) {
                 steps.forEach(function(step) {
                     it('should add/keep them from `' + initialStep + '` to `' + step + '`', function() {
-                        var grid = createSimpleGrid();
+                        const grid = createSimpleGrid();
 
                         spyOn(Manipulator, 'addPlaceholders').and.callThrough();
                         spyOn(Manipulator, 'removePlaceholders').and.callThrough();
@@ -422,7 +422,7 @@ describe('Grid.Store', function() {
 
         describe('it should remove placeholders if present when changing design mode step', function() {
             // allowed changes that should end with no placeholders
-            var tests = {
+            const tests = {
                 disabled: ['enabled'],
                 enabled: ['disabled', 'resizing'],
                 resizing: ['enabled'],
@@ -434,7 +434,7 @@ describe('Grid.Store', function() {
             _.each(tests, function(steps, initialStep) {
                 steps.forEach(function(step) {
                     it('should remove/ignore them from `' + initialStep + '` to `' + step + '`', function() {
-                        var grid = createSimpleGrid();
+                        const grid = createSimpleGrid();
                         Manipulator.addPlaceholders(grid);
 
                         spyOn(Manipulator, 'addPlaceholders').and.callThrough();
@@ -475,7 +475,7 @@ describe('Grid.Store', function() {
 
         describe('it should add resizers if missing when changing design mode step', function() {
             // allowed changes that should end with resizers
-            var tests = {
+            const tests = {
                 disabled: ['enabled'],
                 enabled: ['resizing'],
                 resizing: ['enabled'],
@@ -485,9 +485,9 @@ describe('Grid.Store', function() {
             };
 
             _.each(tests, function(steps, initialStep) {
-               steps.forEach(function(step) {
-                    it('should add/keep them from `' + initialStep + '` to `' + step + '`', function() {
-                        var grid = createSimpleGrid();
+                steps.forEach(function(step) {
+                   it('should add/keep them from `' + initialStep + '` to `' + step + '`', function() {
+                        const grid = createSimpleGrid();
 
                         spyOn(Manipulator, 'addResizers').and.callThrough();
                         spyOn(Manipulator, 'removeResizers').and.callThrough();
@@ -521,13 +521,13 @@ describe('Grid.Store', function() {
                         expect(Manipulator.addResizers.calls.count()).toEqual(0, 'already have resizers');
                         expect(Manipulator.removeResizers.calls.count()).toEqual(0, 'already have resizers');
                     });
-                });
-           });
+               });
+            });
         });
 
         describe('it should remove resizers if present when changing design mode step', function() {
             // allowed changes that should end with no resizers
-            var tests = {
+            const tests = {
                 enabled: ['disabled', 'dragging'],
                 dragging: ['prehovering'],
                 prehovering: ['dragging', 'hovering'],
@@ -537,7 +537,7 @@ describe('Grid.Store', function() {
             _.each(tests, function(steps, initialStep) {
                 steps.forEach(function(step) {
                     it('should remove/ignore them from `' + initialStep + '` to `' + step + '`', function() {
-                        var grid = createSimpleGrid();
+                        const grid = createSimpleGrid();
                         Manipulator.addResizers(grid);
 
                         spyOn(Manipulator, 'addResizers').and.callThrough();
@@ -583,7 +583,7 @@ describe('Grid.Store', function() {
             }).toThrowError(Store.Exceptions.GridDoesNotExist, 'No grid with the name <bar>');
 
             // create a grid
-            var grid = createSimpleGrid();
+            const grid = createSimpleGrid();
 
             // test each entry (default mode is "disabled" so we don't start with it)
             ['enabled', 'dragging', 'prehovering', 'hovering', 'disabled'].forEach(function(step) {
@@ -604,8 +604,8 @@ describe('Grid.Store', function() {
                 Store.__private.checkConsistency('absent', node);
             }).toThrowError(Store.Exceptions.GridDoesNotExist, 'No grid with the name <absent>');
 
-            var grid = createSimpleGrid();
-            var node = grid.querySelector('cell');
+            const grid = createSimpleGrid();
+            let node = grid.querySelector('cell');
 
             // ok for grid+node
             expect(function() {
@@ -613,8 +613,8 @@ describe('Grid.Store', function() {
             }).not.toThrow();
 
             // create a new grid, but not yet in the store
-            var grid2 = Manipulator.createBaseGrid('bar', 5);
-            var node2 = Manipulator.addCell(Manipulator.addRow(grid2), null, 'module');
+            let grid2 = Manipulator.createBaseGrid('bar', 5);
+            let node2 = Manipulator.addCell(Manipulator.addRow(grid2), null, 'module');
 
             expect(function() {
                 Store.__private.checkConsistency('bar');
@@ -645,7 +645,7 @@ describe('Grid.Store', function() {
         });
 
         it('should backup a grid', function() {
-            var grid = createSimpleGrid();
+            const grid = createSimpleGrid();
 
             // save a first backup
             Store.__private.backupGrid('foo', 'first');
@@ -654,7 +654,7 @@ describe('Grid.Store', function() {
             // the original grid is backuped
             expect(Store.__private.grids['foo'].backups['first']).toBe(grid);
             // the official grid is the clone
-            var firstClone = Store.__private.grids['foo'].grid;
+            const firstClone = Store.__private.grids['foo'].grid;
             expect(Store.getGrid('foo')).toBe(firstClone);
             // both are different objects
             expect(firstClone).not.toBe(grid);
@@ -670,7 +670,7 @@ describe('Grid.Store', function() {
             // the first clone is backuped
             expect(Store.__private.grids['foo'].backups['second']).toBe(firstClone);
             // the official grid is the second clone
-            var secondClone = Store.__private.grids['foo'].grid;
+            const secondClone = Store.__private.grids['foo'].grid;
             expect(Store.getGrid('foo')).toBe(secondClone);
             // there are all different objects
             expect(secondClone).not.toBe(grid);
@@ -682,14 +682,14 @@ describe('Grid.Store', function() {
 
         it('should restore a grid', function() {
 
-            var grid = createSimpleGrid();
+            const grid = createSimpleGrid();
 
             // make a backup
             Store.__private.backupGrid('foo', 'first');
-            var firstClone = Store.__private.grids['foo'].grid;
+            let firstClone = Store.__private.grids['foo'].grid;
 
             // do nothing if restoring inexistent backup
-            var restored = Store.__private.restoreGrid('foo', 'fake');
+            let restored = Store.__private.restoreGrid('foo', 'fake');
             expect(restored).toBe(undefined);
             expect(_.size(Store.__private.grids['foo'].backups)).toEqual(1);
             expect(Store.getGrid('foo')).toBe(firstClone);
@@ -728,7 +728,7 @@ describe('Grid.Store', function() {
         });
 
         it('should clear a backup grid', function() {
-            var grid = createSimpleGrid();
+            const grid = createSimpleGrid();
 
             // should do nothing if no such backup
             expect(function() {
@@ -744,9 +744,9 @@ describe('Grid.Store', function() {
         });
 
         it('should save a node', function() {
-            var grid = createSimpleGrid();
-            var row = grid.querySelector('row');
-            var cell = grid.querySelector('cell[type=module]');
+            const grid = createSimpleGrid();
+            const row = grid.querySelector('row');
+            const cell = grid.querySelector('cell[type=module]');
 
             Store.__private.saveNode('foo', cell, 'mycell');
 
@@ -762,13 +762,13 @@ describe('Grid.Store', function() {
         });
 
         it('should find a saved node in another grid using its id', function() {
-            var grid = createSimpleGrid();
-            var row = grid.querySelector('row');
-            var cell = grid.querySelector('cell[type=module]');
+            const grid = createSimpleGrid();
+            const row = grid.querySelector('row');
+            const cell = grid.querySelector('cell[type=module]');
 
             // first test without changing the grid
-            var clonedRow = Store.__private.getSameNodeInActualGrid('foo', row);
-            var clonedCell = Store.__private.getSameNodeInActualGrid('foo', cell);
+            let clonedRow = Store.__private.getSameNodeInActualGrid('foo', row);
+            let clonedCell = Store.__private.getSameNodeInActualGrid('foo', cell);
 
             expect(clonedRow).not.toBe(undefined);
             expect(clonedRow).toBe(row);
@@ -779,8 +779,8 @@ describe('Grid.Store', function() {
             // make a backup, the main grid is not the initial one
             Store.__private.backupGrid('foo', 'first');
 
-            var clonedRow = Store.__private.getSameNodeInActualGrid('foo', row);
-            var clonedCell = Store.__private.getSameNodeInActualGrid('foo', cell);
+            clonedRow = Store.__private.getSameNodeInActualGrid('foo', row);
+            clonedCell = Store.__private.getSameNodeInActualGrid('foo', cell);
 
             expect(clonedRow).not.toBe(undefined);
             expect(clonedRow).not.toBe(row);
@@ -793,17 +793,17 @@ describe('Grid.Store', function() {
         });
 
         it('should get the saved node', function() {
-            var grid = createSimpleGrid();
-            var row = grid.querySelector('row');
-            var cell = grid.querySelector('cell[type=module]');
+            const grid = createSimpleGrid();
+            const row = grid.querySelector('row');
+            const cell = grid.querySelector('cell[type=module]');
 
             Store.__private.saveNode('foo', cell, 'mycell');
             Store.__private.saveNode('foo', row, 'myrow');
 
             // get nodes without changing the grid
-            var fetchedCell = Store.__private.getSavedNode('foo', 'mycell');
+            let fetchedCell = Store.__private.getSavedNode('foo', 'mycell');
             expect(fetchedCell).toBe(cell);
-            var fetchedRow = Store.__private.getSavedNode('foo', 'myrow');
+            let fetchedRow = Store.__private.getSavedNode('foo', 'myrow');
             expect(fetchedRow).toBe(row);
 
             // nodes are still saved
@@ -837,9 +837,9 @@ describe('Grid.Store', function() {
         });
 
         it('should clear a saved node', function() {
-            var grid = createSimpleGrid();
-            var row = grid.querySelector('row');
-            var cell = grid.querySelector('cell[type=module]');
+            const grid = createSimpleGrid();
+            const row = grid.querySelector('row');
+            const cell = grid.querySelector('cell[type=module]');
 
             Store.__private.saveNode('foo', cell, 'mycell');
             Store.__private.saveNode('foo', row, 'myrow');
@@ -862,12 +862,12 @@ describe('Grid.Store', function() {
         });
 
         it('should set the hovering timeout', function(done) {
-            var grid = createSimpleGrid();
+            const grid = createSimpleGrid();
 
             spyOn(Store.__private, 'stayHovering').and.callThrough();
 
             // reduce the delay
-            var defaultHoveringDelay = Store.__private.hoveringDelay;
+            const defaultHoveringDelay = Store.__private.hoveringDelay;
             Store.__private.hoveringDelay = 0.01;
 
             try {
@@ -888,12 +888,12 @@ describe('Grid.Store', function() {
         });
 
         it('should clear the hovering timeout', function(done) {
-            var grid = createSimpleGrid();
+            const grid = createSimpleGrid();
 
             spyOn(Store.__private, 'stayHovering').and.callThrough();
 
             // reduce the delay
-            var defaultHoveringDelay = Store.__private.hoveringDelay;
+            const defaultHoveringDelay = Store.__private.hoveringDelay;
             Store.__private.hoveringDelay = 0.01;
 
             try {
@@ -920,8 +920,8 @@ describe('Grid.Store', function() {
         });
 
         it('should add an updated grid in the history', function() {
-            var grid = createSimpleGrid();
-            var gridEntry = Store.__private.getGridEntry('foo');
+            let grid = createSimpleGrid();
+            const gridEntry = Store.__private.getGridEntry('foo');
 
             // we should have one entry in the history
             expect(gridEntry.history.length).toEqual(1);
@@ -935,7 +935,7 @@ describe('Grid.Store', function() {
             Manipulator.setIds(grid);
 
             Store.__private.addCurrentGridToHistory('foo');
-            var newGrid = Store.getGrid('foo');
+            const newGrid = Store.getGrid('foo');
 
             // we should have two entries now
             expect(gridEntry.history.length).toEqual(2);
@@ -999,7 +999,7 @@ describe('Grid.Store', function() {
         });
 
         it('should restore a ready and usable grid from history', function() {
-            var grid = createSimpleGrid();
+            const grid = createSimpleGrid();
 
             // no placeholders by default
             expect(Store.hasPlaceholders('foo')).toBe(false);
@@ -1037,7 +1037,7 @@ describe('Grid.Store', function() {
         });
 
         it('should fail when goiing out of history bound', function() {
-            var grid = createSimpleGrid();
+            const grid = createSimpleGrid();
 
             // cannot go back
             expect(function() {

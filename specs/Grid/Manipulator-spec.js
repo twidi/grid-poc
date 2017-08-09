@@ -7,7 +7,7 @@ import { Utils } from '../Utils';
 
 
 describe('Grid.Manipulator', function() {
-    var uniqueIdMock;
+    let uniqueIdMock;
 
     beforeEach(function() {
         jasmine.addMatchers(customMatchers);
@@ -17,7 +17,7 @@ describe('Grid.Manipulator', function() {
     });
 
     it('should clone a grid', function() {
-        var grid = Manipulator.XMLStringToXMLGrid(
+        const grid = Manipulator.XMLStringToXMLGrid(
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row>' +
@@ -33,14 +33,14 @@ describe('Grid.Manipulator', function() {
                 '</content>' +
             '</grid>');
 
-        var clone = Manipulator.clone(grid);
+        const clone = Manipulator.clone(grid);
         expect(Manipulator.XMLGridToXMLString(clone)).toEqual(Manipulator.XMLGridToXMLString(grid));
     });
 
     it('should create a new grid', function() {
-        var grid = Manipulator.createBaseGrid('foo', 5);
+        const grid = Manipulator.createBaseGrid('foo', 5);
 
-        var expected =
+        const expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content/>' +
             '</grid>';
@@ -48,14 +48,14 @@ describe('Grid.Manipulator', function() {
     });
 
     it('should create a content node', function() {
-        var grid = Manipulator.createBaseGrid('foo', 5);
+        const grid = Manipulator.createBaseGrid('foo', 5);
 
-        var contentNode = Manipulator.createContentNode(grid, {foo: 1, bar: 'baz'});
+        const contentNode = Manipulator.createContentNode(grid, {foo: 1, bar: 'baz'});
         expect(contentNode).toEqualXML('<content foo="1" bar="baz"/>');
     });
 
     it('should remove a cell', function() {
-        var grid = Manipulator.XMLStringToXMLGrid(
+        const grid = Manipulator.XMLStringToXMLGrid(
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row>' +
@@ -71,11 +71,11 @@ describe('Grid.Manipulator', function() {
                 '</content>' +
             '</grid>');
 
-        var cell = grid.querySelector('cell[type=module]');
+        const cell = grid.querySelector('cell[type=module]');
         Manipulator.removeCell(cell);
 
         // the cell should be removed, and the grid cleaned
-        var expected =
+        const expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row>' +
@@ -87,11 +87,11 @@ describe('Grid.Manipulator', function() {
     });
 
     it('should add a row', function() {
-        var grid = Manipulator.createBaseGrid('foo', 5);
+        let grid = Manipulator.createBaseGrid('foo', 5);
 
         // with an empty rows list
         Manipulator.addRow(grid); // the grid is the first child of the "root document"
-        var expected =
+        let expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row/>' +
@@ -100,8 +100,8 @@ describe('Grid.Manipulator', function() {
         expect(grid).toEqualXML(expected);
 
         // with a rows list with one row
-        var row = Manipulator.addRow(grid, null, 'foo');
-        var expected =
+        let row = Manipulator.addRow(grid, null, 'foo');
+        expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row/>' +
@@ -112,7 +112,7 @@ describe('Grid.Manipulator', function() {
 
         // check that we really have the real row
         row.setAttribute('foo', 'bar');
-        var expected =
+        expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row/>' +
@@ -124,10 +124,10 @@ describe('Grid.Manipulator', function() {
         // transform a non-grid node (we have to create a cell for that)
         grid = Manipulator.createBaseGrid('foo', 5);
         row = Manipulator.addRow(grid);
-        var cell = Manipulator.addCell(row, null, 'module');
+        const cell = Manipulator.addCell(row, null, 'module');
         cell.setAttribute('foo', 'bar');
         cell.querySelector(':scope > content').setAttribute('bar', 'baz');
-        var expected =
+        expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row>' +
@@ -138,7 +138,7 @@ describe('Grid.Manipulator', function() {
         expect(grid).toEqualXML(expected);
 
         Manipulator.addRow(cell);
-        var expected =
+        expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row>' +
@@ -158,15 +158,15 @@ describe('Grid.Manipulator', function() {
     });
 
     it('should add a row before another one', function() {
-        var grid = Manipulator.createBaseGrid('foo', 5);
-        var row1 = Manipulator.addRow(grid);
+        const grid = Manipulator.createBaseGrid('foo', 5);
+        const row1 = Manipulator.addRow(grid);
         row1.setAttribute('created', 'first');
 
         // add a row before the first one
-        var row2 = Manipulator.addRow(grid, row1);
+        const row2 = Manipulator.addRow(grid, row1);
         row2.setAttribute('inserted', 'before');
 
-        var expected =
+        let expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row inserted="before"/>' +
@@ -176,7 +176,7 @@ describe('Grid.Manipulator', function() {
         expect(grid).toEqualXML(expected);
 
         // add a module cell and add a row asking to set it before another
-        var cell = Manipulator.addCell(row1, null, 'module');
+        const cell = Manipulator.addCell(row1, null, 'module');
 
         // this should fail
         expect(function() {
@@ -184,7 +184,7 @@ describe('Grid.Manipulator', function() {
         }).toThrowError(Manipulator.Exceptions.Inconsistency, 'Cannot insert before a row if there is no row');
 
         // transform this cell to have rows and try to use one from the first level for the beforeRow argument
-        var subRow1 = Manipulator.addRow(cell);
+        const subRow1 = Manipulator.addRow(cell);
         subRow1.setAttribute('created', 'first (sub-row)');
 
         // this should fail
@@ -193,10 +193,10 @@ describe('Grid.Manipulator', function() {
         }).toThrowError(Manipulator.Exceptions.Inconsistency, 'The \'beforeRow\' must be a child of the content of the \'node\'');
 
         // now a working test but at a sublevel, to be sure
-        var subRow2 = Manipulator.addRow(cell, subRow1);
+        const subRow2 = Manipulator.addRow(cell, subRow1);
         subRow2.setAttribute('inserted', 'before (sub-row)');
 
-        var expected =
+        expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row inserted="before"/>' +
@@ -216,12 +216,12 @@ describe('Grid.Manipulator', function() {
     });
 
     it('should add a cell', function() {
-        var grid = Manipulator.createBaseGrid('foo', 5);
-        var row = Manipulator.addRow(grid);
+        const grid = Manipulator.createBaseGrid('foo', 5);
+        const row = Manipulator.addRow(grid);
 
         // with an empty cells list
         Manipulator.addCell(row, null, 'grid');
-        var expected =
+        let expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row>' +
@@ -234,8 +234,8 @@ describe('Grid.Manipulator', function() {
         expect(grid).toEqualXML(expected);
 
         // with a cells list with one cell
-        var cell = Manipulator.addCell(row, null, 'grid');
-        var expected =
+        const cell = Manipulator.addCell(row, null, 'grid');
+        expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row>' +
@@ -252,7 +252,7 @@ describe('Grid.Manipulator', function() {
 
         // check that we really have the real cell
         cell.setAttribute('foo', 'bar');
-        var expected =
+        expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row>' +
@@ -275,16 +275,16 @@ describe('Grid.Manipulator', function() {
     });
 
     it('should add a cell before another one', function() {
-        var grid = Manipulator.createBaseGrid('foo', 5);
-        var row = Manipulator.addRow(grid);
-        var cell1 = Manipulator.addCell(row, null, 'module');
+        const grid = Manipulator.createBaseGrid('foo', 5);
+        const row = Manipulator.addRow(grid);
+        const cell1 = Manipulator.addCell(row, null, 'module');
         cell1.setAttribute('created', 'first');
 
         // add a cell before the first one
-        var cell2 = Manipulator.addCell(row, cell1, 'module');
+        const cell2 = Manipulator.addCell(row, cell1, 'module');
         cell2.setAttribute('inserted', 'before');
 
-        var expected =
+        let expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row>' +
@@ -296,8 +296,8 @@ describe('Grid.Manipulator', function() {
         expect(grid).toEqualXML(expected);
 
         // add a new sub level of cells to try to insert cell before one at another level
-        var subRow = Manipulator.addRow(cell1);
-        var subCell1 = Manipulator.addCell(subRow, null, 'module');
+        const subRow = Manipulator.addRow(cell1);
+        const subCell1 = Manipulator.addCell(subRow, null, 'module');
         subCell1.setAttribute('created', 'first (sub-cell)');
 
         // this should fail
@@ -306,10 +306,10 @@ describe('Grid.Manipulator', function() {
         }).toThrowError(Manipulator.Exceptions.Inconsistency, 'The \'beforeCell\' must be a child of \'row\'');
 
         // now a working test but at a sublevel, to be sure
-        var subCell2 = Manipulator.addCell(subRow, subCell1, 'module');
+        const subCell2 = Manipulator.addCell(subRow, subCell1, 'module');
         subCell2.setAttribute('inserted', 'before (sub-cell)');
 
-        var expected =
+        expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row>' +
@@ -333,24 +333,24 @@ describe('Grid.Manipulator', function() {
     });
 
     it('should create a full grid', function() {
-        var grid = Manipulator.createBaseGrid('foo', 5);
-        var row1 = Manipulator.addRow(grid);
-            var cell1 = Manipulator.addCell(row1, null, 'grid');
-                var row = Manipulator.addRow(cell1);
-                    var cell2 = Manipulator.addCell(row, null, 'module');
+        const grid = Manipulator.createBaseGrid('foo', 5);
+        const row1 = Manipulator.addRow(grid);
+            const cell1 = Manipulator.addCell(row1, null, 'grid');
+                const row = Manipulator.addRow(cell1);
+                    const cell2 = Manipulator.addCell(row, null, 'module');
                     cell2.querySelector(':scope > content').setAttribute('path', 'path.to.module1');
-                    var cell3 = Manipulator.addCell(row, null, 'module');
+                    const cell3 = Manipulator.addCell(row, null, 'module');
                     cell3.querySelector(':scope > content').setAttribute('path', 'path.to.module2');
-                var row3 = Manipulator.addRow(cell1);
-                    var cell4 = Manipulator.addCell(row3, null, 'module');
+                const row3 = Manipulator.addRow(cell1);
+                    const cell4 = Manipulator.addCell(row3, null, 'module');
                     cell4.querySelector(':scope > content').setAttribute('path', 'path.to.module3');
-                    var cell5 = Manipulator.addCell(row3, null, 'grid');
-                        var row4 = Manipulator.addRow(cell5);
-                            var cell6 = Manipulator.addCell(row4, null, 'module');
+                    const cell5 = Manipulator.addCell(row3, null, 'grid');
+                        const row4 = Manipulator.addRow(cell5);
+                            const cell6 = Manipulator.addCell(row4, null, 'module');
                             cell6.querySelector(':scope > content').setAttribute('path', 'path.to.module4');
-            var cell7 = Manipulator.addCell(row1, null, 'grid');
+            const cell7 = Manipulator.addCell(row1, null, 'grid');
 
-        var expected =
+        const expected =
                 '<grid name="foo" space="5px" type="mainGrid">' +
                     '<content>' +
                         '<row>' +
@@ -382,7 +382,7 @@ describe('Grid.Manipulator', function() {
 
     it('should clean a grid', function() {
 
-        var grid = Manipulator.XMLStringToXMLGrid(
+        const grid = Manipulator.XMLStringToXMLGrid(
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row id="r1">' +
@@ -427,7 +427,7 @@ describe('Grid.Manipulator', function() {
         Manipulator.cleanGrid(grid.querySelector('cell[toclean="1"]'));
 
         // we should have the useless rows and grids removed
-        var expected =
+        const expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row id="r2">' +
@@ -444,14 +444,14 @@ describe('Grid.Manipulator', function() {
     });
 
     it('should tell if it contains a subgrid', function() {
-        var grid = Manipulator.createBaseGrid('foo');
+        const grid = Manipulator.createBaseGrid('foo');
         expect(Manipulator.containsSubGrid(grid)).toBe(false);
 
-        var row = Manipulator.addRow(grid);
+        let row = Manipulator.addRow(grid);
         Manipulator.addCell(row, null, 'module');
         expect(Manipulator.containsSubGrid(grid)).toBe(false);
 
-        var subGrid = Manipulator.addCell(row, null, 'grid');
+        const subGrid = Manipulator.addCell(row, null, 'grid');
         expect(Manipulator.containsSubGrid(grid)).toBe(true);
         expect(Manipulator.containsSubGrid(subGrid)).toBe(false);
 
@@ -460,7 +460,7 @@ describe('Grid.Manipulator', function() {
         expect(Manipulator.containsSubGrid(grid)).toBe(true);
         expect(Manipulator.containsSubGrid(subGrid)).toBe(false);
 
-        var subSubGrid = Manipulator.addCell(row, null, 'grid');
+        const subSubGrid = Manipulator.addCell(row, null, 'grid');
         expect(Manipulator.containsSubGrid(grid)).toBe(true);
         expect(Manipulator.containsSubGrid(subGrid)).toBe(true);
         expect(Manipulator.containsSubGrid(subSubGrid)).toBe(false);
@@ -468,8 +468,8 @@ describe('Grid.Manipulator', function() {
 
     it('should manage placeholders', function() {
         // do it on an empty grid
-        var grid = Manipulator.createBaseGrid('foo');
-        var expected =
+        let grid = Manipulator.createBaseGrid('foo');
+        let expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content/>' +
             '</grid>';
@@ -481,7 +481,7 @@ describe('Grid.Manipulator', function() {
             Manipulator.addPlaceholders(grid);
         }).toThrowError(Manipulator.Exceptions.InvalidState);
 
-        var expectedWithPlaceholders =
+        let expectedWithPlaceholders =
             '<grid name="foo" space="5px" type="mainGrid" hasPlaceholders="true">' +
                 '<content>' +
                     '<row type="placeholder"><cell type="placeholder"><content/></cell></row>' +
@@ -498,7 +498,7 @@ describe('Grid.Manipulator', function() {
         }).toThrowError(Manipulator.Exceptions.InvalidState);
 
         // do it wth a grid with one row/one cell
-        var expected =
+        expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row>' +
@@ -507,11 +507,11 @@ describe('Grid.Manipulator', function() {
                 '</content>' +
             '</grid>';
 
-        var grid = Manipulator.XMLStringToXMLGrid(expected);
+        grid = Manipulator.XMLStringToXMLGrid(expected);
 
         Manipulator.addPlaceholders(grid);
 
-        var expectedWithPlaceholders =
+        expectedWithPlaceholders =
             '<grid name="foo" space="5px" type="mainGrid" hasPlaceholders="true">' +
                 '<content>' +
                     '<row type="placeholder"><cell type="placeholder"><content/></cell></row>' +
@@ -532,7 +532,7 @@ describe('Grid.Manipulator', function() {
         expect(grid).toEqualXML(expected);
 
         // do it with with a grid with many rows/many cells
-        var expected =
+        expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row>' +
@@ -556,11 +556,11 @@ describe('Grid.Manipulator', function() {
                 '</content>' +
             '</grid>';
 
-        var grid = Manipulator.XMLStringToXMLGrid(expected);
+        grid = Manipulator.XMLStringToXMLGrid(expected);
 
         Manipulator.addPlaceholders(grid);
 
-        var moduleCellReplacedByPlaceholders =
+        const moduleCellReplacedByPlaceholders =
             '<cell type="grid" surround="1">' +
                 '<content>' +
                     '<row type="placeholder"><cell type="placeholder" surround="1"><content/></cell></row>' +
@@ -573,7 +573,7 @@ describe('Grid.Manipulator', function() {
                 '</content>' +
             '</cell>';
 
-        var expectedWithPlaceholders =
+        expectedWithPlaceholders =
             '<grid name="foo" space="5px" type="mainGrid" surround="1" hasPlaceholders="true">' +
                 '<content>' +
                     '<row type="placeholder"><cell type="placeholder" surround="1"><content/></cell></row>' +
@@ -639,20 +639,20 @@ describe('Grid.Manipulator', function() {
     });
 
     it('should not clean placeholder with a module', function() {
-        var grid = Manipulator.createBaseGrid('foo');
-        var row = Manipulator.addRow(grid);
+        const grid = Manipulator.createBaseGrid('foo');
+        const row = Manipulator.addRow(grid);
         Manipulator.addCell(row, null, 'module');
 
         Manipulator.addPlaceholders(grid);
 
         // add a module in a placeholder cell (in the second row (our first original one), last cell (a placeholder))
-        var cell = grid.querySelector(':scope > content > row:nth-child(2) > cell:last-child');
+        let cell = grid.querySelector(':scope > content > row:nth-child(2) > cell:last-child');
         cell.setAttribute('type', 'module');
         cell.setAttribute('was', 'placeholder');
 
         Manipulator.removePlaceholders(grid);
 
-        var expected =
+        let expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row>' +
@@ -668,13 +668,13 @@ describe('Grid.Manipulator', function() {
 
         Manipulator.addPlaceholders(grid);
 
-        var cell = grid.querySelector(':scope > content > row:last-child > cell');
+        cell = grid.querySelector(':scope > content > row:last-child > cell');
         cell.setAttribute('type', 'module');
         cell.setAttribute('was', 'placeholder, too');
 
         Manipulator.removePlaceholders(grid);
 
-        var expected =
+        expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row>' +
@@ -692,13 +692,13 @@ describe('Grid.Manipulator', function() {
     });
 
     it('should return the neareset grid', function() {
-        var grid = Manipulator.createBaseGrid('foo', 5);
-        var row = Manipulator.addRow(grid);
-        var gridCell = Manipulator.addCell(row, null, 'grid');
-        var gridContent = gridCell.querySelector(':scope > content');
-        var subRow = Manipulator.addRow(gridCell);
-        var contentCell = Manipulator.addCell(subRow, null, 'module');
-        var content = contentCell.querySelector(':scope > content');
+        const grid = Manipulator.createBaseGrid('foo', 5);
+        const row = Manipulator.addRow(grid);
+        const gridCell = Manipulator.addCell(row, null, 'grid');
+        const gridContent = gridCell.querySelector(':scope > content');
+        const subRow = Manipulator.addRow(gridCell);
+        const contentCell = Manipulator.addCell(subRow, null, 'module');
+        const content = contentCell.querySelector(':scope > content');
 
         // test each node in our tree
         expect(Manipulator.getNearestGrid(content)).toBe(gridCell);
@@ -728,7 +728,7 @@ describe('Grid.Manipulator', function() {
     });
 
     it('should move a content to a placeholder', function() {
-        var grid = Manipulator.XMLStringToXMLGrid(
+        const grid = Manipulator.XMLStringToXMLGrid(
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row>' +
@@ -747,13 +747,13 @@ describe('Grid.Manipulator', function() {
                 '</content>' +
             '</grid>');
 
-        var content = grid.querySelector('content[id=mod1]');
+        const content = grid.querySelector('content[id=mod1]');
         Manipulator.addPlaceholders(grid);
-        var destination = grid.querySelector('content[id=mod3]').parentNode.nextSibling;
+        let destination = grid.querySelector('content[id=mod3]').parentNode.nextSibling;
         Manipulator.moveContentToPlaceholder(content, destination);
         Manipulator.removePlaceholders(grid);
 
-        var expected = Manipulator.XMLStringToXMLGrid(
+        const expected = Manipulator.XMLStringToXMLGrid(
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row>' +
@@ -779,33 +779,33 @@ describe('Grid.Manipulator', function() {
         }).toThrowError(Manipulator.Exceptions.InvalidType, 'Cannot move content in cell of type <module>. It must be <placeholder>');
 
         // test with a detached module
-        var parentGrid = Manipulator.getNearestGrid(content);
+        const parentGrid = Manipulator.getNearestGrid(content);
         content.parentNode.removeChild(content);
         Manipulator.cleanGrid(parentGrid);
         Manipulator.addPlaceholders(grid);
-        var destination = grid.querySelector('content[id=mod3]').parentNode.nextSibling;
+        destination = grid.querySelector('content[id=mod3]').parentNode.nextSibling;
         Manipulator.moveContentToPlaceholder(content, destination);
         Manipulator.removePlaceholders(grid);
         expect(grid).toEqualXML(expected);
     });
 
     it('should create a module node with simple keys/values pairs', function() {
-        var j = {
+        const j = {
             foo: 1,
             bar: 'B.A.R',
         };
-        var node = Manipulator.createModuleNode(j);
+        const node = Manipulator.createModuleNode(j);
 
-        var expected = '<content foo="1" bar="B.A.R"/>';
+        const expected = '<content foo="1" bar="B.A.R"/>';
 
         expect(node).toEqualXML(expected);
     });
 
     it('should allow the full workflow of a drag\'n\'drop', function() {
         // first we create a simple grid
-        var grid = Manipulator.createBaseGrid('foo', 5);
+        const grid = Manipulator.createBaseGrid('foo', 5);
         // get a module from somewhere to insert
-        var content1 = Manipulator.createModuleNode({path: 'test.module.1'});
+        const content1 = Manipulator.createModuleNode({path: 'test.module.1'});
         // go in "design" mode
         Manipulator.addPlaceholders(grid);
         // add the module in the only placeholder cell
@@ -813,7 +813,7 @@ describe('Grid.Manipulator', function() {
         // reset the placeholders with the new grid
         Manipulator.cleanPlaceholders(grid);
         // get another module from somewhere to insert
-        var content2 = Manipulator.createModuleNode({path: 'test.module.2'});
+        const content2 = Manipulator.createModuleNode({path: 'test.module.2'});
         // add it to the last placeholder row
         Manipulator.moveContentToPlaceholder(content2, grid.querySelector(':scope > content > row[type=placeholder] > cell[type=placeholder]'));
         // reset the placeholders with the new grid
@@ -824,7 +824,7 @@ describe('Grid.Manipulator', function() {
         Manipulator.removePlaceholders(grid);
 
         // we should have both contents in the only row
-        var expected =
+        const expected =
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row>' +
@@ -843,7 +843,7 @@ describe('Grid.Manipulator', function() {
 
     it('should set an ID on each node', function() {
 
-        var grid = Manipulator.XMLStringToXMLGrid(
+        let grid = Manipulator.XMLStringToXMLGrid(
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row>' +
@@ -864,7 +864,7 @@ describe('Grid.Manipulator', function() {
 
         Manipulator.setIds(grid);
 
-        var expected =
+        let expected =
             '<grid name="foo" space="5px" type="mainGrid" id="grid-1">' +
                 '<content id="content-2">' +
                     '<row id="row-3">' +
@@ -886,7 +886,7 @@ describe('Grid.Manipulator', function() {
         expect(grid).toEqualXML(expected);
 
         // check that existing ids are not changed
-        var grid = Manipulator.XMLStringToXMLGrid(
+        grid = Manipulator.XMLStringToXMLGrid(
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content id="foobar"/>' +
             '</grid>');
@@ -894,7 +894,7 @@ describe('Grid.Manipulator', function() {
         uniqueIdMock.reset();
         Manipulator.setIds(grid);
 
-        var expected =
+        expected =
             '<grid name="foo" space="5px" type="mainGrid" id="grid-1">' +
                 '<content id="foobar"/>' +
             '</grid>';
@@ -904,13 +904,13 @@ describe('Grid.Manipulator', function() {
     });
 
     it('should add a resizer', function() {
-        var grid = Manipulator.createBaseGrid('foo', 5);
-        var row1 = Manipulator.addRow(grid);
-        var row2 = Manipulator.addRow(grid);
-        var row3 = Manipulator.addRow(grid);
-        var cell1 = Manipulator.addCell(row1, null, 'module');
-        var cell2 = Manipulator.addCell(row1, null, 'grid');
-        var cell3 = Manipulator.addCell(row1, null, 'module');
+        const grid = Manipulator.createBaseGrid('foo', 5);
+        const row1 = Manipulator.addRow(grid);
+        const row2 = Manipulator.addRow(grid);
+        const row3 = Manipulator.addRow(grid);
+        const cell1 = Manipulator.addCell(row1, null, 'module');
+        const cell2 = Manipulator.addCell(row1, null, 'grid');
+        const cell3 = Manipulator.addCell(row1, null, 'module');
 
         // fail before first row
         expect(function() {
@@ -945,7 +945,7 @@ describe('Grid.Manipulator', function() {
     });
 
     it('should add all resizers in a grid', function() {
-        var grid = Manipulator.XMLStringToXMLGrid(
+        const grid = Manipulator.XMLStringToXMLGrid(
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row>' +
@@ -968,7 +968,7 @@ describe('Grid.Manipulator', function() {
 
         Manipulator.addResizers(grid);
 
-        var expected =
+        const expected =
             '<grid name="foo" space="5px" type="mainGrid" hasResizers="true">' +
                 '<content>' +
                     '<row>' +

@@ -34,8 +34,8 @@ export const customMatchers = {
      *         expect(stringifiedXMLGrid).toEqualXML(stringifiedExpectedXMLGrid)
      *
      *         // most common use case:
-     *         var grid = aFunctionThatReturnAXMLGrid();
-     *         var expected = '<grid><foo/></grid';
+     *         let grid = aFunctionThatReturnAXMLGrid();
+     *         let expected = '<grid><foo/></grid';
      *         expect(grid).toEqualXML(expected);
      *
      *     });
@@ -50,7 +50,7 @@ export const customMatchers = {
                 if (!_.isString(expected)) {
                     expected = Manipulator.XMLGridToXMLString(expected);
                 }
-                var result = {};
+                let result = {};
                 result.pass = util.equals(actual, expected);
                 if (result.pass) {
                     result.message = 'XML is the one wanted';
