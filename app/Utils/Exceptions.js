@@ -1,3 +1,8 @@
+/**
+ * Tools to manage exceptions
+ * @namespace
+ * @memberOf module:Utils
+ */
 const Exceptions = {
 
     /**
