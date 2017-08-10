@@ -1,8 +1,8 @@
-var _ = require('lodash');
-var flux = require('flux-react');
+import _ from 'lodash';
+import flux from 'flux-react';
 
-var Actions = require('./Actions.js');
-var Manipulator = require('./Manipulator.js');
+import { Actions } from './Actions';
+import { Manipulator } from './Manipulator';
 
 
 /**
@@ -10,7 +10,7 @@ var Manipulator = require('./Manipulator.js');
  * @namespace
  * @memberOf module:Grid
  */
-var Store = {
+let Store = {
 
     /**
      * Exceptions for the Store module
@@ -88,7 +88,7 @@ var Store = {
         HistoryOutOfBound: function HistoryOutOfBound(message) {
             this.name = 'HistoryOutOfBound';
             this.message = message || 'Operation out of bound on history';
-        },
+        }
     },
 
     /**
@@ -98,8 +98,8 @@ var Store = {
      *
      * @return {XML} - The wanted XML grid
      */
-    getGrid: function(gridName) {
-        var grid = this.getGridEntry(gridName);
+    getGrid(gridName) {
+        const grid = this.getGridEntry(gridName);
         Manipulator.setIds(grid.grid);
         return grid.grid;
     },
@@ -116,14 +116,14 @@ var Store = {
      * @throws {module:Grid.Store.Exceptions.GridDoesNotExist} If the given name does not match an existing grid name
      * @throws {module:Grid.Store.Exceptions.NodeDoesNotExist} If the given id does not match an existing node id
      */
-    getGridNodeById: function(gridName, nodeId) {
-        var grid = this.getGrid(gridName);
+    getGridNodeById(gridName, nodeId) {
+        const grid = this.getGrid(gridName);
         if (grid.getAttribute('id') == nodeId) {
             return grid;
         }
-        var node = grid.querySelector('#' + nodeId);
+        const node = grid.querySelector('#' + nodeId);
         if (!node) {
-            throw new this.Exceptions.NodeDoesNotExist("No node with the ID <" + nodeId + ">");
+            throw new this.Exceptions.NodeDoesNotExist('No node with the ID <' + nodeId + '>');
         }
         return node;
     },
@@ -135,7 +135,7 @@ var Store = {
      *
      * @return {string} - The id attribute of the node
      */
-    getNodeId: function(node) {
+    getNodeId(node) {
         return node.getAttribute('id');
     },
 
@@ -146,7 +146,7 @@ var Store = {
      *
      * @return {XML} - The main grid of the node
      */
-    getMainGrid: function(node) {
+    getMainGrid(node) {
         return node.ownerDocument.documentElement;
     },
 
@@ -157,7 +157,7 @@ var Store = {
      *
      * @return {string} - The name of the main grid
      */
-    getMainGridName: function(node) {
+    getMainGridName(node) {
         return this.getMainGrid(node).getAttribute('name');
     },
 
@@ -168,8 +168,8 @@ var Store = {
      *
      * @return {string} - The current design mode step of the grid
      */
-    getDesignModeStep: function(gridName) {
-        var grid = this.getGridEntry(gridName);
+    getDesignModeStep(gridName) {
+        const grid = this.getGridEntry(gridName);
         return grid.designModeStep;
     },
 
@@ -180,8 +180,8 @@ var Store = {
      *
      * @return {Boolean} - `true` if the grid is in dragging mode, else `false`
      */
-    isDragging: function(gridName) {
-        var draggingNode = this.grids[gridName].nodes.dragging;
+    isDragging(gridName) {
+        const draggingNode = this.grids[gridName].nodes.dragging;
         return !!draggingNode;
     },
 
@@ -193,8 +193,8 @@ var Store = {
      *
      * @return {Boolean} - `true` if the cell is the currently dragged one,or `false`
      */
-    isDraggingCell: function(gridName, cell) {
-        var draggingNode = this.grids[gridName].nodes.dragging;
+    isDraggingCell(gridName, cell) {
+        const draggingNode = this.grids[gridName].nodes.dragging;
         if (!draggingNode) { return false; }
         return draggingNode.getAttribute('id') == cell.querySelector(':scope > content').getAttribute('id');
     },
@@ -206,8 +206,8 @@ var Store = {
      *
      * @return {Boolean} - `true` if the grid is in hovering mode, else `false`
      */
-    isHovering: function(gridName) {
-        var hoveringNode = this.grids[gridName].nodes.hovering;
+    isHovering(gridName) {
+        const hoveringNode = this.grids[gridName].nodes.hovering;
         return !!hoveringNode;
     },
 
@@ -219,8 +219,8 @@ var Store = {
      *
      * @return {Boolean} - `true` if the placeholder is the currently hovered one,or `false`
      */
-    isHoveringPlaceholder: function(gridName, placeholder) {
-        var hoveringNode = this.grids[gridName].nodes.hovering;
+    isHoveringPlaceholder(gridName, placeholder) {
+        const hoveringNode = this.grids[gridName].nodes.hovering;
         if (!hoveringNode) { return false; }
         return hoveringNode.getAttribute('id') == placeholder.getAttribute('id');
     },
@@ -232,8 +232,8 @@ var Store = {
      *
      * @return {Boolean} - `true` if the grid is in resizing mode, else `false`
      */
-    isResizing: function(gridName) {
-        var resizingNode = this.grids[gridName].nodes.resizing;
+    isResizing(gridName) {
+        const resizingNode = this.grids[gridName].nodes.resizing;
         return !!resizingNode;
     },
 
@@ -245,8 +245,8 @@ var Store = {
      *
      * @return {Boolean} - `true` if the resizer is the currently dragged one,or `false`
      */
-    isMovingResizer: function(gridName, resizer) {
-        var resizingNode = this.grids[gridName].nodes.resizing;
+    isMovingResizer(gridName, resizer) {
+        const resizingNode = this.grids[gridName].nodes.resizing;
         if (!resizingNode) { return false; }
         return resizingNode.getAttribute('id') == resizer.getAttribute('id');
     },
@@ -258,7 +258,7 @@ var Store = {
      *
      * @return {Boolean} - `true` if the node contains at least one subgrid, or `false`
      */
-    containsSubGrid: function(node) {
+    containsSubGrid(node) {
         return Manipulator.containsSubGrid(node);
     },
 
@@ -269,8 +269,8 @@ var Store = {
      *
      * @return {Boolean} - `true` if the grid has placeholders, else `false`
      */
-    hasPlaceholders: function(gridName) {
-        var grid = this.getGrid(gridName);
+    hasPlaceholders(gridName) {
+        const grid = this.getGrid(gridName);
         return Manipulator.hasPlaceholders(grid);
     },
 
@@ -281,8 +281,8 @@ var Store = {
      *
      * @return {Boolean} - `true` if the grid has resizers, else `false`
      */
-    hasResizers: function(gridName) {
-        var grid = this.getGrid(gridName);
+    hasResizers(gridName) {
+        const grid = this.getGrid(gridName);
         return Manipulator.hasResizers(grid);
     },
 
@@ -293,7 +293,7 @@ var Store = {
      *
      * @return {Float} - The float-converted value of the attribute, or 1 if not defined
      */
-    getRelativeSize: function(node) {
+    getRelativeSize(node) {
         return parseFloat(node.getAttribute('relativeSize') || 1);
     },
 
@@ -304,8 +304,8 @@ var Store = {
      *
      * @return {Boolean} - `true` if an "undo" can be done, or `false`
      */
-    canGoBackInHistory: function(gridName) {
-        var gridEntry = this.getGridEntry(gridName);
+    canGoBackInHistory(gridName) {
+        const gridEntry = this.getGridEntry(gridName);
         return (gridEntry.currentHistoryIndex > 0);
     },
 
@@ -316,8 +316,8 @@ var Store = {
      *
      * @return {Boolean} - `true` if a "redo" can be done, or `false`
      */
-    canGoForwardInHistory: function(gridName) {
-        var gridEntry = this.getGridEntry(gridName);
+    canGoForwardInHistory(gridName) {
+        const gridEntry = this.getGridEntry(gridName);
         return (gridEntry.currentHistoryIndex < gridEntry.history.length - 1);
     },
 
@@ -328,11 +328,13 @@ var Store = {
      *
      * @returns {} - Returns nothing
      */
-    __removeAllGrids: function() {
-        for (var gridName in this.grids) {
-            delete this.grids[gridName];
+    __removeAllGrids() {
+        for (const gridName in this.grids) {
+            if (this.grids.hasOwnProperty(gridName)) {
+                delete this.grids[gridName];
+            }
         }
-    },
+    }
 };
 
 
@@ -343,7 +345,7 @@ var Store = {
  * @inner
  *
  */
-var Private = {
+const Private = {
 
     /**
      * Duration (in ms) to take an hovering into account
@@ -429,12 +431,12 @@ var Private = {
      *
      */
     designModeValidSteps: {
-        'disabled': ['enabled'],
-        'enabled': ['disabled', 'dragging', 'resizing'],
-        'resizing': ['enabled'],
-        'dragging': ['enabled', 'prehovering'],
-        'prehovering': ['dragging', 'hovering', 'enabled'],
-        'hovering': ['dragging', 'enabled']
+        disabled: ['enabled'],
+        enabled: ['disabled', 'dragging', 'resizing'],
+        resizing: ['enabled'],
+        dragging: ['enabled', 'prehovering'],
+        prehovering: ['dragging', 'hovering', 'enabled'],
+        hovering: ['dragging', 'enabled']
     },
 
 
@@ -455,9 +457,9 @@ var Private = {
      *
      * @throws {module:Grid.Store.Exceptions.GridDoesNotExist} If the given name does not match an existing grid name
      */
-    getGridEntry: function(gridName) {
+    getGridEntry(gridName) {
         if (!_.has(this.grids, gridName)) {
-            throw new this.Exceptions.GridDoesNotExist("No grid with the name <" + gridName + ">");
+            throw new this.Exceptions.GridDoesNotExist('No grid with the name <' + gridName + '>');
         }
         return this.grids[gridName];
     },
@@ -471,10 +473,10 @@ var Private = {
      *
      * @fires module:Grid.Store#"grid.add"
      */
-    addGrid: function(grid) {
-        var name = grid.getAttribute('name');
+    addGrid(grid) {
+        const name = grid.getAttribute('name');
         if (_.has(this.grids, name)) {
-            throw new this.Exceptions.GridDoesNotExist("There is already a grid the name <" + name + ">");
+            throw new this.Exceptions.GridDoesNotExist('There is already a grid the name <' + name + '>');
         }
         this.grids[name] = {
             name: name,
@@ -513,10 +515,10 @@ var Private = {
      *
      * @fires module:Grid.Store#"grid.designMode.module.add"
      */
-    addModule: function(gridName, module, params) {
-        var grid = this.getGrid(gridName);
+    addModule(gridName, module, params) {
+        const grid = this.getGrid(gridName);
 
-        var hasResizers = Manipulator.hasResizers(grid);
+        const hasResizers = Manipulator.hasResizers(grid);
 
         // remove resizers for now
         if (hasResizers) {
@@ -524,13 +526,13 @@ var Private = {
         }
 
         // create a content node, including the module name as an attribute
-        var attributes = _.extend({component: module}, params);
-        var contentNode = Manipulator.createContentNode(grid, attributes);
+        const attributes = _.extend({component: module}, params);
+        const contentNode = Manipulator.createContentNode(grid, attributes);
 
         // add a row with this module only
-        var firstRow = grid.querySelector('row');
-        var newRow = Manipulator.addRow(grid, firstRow);
-        var newCell = Manipulator.addCell(newRow, null, 'module', contentNode);
+        const firstRow = grid.querySelector('row');
+        const newRow = Manipulator.addRow(grid, firstRow);
+        const newCell = Manipulator.addCell(newRow, null, 'module', contentNode);
 
         // put the grid in a good state
         if (hasResizers) {
@@ -562,10 +564,10 @@ var Private = {
      *
      * @fires module:Grid.Store#"grid.designMode.module.remove"
      */
-    removeModule: function(gridName, moduleCell) {
-        var grid = this.getGrid(gridName);
+    removeModule(gridName, moduleCell) {
+        const grid = this.getGrid(gridName);
 
-        var hasResizers = Manipulator.hasResizers(grid);
+        const hasResizers = Manipulator.hasResizers(grid);
 
         // remove resizers for now
         if (hasResizers) {
@@ -600,7 +602,7 @@ var Private = {
      *
      * @fires module:Grid.Store#"grid.designMode.enter"
      */
-    enterDesignMode: function(gridName) {
+    enterDesignMode(gridName) {
         this.changeDesignModeStep(gridName, 'enabled');
 
         /**
@@ -623,7 +625,7 @@ var Private = {
      *
      * @fires module:Grid.Store#"grid.designMode.exit"
      */
-    exitDesignMode: function(gridName) {
+    exitDesignMode(gridName) {
         this.changeDesignModeStep(gridName, 'disabled');
 
         /**
@@ -645,37 +647,37 @@ var Private = {
      *
      * @return {} - Returns nothing
      */
-    changeDesignModeStep: function(gridName, step, dontManageGrid) {
-        var grid = this.getGrid(gridName);
+    changeDesignModeStep(gridName, step, dontManageGrid) {
+        const grid = this.getGrid(gridName);
 
         if (typeof this.designModeValidSteps[step] == 'undefined') {
-            throw new this.Exceptions.InvalidDesignModeStep("The given design mode step <" + step + "> is not a valid one");
+            throw new this.Exceptions.InvalidDesignModeStep('The given design mode step <' + step + '> is not a valid one');
         }
 
-        var currentStep = this.getDesignModeStep(gridName);
+        const currentStep = this.getDesignModeStep(gridName);
 
         if (currentStep == step) {
             return;
         }
 
         if (!_.contains(this.designModeValidSteps[currentStep], step)) {
-            throw new this.Exceptions.InvalidDesignModeStep("The given design mode step <" + step + "> is not valid step to go after the current one which is <" + currentStep + ">");
+            throw new this.Exceptions.InvalidDesignModeStep('The given design mode step <' + step + '> is not valid step to go after the current one which is <' + currentStep + '>');
         }
 
         if (!dontManageGrid) {
-            var gridHasPlaceholders = Manipulator.hasPlaceholders(grid);
-            var gridHasResizers = Manipulator.hasResizers(grid);
+            const gridHasPlaceholders = Manipulator.hasPlaceholders(grid);
+            const gridHasResizers = Manipulator.hasResizers(grid);
 
-            if (!(step == 'dragging' ||  step == 'prehovering') && gridHasPlaceholders) {
+            if (!(step == 'dragging' || step == 'prehovering') && gridHasPlaceholders) {
                 Manipulator.removePlaceholders(grid);
             }
-            if (!(step == 'enabled' ||  step == 'resizing') && gridHasResizers) {
+            if (!(step == 'enabled' || step == 'resizing') && gridHasResizers) {
                 Manipulator.removeResizers(grid);
             }
-            if ((step == 'dragging' ||  step == 'prehovering') && !gridHasPlaceholders) {
+            if ((step == 'dragging' || step == 'prehovering') && !gridHasPlaceholders) {
                 Manipulator.addPlaceholders(grid);
             }
-            if ((step == 'enabled' ||  step == 'resizing') && !gridHasResizers) {
+            if ((step == 'enabled' || step == 'resizing') && !gridHasResizers) {
                 Manipulator.addResizers(grid);
             }
 
@@ -692,8 +694,8 @@ var Private = {
      * @param  {string} gridName - Name of the grid for which we want to set design mode step
      * @param {string} step - The new design mode step for the grid
      */
-    setDesignModeStep: function(gridName, step) {
-        var grid = this.getGridEntry(gridName);
+    setDesignModeStep(gridName, step) {
+        const grid = this.getGridEntry(gridName);
         grid.designModeStep = step;
     },
 
@@ -708,13 +710,13 @@ var Private = {
      * @throws {module:Grid.Store.Exceptions.GridDoesNotExist} If the given name does not match an existing grid name
      * @throws {module:Grid.Store.Exceptions.Inconsistency} If the given node does not belongs to the grid
      */
-    checkConsistency: function(gridName, node) {
-        var grid = this.getGrid(gridName);
+    checkConsistency(gridName, node) {
+        const grid = this.getGrid(gridName);
         if (node) {
             try {
-                var actualNode = this.getSameNodeInActualGrid(gridName, node);
-            } catch(e) {
-                throw new this.Exceptions.Inconsistency("The given cell is not contained in the grid <" + gridName + ">");
+                const actualNode = this.getSameNodeInActualGrid(gridName, node);
+            } catch (e) {
+                throw new this.Exceptions.Inconsistency('The given cell is not contained in the grid <' + gridName + '>');
             }
         }
         return node;
@@ -727,8 +729,8 @@ var Private = {
      * @param  {string} gridName - The name of the grid to backup
      * @param  {string} backupName - The name of this backup. Should be "dragging" or "hovering"
      */
-    backupGrid: function(gridName, backupName) {
-        var actualGrid = this.grids[gridName].grid;
+    backupGrid(gridName, backupName) {
+        const actualGrid = this.grids[gridName].grid;
         this.grids[gridName].backups[backupName] = actualGrid;
         this.grids[gridName].grid = Manipulator.clone(actualGrid);
     },
@@ -742,12 +744,12 @@ var Private = {
      *
      * @return {XML} - The backuped grid now restored
      */
-    restoreGrid: function(gridName, backupName) {
-        var backup = this.grids[gridName].backups[backupName];
+    restoreGrid(gridName, backupName) {
+        const backup = this.grids[gridName].backups[backupName];
         if (backup) {
             this.grids[gridName].grid = backup;
             this.clearBackupedGrid(gridName, backupName);
-            return this.grids[gridName].grid
+            return this.grids[gridName].grid;
         }
     },
 
@@ -757,10 +759,10 @@ var Private = {
      * @param  {string} gridName - The name of the grid for which we want to clear its backup
      * @param  {string} backupName - The name of the backup we want to clear
      */
-    clearBackupedGrid: function(gridName, backupName) {
+    clearBackupedGrid(gridName, backupName) {
         try {
             delete this.grids[gridName].backups[backupName];
-        } catch(e) {};
+        } catch (e) {}
     },
 
     /**
@@ -770,7 +772,7 @@ var Private = {
      * @param  {XML} node - The XML grid node we want to save a reference for
      * @param  {string} saveName - The name of the saving node, for later reference
      */
-    saveNode: function(gridName, node, saveName) {
+    saveNode(gridName, node, saveName) {
         this.grids[gridName].nodes[saveName] = node;
     },
 
@@ -783,7 +785,7 @@ var Private = {
      *
      * @return {XML} - The wanted node from the actual grid
      */
-    getSameNodeInActualGrid: function(gridName, node) {
+    getSameNodeInActualGrid(gridName, node) {
         return this.getGridNodeById(gridName, node.getAttribute('id'));
     },
 
@@ -797,9 +799,9 @@ var Private = {
      *
      * @return {XML} - The wanted node grid (or null if not found)
      */
-    getSavedNode: function(gridName, saveName, dontUpdate) {
+    getSavedNode(gridName, saveName, dontUpdate) {
         // get the reference actually saved
-        var oldNode = this.grids[gridName].nodes[saveName];
+        const oldNode = this.grids[gridName].nodes[saveName];
         // Stop if we don't have this node
         if (!oldNode) {
             return null;
@@ -810,7 +812,7 @@ var Private = {
         }
         // search for one with the same id in the actual grid (which may be different, if
         // backuped for example)
-        var newNode = this.getSameNodeInActualGrid(gridName, oldNode);
+        const newNode = this.getSameNodeInActualGrid(gridName, oldNode);
         // save the new node
         this.saveNode(gridName, newNode, saveName);
         // return the node in the actual grid
@@ -822,10 +824,10 @@ var Private = {
      * @param  {string} gridName - The name of the grid for which we want to clear the reference
      * @param  {string} saveName - The name of the used in `saveNode` of the reference to clear
      */
-    clearSavedNode: function(gridName, saveName) {
+    clearSavedNode(gridName, saveName) {
         try {
             delete this.grids[gridName].nodes[saveName];
-        } catch(e) {};
+        } catch (e) {}
     },
 
     /**
@@ -833,17 +835,17 @@ var Private = {
      *
      * @param {string} gridName - The grid we work with
      */
-    setHoveringTimeout: function(gridName) {
+    setHoveringTimeout(gridName) {
         this.clearHoveringTimeout(gridName);
-        this.getGridEntry(gridName).hoveringTimeout = setTimeout(_.bind(function() {
+        this.getGridEntry(gridName).hoveringTimeout = setTimeout(() => {
             try {
                 // the grid may not exist anymore
                 this.checkConsistency(gridName);
-            } catch(e) {
+            } catch (e) {
                 return;
             }
             this.stayHovering(gridName);
-        }, this), this.hoveringDelay);
+        }, this.hoveringDelay);
     },
 
     /**
@@ -851,8 +853,8 @@ var Private = {
      *
      * @param {string} gridName - The grid we work with
      */
-    clearHoveringTimeout: function(gridName) {
-        var timeout = this.getGridEntry(gridName).hoveringTimeout;
+    clearHoveringTimeout(gridName) {
+        const timeout = this.getGridEntry(gridName).hoveringTimeout;
         if (timeout) {
             clearTimeout(timeout);
             this.getGridEntry(gridName).hoveringTimeout = null;
@@ -870,7 +872,7 @@ var Private = {
      *
      * @fires module:Grid.Store#"grid.designMode.dragging.start"
      */
-    startDragging: function(gridName, moduleCell) {
+    startDragging(gridName, moduleCell) {
         try {
             moduleCell = this.checkConsistency(gridName, moduleCell);
 
@@ -881,7 +883,7 @@ var Private = {
             moduleCell = this.getSameNodeInActualGrid(gridName, moduleCell);
 
             // remove the cell from the grid
-            var contentNode = moduleCell.querySelector(':scope > content');
+            const contentNode = moduleCell.querySelector(':scope > content');
             Manipulator.removeContentNode(contentNode);
 
             // save the cell as the dragging one for this grid
@@ -899,7 +901,7 @@ var Private = {
              */
             this.emit('grid.designMode.dragging.start', gridName);
 
-        } catch(e) {
+        } catch (e) {
             // we had an error, restore to the previous state
             this.restoreGrid(gridName, 'dragging');
             this.clearSavedNode('dragging');
@@ -919,7 +921,7 @@ var Private = {
      *
      * @fires module:Grid.Store#"grid.designMode.dragging.stop"
      */
-    cancelDragging: function(gridName) {
+    cancelDragging(gridName) {
         this.checkConsistency(gridName);
 
         // stop the delay to go in real hovering mode
@@ -956,15 +958,15 @@ var Private = {
      *
      * @fires module:Grid.Store#"grid.designMode.hovering.start"
      */
-    startHovering: function(gridName, placeholderCell) {
+    startHovering(gridName, placeholderCell) {
         placeholderCell = this.checkConsistency(gridName, placeholderCell);
 
         if (!placeholderCell) { return; }
 
-        var currentHovering = this.getSavedNode(gridName, 'hovering');
+        const currentHovering = this.getSavedNode(gridName, 'hovering');
 
         // we already have an hovering cell...
-        if (currentHovering){
+        if (currentHovering) {
            // do nothing if existing hovering is the same
             if (currentHovering == placeholderCell
                     || currentHovering.getAttribute('id') == placeholderCell.getAttribute('id')) {
@@ -1003,7 +1005,7 @@ var Private = {
      *
      * @fires module:Grid.Store#"grid.designMode.hovering.stay"
      */
-    stayHovering: function(gridName) {
+    stayHovering(gridName) {
         this.checkConsistency(gridName);
 
         // stop the delay to go in real hovering mode
@@ -1018,10 +1020,10 @@ var Private = {
         this.backupGrid(gridName, 'hovering');
 
         // use placeholder from the new grid
-        var placeholderCell = this.getSavedNode(gridName, 'hovering');
+        const placeholderCell = this.getSavedNode(gridName, 'hovering');
 
         // attach the dragged module to the placeholder
-        var draggedContent = this.getSavedNode(gridName, 'dragging', true);
+        const draggedContent = this.getSavedNode(gridName, 'dragging', true);
         Manipulator.moveContentToPlaceholder(draggedContent, placeholderCell);
 
         // save the cell as the hovering one for this grid
@@ -1052,7 +1054,7 @@ var Private = {
      *
      * @fires module:Grid.Store#"grid.designMode.hovering.stop"
      */
-    stopHovering: function(gridName) {
+    stopHovering(gridName) {
         this.checkConsistency(gridName);
 
         // stop the delay to go in real hovering mode
@@ -1086,12 +1088,12 @@ var Private = {
      * {@link module:Grid.Actions.drop Grid.Actions.drop}
      *
      * @param {string} gridName - The name of the grid for witch we want to start dragging
-     * @param {XML} [placeholderCell] - The "placeholder" cell we want the dragging cell 
+     * @param {XML} [placeholderCell] - The "placeholder" cell we want the dragging cell
      * to be dropped on. If defined, will replace the one saved in the store.
      *
      * @fires module:Grid.Store#"grid.designMode.drop"
      */
-    drop: function(gridName, placeholderCell) {
+    drop(gridName, placeholderCell) {
         // stop the delay to go in real hovering mode
         this.clearHoveringTimeout(gridName);
 
@@ -1101,7 +1103,7 @@ var Private = {
         }
 
         // retrieve the currently hovered placeholder
-        var existingPlaceholderCell = this.getSavedNode(gridName, 'hovering');
+        const existingPlaceholderCell = this.getSavedNode(gridName, 'hovering');
 
         // if there is an existing placeholder, but the one given differs, use the one given
         if (placeholderCell && placeholderCell != existingPlaceholderCell) {
@@ -1113,7 +1115,7 @@ var Private = {
             this.checkConsistency(gridName);
         }
 
-        var designModeStep = this.getDesignModeStep(gridName);
+        const designModeStep = this.getDesignModeStep(gridName);
 
         // cancel drop if we are back in dragging mode (we may have dropped after
         // exiting a placeholder)
@@ -1128,7 +1130,7 @@ var Private = {
         // attach the dragged module to the placeholder if we were in dragging mode
         // it happens it the drop came before the stay-hoveringTimeout
         if (designModeStep == 'prehovering') {
-            var draggedContent = this.getSavedNode(gridName, 'dragging', true);
+            const draggedContent = this.getSavedNode(gridName, 'dragging', true);
             Manipulator.moveContentToPlaceholder(draggedContent, placeholderCell);
         }
 
@@ -1167,23 +1169,23 @@ var Private = {
      *
      * @fires module:Grid.Store#"grid.designMode.resizing.start"
      */
-    startResizing: function(gridName, resizer, fullSize, initialPos) {
+    startResizing(gridName, resizer, fullSize, initialPos) {
         this.checkConsistency(gridName);
 
         // save the resizer as the resizer being moved for this grid
         this.saveNode(gridName, resizer, 'resizing');
 
         // get existing relative size information
-        var previousRelativeSize = this.getRelativeSize(resizer.previousSibling);
-        var nextRelativeSize = this.getRelativeSize(resizer.nextSibling);
+        const previousRelativeSize = this.getRelativeSize(resizer.previousSibling);
+        const nextRelativeSize = this.getRelativeSize(resizer.nextSibling);
 
         // and save computed data
-        var gridEntry = this.getGridEntry(gridName);
+        const gridEntry = this.getGridEntry(gridName);
         gridEntry.resizing = {
-            initialPos: initialPos,
-            previousRelativeSize:  previousRelativeSize,
-            nextRelativeSize:  nextRelativeSize,
-            sizeRatio:  (previousRelativeSize + nextRelativeSize) / fullSize,
+            initialPos,
+            previousRelativeSize,
+            nextRelativeSize,
+            sizeRatio:  (previousRelativeSize + nextRelativeSize) / fullSize
         };
 
         // set design step to "resizing"
@@ -1211,24 +1213,24 @@ var Private = {
      *
      * @fires module:Grid.Store#"grid.designMode.resizing.move"
      */
-    resize: function(gridName, currentPos) {
+    resize(gridName, currentPos) {
         this.checkConsistency(gridName);
 
-        var resizing = this.getGridEntry(gridName).resizing;
+        const resizing = this.getGridEntry(gridName).resizing;
 
         // compute new related sizes based on the new position
-        var relatedDiff = (currentPos - resizing.initialPos) * resizing.sizeRatio;
-        var newPreviousRelativeSize = resizing.previousRelativeSize + relatedDiff;
-        var newNextRelativeSize = resizing.nextRelativeSize - relatedDiff;
+        const relatedDiff = (currentPos - resizing.initialPos) * resizing.sizeRatio;
+        const newPreviousRelativeSize = resizing.previousRelativeSize + relatedDiff;
+        const newNextRelativeSize = resizing.nextRelativeSize - relatedDiff;
 
         // we are out of bound, so we don't do anything
         if (newPreviousRelativeSize <= 0 || newNextRelativeSize <= 0) {
             return;
         }
 
-        var eventData = {
+        const eventData = {
             previousRelativeSize: newPreviousRelativeSize,
-            nextRelativeSize: newNextRelativeSize,
+            nextRelativeSize: newNextRelativeSize
         };
 
         /**
@@ -1241,7 +1243,7 @@ var Private = {
         this.emit('grid.designMode.resizing.move', gridName, eventData);
 
         // save relative sizes in the grid
-        var resizer = this.getSavedNode(gridName, 'resizing');
+        const resizer = this.getSavedNode(gridName, 'resizing');
         resizer.previousSibling.setAttribute('relativeSize', newPreviousRelativeSize);
         resizer.nextSibling.setAttribute('relativeSize', newNextRelativeSize);
     },
@@ -1256,7 +1258,7 @@ var Private = {
      *
      * @fires module:Grid.Store#"grid.designMode.resizing.stop"
      */
-    stopResizing: function(gridName) {
+    stopResizing(gridName) {
         this.checkConsistency(gridName);
 
         // set design step to "enabled"
@@ -1272,10 +1274,11 @@ var Private = {
         this.emit('grid.designMode.resizing.stop', gridName);
 
         // add the grid in history if it really changed
-        var resizer = this.getSavedNode(gridName, 'resizing');
-        var currentPreviousRelativeSize = this.getRelativeSize(resizer.previousSibling);
-        var currentNextRelativeSize = this.getRelativeSize(resizer.nextSibling);
-        var resizing = this.getGridEntry(gridName).resizing;
+        const resizer = this.getSavedNode(gridName, 'resizing');
+        if (!resizer) return;
+        const currentPreviousRelativeSize = this.getRelativeSize(resizer.previousSibling);
+        const currentNextRelativeSize = this.getRelativeSize(resizer.nextSibling);
+        const resizing = this.getGridEntry(gridName).resizing;
         if (resizing.previousRelativeSize != currentPreviousRelativeSize || resizing.nextRelativeSize != currentNextRelativeSize) {
             this.addCurrentGridToHistory(gridName);
         }
@@ -1296,11 +1299,11 @@ var Private = {
      *
      * @param {String} gridName - The name of the grid for which we want to update the history
      */
-    addCurrentGridToHistory: function(gridName) {
-        var gridEntry = this.getGridEntry(gridName);
+    addCurrentGridToHistory(gridName) {
+        const gridEntry = this.getGridEntry(gridName);
 
         // remove everything after the current index in the history => no forward possible
-        gridEntry.history.splice(gridEntry.currentHistoryIndex+1);
+        gridEntry.history.splice(gridEntry.currentHistoryIndex + 1);
 
         // add the current grid in the history
         gridEntry.history.push(gridEntry.grid);
@@ -1331,8 +1334,8 @@ var Private = {
      *
      * @param {String} gridName - The name of the grid for which we want to restore from the history
      */
-    restoreFromCurrentHistoryIndex: function(gridName) {
-        var gridEntry = this.getGridEntry(gridName);
+    restoreFromCurrentHistoryIndex(gridName) {
+        const gridEntry = this.getGridEntry(gridName);
         gridEntry.grid = Manipulator.clone(gridEntry.history[gridEntry.currentHistoryIndex]);
         if (Manipulator.hasPlaceholders(gridEntry.grid)) {
             Manipulator.removePlaceholders(gridEntry.grid);
@@ -1354,12 +1357,12 @@ var Private = {
      *
      * @fires module:Grid.Store#"grid.designMode.history.back"
      */
-    goBackInHistory: function(gridName) {
+    goBackInHistory(gridName) {
         if (!this.canGoBackInHistory(gridName)) {
-            throw new this.Exceptions.HistoryOutOfBound("Cannot go backward in history for grid <" + gridName + ">");
+            throw new this.Exceptions.HistoryOutOfBound('Cannot go backward in history for grid <' + gridName + '>');
         }
 
-        var gridEntry = this.getGridEntry(gridName);
+        const gridEntry = this.getGridEntry(gridName);
         gridEntry.currentHistoryIndex--;
 
         this.restoreFromCurrentHistoryIndex(gridName);
@@ -1384,12 +1387,12 @@ var Private = {
      *
      * @fires module:Grid.Store#"grid.designMode.history.forward"
      */
-    goForwardInHistory: function(gridName) {
+    goForwardInHistory(gridName) {
         if (!this.canGoForwardInHistory(gridName)) {
-            throw new this.Exceptions.HistoryOutOfBound("Cannot go forward in history for grid <" + gridName + ">");
+            throw new this.Exceptions.HistoryOutOfBound('Cannot go forward in history for grid <' + gridName + '>');
         }
 
-        var gridEntry = this.getGridEntry(gridName);
+        const gridEntry = this.getGridEntry(gridName);
         gridEntry.currentHistoryIndex++;
 
         this.restoreFromCurrentHistoryIndex(gridName);
@@ -1405,7 +1408,7 @@ var Private = {
     },
 
     // add the public interface
-    exports: Store,
+    exports: Store
 
 };
 
@@ -1414,7 +1417,7 @@ Private.exports.__private = Private;
 
 
 // Exceptions must be based on the Error class
-_(Store.Exceptions).forEach(function(exceptionClass, exceptionName) {
+_(Store.Exceptions).forEach((exceptionClass, exceptionName) => {
     exceptionClass.prototype = new Error();
     exceptionClass.prototype.constructor = exceptionClass;
     exceptionClass.displayName = exceptionName;
@@ -1428,4 +1431,4 @@ Store.__private = Private;
 // exceptions must be accessible via the private api too
 Private.Exceptions = Store.Exceptions;
 
-module.exports = Store;
+export { Store };

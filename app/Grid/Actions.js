@@ -1,5 +1,5 @@
-var _ = require('lodash');
-var flux = require('flux-react');
+import _ from 'lodash';
+import flux from 'flux-react';
 
 
 /**
@@ -7,7 +7,7 @@ var flux = require('flux-react');
  * @namespace
  * @memberOf module:Grid
  */
-var Actions = {
+export const Actions = flux.createActions(_.keys({
     // Here are just definitions of functions. There are really created by the
     // "flux.createActions" call
 
@@ -20,7 +20,7 @@ var Actions = {
      *
      * @fires module:Grid.Store#"grid.add"
      */
-    addGrid: function(grid) {},
+    addGrid(grid) {},
 
     /**
      * Add a module to the given grid
@@ -33,7 +33,7 @@ var Actions = {
      *
      * @fires module:Grid.Store#"grid.designMode.module.add"
      */
-    addModule: function(gridName, module, params) {},
+    addModule(gridName, module, params) {},
 
     /**
      * Remove a module from the given grid
@@ -45,7 +45,7 @@ var Actions = {
      *
      * @fires module:Grid.Store#"grid.designMode.module.remove"
      */
-    removeModule: function(gridName, moduleCell) {},
+    removeModule(gridName, moduleCell) {},
 
     /**
      * Set design mode for the given grid
@@ -56,7 +56,7 @@ var Actions = {
      *
      * @fires module:Grid.Store#"grid.designMode.enter"
      */
-    enterDesignMode: function(gridName) {},
+    enterDesignMode(gridName) {},
 
 
     /**
@@ -68,7 +68,7 @@ var Actions = {
      *
      * @fires module:Grid.Store#"grid.designMode.exit"
      */
-    exitDesignMode: function(gridName) {},
+    exitDesignMode(gridName) {},
 
     /**
      * Start dragging the given module in the given grid
@@ -80,7 +80,7 @@ var Actions = {
      *
      * @fires module:Grid.Store#"grid.designMode.dragging.start"
      */
-    startDragging: function(gridName, moduleCell) {},
+    startDragging(gridName, moduleCell) {},
 
     /**
      * Stop dragging the currently dragged module in the given grid
@@ -91,7 +91,7 @@ var Actions = {
      *
      * @fires module:Grid.Store#"grid.designMode.dragging.stop"
      */
-    cancelDragging: function(gridName) {},
+    cancelDragging(gridName) {},
 
     /**
      * The currently dragged module start hovering a placeholder
@@ -102,7 +102,7 @@ var Actions = {
      *
      * @fires module:Grid.Store#"grid.designMode.hovering.start"
      */
-    startHovering: function(gridName, placeholderCell) {},
+    startHovering(gridName, placeholderCell) {},
 
     /**
      * The currently dragged module moves away from the placeholder it was hover
@@ -114,7 +114,7 @@ var Actions = {
      *
      * @fires module:Grid.Store#"grid.designMode.hovering.stop"
      */
-    stopHovering: function(gridName) {},
+    stopHovering(gridName) {},
 
     /**
      * Drop the currently dragged module in the current hovering placeholder
@@ -122,12 +122,12 @@ var Actions = {
      * @type {function}
      *
      * @param {string} gridName - The name of the grid for witch we want to start dragging
-     * @param {XML} [placeholderCell] - The "placeholder" cell we want the dragging cell 
+     * @param {XML} [placeholderCell] - The "placeholder" cell we want the dragging cell
      * to be dropped on. If defined, will replace the one saved in the store.
      *
      * @fires module:Grid.Store#"grid.designMode.drop"
      */
-    drop: function(gridName, placeholderCell) {},
+    drop(gridName, placeholderCell) {},
 
     /**
      * Start moving the given resizer on the given grid
@@ -141,7 +141,7 @@ var Actions = {
      *
      * @fires module:Grid.Store#"grid.designMode.resizing.start"
      */
-    startResizing: function(gridName, resizer, fullSize, initialPos) {},
+    startResizing(gridName, resizer, fullSize, initialPos) {},
 
     /**
      * Move a resizer to resize its previous and next nodes
@@ -154,7 +154,7 @@ var Actions = {
      *
      * @fires module:Grid.Store#"grid.designMode.resizing.move"
      */
-    resize: function(gridName, currentPos) {},
+    resize(gridName, currentPos) {},
 
     /**
      * Stop moving the given resizer on the given grid
@@ -165,7 +165,7 @@ var Actions = {
      *
      * @fires module:Grid.Store#"grid.designMode.resizing.stop"
      */
-    stopResizing: function(gridName) {},
+    stopResizing(gridName) {},
 
     /**
      * Use the previous version of grid found in its history
@@ -176,7 +176,7 @@ var Actions = {
      *
      * @fires module:Grid.Store#"grid.designMode.history.back"
      */
-    goBackInHistory: function(gridName) {},
+    goBackInHistory(gridName) {},
 
     /**
      * Use the next version of grid found in its history
@@ -187,7 +187,5 @@ var Actions = {
      *
      * @fires module:Grid.Store#"grid.designMode.history.forward"
      */
-    goForwardInHistory: function(gridName) {},
-};
-
-module.exports = flux.createActions(_.keys(Actions));
+    goForwardInHistory(gridName) {}
+}));
