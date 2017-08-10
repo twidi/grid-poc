@@ -1,19 +1,19 @@
-var React = require('react/addons');  // react + addons
-var TestUtils = React.addons.TestUtils;
+import ReactDOM from 'react-dom';
+import TestUtils from 'react-addons-test-utils';
 
-var Actions = require('../../../app/Grid/Actions.js');
-var Manipulator = require('../../../app/Grid/Manipulator.js');
-var Store = require('../../../app/Grid/Store.js');
+import { Actions } from '../../../app/Grid/Actions';
+import { Manipulator } from '../../../app/Grid/Manipulator';
+import { Store } from '../../../app/Grid/Store';
 
-var Row = require('../../../app/Grid/Components/Row.jsx');
-var SubGrid = require('../../../app/Grid/Components/SubGrid.jsx');
+import { Row } from '../../../app/Grid/Components/Row';
+import { SubGrid } from '../../../app/Grid/Components/SubGrid';
+import { ModulesCache } from '../../../app/Grid/Components/ModulesCache';
 
-
-var componentUtils = {
+export const componentUtils = {
     _componentsCache: [],
 
-    makeTestGrid: function() {
-        var testGrid = Manipulator.XMLStringToXMLGrid(
+    makeTestGrid() {
+        let testGrid = Manipulator.XMLStringToXMLGrid(
             '<grid name="Test grid" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row>' +
@@ -43,106 +43,102 @@ var componentUtils = {
         return Store.getGrid('Test grid');
     },
 
-    countRows: function(component) {
+    countRows(component) {
         try {
             return TestUtils.scryRenderedComponentsWithType(component, Row).length;
-        } catch(e) {
+        } catch (e) {
             return 0;
-        };
+        }
     },
-    countSubGrids: function(component) {
+    countSubGrids(component) {
         try {
             return TestUtils.scryRenderedComponentsWithType(component, SubGrid).length;
-        } catch(e) {
+        } catch (e) {
             return 0;
-        };
+        }
     },
-    countModules: function(component) {
+    countModules(component) {
         try {
             return TestUtils.scryRenderedDOMComponentsWithClass(component, 'grid-cell-module').length;
-        } catch(e) {
+        } catch (e) {
             return 0;
-        };
+        }
     },
-    countRowPlaceholders: function(component) {
+    countRowPlaceholders(component) {
         try {
             return TestUtils.scryRenderedDOMComponentsWithClass(component, 'grid-row-placeholder').length;
-        } catch(e) {
+        } catch (e) {
             return 0;
-        };
+        }
     },
-    countCellPlaceholders: function(component) {
+    countCellPlaceholders(component) {
         try {
             return TestUtils.scryRenderedDOMComponentsWithClass(component, 'grid-cell-placeholder').length;
-        } catch(e) {
+        } catch (e) {
             return 0;
-        };
+        }
     },
-    countResizers: function(component) {
+    countResizers(component) {
         try {
             return TestUtils.scryRenderedDOMComponentsWithClass(component, 'grid-resizer').length;
-        } catch(e) {
+        } catch (e) {
             return 0;
-        };
+        }
     },
-    countVerticalResizers: function(component) {
+    countVerticalResizers(component) {
         try {
             return TestUtils.scryRenderedDOMComponentsWithClass(component, 'grid-resizer-vertical').length;
-        } catch(e) {
+        } catch (e) {
             return 0;
-        };
+        }
     },
-    countHorizontalResizers: function(component) {
+    countHorizontalResizers(component) {
         try {
             return TestUtils.scryRenderedDOMComponentsWithClass(component, 'grid-resizer-horizontal').length;
-        } catch(e) {
+        } catch (e) {
             return 0;
-        };
+        }
     },
 
-    clearModulesCache: function() {
-        var ModulesCache = require('../../../app/Grid/Components/ModulesCache.js');
-        ModulesCache._cache ={};
+    clearModulesCache() {
+        ModulesCache._cache = {};
     },
 
-    getTextContent: function(component) {
-        return component.getDOMNode().textContent;
+    getTextContent(component) {
+        return ReactDOM.findDOMNode(component).textContent;
     },
 
-    renderIntoDocument: function(element) {
-        var component = TestUtils.renderIntoDocument(element);
+    renderIntoDocument(element) {
+        let component = TestUtils.renderIntoDocument(element);
         this._componentsCache.push(component);
         return component;
     },
 
-    unmountComponent: function(component){
-        // used in unmountAllComponents, it's a copy of the same function in 
+    unmountComponent(component) {
+        // used in unmountAllComponents, it's a copy of the same function in
         // jasmine-react, but we cannot use it as it seems that we have in this
         // case many React instances that doesn't share mounted components
-        if(component.isMounted()){
-            return React.unmountComponentAtNode(component.getDOMNode().parentNode);
+        if (component.isMounted()) {
+            return ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(component).parentNode);
         } else {
             return false;
         }
     },
 
-    unmountAllComponents: function() {
-        for (var i = this._componentsCache.length - 1; i >= 0; i--) {
-            var component = this._componentsCache[i];
+    unmountAllComponents() {
+        for (let i = this._componentsCache.length - 1; i >= 0; i--) {
+            let component = this._componentsCache[i];
             try {
                 this.unmountComponent(component);
-            } catch(e) {
+            } catch (e) {
                 console.log('Unable to unmount component', component, e);
             }
-        };
+        }
         this._componentsCache = [];
     },
 
-    simulateDragEvent: function(domNode, eventName, setDataFunction) {
-        React.addons.TestUtils.Simulate[eventName](domNode, {dataTransfer: {setData: setDataFunction || function(){} }});
+    simulateDragEvent(domNode, eventName, setDataFunction) {
+        TestUtils.Simulate[eventName](domNode, {dataTransfer: {setData: setDataFunction || function() {} }});
     },
 
 };
-
-
-module.exports = componentUtils;

@@ -1,8 +1,10 @@
-var _ = require('lodash');
-var React = require('react/addons');  // react + addons
-var stringify = require('json-stable-stringify');
+import _ from 'lodash';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import stringify from 'json-stable-stringify';
 
-var Modules = require('../Modules.js');
+import { Modules } from '../Modules';
+import { ModuleHolder } from './ModuleHolder';
 
 /**
  * This JS module will manage the cache of the module and the module holders,
@@ -23,7 +25,7 @@ var Modules = require('../Modules.js');
  * @memberOf module:Grid.Components
  *
  */
-var ModulesCache = {
+const ModulesCache = {
 
     /**
      * The class name for the nodes holding the modules react components.
@@ -57,10 +59,10 @@ var ModulesCache = {
      * @param  {XMLNode} xmlNode - The xml node from which we want to extract attributes
      * @return {object}  - The object with all attributes
      */
-    _extractAttributes: function(xmlNode) {
+    _extractAttributes(xmlNode) {
         return _.reduce(
             xmlNode.attributes,
-            function(r, a) { r[a.name] = a.value; return r; }, {}
+            (r, a) => { r[a.name] = a.value; return r; }, {}
         );
     },
 
@@ -85,25 +87,27 @@ var ModulesCache = {
      * How it works (assuming a cell, not a key):
      *
      * - get the content node inside the cell
-     * - extract all its attributes that will be used as attributes for the module (the `component` attribule will tell which module to create)
+     * - extract all its attributes that will be used as attributes for the module
+     *   (the `component` attribule will tell which module to create)
      * - compute a key (string) based on these attributes
      * - if the cache is empty, fill it with:
      *   - a react element for the module (not rendered, only created)
      *   - a react element for the module holder (not rendered, only created)
      *   - the name of the current grid
      *   - the actual {@link module:Grid.Components.Cell Cell} using this cache entry
-     *   - (grid's name and cell are used to call the {@link module:Grid.Actions Actions}, as `startDragging` for example)
+     *   - (grid's name and cell are used to call the {@link module:Grid.Actions Actions},
+     *     as `startDragging` for example)
      * - if the cache already existed:
      *   - update the grid name and the actual cell using this cache entry
      *
      *
-     * 
+     *
      * @private
      *
      * @return {object} - The cache entry for the given cell/key
      */
-    _getFromCache: function(cell, key) {
-        var attributes;
+    _getFromCache(cell, key) {
+        let attributes;
 
         if (key) {
             // extract atributes from the key if we have it
@@ -113,7 +117,7 @@ var ModulesCache = {
             // compose the key if not given (expect the cell)
 
             // it's where the module information are
-            var contentNode = cell.state.node.querySelector(':scope > content');
+            const contentNode = cell.state.node.querySelector(':scope > content');
 
             // get all attributes of the content node, to use as props for the
             // module component
@@ -126,30 +130,29 @@ var ModulesCache = {
         if (typeof this._cache[key] === 'undefined') {
             // initialize the cache for this key
 
-            ////// create the module
+            // Create the module
 
             // will be something like "Modules.foo"
-            var componentPath = attributes.component;
+            const componentPath = attributes.component;
 
             // Remove the "Modules." part, as they are all hold in the "Modules" module
-            var modulePath = componentPath.split('.').splice(1).join('/');
+            const modulePath = componentPath.split('.').splice(1).join('/');
 
             // create a react *element* for the wanted module, with the content
             // attributes as props
-            var moduleElement = React.createElement(Modules[modulePath], attributes);
+            const moduleElement = React.createElement(Modules[modulePath], attributes);
 
-            ////// create the holder to hold the module in design mode
+            // Create the holder to hold the module in design mode
 
             // create  a react *element* for the holder
-            var ModuleHolder = require('./ModuleHolder.jsx');
-            var holderElement = React.createElement(ModuleHolder, {
+            const holderElement = React.createElement(ModuleHolder, {
                 uniqueKey: key,
                 gridName: cell.getGridName(),
-                gridCell: cell.state.node,
+                gridCell: cell.state.node
             });
 
 
-            ////// save in cache
+            // Save in cache
             this._cache[key] = {
                 // keep grid related data
                 gridName: holderElement.props.gridName,
@@ -158,15 +161,15 @@ var ModulesCache = {
                 // both react elements, to be converted as components later
 
                 // both needed react components
-                moduleElement: moduleElement,
-                holderElement: holderElement,
+                moduleElement,
+                holderElement
             };
 
         } else {
 
             // if the cache exists update grid related data
             if (cell) {
-                var cache = this._cache[key];
+                const cache = this._cache[key];
                 cache.gridName = cell.getGridName();
                 cache.gridCell = cell.state.node;
             }
@@ -193,8 +196,8 @@ var ModulesCache = {
      *
      * @return {DomNode} - A dom node holding the module react component
      */
-    getModuleComponent: function(cell, key) {
-        var cache = this._getFromCache(cell, key);
+    getModuleComponent(cell, key) {
+        const cache = this._getFromCache(cell, key);
 
         if (typeof cache.moduleComponent === 'undefined') {
 
@@ -203,7 +206,7 @@ var ModulesCache = {
             cache.moduleParent.className = this.moduleContainerClassName;
 
             // render the module component once for all
-            cache.moduleComponent = React.render(cache.moduleElement, cache.moduleParent);
+            cache.moduleComponent = ReactDOM.render(cache.moduleElement, cache.moduleParent);
 
         }
 
@@ -221,9 +224,9 @@ var ModulesCache = {
      *
      * @private
      */
-    _getNewHolderProps: function(cache, props) {
-        var newProps = {};
-        for (var key in props) {
+    _getNewHolderProps(cache, props) {
+        const newProps = {};
+        for (const key in props) {
             if (typeof cache[key] === 'undefined') { continue; }
             if (props[key] == cache[key]) { continue; }
             newProps[key] = cache[key];
@@ -246,7 +249,7 @@ var ModulesCache = {
      * the`forceUpdate` method is called. Each of these two actions will trigger a
      * rerender of the `ModuleHolder` component, to reattach the `module` component
      * if it was used elsewhere.
-     * 
+     *
      * The `cell` and `key` parameters are exclusive
      *
      * @param  {module:Grid.Components.Cell} cell - A cell for which we want the module
@@ -255,14 +258,14 @@ var ModulesCache = {
      * @return {DomNode} - A dom node holding the
      * {@link module:Grid.Components.ModuleHolder ModuleHolder} react component
      */
-    getHolderComponent: function(cell, key) {
-        var cache = this._getFromCache(cell, key);
+    getHolderComponent(cell, key) {
+        const cache = this._getFromCache(cell, key);
 
         if (typeof cache.holderComponent === 'undefined') {
             // the component does not exist in cache, so we create it
 
             // update element props if needed
-            var newProps = this._getNewHolderProps(cache, cache.holderElement.props);
+            const newProps = this._getNewHolderProps(cache, cache.holderElement.props);
             _.extend(cache.holderElement.props, newProps);
 
             // will hold the rendered module component
@@ -270,27 +273,28 @@ var ModulesCache = {
             cache.holderParent.className = this.holderContainerClassName;
 
             // render the module component once for all
-            cache.holderComponent = React.render(cache.holderElement, cache.holderParent);
+            cache.holderComponent = ReactDOM.render(cache.holderElement, cache.holderParent);
 
         } else {
             // if the component exists in cache, update its props
-            var component = cache.holderComponent;
-            var newProps = this._getNewHolderProps(cache, component.props);
+            const component = cache.holderComponent;
+            const newProps = this._getNewHolderProps(cache, component.props);
             if (_.size(newProps)) {
                 // we have new props, so we apply them, the component will be re-rendered
-                component.setProps(newProps);
+                const element = React.createElement(ModuleHolder, Object.assign({}, component.props, newProps));
+                cache.holderComponent = ReactDOM.render(element, cache.holderParent);
             } else {
                 // no new props, but ask for a rerender if the the module is not inside the component
                 // TODO: for now we always rerender the holder, it needs to change on some cases
                 // if (!component.getDOMNode().querySelector(':scope > .' + this.moduleContainerClassName)) {
-                    component.forceUpdate();
+                component.forceUpdate();
                 // }
             }
         }
 
         return cache.holderParent;
-    },
+    }
 
 };
 
-module.exports = ModulesCache;
+export {ModulesCache};
