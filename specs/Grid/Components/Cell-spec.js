@@ -1,29 +1,27 @@
-var _ = require('lodash');
-var jasmineReact = require('jasmine-react-helpers');
-var React = require('react/addons');  // react + addons
-var stringify = require('json-stable-stringify');
-var TestUtils = React.addons.TestUtils;
+import _ from 'lodash';
+import jasmineReact from 'jasmine-react-helpers-hotfix-0.14';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import TestUtils from 'react-addons-test-utils';
 
-var Manipulator = require('../../../app/Grid/Manipulator.js');
-var Modules = require('../../../app/Grid/Modules.js');
-var Store = require('../../../app/Grid/Store.js');
+import { Manipulator } from '../../../app/Grid/Manipulator';
+import { Store } from '../../../app/Grid/Store';
 
-var Cell = require('../../../app/Grid/Components/Cell.jsx');
-var ModulesCache = require('../../../app/Grid/Components/ModulesCache.js');
-var Placeholder = require('../../../app/Grid/Components/Placeholder.jsx');
-var SubGrid = require('../../../app/Grid/Components/SubGrid.jsx');
+import { Cell } from '../../../app/Grid/Components/Cell';
+import { ModulesCache } from '../../../app/Grid/Components/ModulesCache';
+import { Placeholder } from '../../../app/Grid/Components/Placeholder';
+import { SubGrid } from '../../../app/Grid/Components/SubGrid';
 
-var Utils = require('../../Utils.js');
-var componentUtils = require('./Utils.js');
+import { Utils } from '../../Utils';
+import { componentUtils } from './Utils';
 
-
-describe("Grid.Components.Cell", function() {
-    var uniqueIdMock;
+describe('Grid.Components.Cell', function() {
+    let uniqueIdMock;
 
     // main grid and some cells, defined in beforeEach
-    var testGrid;
-    var moduleGridCell;
-    var subGridCell;
+    let testGrid;
+    let moduleGridCell;
+    let subGridCell;
 
     beforeEach(function(done) {
         // we want to start each test with a fresh list of grids
@@ -47,45 +45,45 @@ describe("Grid.Components.Cell", function() {
         componentUtils.unmountAllComponents();
     });
 
-    it("should access its main grid", function() {
-        var element = React.createElement(Cell, {node: subGridCell});
-        var component = componentUtils.renderIntoDocument(element);
+    it('should access its main grid', function() {
+        const element = React.createElement(Cell, {node: subGridCell});
+        const component = componentUtils.renderIntoDocument(element);
         expect(component.getGrid()).toBe(testGrid);
     });
 
-    it("should get its id", function() {
-        var element = React.createElement(Cell, {node: subGridCell});
-        var component = componentUtils.renderIntoDocument(element);
+    it('should get its id', function() {
+        const element = React.createElement(Cell, {node: subGridCell});
+        const component = componentUtils.renderIntoDocument(element);
         expect(component.getNodeId()).toBe(subGridCell.getAttribute('id'));
     });
 
-    it("should get the main grid name", function() {
-        var element = React.createElement(Cell, {node: subGridCell});
-        var component = componentUtils.renderIntoDocument(element);
+    it('should get the main grid name', function() {
+        const element = React.createElement(Cell, {node: subGridCell});
+        const component = componentUtils.renderIntoDocument(element);
         expect(component.getGridName()).toEqual('Test grid');
     });
 
-    it("should get the design mode step", function() {
-        var element = React.createElement(Cell, {node: subGridCell});
-        var component = componentUtils.renderIntoDocument(element);
+    it('should get the design mode step', function() {
+        const element = React.createElement(Cell, {node: subGridCell});
+        const component = componentUtils.renderIntoDocument(element);
         expect(component.getDesignModeStep()).toEqual('disabled');
 
         Store.__private.setDesignModeStep('Test grid', 'enabled');
         expect(component.getDesignModeStep()).toEqual('enabled');
     });
 
-    it("should know if it's in design mode", function() {
-        var element = React.createElement(Cell, {node: subGridCell});
-        var component = componentUtils.renderIntoDocument(element);
+    it('should know if it\'s in design mode', function() {
+        const element = React.createElement(Cell, {node: subGridCell});
+        const component = componentUtils.renderIntoDocument(element);
         expect(component.isInDesignMode()).toBe(false);
 
         Store.__private.setDesignModeStep('Test grid', 'enabled');
         expect(component.isInDesignMode()).toBe(true);
     });
 
-    it("should get the type of a cell", function() {
-        var element = React.createElement(Cell, {node: subGridCell});
-        var component = componentUtils.renderIntoDocument(element);
+    it('should get the type of a cell', function() {
+        let element = React.createElement(Cell, {node: subGridCell});
+        let component = componentUtils.renderIntoDocument(element);
 
         expect(component.getType()).toEqual('grid');
         expect(component.isSubGrid()).toBe(true);
@@ -103,7 +101,7 @@ describe("Grid.Components.Cell", function() {
         Manipulator.addPlaceholders(testGrid);
         Manipulator.setIds(testGrid);
 
-        var gridCell = testGrid.querySelector('cell[type=placeholder]');
+        const gridCell = testGrid.querySelector('cell[type=placeholder]');
         element = React.createElement(Cell, {node: gridCell});
         component = componentUtils.renderIntoDocument(element);
 
@@ -114,27 +112,27 @@ describe("Grid.Components.Cell", function() {
 
     });
 
-    it("should render a subgrid", function() {
+    it('should render a subgrid', function() {
         jasmineReact.spyOnClass(Cell, 'renderAsSubGrid').and.callThrough();
 
-        var element = React.createElement(Cell, {node: subGridCell});
-        var component = componentUtils.renderIntoDocument(element);
+        const element = React.createElement(Cell, {node: subGridCell});
+        const component = componentUtils.renderIntoDocument(element);
         expect(jasmineReact.classPrototype(Cell).renderAsSubGrid.calls.count()).toEqual(1);
 
         // default relative size => flex-grow=1
-        expect(component.getDOMNode().getAttribute('style')).toMatch(/\bflex-grow\s*:\s*1\b/);
+        expect(ReactDOM.findDOMNode(component).getAttribute('style')).toMatch(/\bflex-grow\s*:\s*1\b/);
 
-        var subGrid = component.renderAsSubGrid();
+        const subGrid = component.renderAsSubGrid();
         expect(TestUtils.isElementOfType(subGrid, SubGrid)).toBe(true);
         expect(subGrid.props.node).toBe(subGridCell);
     });
 
-    it("should render a module in normal mode", function() {
+    it('should render a module in normal mode', function() {
         jasmineReact.spyOnClass(Cell, 'renderAsModule').and.callThrough();
 
-        var element = React.createElement(Cell, {node: moduleGridCell});
-        var component = componentUtils.renderIntoDocument(element);
-        var domNode = component.getDOMNode();
+        const element = React.createElement(Cell, {node: moduleGridCell});
+        const component = componentUtils.renderIntoDocument(element);
+        const domNode = ReactDOM.findDOMNode(component);
 
         expect(jasmineReact.classPrototype(Cell).renderAsModule.calls.count()).toEqual(1);
 
@@ -143,7 +141,7 @@ describe("Grid.Components.Cell", function() {
         expect(domNode.classList.contains('grid-cell-module')).toBe(true);
         expect(domNode.classList.contains('grid-cell-module-dragging')).toBe(false);
 
-        var moduleContainer = domNode.children[0];
+        const moduleContainer = domNode.children[0];
         expect(moduleContainer.tagName).toEqual('DIV');
         expect(moduleContainer.className).toEqual('module-container');
         expect(moduleContainer.children.length).toEqual(1);
@@ -159,22 +157,22 @@ describe("Grid.Components.Cell", function() {
         // new relative size of the node, check the rendered div
         expect(domNode.getAttribute('style')).toMatch(/\bflex-grow\s*:\s*2\b/);
 
-        var module = component.renderAsModule();
-        expect(TestUtils.isElementOfType(module, React.DOM.div)).toBe(true);
+        const module = component.renderAsModule();
+        expect(module.type).toBe('div');
     });
 
-    it("should render a module in design mode", function() {
+    it('should render a module in design mode', function() {
         Store.__private.setDesignModeStep('Test grid', 'enabled');
-        var element = React.createElement(Cell, {node: moduleGridCell});
-        var component = componentUtils.renderIntoDocument(element);
-        var domNode = component.getDOMNode();
+        const element = React.createElement(Cell, {node: moduleGridCell});
+        const component = componentUtils.renderIntoDocument(element);
+        const domNode = ReactDOM.findDOMNode(component);
 
         expect(domNode.tagName).toEqual('DIV');
         expect(domNode.classList.contains('grid-cell')).toBe(true);
         expect(domNode.classList.contains('grid-cell-module')).toBe(true);
         expect(domNode.classList.contains('grid-cell-module-dragging')).toBe(false);
 
-        var moduleContainer = domNode.children[0];
+        const moduleContainer = domNode.children[0];
         expect(moduleContainer.tagName).toEqual('DIV');
         expect(moduleContainer.className).toEqual('module-holder-container');
         expect(moduleContainer.children.length).toEqual(1);
@@ -197,14 +195,14 @@ describe("Grid.Components.Cell", function() {
         expect(domNode.getAttribute('style')).toMatch(/\bflex-grow\s*:\s*2\b/);
     });
 
-    it("should render a placeholder", function() {
+    it('should render a placeholder', function() {
         jasmineReact.spyOnClass(Cell, 'renderAsPlaceholder').and.callThrough();
 
         Manipulator.addPlaceholders(testGrid);
-        var placeholderGridCell = testGrid.querySelector('cell[type=placeholder]');
-        var element = React.createElement(Cell, {node: placeholderGridCell});
-        var component = componentUtils.renderIntoDocument(element);
-        var domNode = component.getDOMNode();
+        const placeholderGridCell = testGrid.querySelector('cell[type=placeholder]');
+        const element = React.createElement(Cell, {node: placeholderGridCell});
+        const component = componentUtils.renderIntoDocument(element);
+        const domNode = ReactDOM.findDOMNode(component);
 
         expect(jasmineReact.classPrototype(Cell).renderAsPlaceholder.calls.count()).toEqual(1);
 
@@ -216,22 +214,22 @@ describe("Grid.Components.Cell", function() {
         // no specific style defined
         expect(domNode.getAttribute('style')).toBe(null);
 
-        var placeholder = component.renderAsPlaceholder();
+        const placeholder = component.renderAsPlaceholder();
         expect(TestUtils.isElementOfType(placeholder, Placeholder)).toBe(true);
         expect(placeholder.props.node).toBe(placeholderGridCell);
     });
 
-    it("should attach the module component after being mounted", function(done) {
+    it('should attach the module component after being mounted', function(done) {
         jasmineReact.spyOnClass(Cell, '_attachExternalNode').and.callThrough();
         jasmineReact.spyOnClass(Cell, '_detachExternalNode').and.callThrough();
 
-        var element = React.createElement(Cell, {node: moduleGridCell});
-        var component = componentUtils.renderIntoDocument(element);
+        const element = React.createElement(Cell, {node: moduleGridCell});
+        const component = componentUtils.renderIntoDocument(element);
 
         // leave some time to render the component
         setTimeout(function() {
             expect(_.keys(ModulesCache._cache).length).toEqual(1);
-            var cellProto = jasmineReact.classPrototype(Cell)
+            const cellProto = jasmineReact.classPrototype(Cell);
             expect(cellProto._attachExternalNode.calls.count()).toEqual(1);
             expect(cellProto._attachExternalNode.calls.argsFor(0)[1]).toEqual('module-container');
             expect(cellProto._detachExternalNode.calls.count()).toEqual(0);
@@ -240,12 +238,12 @@ describe("Grid.Components.Cell", function() {
         }, 0.01);
     });
 
-    it("should detach/attach the module component during update", function(done) {
+    it('should detach/attach the module component during update', function(done) {
         jasmineReact.spyOnClass(Cell, '_attachExternalNode').and.callThrough();
         jasmineReact.spyOnClass(Cell, '_detachExternalNode').and.callThrough();
 
-        var element = React.createElement(Cell, {node: moduleGridCell});
-        var component = componentUtils.renderIntoDocument(element);
+        const element = React.createElement(Cell, {node: moduleGridCell});
+        const component = componentUtils.renderIntoDocument(element);
 
         // leave some time to render the component
         setTimeout(function() {
@@ -255,7 +253,7 @@ describe("Grid.Components.Cell", function() {
             // leave some time to update the component
             setTimeout(function() {
                 expect(_.keys(ModulesCache._cache).length).toEqual(1);
-                var cellProto = jasmineReact.classPrototype(Cell);
+                const cellProto = jasmineReact.classPrototype(Cell);
                 expect(cellProto._attachExternalNode.calls.count()).toEqual(2);  // includes initial
                 expect(cellProto._attachExternalNode.calls.argsFor(0)[1]).toEqual('module-container');
                 expect(cellProto._attachExternalNode.calls.argsFor(1)[1]).toEqual('module-container');
@@ -269,9 +267,9 @@ describe("Grid.Components.Cell", function() {
         }, 0.01);
     });
 
-    it("should accept to attach a module only if it's a module cell", function() {
-        var element = React.createElement(Cell, {node: moduleGridCell});
-        var component = componentUtils.renderIntoDocument(element);
+    it('should accept to attach a module only if it\'s a module cell', function() {
+        let element = React.createElement(Cell, {node: moduleGridCell});
+        let component = componentUtils.renderIntoDocument(element);
         expect(component.canHoldExternalNodes()).toBe(true);
 
         element = React.createElement(Cell, {node: subGridCell});
@@ -280,18 +278,18 @@ describe("Grid.Components.Cell", function() {
 
         Manipulator.addPlaceholders(testGrid);
         Manipulator.setIds(testGrid);
-        var gridCell = testGrid.querySelector('cell[type=placeholder]');
+        const gridCell = testGrid.querySelector('cell[type=placeholder]');
         element = React.createElement(Cell, {node: gridCell});
         component = componentUtils.renderIntoDocument(element);
         expect(component.canHoldExternalNodes()).toBe(false);
     });
 
-    it("should only return the module to attach when not in design mode", function() {
-        var element = React.createElement(Cell, {node: moduleGridCell});
-        var component = componentUtils.renderIntoDocument(element);
+    it('should only return the module to attach when not in design mode', function() {
+        const element = React.createElement(Cell, {node: moduleGridCell});
+        const component = componentUtils.renderIntoDocument(element);
 
         // not in design mode, we should get a module
-        var moduleContainer = component.getExternalNode(ModulesCache.moduleContainerClassName);
+        let moduleContainer = component.getExternalNode(ModulesCache.moduleContainerClassName);
         expect(moduleContainer.tagName).toEqual('DIV');
         expect(moduleContainer.className).toEqual('module-container');
         expect(moduleContainer.children.length).toEqual(1);
@@ -299,7 +297,7 @@ describe("Grid.Components.Cell", function() {
         expect(moduleContainer.children[0].className).toEqual('module');
 
         // faking going to design mode
-        spyOn(component, "isInDesignMode").and.returnValue('true');
+        spyOn(component, 'isInDesignMode').and.returnValue('true');
 
         // in design mode, we should get nothing when asking for the module
         moduleContainer = component.getExternalNode(ModulesCache.moduleContainerClassName);
@@ -307,16 +305,16 @@ describe("Grid.Components.Cell", function() {
 
     });
 
-    it("should only return the module holder to attach when in design mode", function() {
-        var element = React.createElement(Cell, {node: moduleGridCell});
-        var component = componentUtils.renderIntoDocument(element);
+    it('should only return the module holder to attach when in design mode', function() {
+        const element = React.createElement(Cell, {node: moduleGridCell});
+        const component = componentUtils.renderIntoDocument(element);
 
         // not in design mode, we should get a module
-        var holderContainer = component.getExternalNode(ModulesCache.holderContainerClassName);
+        let holderContainer = component.getExternalNode(ModulesCache.holderContainerClassName);
         expect(holderContainer).toBe(undefined);
 
         // faking going to design mode
-        spyOn(component, "isInDesignMode").and.returnValue('true');
+        spyOn(component, 'isInDesignMode').and.returnValue('true');
 
         // in design mode, we should get nothing when asking for the module
         holderContainer = component.getExternalNode(ModulesCache.holderContainerClassName);
@@ -334,33 +332,33 @@ describe("Grid.Components.Cell", function() {
 
     });
 
-    it("should not return a node to attach if it's not a module grid", function() {
-        var element = React.createElement(Cell, {node: subGridCell});
-        var component = componentUtils.renderIntoDocument(element);
+    it('should not return a node to attach if it\'s not a module grid', function() {
+        let element = React.createElement(Cell, {node: subGridCell});
+        let component = componentUtils.renderIntoDocument(element);
 
-        var container = component.getExternalNode(ModulesCache.moduleContainerClassName);
+        let container = component.getExternalNode(ModulesCache.moduleContainerClassName);
         expect(container).toBe(undefined);
         container = component.getExternalNode(ModulesCache.holderContainerClassName);
         expect(container).toBe(undefined);
 
         Manipulator.addPlaceholders(testGrid);
         Manipulator.setIds(testGrid);
-        var gridCell = testGrid.querySelector('cell[type=placeholder]');
+        const gridCell = testGrid.querySelector('cell[type=placeholder]');
         element = React.createElement(Cell, {node: gridCell});
         component = componentUtils.renderIntoDocument(element);
 
-        var container = component.getExternalNode(ModulesCache.moduleContainerClassName);
+        container = component.getExternalNode(ModulesCache.moduleContainerClassName);
         expect(container).toBe(undefined);
         container = component.getExternalNode(ModulesCache.holderContainerClassName);
         expect(container).toBe(undefined);
 
     });
 
-    it("should not return a node to attach if it's not a valid className", function() {
-        var element = React.createElement(Cell, {node: moduleGridCell});
-        var component = componentUtils.renderIntoDocument(element);
+    it('should not return a node to attach if it\'s not a valid className', function() {
+        const element = React.createElement(Cell, {node: moduleGridCell});
+        const component = componentUtils.renderIntoDocument(element);
 
-        var container = component.getExternalNode('foo');
+        let container = component.getExternalNode('foo');
         expect(container).toBe(undefined);
 
         container = component.getExternalNode(null);

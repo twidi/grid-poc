@@ -1,13 +1,12 @@
-var _ = require('lodash');
+import _ from 'lodash';
 
-var Manipulator = require('./../../app/Grid/Manipulator.js');
-
+import { Manipulator } from './../../app/Grid/Manipulator';
 
 /**
  * Jasmine custom matchers for the whole Grid test suite
  * @type {Object}
  */
-var customMatchers = {
+export const customMatchers = {
     /**
      * Easily compare two XML grids, given as string or XML nodes.
      * If no match, produce the error with actual and expected on both lines to
@@ -18,7 +17,7 @@ var customMatchers = {
      *
      * @example
 
-     * var customMatchers = require('./custom-matchers.js');
+     * import { customMatchers } from './custom-matchers';
      *
      * describe("Grid.Manipulator", function() {
      *
@@ -35,33 +34,31 @@ var customMatchers = {
      *         expect(stringifiedXMLGrid).toEqualXML(stringifiedExpectedXMLGrid)
      *
      *         // most common use case:
-     *         var grid = aFunctionThatReturnAXMLGrid();
-     *         var expected = '<grid><foo/></grid';
+     *         let grid = aFunctionThatReturnAXMLGrid();
+     *         let expected = '<grid><foo/></grid';
      *         expect(grid).toEqualXML(expected);
      *
      *     });
      * });
      */
-    toEqualXML: function(util, customEqualityTesters) {
+    toEqualXML(util, customEqualityTesters) {
         return {
-            compare: function(actual, expected) {
+            compare(actual, expected) {
                 if (!_.isString(actual)) {
                     actual = Manipulator.XMLGridToXMLString(actual);
                 }
                 if (!_.isString(expected)) {
                     expected = Manipulator.XMLGridToXMLString(expected);
                 }
-                var result = {};
+                let result = {};
                 result.pass = util.equals(actual, expected);
                 if (result.pass) {
-                    result.message = "XML is the one wanted";
+                    result.message = 'XML is the one wanted';
                 } else {
-                    result.message = "XML is not the one wanted. Actual VS expected:\n" + actual + "\n" + expected;
+                    result.message = 'XML is not the one wanted. Actual VS expected:\n' + actual + '\n' + expected;
                 }
                 return result;
             }
         };
     }
 };
-
-module.exports = customMatchers;

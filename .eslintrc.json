@@ -1,0 +1,54 @@
+{
+    "env": {
+        "browser": true,
+        "es6": true,
+        "node": true,
+        "jasmine": true
+    },
+    "extends": "airbnb",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "experimentalObjectRestSpread": true,
+            "jsx": true
+        },
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react"
+    ],
+    "rules": {
+        "indent": [
+            "error",
+            4,
+            {"SwitchCase": 1}
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "space-before-function-paren": 0,
+        "comma-dangle": [2, "never"],
+        "consistent-return": 0,
+        "default-case": 0,
+        "eqeqeq": 0,
+        "padded-blocks": 0,
+        "no-shadow": 0,
+        "no-unused-vars": ["error", { "args": "none" }],
+        "object-curly-spacing": 0,
+        "one-var": 0,
+        "one-var-declaration-per-line": 0,
+        "space-in-parens": 0,
+        "max-len": [2, 120],
+        "react/prefer-es6-class": [2, "never"],
+        "react/prop-types": 0,
+        "react/sort-comp": 0
+    }
+}
