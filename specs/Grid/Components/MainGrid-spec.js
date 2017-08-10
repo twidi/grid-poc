@@ -2,6 +2,8 @@ import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
+import jasmineReact from 'jasmine-react-helpers-hotfix-0.14';
+import Mousetrap from 'br-mousetrap';
 
 import { Actions } from '../../../app/Grid/Actions';
 import { Manipulator } from '../../../app/Grid/Manipulator';
@@ -134,10 +136,10 @@ describe('Grid.Components.MainGrid', function() {
         expect(domNode.classList.contains('grid-container-with-placeholders')).toBe(false);
         expect(domNode.classList.contains('grid-container-with-resizers')).toBe(false);
         expect(domNode.childNodes.length).toEqual(2);
-        const navDomNode = domNode.childNodes[0];
+        const navDomNode = domNode.children[0];
         expect(navDomNode.tagName).toEqual('NAV');
         expect(navDomNode.classList.contains('grid-toolbar')).toBe(true);
-        const gridDomNode = domNode.childNodes[1];
+        const gridDomNode = domNode.children[1];
         expect(gridDomNode.classList.contains('grid')).toBe(true);
         expect(gridDomNode.classList.contains('grid-main')).toBe(true);
         expect(gridDomNode.classList.contains('grid-last-level-with-placeholders')).toBe(false);
@@ -682,5 +684,120 @@ describe('Grid.Components.MainGrid', function() {
             }, 0.01);
         }, 0.01);
     });
+
+    it('should activate grid navigation when mounting', function() {
+        jasmineReact.spyOnClass(MainGrid, 'activateGridNavigation').and.callThrough();
+
+        const element = React.createElement(MainGrid, {node: testGrid});
+        const component = componentUtils.renderIntoDocument(element);
+
+        expect(jasmineReact.classPrototype(MainGrid).activateGridNavigation.calls.count()).toEqual(1);
+    });
+
+    it('should deactivate/reactivate grid navigation when entering/exiting design mode', function(done) {
+        const element = React.createElement(MainGrid, {node: testGrid});
+        const component = componentUtils.renderIntoDocument(element);
+
+        spyOn(component, 'activateGridNavigation').and.callThrough();
+        spyOn(component, 'deactivateGridNavigation').and.callThrough();
+
+        Store.__private.enterDesignMode('Test grid');
+
+        // leave time for the designMode.enter to be catched
+        setTimeout(function() {
+            expect(component.deactivateGridNavigation.calls.count()).toBe(1);
+
+            Store.__private.exitDesignMode('Test grid');
+
+            // leave time for the designMode.exit to be catched
+            setTimeout(function() {
+                expect(component.activateGridNavigation.calls.count()).toBe(1);
+
+                // tell jasmine we're done
+                done();
+
+            }, 0.01);
+        }, 0.01);
+    });
+
+    it('should activate/deactivate 4 shortcuts for keyboard navigation', function() {
+        const element = React.createElement(MainGrid, {node: testGrid});
+        const component = componentUtils.renderIntoDocument(element);
+
+        spyOn(component, 'bindShortcut').and.callThrough();
+        spyOn(component, 'unbindShortcut').and.callThrough();
+
+        component.deactivateGridNavigation();
+        expect(component.bindShortcut.calls.count()).toBe(0);
+        expect(component.unbindShortcut.calls.count()).toBe(4);
+        expect(component.unbindShortcut.calls.allArgs()).toEqual([
+            ['ctrl+right'],
+            ['ctrl+left'],
+            ['ctrl+down'],
+            ['ctrl+up'],
+        ]);
+
+        component.activateGridNavigation();
+        expect(component.unbindShortcut.calls.count()).toBe(4); // the same
+        expect(component.bindShortcut.calls.count()).toBe(4);
+        expect(component.bindShortcut.calls.allArgs()).toEqual([
+            ['ctrl+right', component.focusRightModuleCell],
+            ['ctrl+left', component.focusLeftModuleCell],
+            ['ctrl+down', component.focusBottomModuleCell],
+            ['ctrl+up', component.focusTopModuleCell],
+        ]);
+    });
+
+    it('should navigate through module cells', function() {
+
+        const directions = {
+            right: 'Right',
+            left: 'Left',
+            up: 'Top',
+            down: 'Bottom',
+        };
+
+        let dir1, dir2, method;
+
+        for (dir1 in directions) {
+            if (directions.hasOwnProperty(dir1)) {
+                method = 'focus' + directions[dir1] + 'ModuleCell';
+                jasmineReact.spyOnClass(MainGrid, method).and.callThrough();
+                spyOn(Actions, method).and.returnValue();
+            }
+        }
+
+        const mainGridProto = jasmineReact.classPrototype(MainGrid);
+
+        const element = React.createElement(MainGrid, {node: testGrid});
+        componentUtils.renderIntoDocument(element);
+
+        for (dir1 in directions) {
+            if (directions.hasOwnProperty(dir1)) {
+                // reset spies counters
+                for (dir2 in directions) {
+                    if (directions.hasOwnProperty(dir2)) {
+                        method = 'focus' + directions[dir2] + 'ModuleCell';
+                        mainGridProto[method].calls.reset();
+                        Actions[method].calls.reset();
+                    }
+                }
+
+                // trigger the action
+                Mousetrap.trigger('ctrl+' + dir1);
+
+                // check calls
+                for (dir2 in directions) {
+                    if (directions.hasOwnProperty(dir2)) {
+                        method = 'focus' + directions[dir2] + 'ModuleCell';
+                        const expected = dir1 == dir2 ? 1 : 0;
+                        expect(mainGridProto[method].calls.count()).toEqual(expected, 'ctrl+' + dir1 + ', component.' + method);
+                        expect(Actions[method].calls.count()).toEqual(expected, 'ctrl+' + dir1 + ', action.' + method);
+                    }
+                }
+            }
+        }
+    });
+
 
 });

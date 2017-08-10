@@ -1,6 +1,10 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import classnames from 'classnames';
 
+import { DocumentEventsMixin } from '../../Utils/ReactMixins/DocumentEvents';
+
+import { Actions } from '../Actions';
 import { Store } from '../Store';
 
 import { ModulesCache } from './ModulesCache';
@@ -8,7 +12,6 @@ import { NodesHolderMixin } from './Mixins/NodesHolder';
 import { NodeMixin } from './Mixins/Node';
 import { Placeholder } from './Placeholder';
 import { SubGrid } from './SubGrid';
-
 
 /**
  * Cell component, a cell of a row. Can be a "grid" or a "module"
@@ -46,6 +49,7 @@ let Cell = {
     displayName: 'Cell',
 
     mixins: [
+        DocumentEventsMixin,
         NodeMixin,
         NodesHolderMixin
     ],
@@ -149,15 +153,18 @@ let Cell = {
      * One or more of these classes:
      *
      * - `grid-cell`: in all cases
-     * - `grid-cell-placeholder`: if it's a cell placeholder
-     * - `grid-cell-module`: if it's a module
+     * - `grid-cell-module`: always `true` (this method is called only if it's a module)
+     * - `grid-cell-module-dragging`: if this module cell is the currently dragged one
+     * - `grid-cell-module-focused`: if this module cell is the currently focused one
      *
      */
     getModuleCellClasses() {
+        const gridName = this.getGridName();
         const classes = {
             'grid-cell': true,
-            'grid-cell-module': this.isModule(),
-            'grid-cell-module-dragging': Store.isDraggingCell(this.getGridName(), this.state.node)
+            'grid-cell-module': true,
+            'grid-cell-module-dragging': Store.isDraggingCell(gridName, this.state.node),
+            'grid-cell-module-focused': Store.isFocusedModuleCell(gridName, this.state.node)
         };
         return classnames(classes);
     },
@@ -182,9 +189,104 @@ let Cell = {
      * Render the cell as a standalone component: a empty div that, if it's a module, will hold
      * the real module component (not directly rendered),
      * via {@link module:Grid.Components.Mixins.NodesHolder NodesHolderMixin}
+     * Tell if the current cell has the focus (itself or one of its child node)
+     *
+     * @return {Boolean} - `true` if the cell has the focus, or `false`
+     */
+    hasFocus() {
+        const domNode = ReactDOM.findDOMNode(this);
+        if (!domNode) { return false; }
+        const activeElement = document.activeElement;
+        // the cell itself
+        if (activeElement === domNode) { return true; }
+        // one of its child node
+        if (domNode.contains(activeElement)) { return true; }
+        return false;
+    },
+
+    /**
+     * Called in response to the `focus` dom event, ie the the user click/tab
+     * on the cell, to ask the store to focus the current cell.
+     */
+    onFocusModuleCell() {
+        if (!Store.isFocusedModuleCell(this.getGridName(), this.state.node)) {
+            Actions.focusModuleCell(this.getGridName(), this.state.node);
+        }
+    },
+
+    /**
+     * Called in response to the `focus.on` event, ie when the user focus this
+     * module cell, to set the focus if not already done, and mark the cell as focused.
+     *
+     * The class is added via direct dom manipulation to avoid rerender the cell,
+     * but the class is also correctly managed by the `getModuleCellClasses` method.
+     *
+     * @param  {string} gridName - The grid name for which the `focus.on` event is triggered
+     * @param  {int} focusedModuleCellId - The id of the module cell that is the new focused one
+     */
+    onNavigateTo(gridName, focusedModuleCellId) {
+        if (!this.isModule() || gridName != this.getGridName() || this.getNodeId() != focusedModuleCellId) {
+            return;
+        }
+
+        const domNode = ReactDOM.findDOMNode(this);
+        if (!domNode) { return; }
+
+        domNode.classList.add('grid-cell-module-focused');
+        if (!this.hasFocus()) {
+            domNode.focus();
+        }
+    },
+
+    /**
+     * Called in response to the `focus.off` event, ie when the user stop focusing this
+     * module cell, to mark the cell as not focused.
+     *
+     * The class is removed via direct dom manipulation to avoid rerender the cell,
+     * but the class is also correctly managed by the `getModuleCellClasses` method.
+     *
+     * @param  {string} gridName - The grid name for which the `focus.off` event is triggered
+     * @param  {int} oldFocusedModuleCellId - The id of the module cell that was the focused one
+     */
+    onNavigateFrom(gridName, oldFocusedModuleCellId) {
+        if (!this.isModule() || gridName != this.getGridName() || this.getNodeId() != oldFocusedModuleCellId) {
+            return;
+        }
+
+        const domNode = ReactDOM.findDOMNode(this);
+        if (!domNode) { return; }
+
+        domNode.classList.remove('grid-cell-module-focused');
+    },
+
+    /**
+     * Called when the cell is mounted on the dom, to respond to focus on/off events
+     * from the store
+     */
+    componentDidMount() {
+        Store.on('grid.navigate.focus.on', this.onNavigateTo);
+        Store.on('grid.navigate.focus.off', this.onNavigateFrom);
+    },
+
+    /**
+     * Called when the cell will be unmounted from the dom, to stop responding to
+     * focus on/off events from the store
+     */
+    componentWillUnmount() {
+        Store.off('grid.navigate.focus.on', this.onNavigateTo);
+        Store.off('grid.navigate.focus.off', this.onNavigateFrom);
+    },
+
+    /**
+     * Render the cell as a standalone component: a empty div that will hold
+     * the real module component (not directly rendered),
+     * via {@link module:Grid.Components.Mixins.NodesHolder NodesHolderMixin}
+     *
+     * The `tabindex` attribute of the dom node is set to `0` to make the cell
+     * focusable.
      */
     renderAsModule() {
-        return <div className={this.getModuleCellClasses()} style={this.getModuleStyle()} />;
+        return <div className={this.getModuleCellClasses()} style={this.getModuleStyle()} tabIndex="0" onFocus={this.onFocusModuleCell} />;
     },
 
     /**

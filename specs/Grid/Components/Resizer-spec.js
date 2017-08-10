@@ -167,6 +167,7 @@ describe('Grid.Components.Resizer', function() {
         jasmineReact.spyOnClass(Resizer, 'deactivateResizingDetection').and.callThrough();
         const resizerProto = jasmineReact.classPrototype(Resizer);
         spyOn(Actions, 'startResizing').and.returnValue();
+        spyOn(Actions, 'stopResizing').and.returnValue();
 
         // go in design mode
         Store.__private.changeDesignModeStep('Test grid', 'enabled', true);

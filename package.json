@@ -60,6 +60,6 @@
     "react-addons-test-utils": "^0.14.8",
     "react-dom": "^0.14.7",
     "scopedQuerySelectorShim": "twidi/scopedQuerySelectorShim",
-    "xmldom": "~0.1.19"
+    "br-mousetrap": "~1.1.3"
   }
 }

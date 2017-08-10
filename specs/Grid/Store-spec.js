@@ -49,6 +49,7 @@ describe('Grid.Store', function() {
             const gridEntry = Store.__private.getGridEntry('foo');
             expect(gridEntry.name).toEqual('foo');
             expect(gridEntry.designModeStep).toEqual('disabled');
+            expect(gridEntry.focusedModuleCellId).toBe(null);
             expect(gridEntry.history.length).toEqual(1);
             expect(gridEntry.currentHistoryIndex).toEqual(0);
             expect(gridEntry.backups).toEqual({});
@@ -263,6 +264,33 @@ describe('Grid.Store', function() {
         expect(Store.canGoForwardInHistory('foo')).toBe(true);
     });
 
+    it('should tell if its the focused module cell', function() {
+        const grid = createSimpleGrid();
+        // add another module cell
+        Manipulator.addCell(grid.querySelector('row'), null, 'module');
+        Manipulator.setIds(grid);
+
+        const moduleCell1 = grid.querySelector('cell[type=module]');
+        const moduleCell2 = grid.querySelector('cell ~ cell[type=module]');
+
+        // not focused yet
+        expect(Store.isFocusedModuleCell('foo', moduleCell1)).toBe(false);
+        expect(Store.isFocusedModuleCell('foo', moduleCell2)).toBe(false);
+
+        // mark the first as the focused one
+        Store.__private.grids.foo.focusedModuleCellId = 'cell-4';
+
+        // the first one is focused
+        expect(Store.isFocusedModuleCell('foo', moduleCell1)).toBe(true);
+        expect(Store.isFocusedModuleCell('foo', moduleCell2)).toBe(false);
+
+        // mark the second as the focused one
+        Store.__private.grids.foo.focusedModuleCellId = 'cell-6';
+
+        // the second one is focused
+        expect(Store.isFocusedModuleCell('foo', moduleCell1)).toBe(false);
+        expect(Store.isFocusedModuleCell('foo', moduleCell2)).toBe(true);
+    });
 
     describe('Private api', function() {
 
@@ -274,6 +302,7 @@ describe('Grid.Store', function() {
             expect(entry.name).toBe('foo');
             expect(entry.grid).toBe(grid);
             expect(entry.designModeStep).toEqual('disabled');
+            expect(entry.focusedModuleCellId).toBe(null);
             expect(entry.history.length).toEqual(1);
             expect(entry.currentHistoryIndex).toEqual(0);
             expect(entry.backups).toEqual({});
@@ -281,7 +310,7 @@ describe('Grid.Store', function() {
             expect(entry.hoveringTimeout).toBe(null);
             expect(entry.resizing).toEqual({});
 
-            expect(_.size(entry)).toEqual(9);
+            expect(_.size(entry)).toEqual(10);
         });
 
         it('should raise if a grid entry is not available', function() {
@@ -1049,6 +1078,31 @@ describe('Grid.Store', function() {
                 Store.__private.goForwardInHistory('foo');
             }).toThrowError(Store.Exceptions.HistoryOutOfBound, 'Cannot go forward in history for grid <foo>');
 
+        });
+
+        it('should get the focused module cell', function() {
+            const grid = createSimpleGrid();
+            // add another module cell
+            Manipulator.addCell(grid.querySelector('row'), null, 'module');
+            Manipulator.setIds(grid);
+
+            const moduleCell1 = grid.querySelector('cell[type=module]');
+            const moduleCell2 = grid.querySelector('cell ~ cell[type=module]');
+
+            // not focused yet
+            expect(Store.__private.getFocusedModuleCell('foo')).toBe(undefined);
+
+            // mark the first as the focused one
+            Store.__private.grids.foo.focusedModuleCellId = 'cell-4';
+
+            // the first one is focused
+            expect(Store.__private.getFocusedModuleCell('foo')).toBe(moduleCell1);
+
+            // mark the second as the focused one
+            Store.__private.grids.foo.focusedModuleCellId = 'cell-6';
+
+            // the second one is focused
+            expect(Store.__private.getFocusedModuleCell('foo')).toBe(moduleCell2);
         });
 
     });

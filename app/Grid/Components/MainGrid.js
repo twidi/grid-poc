@@ -5,6 +5,7 @@ import { Actions } from '../Actions';
 import { Store } from '../Store';
 
 import { DocumentEventsMixin } from '../../Utils/ReactMixins/DocumentEvents';
+import { MousetrapMixin  } from '../../Utils/ReactMixins/Mousetrap';
 import { GridMixin } from './Mixins/Grid';
 import { NodeMixin } from './Mixins/Node';
 
@@ -23,6 +24,7 @@ let MainGrid = {
 
     mixins: [
         DocumentEventsMixin,
+        MousetrapMixin,
         NodeMixin,
         GridMixin
     ],
@@ -90,6 +92,9 @@ let MainGrid = {
         // do some specific action depending on the received event
 
         if (eventName == 'grid.designMode.enter' ) {
+
+            this.deactivateGridNavigation();
+
             // entering design mode, we start by now to listen do `dragover` and `drop` events on
             // the whole document
 
@@ -112,6 +117,9 @@ let MainGrid = {
 
 
         } else if (eventName == 'grid.designMode.exit' ) {
+
+            this.activateGridNavigation();
+
             // exiting the design mode, we can stop listening to dragover and drop events
 
             this.removeDocumentListener('drop', 'onDocumentDrop');
@@ -154,7 +162,7 @@ let MainGrid = {
      *
      * @param  {event} event - The `fakedragend` event
      */
-    onDocumentDragEnd() {
+    onDocumentDragEnd(event) {
         this.deactivateDropDetection();
     },
 
@@ -244,6 +252,7 @@ let MainGrid = {
             self.onDesignModeChange(this.event, gridName);
         };
         Store.on('grid.designMode.**', this.__onDesignModeChange);
+        this.activateGridNavigation();
     },
 
     /**
@@ -254,6 +263,7 @@ let MainGrid = {
         // this.__onDesignModeChange was defined in componentWillMount
         Store.off('grid.designMode.**', this.__onDesignModeChange);
         this.deactivateDropDetection();
+        this.deactivateGridNavigation();
     },
 
     /**
@@ -296,6 +306,67 @@ let MainGrid = {
     },
 
     /**
+     * Ask the store to focus on the cell next to the right of the current focused one
+     */
+    focusRightModuleCell() {
+        Actions.focusRightModuleCell(this.state.gridName);
+    },
+
+    /**
+     * Ask the store to focus on the cell next to the left of the current focused one
+     */
+    focusLeftModuleCell() {
+        Actions.focusLeftModuleCell(this.state.gridName);
+    },
+
+    /**
+     * Ask the store to focus on the cell next to the bottom of the current focused one
+     */
+    focusBottomModuleCell() {
+        Actions.focusBottomModuleCell(this.state.gridName);
+    },
+
+    /**
+     * Ask the store to focus on the cell next to the top of the current focused one
+     */
+    focusTopModuleCell() {
+        Actions.focusTopModuleCell(this.state.gridName);
+    },
+
+    /**
+     * Activate the keyboard shortcuts to enable keyboard navigation between
+     * module cells
+     */
+    activateGridNavigation() {
+        this.bindShortcut('ctrl+right', this.focusRightModuleCell);
+        this.bindShortcut('ctrl+left', this.focusLeftModuleCell);
+        this.bindShortcut('ctrl+down', this.focusBottomModuleCell);
+        this.bindShortcut('ctrl+up', this.focusTopModuleCell);
+    },
+
+    /**
+     * Deactivate the keyboard shortcuts to disaable keyboard navigation between
+     * module cells
+     */
+    deactivateGridNavigation() {
+        try {
+            this.unbindShortcut('ctrl+right');
+            this.unbindShortcut('ctrl+left');
+            this.unbindShortcut('ctrl+down');
+            this.unbindShortcut('ctrl+up');
+        } catch (e) {
+            if (e instanceof MousetrapMixin.statics.Exceptions.Inconsistency) {
+                // We silently ignore this exception. It may happen if the
+                // `unbindAllShortcuts` of the MousetrapMixin was called just
+                // before
+            } else {
+                // other cases, throw the original exception
+                throw (e);
+            }
+        }
+    },
+
+    /**
      * Return the classes to use when rendering the container of the current main grid
      *
      * @return {string} - A string containing classes
@@ -332,13 +403,13 @@ let MainGrid = {
 
         // manage the "Add a module" button
         if (designModeStep == 'enabled') {
-            addButton = <button onClick={this.addRandomModule}>Add a random module</button>;
+            addButton = <button onClick={this.addRandomModule} key="addButton">Add a random module</button>;
         }
 
         // manage the "enter/exit design mode" button
         if (designModeStep == 'enabled' || designModeStep == 'disabled') {
             toggleButton = (
-                <button onClick={this.toggleDesignMode}>
+                <button onClick={this.toggleDesignMode} key="toggleButton">
                     {this.isInDesignMode() ? 'Exit' : 'Enter'} design mode
                 </button>
             );
@@ -347,12 +418,12 @@ let MainGrid = {
         // manage the "undo" and "redo" buttons
         if (designModeStep == 'enabled') {
             undoButton = (
-                <button onClick={this.undo} disabled={!Store.canGoBackInHistory(this.state.gridName)}>
+                <button onClick={this.undo} disabled={!Store.canGoBackInHistory(this.state.gridName)} key="undoButton">
                     Undo
                 </button>
             );
             redoButton = (
-                <button onClick={this.redo} disabled={!Store.canGoForwardInHistory(this.state.gridName)}>
+                <button onClick={this.redo} disabled={!Store.canGoForwardInHistory(this.state.gridName)} key="redoButton">
                     Redo
                 </button>
             );

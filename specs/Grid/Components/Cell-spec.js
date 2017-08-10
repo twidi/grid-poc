@@ -6,7 +6,7 @@ import TestUtils from 'react-addons-test-utils';
 
 import { Manipulator } from '../../../app/Grid/Manipulator';
 import { Store } from '../../../app/Grid/Store';
-
+import { Actions } from '../../../app/Grid/Actions';
 import { Cell } from '../../../app/Grid/Components/Cell';
 import { ModulesCache } from '../../../app/Grid/Components/ModulesCache';
 import { Placeholder } from '../../../app/Grid/Components/Placeholder';
@@ -140,6 +140,7 @@ describe('Grid.Components.Cell', function() {
         expect(domNode.classList.contains('grid-cell')).toBe(true);
         expect(domNode.classList.contains('grid-cell-module')).toBe(true);
         expect(domNode.classList.contains('grid-cell-module-dragging')).toBe(false);
+        expect(domNode.classList.contains('grid-cell-module-focused')).toBe(false);
 
         const moduleContainer = domNode.children[0];
         expect(moduleContainer.tagName).toEqual('DIV');
@@ -171,6 +172,7 @@ describe('Grid.Components.Cell', function() {
         expect(domNode.classList.contains('grid-cell')).toBe(true);
         expect(domNode.classList.contains('grid-cell-module')).toBe(true);
         expect(domNode.classList.contains('grid-cell-module-dragging')).toBe(false);
+        expect(domNode.classList.contains('grid-cell-module-focused')).toBe(false);
 
         const moduleContainer = domNode.children[0];
         expect(moduleContainer.tagName).toEqual('DIV');
@@ -366,6 +368,127 @@ describe('Grid.Components.Cell', function() {
 
         container = component.getExternalNode();
         expect(container).toBe(undefined);
+    });
+
+    it('should react when a module get/loose the focus', function(done) {
+        jasmineReact.spyOnClass(Cell, 'onFocusModuleCell').and.callThrough();
+        jasmineReact.spyOnClass(Cell, 'onNavigateTo').and.callThrough();
+        jasmineReact.spyOnClass(Cell, 'onNavigateFrom').and.callThrough();
+
+        const cellProto = jasmineReact.classPrototype(Cell);
+
+        spyOn(Actions, 'focusModuleCell').and.callThrough();
+
+        const element1 = React.createElement(Cell, {node: moduleGridCell});
+        const component1 = componentUtils.renderIntoDocument(element1);
+        const moduleGridCell2 = testGrid.querySelectorAll('cell[type=module]')[1];
+        const element2 = React.createElement(Cell, {node: moduleGridCell2});
+        const component2 = componentUtils.renderIntoDocument(element2);
+
+        // we need to be in the real dome
+        const domNode1 = ReactDOM.findDOMNode(component1);
+        const domNode2 = ReactDOM.findDOMNode(component2);
+        // need to be really displayed to receive the focus
+        domNode1.parentNode.style.display = 'block';
+        domNode2.parentNode.style.display = 'block';
+        document.body.appendChild(domNode1.parentNode);
+        document.body.appendChild(domNode2.parentNode);
+
+        // set the focus on the first cell
+        TestUtils.Simulate.focus(domNode1);
+
+        // leave time for events to be catched
+        setTimeout(function() {
+
+            // the first cell should have the focus
+            expect(component1.hasFocus()).toBe(true, 'a1');
+            expect(component2.hasFocus()).toBe(false, 'a2');
+
+            expect(cellProto.onFocusModuleCell).toHaveBeenCalled();
+
+            expect(cellProto.onNavigateTo).toHaveBeenCalled();
+            expect(cellProto.onNavigateTo.calls.first().args).toEqual(['Test grid', moduleGridCell.getAttribute('id')]);
+            expect(cellProto.onNavigateFrom).not.toHaveBeenCalled();
+
+            expect(Actions.focusModuleCell).toHaveBeenCalled();
+
+            expect(domNode1.classList.contains('grid-cell-module-focused')).toBe(true);
+            expect(domNode2.classList.contains('grid-cell-module-focused')).toBe(false);
+
+            cellProto.onFocusModuleCell.calls.reset();
+            cellProto.onNavigateTo.calls.reset();
+            cellProto.onNavigateFrom.calls.reset();
+            Actions.focusModuleCell.calls.reset();
+
+            // set focus on the second cell
+            TestUtils.Simulate.focus(domNode2);
+            setTimeout(function() {
+
+                // the second cell should have the focus
+                expect(component1.hasFocus()).toBe(false, 'd1');
+                expect(component2.hasFocus()).toBe(true, 'd2');
+
+                expect(cellProto.onFocusModuleCell).toHaveBeenCalled();
+
+                expect(cellProto.onNavigateTo).toHaveBeenCalled();
+                expect(cellProto.onNavigateTo.calls.first().args).toEqual(['Test grid', moduleGridCell2.getAttribute('id')]);
+                expect(cellProto.onNavigateFrom).toHaveBeenCalled();
+                expect(cellProto.onNavigateFrom.calls.first().args).toEqual(['Test grid', moduleGridCell.getAttribute('id')]);
+
+                expect(Actions.focusModuleCell).toHaveBeenCalled();
+
+                expect(domNode1.classList.contains('grid-cell-module-focused')).toBe(false);
+                expect(domNode2.classList.contains('grid-cell-module-focused')).toBe(true);
+
+                cellProto.onFocusModuleCell.calls.reset();
+                cellProto.onNavigateTo.calls.reset();
+                cellProto.onNavigateFrom.calls.reset();
+                Actions.focusModuleCell.calls.reset();
+
+
+                // add a focusable element in the first cell
+                let link = domNode1.querySelector('a');
+                if (!link) {
+                    link = document.createElement('a');
+                    link.setAttribute('href', '#');
+                    link.setAttribute('tabIndex', 10);
+                    link.innerHTML = 'hello';
+                    domNode1.querySelector('span').appendChild(link);
+                }
+
+                // then focus the link
+
+                // cannot use: `TestUtils.Simulate.focus(link);`
+                // because the focus happens in another react root, so the
+                // simulate doesn't handle it
+                link.focus();
+
+                // note: the `toHaveBeenCalled` tests will fail if the test window
+                // doesn't have the focus.
+
+                setTimeout(function() {
+                    // the first cell should have the focus back
+                    expect(component1.hasFocus()).toBe(true, 'g1');
+                    expect(component2.hasFocus()).toBe(false, 'g2');
+
+                    expect(cellProto.onFocusModuleCell).toHaveBeenCalled();
+
+                    expect(cellProto.onNavigateTo).toHaveBeenCalled();
+                    expect(cellProto.onNavigateTo.calls.first().args).toEqual(['Test grid', moduleGridCell.getAttribute('id')]);
+                    expect(cellProto.onNavigateFrom).toHaveBeenCalled();
+                    expect(cellProto.onNavigateFrom.calls.first().args).toEqual(['Test grid', moduleGridCell2.getAttribute('id')]);
+
+                    expect(Actions.focusModuleCell).toHaveBeenCalled();
+
+                    expect(domNode1.classList.contains('grid-cell-module-focused')).toBe(true);
+                    expect(domNode2.classList.contains('grid-cell-module-focused')).toBe(false);
+
+                    // tell jasmine we're done
+                    done();
+
+                }, 0.01);
+            }, 0.01);
+        }, 0.01);
     });
 
 });

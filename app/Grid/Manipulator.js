@@ -829,7 +829,179 @@ const Manipulator = {
         _(grid.querySelectorAll('resizer')).forEach(resizer => resizer.parentNode.removeChild(resizer));
 
         grid.removeAttribute('hasResizers');
+    },
+
+    /**
+     * Get a module cell in a corner of the given row.
+     *
+     * @param  {XML} row - The reference row
+     * @param  {boolean} [atBottom=false] - If `true`, get a module cell from the
+     *     bottom of the given cell and if `false`, from the top.
+     * @param  {boolean} [atRight=false] - If `true`, get a module cell from the
+     *     left of the given cell and if `false`, from the right.
+     *
+     * @return {XML} - The asked cell
+     */
+    getModuleCellFromRow(row, atBottom, atRight) {
+        // top left, we can return the very first module
+        if (!atBottom && !atRight) {
+            return row.querySelector('cell[type=module]')
+        }
+        const cells = row.children;
+        // get the last cell if atRight, else the first one
+        const cell = cells[atRight ? cells.length - 1 : 0];
+        // if the cell we got is a module, we're done
+        if (cell.getAttribute('type') == 'module') {
+            return cell;
+        }
+        // if not, it contains rows...
+        const rows = cell.querySelectorAll(':scope > content > row');
+        // get the last row if atBottom, else the first one
+        const subRow = rows[atBottom ? rows.length - 1 : 0];
+        // and search on this row
+        return this.getModuleCellFromRow(subRow, atBottom, atRight);
+    },
+
+    /**
+     * Get a module cell in a corner of the given cell.
+     *
+     * If the given cell is already a module cell, it is the one returned.
+     *
+     * @param  {XML} cell - The reference cell
+     * @param  {boolean} [atBottom=false] - If `true`, get a module cell from the
+     *     bottom of the given cell and if `false`, from the top.
+     * @param  {boolean} [atRight=false] - If `true`, get a module cell from the
+     *     left of the given cell and if `false`, from the right.
+     *
+     * @return {XML} - The asked cell
+     */
+    getModuleCellFromCell(cell, atBottom, atRight) {
+        // the cell is already a module, just return it
+        if (cell.getAttribute('type') == 'module') {
+            return cell;
+        }
+        // return the cell from the first row
+        const rows = cell.querySelectorAll(':scope > content > row');
+        // get the last row if atBottom, else the first one
+        const subRow = rows[atBottom ? rows.length - 1 : 0];
+        return this.getModuleCellFromRow(subRow, atBottom, atRight);
+    },
+
+    /**
+     * Get the previous/next cell on the left/right of the given cell.
+     *
+     * If there are many rows on the left/right, the topmost cell will be returned
+     * except if asked to get it from the bottom
+     *
+     * @param  {XML} cell - The reference cell
+     * @param  {boolean} [toRight=false] - Set to `true` to get the next cell on the right,
+     *     to `false` to get the previous one on the left
+     * @param  {boolean} [forceAtBottom=false] - Set to `true` to get the botommost
+     *                                             cell instead of the topmost
+     *
+     * @return {XML} - The asked cell
+     */
+    getNextHorizontalCell(cell, toRight, forceAtBottom) {
+        if (!cell) { return; }
+        const row = cell.parentNode;
+        // we will force `forceAtBottom` if the row we are in is the last one in a multi-row cell
+        const isAtBottom = forceAtBottom || (row && row.parentNode && row.parentNode.children.length > 1 && row == row.parentNode.lastChild);
+        const sibling = toRight ? cell.nextSibling : cell.previousSibling;
+        if (sibling) {
+            return this.getModuleCellFromCell(sibling, isAtBottom, !toRight);
+        }
+        const parentGrid = this.getNearestGrid(cell);
+        if (parentGrid) {
+            return this.getNextHorizontalCell(parentGrid, toRight, isAtBottom);
+        }
+    },
+
+    /**
+     * Get the previous/next cell on the top/bottom of the given cell.
+     *
+     * If there are many cols on the top/bottom, the leftmost cell will be returned
+     * except if asked to get it from the right
+     *
+     * @param  {XML} cell - The reference cell
+     * @param  {boolean} [toBottom=false] - Set to `true` to get the next cell at the bottom,
+     *     to `false` to get the previous one at the top
+     * @param  {boolean} [forceAtRight=false] - Set to `true` to get the rightmost
+     *    cell instead of the leftmost
+     *
+     * @return {XML} - The asked cell
+     */
+    getNextVerticalCell(cell, toBottom, forceAtRight) {
+        if (!cell) { return; }
+        const row = cell.parentNode;
+        if (!row) { return; }
+        // we will force `forceAtRight` if the cell we are in is the last one in a multi-cells row
+        const isAtRight = forceAtRight || (row.children.length > 1 && cell == row.lastChild);
+        const sibling = toBottom ? row.nextSibling : row.previousSibling;
+        if (sibling) {
+            return this.getModuleCellFromRow(sibling, !toBottom, isAtRight);
+        }
+        const parentGrid = this.getNearestGrid(row);
+        if (parentGrid) {
+            return this.getNextVerticalCell(parentGrid, toBottom, isAtRight);
+        }
+    },
+
+    /**
+     * Get the next cell on the right of the given cell.
+     *
+     * If there are many rows on the right, the topmost cell will be returned
+     * except if asked to get it from the bottom
+     *
+     * @param  {XML} cell - The reference cell
+     *
+     * @return {XML} - The asked cell
+     */
+    getRightCell(cell) {
+        return this.getNextHorizontalCell(cell, true);
+    },
+
+    /**
+     * Get the previous cell on the left of the given cell.
+     *
+     * If there are many rows on the left, the topmost cell will be returned
+     * except if asked to get it from the bottom
+     *
+     * @param  {XML} cell - The reference cell
+     *
+     * @return {XML} - The asked cell
+     */
+    getLeftCell(cell) {
+        return this.getNextHorizontalCell(cell, false);
+    },
+
+    /**
+     * Get the next cell on the bottom of the given cell.
+     *
+     * If there are many cols on the bottom, the leftmost cell will be returned
+     * except if asked to get it from the right
+     *
+     * @param  {XML} cell - The reference cell
+     *
+     * @return {XML} - The asked cell
+     */
+    getBottomCell(cell) {
+        return this.getNextVerticalCell(cell, true);
+    },
+
+    /**
+     * Get the previous cell on the top of the given cell.
+     *
+     * If there are many cols on the top, the leftmost cell will be returned
+     * except if asked to get it from the right
+     *
+     * @param  {XML} cell - The reference cell
+     *
+     * @return {XML} - The asked cell
+     */
+    getTopCell(cell) {
+        return this.getNextVerticalCell(cell, false);
     }
+
 };
 
 // Exceptions must be based on the Error class

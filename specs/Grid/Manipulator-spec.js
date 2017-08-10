@@ -944,7 +944,7 @@ describe('Grid.Manipulator', function() {
 
     });
 
-    it('should add all resizers in a grid', function() {
+    it('should add and remove all resizers in a grid', function() {
         const grid = Manipulator.XMLStringToXMLGrid(
             '<grid name="foo" space="5px" type="mainGrid">' +
                 '<content>' +
@@ -968,7 +968,7 @@ describe('Grid.Manipulator', function() {
 
         Manipulator.addResizers(grid);
 
-        const expected =
+        let expected =
             '<grid name="foo" space="5px" type="mainGrid" hasResizers="true">' +
                 '<content>' +
                     '<row>' +
@@ -996,6 +996,97 @@ describe('Grid.Manipulator', function() {
             '</grid>';
 
         expect(grid).toEqualXML(expected);
+
+        Manipulator.removeResizers(grid);
+
+        expected = Manipulator.XMLStringToXMLGrid(
+            '<grid name="foo" space="5px" type="mainGrid">' +
+                '<content>' +
+                    '<row>' +
+                        '<cell type="module"><content/></cell>' +
+                        '<cell type="grid">' +
+                            '<content>' +
+                                '<row></row>' +
+                                '<row>' +
+                                    '<cell type="module"><content/></cell>' +
+                                    '<cell type="module"><content/></cell>' +
+                                '</row>' +
+                            '</content>' +
+                        '</cell>' +
+                        '<cell type="module"><content/></cell>' +
+                    '</row>' +
+                    '<row></row>' +
+                    '<row></row>' +
+                '</content>' +
+            '</grid>');
+
+        expect(grid).toEqualXML(expected);
+    });
+
+    it('should get a cell next to an other', function() {
+
+        const grid = Manipulator.XMLStringToXMLGrid(
+            '<grid name="foo" space="5px" type="mainGrid">' +
+                '<content>' +
+                    '<row>' +
+                        '<cell type="module" id="c1"><content/></cell>' +
+                        '<cell type="grid">' +
+                            '<content>' +
+                                '<row>' +
+                                    '<cell type="module" id="c2"><content/></cell>' +
+                                    '<cell type="module" id="c3"><content/></cell>' +
+                                '</row>' +
+                                '<row>' +
+                                    '<cell type="module" id="c4"><content/></cell>' +
+                                    '<cell type="module" id="c5"><content/></cell>' +
+                                    '<cell type="module" id="c6"><content/></cell>' +
+                                '</row>' +
+                            '</content>' +
+                        '</cell>' +
+                        '<cell type="grid">' +
+                            '<content>' +
+                                '<row>' +
+                                    '<cell type="module" id="c7"><content/></cell>' +
+                                '</row>' +
+                                '<row>' +
+                                    '<cell type="module" id="c8"><content/></cell>' +
+                                '</row>' +
+                                '<row>' +
+                                    '<cell type="module" id="c9"><content/></cell>' +
+                                '</row>' +
+                            '</content>' +
+                        '</cell>' +
+                    '</row>' +
+                '</content>' +
+            '</grid>');
+
+        const tests = [
+            // base-cell, expected top, expected bottom, expected left, expected right
+            ['#c1', undefined, undefined, undefined, '#c2'],
+            ['#c2', undefined, '#c4', '#c1', '#c3'],
+            ['#c3', undefined, '#c6', '#c2', '#c7'],
+            ['#c4', '#c2', undefined, '#c1', '#c5'],
+            ['#c5', '#c2', undefined, '#c4', '#c6'],
+            ['#c6', '#c3', undefined, '#c5', '#c9'],
+            ['#c7', undefined, '#c8', '#c3', undefined],
+            ['#c8', '#c7', '#c9', '#c3', undefined],
+            ['#c9', '#c8', undefined, '#c6', undefined],
+        ];
+
+        for (let numTest = 0; numTest < tests.length; numTest++) {
+            const test = tests[numTest];
+            const baseCell = grid.querySelector(test[0]);
+            const cells = {
+                Top: test[1] ? grid.querySelector(test[1]) : test[1],
+                Bottom: test[2] ? grid.querySelector(test[2]) : test[2],
+                Left: test[3] ? grid.querySelector(test[3]) : test[3],
+                Right: test[4] ? grid.querySelector(test[4]) : test[4],
+            };
+            expect(Manipulator.getTopCell(baseCell)).toBe(cells.Top, 'top ' + test[0]);
+            expect(Manipulator.getBottomCell(baseCell)).toBe(cells.Bottom, 'bottom ' + test[0]);
+            expect(Manipulator.getLeftCell(baseCell)).toBe(cells.Left, 'left ' + test[0]);
+            expect(Manipulator.getRightCell(baseCell)).toBe(cells.Right, 'right ' + test[0]);
+        }
 
     });
 
