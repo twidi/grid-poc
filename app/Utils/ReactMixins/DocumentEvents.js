@@ -71,6 +71,7 @@ const DocumentEventsMixin = {
      * @param {string} methodName - The name of the method of `this` to call when the event is fired
      */
     addDocumentListener(eventName, methodName) {
+        if (this._documentEventCache && this._documentEventCache[methodName]) { return; }
         document.addEventListener(eventName, this.boundMethod(methodName));
     },
 
@@ -82,7 +83,9 @@ const DocumentEventsMixin = {
      * @param {string} methodName - The name of the method of `this` to stop calling call when the event is fired
      */
     removeDocumentListener(eventName, methodName) {
+        if (!this._documentEventCache || !this._documentEventCache[methodName]) { return; }
         document.removeEventListener(eventName, this.boundMethod(methodName));
+        this.clearDocumentEventCache(methodName);
     }
 
 
