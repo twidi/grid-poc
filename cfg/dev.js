@@ -11,7 +11,8 @@ var config = _.merge({
     './app/main'
   ],
   cache: true,
-  devtool: 'eval',
+  debug: true,
+  devtool: 'source-map',
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin()
