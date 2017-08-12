@@ -4,6 +4,9 @@ module.exports = function(config) {
   config.set({
     basePath: '',
     browsers: [ 'Chrome' ],
+    client: {
+        clearContext: false
+    },
     files: [
       'specs/index.js'
     ],
@@ -13,7 +16,7 @@ module.exports = function(config) {
     singleRun: false,
     autoWatch: true,
     autoWatchBatchDelay: 300,
-    reporters: [ 'dots', 'kjhtml' ],
+    reporters: ['kjhtml' ],
     preprocessors: {
       'specs/index.js': [ 'webpack', 'sourcemap' ]
     },
