@@ -99,6 +99,8 @@ let Placeholder = {
      * And it also listen for a `fakedragend` event, triggered when a drop operation is done.
      */
     activateDropDetection() {
+        if (this.dropDetectionActivated) { return; }
+        this.dropDetectionActivated = true;
         this.addDocumentListener('fakedrop', 'onDocumentDetectDrop');
         this.addDocumentListener('fakedragend', 'onDocumentDragEnd');
     },
@@ -107,6 +109,8 @@ let Placeholder = {
      * Stop listening to events defined in `activateDropDetection`
      */
     deactivateDropDetection() {
+        if (!this.dropDetectionActivated) { return; }
+        this.dropDetectionActivated = false;
         this.removeDocumentListener('fakedrop', 'onDocumentDetectDrop');
         this.removeDocumentListener('fakedragend', 'onDocumentDragEnd');
     },

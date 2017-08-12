@@ -140,7 +140,10 @@ let MainGrid = {
      * This method also listen for a `fakedragend` event, triggered when a drop operation is done.
      */
     activateDropDetection() {
+        if (this.dropDetectionActivated) { return; }
+        this.dropDetectionActivated = true;
         setTimeout(() => {
+            if (!this.dropDetectionActivated) { return; }
             this.addDocumentListener('mousemove', 'onDocumentDetectDrop');
             this.addDocumentListener('mousedown', 'onDocumentDetectDrop');
             this.addDocumentListener('fakedragend', 'onDocumentDragEnd');
@@ -151,6 +154,8 @@ let MainGrid = {
      * Stop listening to events defined in `activateDropDetection`
      */
     deactivateDropDetection() {
+        if (!this.dropDetectionActivated) { return; }
+        this.dropDetectionActivated = false;
         this.removeDocumentListener('mousemove', 'onDocumentDetectDrop');
         this.removeDocumentListener('mousedown', 'onDocumentDetectDrop');
         this.removeDocumentListener('fakedragend', 'onDocumentDragEnd');
