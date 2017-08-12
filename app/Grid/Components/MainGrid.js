@@ -373,21 +373,21 @@ let MainGrid = {
      *
      * One or more of these classes:
      *
-     * - `grid-container`: in all cases
-     * - `grid-container-design-mode`: if the grid is in design mode
-     * - `grid-container-design-mode-step-*`: if the grid is in design mode, depending of the current step
-     * - `grid-container-with-placeholders`: if the grid has placeholders
-     * - `grid-container-with-resizers`: if the grid has resizers
+     * - `grid-component`: in all cases
+     * - `grid-component-design-mode`: if the grid is in design mode
+     * - `grid-component-design-mode-step-*`: if the grid is in design mode, depending of the current step
+     * - `grid-component-with-placeholders`: if the grid has placeholders
+     * - `grid-component-with-resizers`: if the grid has resizers
      */
-    getContainerClasses() {
+    getComponentClasses() {
         const inDesignMode = this.isInDesignMode();
         const classes = {
-            'grid-container': true,
-            'grid-container-design-mode': inDesignMode,
-            'grid-container-with-placeholders': Store.hasPlaceholders(this.state.gridName),
-            'grid-container-with-resizers': Store.hasResizers(this.state.gridName)
+            'grid-component': true,
+            'grid-component-design-mode': inDesignMode,
+            'grid-component-with-placeholders': Store.hasPlaceholders(this.state.gridName),
+            'grid-component-with-resizers': Store.hasResizers(this.state.gridName)
         };
-        classes['grid-container-design-mode-step-' + this.getDesignModeStep()] = inDesignMode;
+        classes['grid-component-design-mode-step-' + this.getDesignModeStep()] = inDesignMode;
         return classnames(classes);
     },
 
@@ -429,7 +429,7 @@ let MainGrid = {
             );
         }
 
-        return (<div className={this.getContainerClasses()}>
+        return (<div className={this.getComponentClasses()}>
             <nav className="grid-toolbar">
                 <label>{this.state.gridName}</label>
                 {undoButton}{redoButton}{addButton}{toggleButton}

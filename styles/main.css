@@ -2,7 +2,7 @@ body {
     font: 12px "Open Sans", HelveticaNeue, Helvetica, Arial;
 }
 
-html, body, #app, .grid-container {
+html, body, #app, .grid-component {
     height: 100%;
     margin: 0;
     padding: 0;
@@ -27,7 +27,7 @@ html, body, #app, .grid-container {
         margin-right: 20px;
     }
 
-.grid-container {
+.grid-component {
     display: flex;
     flex-direction: column;
 }
@@ -41,7 +41,7 @@ html, body, #app, .grid-container {
     .grid-main {
         margin: 8px;
     }
-        .grid-container-with-placeholders .grid-main {
+        .grid-component-with-placeholders .grid-main {
             background: white;
             margin: 0;
             padding: 1px;
@@ -50,10 +50,10 @@ html, body, #app, .grid-container {
         .grid-main .grid:not(:last-child) {
             margin-right: 8px;
         }
-        .grid-container-with-placeholders .grid-main .grid:not(:last-child) {
+        .grid-component-with-placeholders .grid-main .grid:not(:last-child) {
             margin-right: 1px;
         }
-        .grid-container-with-resizers .grid-main .grid {
+        .grid-component-with-resizers .grid-main .grid {
             margin-right: 0;
         }
 
@@ -80,17 +80,17 @@ html, body, #app, .grid-container {
     .grid-row:not(:last-child) {
         margin-bottom: 8px;
     }
-    .grid-container-with-placeholders .grid-row:not(:last-child) {
+    .grid-component-with-placeholders .grid-row:not(:last-child) {
         margin-bottom: 1px;
     }
 
-    .grid-container-with-placeholders .grid-row:not(.grid-row-placeholder) {
+    .grid-component-with-placeholders .grid-row:not(.grid-row-placeholder) {
         min-height: 35px;
         min-width: 35px;
         flex: 1 0 35px;
     }
 
-    .grid-container-with-resizers .grid-row {
+    .grid-component-with-resizers .grid-row {
         margin-bottom: 0;
     }
 
@@ -102,10 +102,10 @@ html, body, #app, .grid-container {
     .grid-cell:not(:last-child) {
         margin-right: 8px;
     }
-    .grid-container-with-placeholders .grid-cell:not(:last-child) {
+    .grid-component-with-placeholders .grid-cell:not(:last-child) {
         margin-right: 1px;
     }
-    .grid-container-with-resizers .grid-cell {
+    .grid-component-with-resizers .grid-cell {
         margin-right: 0;
     }
 
@@ -117,7 +117,7 @@ html, body, #app, .grid-container {
     display: flex;
     padding: 0;
 }
-    .grid-container-with-placeholders .grid-cell-module {
+    .grid-component-with-placeholders .grid-cell-module {
         box-shadow: none;
     }
     .grid-cell-module-dragging {
