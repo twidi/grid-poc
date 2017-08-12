@@ -462,6 +462,14 @@ describe('Grid.Components.MainGrid', function() {
     });
 
     it('should react to a mouse move/down event as drop if dragging mode is enabled', function(done) {
+
+        // when fake drop is on a placeholder
+        jasmineReact.spyOnClass(MainGrid, 'emitFakeDrop').and.returnValue(true);
+        // when fake drop is NOT on a placeholder
+        jasmineReact.spyOnClass(MainGrid, 'applyDrop').and.returnValue(true);
+
+        const mainGridProto = jasmineReact.classPrototype(MainGrid);
+
         const element = React.createElement(MainGrid, {node: testGrid});
         const component = componentUtils.renderIntoDocument(element);
 
@@ -470,70 +478,61 @@ describe('Grid.Components.MainGrid', function() {
         domNode.parentNode.style.display = 'none';
         document.body.appendChild(domNode.parentNode);
 
-        // when fake drop is on a placeholder
-        spyOn(component, 'emitFakeDrop').and.returnValue(true);
-        // when fake drop is NOT on a placeholder
-        spyOn(component, 'applyDrop').and.returnValue(true);
-
         // simulate grid in dragging mode
         Store.__private.enterDesignMode('Test grid');
-        Store.__private.startDragging('Test grid', Store.getGrid('Test grid').querySelector('cell[type=module]'));
+        const moduleCell = Store.getGrid('Test grid').querySelector('cell[type=module]');
 
-        // leave time to let the start drag events to propagate
-        setTimeout(function() {
+        const startDraggingAndWait = (func) => {
+            Store.__private.startDragging('Test grid', moduleCell);
+            setTimeout(func, 400);
+        };
 
-            // simulate a mousemove on the document
-            document.dispatchEvent(new Event('mousemove', {view: window, bubbles: true}));
+        const triggerEventAndWait = (node, eventType, func) => {
+            if (node) {
+                node.dispatchEvent(new Event(eventType, {view: window, bubbles: true}));
+            }
+            setTimeout(func, 0.01);
+        };
 
-            // leave time to mousemove event to propagate
-            setTimeout(function() {
+        const checkCall = (funcName, count, mostRecentArgs) => {
+            const realCount = mainGridProto[funcName].calls.count();
+            expect(realCount).toEqual(count);
+            if (mostRecentArgs && count && realCount === count) {
+                expect(mainGridProto[funcName].calls.mostRecent().args).toEqual(mostRecentArgs);
+            }
+        };
 
-                // method used if fake drop not on a placeholder should be called
-                expect(component.applyDrop.calls.count()).toEqual(1);
+        startDraggingAndWait(() => {
 
-                // simulate a mousemdown on the document
-                document.dispatchEvent(new Event('mousedown', {view: window, bubbles: true}));
+            triggerEventAndWait(document, 'mousemove', () => {
 
-                // leave time to mousedown event to propagate
-                setTimeout(function() {
+                checkCall('applyDrop', 1);
 
-                    // method used if fake drop not on a placeholder should be called
-                    expect(component.applyDrop.calls.count()).toEqual(2);
+                triggerEventAndWait(document, 'mousemove', () => {
 
-                    // get the placeholder to use to simulate events on it
+                    checkCall('applyDrop', 2);
+
                     const placeholderDomNode = domNode.querySelector('.grid-cell-placeholder');
+                    expect(placeholderDomNode).not.toBe(null);
 
-                    // simulate a mousemove on the placeholder
-                    placeholderDomNode.dispatchEvent(new Event('mousemove', {view: window, bubbles: true}));
+                    triggerEventAndWait(placeholderDomNode, 'mousemove', () => {
 
-                    // leave time to mousemove event to propagate
-                    setTimeout(function() {
+                        checkCall('emitFakeDrop', 1, [placeholderDomNode]);
 
-                        // method used if fake drop on a placeholder should be called
-                        expect(component.emitFakeDrop.calls.count()).toEqual(1);
-                        expect(component.emitFakeDrop.calls.first().args).toEqual([placeholderDomNode]);
+                        triggerEventAndWait(placeholderDomNode, 'mousemove', () => {
 
-                        // simulate a mousemdown on the placeholder
-                        placeholderDomNode.dispatchEvent(new Event('mousedown', {view: window, bubbles: true}));
-
-                        // leave time to mousedown event to propagate
-                        setTimeout(function() {
-
-                            // method used if fake drop not on a placeholder should be called
-                            expect(component.emitFakeDrop.calls.count()).toEqual(2);
-                            expect(component.emitFakeDrop.calls.mostRecent().args).toEqual([placeholderDomNode]);
+                            checkCall('emitFakeDrop', 2, [placeholderDomNode]);
 
                             // we're done, remove the component from the dom
                             document.body.removeChild(domNode.parentNode);
-
-                            // tell jasmine we're done
+                            //  tell jasmine we're done
                             done();
 
-                        }, 0.01);
-                    }, 0.01);
-                }, 0.01);
-            }, 0.01);
-        }, 0.01);
+                        });
+                    });
+                });
+            });
+        });
     });
 
     it('should apply a fake drop event if a drop detected by a mouse move/down event occurs on a placeholder', function(done) {
