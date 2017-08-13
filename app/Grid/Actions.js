@@ -211,11 +211,13 @@ let Actions = {
      * @type {function}
      *
      * @param  {string} gridName - The name of the grid where we want to focus a cell
+     * @param  {bool} useModuleIndex - `true` to focus on the next module in the index order.
+     *                                 `false` to try to get the nearest module on the right
      *
      * @fires module:Grid.Store#"grid.navigate.focus.off"
      * @fires module:Grid.Store#"grid.navigate.focus.on"
      */
-    focusRightModuleCell(gridName) {},
+    focusRightModuleCell(gridName, useModuleIndex) {},
 
     /**
      * Try to focus the previous module cell on the left of the current one for the given grid
@@ -223,11 +225,13 @@ let Actions = {
      * @type {function}
      *
      * @param  {string} gridName - The name of the grid where we want to focus a cell
+     * @param  {bool} useModuleIndex - `true` to focus on the previous module in the index order.
+     *                                 `false` to try to get the nearest module on the left
      *
      * @fires module:Grid.Store#"grid.navigate.focus.off"
      * @fires module:Grid.Store#"grid.navigate.focus.on"
      */
-    focusLeftModuleCell(gridName) {},
+    focusLeftModuleCell(gridName, useModuleIndex) {},
 
     /**
      * Try to focus the next module cell on the bottom of the current one for the given grid

@@ -841,7 +841,7 @@ describe('Grid.Manipulator', function() {
         expect(grid).toEqualXML(expected);
     });
 
-    it('should set an ID on each node', function() {
+    it('should set id and indexes on each node', function() {
 
         let grid = Manipulator.XMLStringToXMLGrid(
             '<grid name="foo" space="5px" type="mainGrid">' +
@@ -868,17 +868,17 @@ describe('Grid.Manipulator', function() {
             '<grid name="foo" space="5px" type="mainGrid" id="grid-1">' +
                 '<content id="content-2">' +
                     '<row id="row-3">' +
-                        '<cell type="module" id="cell-4"><content id="content-5"/></cell>' +
+                        '<cell type="module" id="cell-4" module-index="0"><content id="content-5"/></cell>' +
                         '<cell type="grid" id="cell-6">' +
                             '<content id="content-7">' +
                                 '<row id="row-8">' +
-                                    '<cell type="module" id="cell-9"><content id="content-10"/></cell>' +
+                                    '<cell type="module" id="cell-9" module-index="1"><content id="content-10"/></cell>' +
                                 '</row>' +
                             '</content>' +
                         '</cell>' +
                     '</row>' +
                     '<row id="row-11">' +
-                        '<cell type="module" id="cell-12"><content id="content-13"/></cell>' +
+                        '<cell type="module" id="cell-12" module-index="2"><content id="content-13"/></cell>' +
                     '</row>' +
                 '</content>' +
             '</grid>';

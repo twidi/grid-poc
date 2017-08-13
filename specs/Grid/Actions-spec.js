@@ -199,11 +199,11 @@ describe('Grid.Actions', function() {
                     '<grid name="foo" space="5px" type="mainGrid" id="grid-1">' +
                         '<content id="content-2">' +
                             '<row id="row-8">' +
-                                '<cell type="module" id="cell-9"><content component="Module.Test1" text="test text" id="content-10"/></cell>' +
+                                '<cell type="module" id="cell-9" module-index="0"><content component="Module.Test1" text="test text" id="content-10"/></cell>' +
                             '</row>' +
                             '<row id="row-3">' +
-                                '<cell type="module" id="cell-4"><content id="content-5"/></cell>' +
-                                '<cell type="module" id="cell-6"><content id="content-7"/></cell>' +
+                                '<cell type="module" id="cell-4" module-index="1"><content id="content-5"/></cell>' +
+                                '<cell type="module" id="cell-6" module-index="2"><content id="content-7"/></cell>' +
                             '</row>' +
                         '</content>' +
                     '</grid>';
@@ -263,7 +263,7 @@ describe('Grid.Actions', function() {
                     '<grid name="foo" space="5px" type="mainGrid" id="grid-1">' +
                         '<content id="content-2">' +
                             '<row id="row-3">' +
-                                '<cell type="module" id="cell-6"><content id="content-7"/></cell>' +
+                                '<cell type="module" id="cell-6" module-index="0"><content id="content-7"/></cell>' +
                             '</row>' +
                         '</content>' +
                     '</grid>';
@@ -326,7 +326,7 @@ describe('Grid.Actions', function() {
                             '<row type="placeholder" id="row-8"><cell type="placeholder" id="cell-9"><content id="content-10"/></cell></row>' +
                             '<row id="row-3">' +
                                 '<cell type="placeholder" id="cell-11"><content id="content-12"/></cell>' +
-                                '<cell type="module" id="cell-6">' +
+                                '<cell type="module" id="cell-6" module-index="0">' +
                                     '<content id="content-7"/>' +
                                 '</cell>' +
                                 '<cell type="placeholder" id="cell-13"><content id="content-14"/></cell>' +
@@ -442,8 +442,8 @@ describe('Grid.Actions', function() {
                         '<grid name="foo" space="5px" type="mainGrid" id="grid-1">' +
                             '<content id="content-2">' +
                                 '<row id="row-3">' +
-                                    '<cell type="module" id="cell-4"><content id="content-5"/></cell>' +
-                                    '<cell type="module" id="cell-6"><content id="content-7"/></cell>' +
+                                    '<cell type="module" id="cell-4" module-index="0"><content id="content-5"/></cell>' +
+                                    '<cell type="module" id="cell-6" module-index="1"><content id="content-7"/></cell>' +
                                 '</row>' +
                             '</content>' +
                         '</grid>';
@@ -515,7 +515,7 @@ describe('Grid.Actions', function() {
                                 '<row type="placeholder" id="row-8"><cell type="placeholder" id="cell-9"><content id="content-10"/></cell></row>' +
                                 '<row id="row-3">' +
                                     '<cell type="placeholder" id="cell-11"><content id="content-12"/></cell>' +
-                                    '<cell type="module" id="cell-6">' +
+                                    '<cell type="module" id="cell-6" module-index="0">' +
                                         '<content id="content-7"/>' +
                                     '</cell>' +
                                     '<cell type="placeholder" id="cell-13"><content id="content-14"/></cell>' +
@@ -552,10 +552,10 @@ describe('Grid.Actions', function() {
                             '<grid name="foo" space="5px" type="mainGrid" id="grid-1">' +
                                 '<content id="content-2">' +
                                     '<row id="row-3">' +
-                                        '<cell type="module" id="cell-6"><content id="content-7"/></cell>' +
+                                        '<cell type="module" id="cell-6" module-index="0"><content id="content-7"/></cell>' +
                                     '</row>' +
                                     '<row id="row-15">' +
-                                        '<cell type="module" id="cell-16"><content id="content-5"/></cell>' +
+                                        '<cell type="module" id="cell-16" module-index="1"><content id="content-5"/></cell>' +
                                     '</row>' +
                                 '</content>' +
                             '</grid>';
@@ -834,7 +834,7 @@ describe('Grid.Actions', function() {
                                         '<row type="placeholder" id="row-8"><cell type="placeholder" id="cell-9"><content id="content-10"/></cell></row>' +
                                         '<row id="row-3">' +
                                             '<cell type="placeholder" id="cell-11"><content id="content-12"/></cell>' +
-                                            '<cell type="module" id="cell-6">' +
+                                            '<cell type="module" id="cell-6" module-index="0">' +
                                                 '<content id="content-7"/>' +
                                             '</cell>' +
                                             '<cell type="placeholder" id="cell-13"><content id="content-14"/></cell>' +
@@ -931,13 +931,13 @@ describe('Grid.Actions', function() {
                                 '<grid name="foo" space="5px" type="mainGrid" id="grid-1" hasResizers="true">' +
                                     '<content id="content-2">' +
                                         '<row id="row-3">' +
-                                            '<cell type="module" id="cell-6">' +
+                                            '<cell type="module" id="cell-6" module-index="0">' +
                                                 '<content id="content-7"/>' +
                                             '</cell>' +
                                         '</row>' +
                                         '<resizer type="horizontal" id="resizer-18"/>' +
                                         '<row id="row-15">' +
-                                            '<cell type="module" id="cell-16">' +
+                                            '<cell type="module" id="cell-16" module-index="1">' +
                                                 '<content id="content-5"/>' +
                                             '</cell>' +
                                         '</row>' +
@@ -949,11 +949,11 @@ describe('Grid.Actions', function() {
                                 '<grid name="foo" space="5px" type="mainGrid" id="grid-1" hasResizers="true">' +
                                     '<content id="content-2">' +
                                         '<row id="row-3">' +
-                                            '<cell type="module" id="cell-11">' +
+                                            '<cell type="module" id="cell-11" module-index="0">' +
                                                 '<content id="content-5"/>' +
                                             '</cell>' +
                                             '<resizer type="vertical" id="resizer-18"/>' +
-                                            '<cell type="module" id="cell-6">' +
+                                            '<cell type="module" id="cell-6" module-index="1">' +
                                                 '<content id="content-7"/>' +
                                             '</cell>' +
                                         '</row>' +
@@ -1092,8 +1092,8 @@ describe('Grid.Actions', function() {
                     '<grid name="foo" space="5px" type="mainGrid" id="grid-1">' +
                         '<content id="content-2">' +
                             '<row id="row-3">' +
-                                '<cell type="module" id="cell-4"><content id="content-5"/></cell>' +
-                                '<cell type="module" id="cell-6"><content id="content-7"/></cell>' +
+                                '<cell type="module" id="cell-4" module-index="0"><content id="content-5"/></cell>' +
+                                '<cell type="module" id="cell-6" module-index="1"><content id="content-7"/></cell>' +
                             '</row>' +
                         '</content>' +
                     '</grid>';
@@ -1624,6 +1624,103 @@ describe('Grid.Actions', function() {
                 doTest(finalTests.shift());
             }, 0.01);
         }, 0.01);
+
+    });
+
+    it('should focus a module cell in direction', function(done) {
+
+        let grid = Manipulator.XMLStringToXMLGrid(
+            '<grid name="bar" space="5px" type="mainGrid">' +
+                '<content>' +
+                    '<row>' +
+                        '<cell type="module" id="c1"><content/></cell>' +
+                        '<cell type="grid">' +
+                            '<content>' +
+                                '<row>' +
+                                    '<cell type="module" id="c2"><content/></cell>' +
+                                    '<cell type="module" id="c3"><content/></cell>' +
+                                '</row>' +
+                                '<row>' +
+                                    '<cell type="module" id="c4"><content/></cell>' +
+                                    '<cell type="module" id="c5"><content/></cell>' +
+                                    '<cell type="module" id="c6"><content/></cell>' +
+                                '</row>' +
+                            '</content>' +
+                        '</cell>' +
+                        '<cell type="grid">' +
+                            '<content>' +
+                                '<row>' +
+                                    '<cell type="module" id="c7"><content/></cell>' +
+                                '</row>' +
+                                '<row>' +
+                                    '<cell type="module" id="c8"><content/></cell>' +
+                                '</row>' +
+                                '<row>' +
+                                    '<cell type="module" id="c9"><content/></cell>' +
+                                '</row>' +
+                            '</content>' +
+                        '</cell>' +
+                    '</row>' +
+                '</content>' +
+            '</grid>');
+
+        Manipulator.setIds(grid);
+        Store.__private.addGrid(grid);
+        grid = Store.getGrid('bar');
+
+        const testFocusedAndContinue = (expectedFocusedId, nextAction) => {
+            setTimeout(() => {
+                expect(Store.__private.grids.bar.focusedModuleCellId).toEqual(expectedFocusedId);
+                nextAction();
+            }, 0.01);
+        };
+
+        Actions.focusModuleCell('bar', null, true);
+        testFocusedAndContinue('c1', () => {
+            Actions.focusLeftModuleCell('bar', false);
+            testFocusedAndContinue('c1', () => {
+                Actions.focusRightModuleCell('bar', false);
+                testFocusedAndContinue('c2', () => {
+                    Actions.focusLeftModuleCell('bar', false);
+                    testFocusedAndContinue('c1', () => {
+                        Actions.focusRightModuleCell('bar', true);
+                        testFocusedAndContinue('c2', () => {
+                            Actions.focusRightModuleCell('bar', true);
+                            testFocusedAndContinue('c3', () => {
+                                Actions.focusRightModuleCell('bar', true);
+                                testFocusedAndContinue('c4', () => {
+                                    Actions.focusLeftModuleCell('bar', true);
+                                    testFocusedAndContinue('c3', () => {
+                                        Actions.focusRightModuleCell('bar', true);
+                                        testFocusedAndContinue('c4', () => {
+                                            Actions.focusLeftModuleCell('bar', false);
+                                            testFocusedAndContinue('c1', () => {
+                                                Actions.focusTopModuleCell('bar');
+                                                testFocusedAndContinue('c1', () => {
+                                                    Actions.focusBottomModuleCell('bar');
+                                                    testFocusedAndContinue('c1', () => {
+                                                        Actions.focusRightModuleCell('bar', false);
+                                                        testFocusedAndContinue('c2', () => {
+                                                            Actions.focusBottomModuleCell('bar');
+                                                            testFocusedAndContinue('c4', () => {
+                                                                Actions.focusTopModuleCell('bar');
+                                                                testFocusedAndContinue('c2', () => {
+                                                                    done();
+                                                                });
+                                                            });
+                                                        });
+                                                    });
+                                                });
+                                            });
+                                        });
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
 
     });
 

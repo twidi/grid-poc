@@ -95,6 +95,7 @@ let Store = {
 
     /**
      * Get a grid from the store by its name. All nodes are ensured to have an ID.
+     * And module cells an index.
      *
      * @param  {string} gridName - Name of the grid to get
      *
@@ -333,6 +334,26 @@ let Store = {
      */
     isFocusedModuleCell(gridName, moduleCell) {
         return moduleCell.getAttribute('id') == this.getGridEntry(gridName).focusedModuleCellId;
+    },
+
+    /**
+     * Return the index of the currently focused module cell
+     *
+     * @param  {String} gridName - The name of the grid for which we ask
+     *
+     * @returns {int} - The index of the currently focused module cell. 0 if any problem.
+     */
+    getFocusedModuleCellIndex(gridName) {
+        const gridEntry = this.getGridEntry(gridName);
+        const focusedModuleId = gridEntry.focusedModuleCellId;
+        if (focusedModuleId) {
+            try {
+                return parseInt(this.getGridNodeById(gridName, focusedModuleId).getAttribute('module-index') || 0, 10);
+            } catch (e) {
+                return 0;
+            }
+        }
+        return 0;
     },
 
     /**
@@ -594,6 +615,8 @@ const Private = {
         if (hasResizers) {
             Manipulator.addResizers(grid);
         }
+
+        Manipulator.setIds(grid);
 
         // grid changed, add it to history
         this.addCurrentGridToHistory(gridName);
@@ -1507,18 +1530,44 @@ const Private = {
     },
 
     /**
+     * In the given grid, focus the cell next to the one actually selected in the index order
+     *
+     * @param  {string} gridName - The name of the grid on which to select a cell
+     * @param  {int} delta - How many cell to move. 1 is the next one, -1 the previous one...
+     */
+    focusNextModuleCellByIndex(gridName, delta) {
+        let nextModuleCell;
+        const focusedModuleCell = this.getFocusedModuleCell(gridName);
+        const currentIndex = parseInt(focusedModuleCell ? focusedModuleCell.getAttribute('module-index') || 0 : 0, 10);
+        const newIndex = currentIndex + delta;
+        const allModuleCells = this.getGrid(gridName).querySelectorAll('cell[type=module]');
+        if (newIndex >= 0 && currentIndex < allModuleCells.length) {
+            nextModuleCell = allModuleCells[newIndex];
+        } else {
+            return;
+        }
+        this.focusModuleCell(gridName, nextModuleCell, !focusedModuleCell);
+    },
+
+    /**
      * Try to focus the next module cell on the right of the current one for the given grid
      *
      * It's an action, should be called via
      * {@link module:Grid.Actions.drop Grid.Actions.focusRightModuleCell}
      *
      * @param  {string} gridName - The name of the grid where we want to focus a cell
+     * @param  {bool} useModuleIndex - `true` to focus on the next module in the index order.
+     *                                 `false` to try to get the nearest module on the right
      *
      * @fires module:Grid.Store#"grid.navigate.focus.off"
      * @fires module:Grid.Store#"grid.navigate.focus.on"
      */
-    focusRightModuleCell(gridName) {
-        this.focusNextModuleCell(gridName, 'getRightCell');
+    focusRightModuleCell(gridName, useModuleIndex) {
+        if (useModuleIndex) {
+            this.focusNextModuleCellByIndex(gridName, 1);
+        } else {
+            this.focusNextModuleCell(gridName, 'getRightCell');
+        }
     },
 
     /**
@@ -1528,12 +1577,18 @@ const Private = {
      * {@link module:Grid.Actions.drop Grid.Actions.focusLeftModuleCell}
      *
      * @param  {string} gridName - The name of the grid where we want to focus a cell
+     * @param  {bool} useModuleIndex - `true` to focus on the previous module in the index order.
+     *                                 `false` to try to get the nearest module on the left
      *
      * @fires module:Grid.Store#"grid.navigate.focus.off"
      * @fires module:Grid.Store#"grid.navigate.focus.on"
      */
-    focusLeftModuleCell(gridName) {
-        this.focusNextModuleCell(gridName, 'getLeftCell');
+    focusLeftModuleCell(gridName, useModuleIndex) {
+        if (useModuleIndex) {
+            this.focusNextModuleCellByIndex(gridName, -1);
+        } else {
+            this.focusNextModuleCell(gridName, 'getLeftCell');
+        }
     },
 
     /**

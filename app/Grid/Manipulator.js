@@ -709,15 +709,23 @@ const Manipulator = {
     /**
      * Set an unique ID on the given node and each of if sub nodes (whole tree)
      * Don't update nodes that already have an ID
+     * And set indexes on each module nodes (in xml order)
      *
      * @returns {} - Returns nothing
      */
     setIds(node) {
+        // set ids
         const nodes = _.toArray(node.querySelectorAll('*:not([id])'));
         if (!node.getAttribute('id')) {
             nodes.unshift(node);
         }
         _(nodes).forEach(subnode => subnode.setAttribute('id', _.uniqueId(subnode.tagName + '-')));
+
+        // set indexes on modules
+        const moduleCells = node.querySelectorAll('cell[type=module]');
+        for (let i = 0; i < moduleCells.length; i++) {
+            moduleCells[i].setAttribute('module-index', i);
+        }
     },
 
 
