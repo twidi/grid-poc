@@ -4,11 +4,13 @@ var autoprefixer = require('autoprefixer');
 // Needed to load CSS (and fonts) in parallel
 // var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
+var host = '0.0.0.0';
 var port = 8000;
 var srcPath = path.join(__dirname, '/../app');
 var publicPath = '/';
 
 module.exports = {
+  host: host,
   port: port,
   debug: true,
   output: {
@@ -20,9 +22,11 @@ module.exports = {
     contentBase: './app/',
     historyApiFallback: true,
     hot: true,
+    host: host,
     port: port,
     publicPath: publicPath,
-    noInfo: false
+    noInfo: false,
+    disableHostCheck: true,
   },
   resolve: {
     extensions: ['', '.js']
