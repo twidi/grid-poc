@@ -52,6 +52,8 @@ const GridMixin = {
     /**
      * Return the classes to use when rendering the current grid
      *
+     * @param {object} forcedClasses - Dict of classes that are added after the ones computed in this method.
+     *
      * @return {string} - A string containing classes
      *
      * One or more of these classes:
@@ -61,19 +63,21 @@ const GridMixin = {
      * - `grid-last-level-with-placeholders`: if the grid does not contain any sub grid,
      *                                        and we have placeholders (only if it's not the main grid)
      */
-    getGridClasses() {
-        const classes = {
+    getGridClasses(forcedClasses) {
+        const classes = _.merge({
             'grid': true,
             'grid-main': this.isMainGrid(),
             'grid-last-level-with-placeholders': !this.isMainGrid()
                                               && !Store.containsSubGrid(this.state.node)
                                               && Store.hasPlaceholders(this.getGridName())
-        };
+        }, forcedClasses);
         return classnames(classes);
     },
 
     /**
      * Return the inline styles to use when rendering the current grid
+     *
+     * @param {object} forcedStyle - Dict of styles that are added after the ones computed in this method.
      *
      * @return {Object} - An object including styles
      *
@@ -81,12 +85,12 @@ const GridMixin = {
      *
      * - `flexGrow`: the relative size of the grid as defined in the grid if this is not a main grid, only a subgrid
      */
-    getGridStyle() {
+    getGridStyle(forcedStyle) {
         const style = {};
         if (!this.isMainGrid()) {
             style.flexGrow = Store.getRelativeSize(this.state.node);
         }
-        return style;
+        return _.merge(style, forcedStyle);
     },
 
     /**
@@ -95,8 +99,16 @@ const GridMixin = {
      * @returns {div} - A div with classes defined by `getGridClasses`, containing
      * rows, including resizers, returned by `renderRows`
      */
-    renderGrid() {
-        return <div className={this.getGridClasses()} style={this.getGridStyle()}>{this.renderRows()}</div>;
+    renderGrid(classes, style) {
+        return (
+            <div className={this.getGridClasses(classes)}
+              ref="gridNode"
+              style={this.getGridStyle(style)}
+              key={this.getGridName()}
+            >
+                {this.renderRows()}
+            </div>
+        );
     }
 
 };

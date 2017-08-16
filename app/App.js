@@ -5,7 +5,7 @@ import { Actions } from './Grid/Actions';
 import { Manipulator } from './Grid/Manipulator';
 import { Store } from './Grid/Store';
 
-import { MainGrid } from './Grid/Components/MainGrid';
+import { MainGrid, screenModes } from './Grid/Components/MainGrid';
 
 export const App = React.createClass({
     getInitialState() {

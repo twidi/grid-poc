@@ -1,3 +1,6 @@
 {
-  "plugins": ["plugins/summarize"]
+  "plugins": [
+    "plugins/summarize",
+    "node_modules/jsdoc-react-proptypes/lib/plugin"
+  ]
 }

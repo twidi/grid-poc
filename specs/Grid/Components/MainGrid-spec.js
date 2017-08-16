@@ -4,12 +4,13 @@ import ReactDOM from 'react-dom';
 import TestUtils from 'react-addons-test-utils';
 import jasmineReact from 'jasmine-react-helpers-hotfix-0.14';
 import Mousetrap from 'br-mousetrap';
+import Hammer from 'hammerjs';
 
 import { Actions } from '../../../app/Grid/Actions';
 import { Manipulator } from '../../../app/Grid/Manipulator';
 import { Store } from '../../../app/Grid/Store';
 
-import { MainGrid } from '../../../app/Grid/Components/MainGrid';
+import { MainGrid, screenModes } from '../../../app/Grid/Components/MainGrid';
 import { Row } from '../../../app/Grid/Components/Row';
 
 import { componentUtils } from './Utils';
@@ -127,7 +128,7 @@ describe('Grid.Components.MainGrid', function() {
 
 
     it('should render a grid', function() {
-        const element = React.createElement(MainGrid, {node: testGrid});
+        const element = React.createElement(MainGrid, {node: testGrid, screenMode: screenModes.multi});
         const component = componentUtils.renderIntoDocument(element);
         const domNode = ReactDOM.findDOMNode(component);
         expect(domNode.tagName).toEqual('DIV');
@@ -139,7 +140,7 @@ describe('Grid.Components.MainGrid', function() {
         const navDomNode = domNode.children[0];
         expect(navDomNode.tagName).toEqual('NAV');
         expect(navDomNode.classList.contains('grid-toolbar')).toBe(true);
-        const gridDomNode = domNode.children[1];
+        const gridDomNode = ReactDOM.findDOMNode(component.refs.gridNode);
         expect(gridDomNode.classList.contains('grid')).toBe(true);
         expect(gridDomNode.classList.contains('grid-main')).toBe(true);
         expect(gridDomNode.classList.contains('grid-last-level-with-placeholders')).toBe(false);
@@ -798,5 +799,389 @@ describe('Grid.Components.MainGrid', function() {
         }
     });
 
+    it('should stay in one screen mode if screenMode set to `one`', function(done) {
+        const element = React.createElement(MainGrid, {node: testGrid, screenMode: screenModes.one});
+        const component = componentUtils.renderIntoDocument(element);
+        setTimeout(() => {
+            expect(component.state.oneScreenMode).toBe(true);
+            component.onResize(10000, 10000);
+            setTimeout(() => {
+                expect(component.state.oneScreenMode).toBe(true);
+                component.onResize(100, 100);
+                setTimeout(() => {
+                    expect(component.state.oneScreenMode).toBe(true);
+                    done();
+                }, 0.01);
+            }, 0.01);
+        }, 0.01);
+    });
+
+    it('should avoid one screen mode if screenMode set to `multi`', function(done) {
+        const element = React.createElement(MainGrid, {node: testGrid, screenMode: screenModes.multi});
+        const component = componentUtils.renderIntoDocument(element);
+        setTimeout(() => {
+            expect(component.state.oneScreenMode).toBe(false);
+            component.onResize(10000, 10000);
+            setTimeout(() => {
+                expect(component.state.oneScreenMode).toBe(false);
+                component.onResize(100, 100);
+                setTimeout(() => {
+                    expect(component.state.oneScreenMode).toBe(false);
+                    done();
+                }, 0.01);
+            }, 0.01);
+        }, 0.01);
+    });
+
+    it('should change from and to one screen mode if screenMode set to `default` depending of the size', function(done) {
+        const element = React.createElement(MainGrid, {node: testGrid, screenMode: screenModes.default});
+        const component = componentUtils.renderIntoDocument(element);
+        setTimeout(() => {
+            component.onResize(10000, 10000);
+            setTimeout(() => {
+                expect(component.state.oneScreenMode).toBe(false);
+                component.onResize(100, 100);
+                setTimeout(() => {
+                    expect(component.state.oneScreenMode).toBe(true);
+                    done();
+                }, 0.01);
+            }, 0.01);
+        }, 0.01);
+    });
+
+    it('should call `onResize` if screenMode set to `default` and the grid size changes', function(done) {
+        const element = React.createElement(MainGrid, {
+            node: testGrid,
+            screenMode: screenModes.default,
+            oneScreenWidthThreshold: 100,
+            oneScreenHeightThreshold: 400
+        });
+        const component = componentUtils.renderIntoDocument(element);
+
+        const domNode = ReactDOM.findDOMNode(component);
+        // we need the node to be attached to the document to have a size
+        domNode.parentNode.style.visibility = 'hidden'; // hide it to avoid visual flashes
+        document.body.appendChild(domNode.parentNode);
+
+        // minimal required style for resize-detector
+        domNode.style.position = 'relative';
+
+        // both bigger than threshold => multi screens mode
+        domNode.style.width = '200px';
+        domNode.style.height = '500px';
+        component.refs.resizeDetector.handleScroll();
+        setTimeout(() => {
+            expect(component.state.oneScreenMode).toBe(false);
+
+            // width smaller than threshold and height bigger => one screen mode
+            domNode.style.width = '50px';
+            component.refs.resizeDetector.handleScroll();
+            setTimeout(() => {
+                expect(component.state.oneScreenMode).toBe(true);
+
+                // both exactly threshold => multi screens mode
+                domNode.style.width = '100px';
+                domNode.style.height = '400px';
+                component.refs.resizeDetector.handleScroll();
+                setTimeout(() => {
+                    expect(component.state.oneScreenMode).toBe(false);
+
+                    // width exactly threshold and height smaller => one screen mode
+                    domNode.style.height = '300px';
+                    component.refs.resizeDetector.handleScroll();
+                    setTimeout(() => {
+                        expect(component.state.oneScreenMode).toBe(true);
+
+                        // clean dom
+                        domNode.parentNode.style.visibility = null;
+                        document.body.removeChild(domNode.parentNode);
+
+                        // tell jasmine we're done
+                        done();
+
+                    }, 0.01);
+                }, 0.01);
+            }, 0.01);
+        }, 0.01);
+
+    });
+
+    it('should not have transform style in multi screens mode', function(done) {
+        const element = React.createElement(MainGrid, {node: testGrid, screenMode: screenModes.multi});
+        const component = componentUtils.renderIntoDocument(element);
+        const gridNode = ReactDOM.findDOMNode(component).querySelector('.grid-main');
+
+        expect(component.getMainGridStyle()).toEqual({
+            transform: null,
+            transition: null
+        });
+        component.updateMainGridStyle();
+        setTimeout(() => {
+            expect(gridNode.style.transform).toEqual('');
+            expect(gridNode.style.transition).toEqual('');
+
+            expect(component.getMainGridStyle(0)).toEqual({
+                transform: null,
+                transition: null
+            });
+            component.updateMainGridStyle();
+            setTimeout(() => {
+                expect(gridNode.style.transform).toEqual('');
+                expect(gridNode.style.transition).toEqual('');
+
+                expect(component.getMainGridStyle(100)).toEqual({
+                    transform: null,
+                    transition: null
+                });
+                component.updateMainGridStyle();
+                setTimeout(() => {
+                    expect(gridNode.style.transform).toEqual('');
+                    expect(gridNode.style.transition).toEqual('');
+
+                    done();
+                }, 0.01);
+            }, 0.01);
+        }, 0.01);
+    });
+
+    it('should have transform style in one screen mode', function(done) {
+        const element = React.createElement(MainGrid, {node: testGrid, screenMode: screenModes.one});
+        const component = componentUtils.renderIntoDocument(element);
+        const gridNode = ReactDOM.findDOMNode(component).querySelector('.grid-main');
+
+        // cell index is 0
+
+        // test without deltaX
+        expect(component.getMainGridStyle()).toEqual({
+            transform: 'translateX(0px)',
+            transition: null
+        });
+        component.updateMainGridStyle();
+        setTimeout(() => {
+            expect(gridNode.style.transform).toEqual('translateX(0px)');
+            expect(gridNode.style.transition).toEqual('');
+
+            // test with deltaX == 0
+            expect(component.getMainGridStyle(0)).toEqual({
+                transform: 'translateX(0px)',
+                transition: 'none'
+            });
+            component.updateMainGridStyle(0);
+            setTimeout(() => {
+                expect(gridNode.style.transform).toEqual('translateX(0px)');
+                expect(gridNode.style.transition).toEqual('none');
+
+                // test with deltaX > 0
+                expect(component.getMainGridStyle(150)).toEqual({
+                    transform: 'translateX(150px)',
+                    transition: 'none'
+                });
+                component.updateMainGridStyle(150);
+                setTimeout(() => {
+                    expect(gridNode.style.transform).toEqual('translateX(150px)');
+                    expect(gridNode.style.transition).toEqual('none');
+
+                    // go to index 2
+                    Store.__private.focusNextModuleCellByIndex('Test grid', 2);
+
+                    // test without deltaX
+                    expect(component.getMainGridStyle()).toEqual({
+                        transform: 'translateX(-200vw)',
+                        transition: null
+                    });
+                    component.updateMainGridStyle();
+                    setTimeout(() => {
+                        expect(gridNode.style.transform).toEqual('translateX(-200vw)');
+                        expect(gridNode.style.transition).toEqual('');
+
+                        // test with deltaX == 0
+                        expect(component.getMainGridStyle(0)).toEqual({
+                            transform: 'translateX(-200vw)',
+                            transition: 'none'
+                        });
+                        component.updateMainGridStyle(0);
+                        setTimeout(() => {
+                            expect(gridNode.style.transform).toEqual('translateX(-200vw)');
+                            expect(gridNode.style.transition).toEqual('none');
+
+                            // test with deltaX > 0
+                            expect(component.getMainGridStyle(150)).toEqual({
+                                transform: 'translateX(calc(-200vw + 150px))',
+                                transition: 'none'
+                            });
+                            component.updateMainGridStyle(150);
+                            setTimeout(() => {
+                                expect(gridNode.style.transform).toEqual('translateX(calc(-200vw + 150px))');
+                                expect(gridNode.style.transition).toEqual('none');
+
+                                done();
+                            }, 0.01);
+                        }, 0.01);
+                    }, 0.01);
+                }, 0.01);
+            }, 0.01);
+        }, 0.01);
+    });
+
+    it('should focus left or right when swipe in one screen mode', function(done) {
+        const element = React.createElement(MainGrid, {node: testGrid, screenMode: screenModes.one});
+        const component = componentUtils.renderIntoDocument(element);
+
+        // swiping right on the leftmost cell does nothing
+        component.onSwipe({direction: Hammer.DIRECTION_RIGHT});
+        setTimeout(() => {
+            expect(Store.getFocusedModuleCellIndex('Test grid')).toEqual(0);
+            // swiping left on the leftmost cell goes right
+            component.onSwipe({direction: Hammer.DIRECTION_LEFT});
+            setTimeout(() => {
+                expect(Store.getFocusedModuleCellIndex('Test grid')).toEqual(1);
+
+                // going on the rightmost for testing
+                Store.__private.focusNextModuleCellByIndex('Test grid', 4);
+                setTimeout(() => {
+                    expect(Store.getFocusedModuleCellIndex('Test grid')).toEqual(5);
+
+                    // swiping left on the rightmost cell does nothing
+                    component.onSwipe({direction: Hammer.DIRECTION_LEFT});
+                    setTimeout(() => {
+                        expect(Store.getFocusedModuleCellIndex('Test grid')).toEqual(5);
+
+                        done();
+                    }, 0.01);
+                }, 0.01);
+            }, 0.01);
+        }, 0.01);
+
+    });
+
+    it('should move left of right when  panning in one screen mode', function(done) {
+        const testGrid = componentUtils.makeSimpleTestGrid();
+        const element = React.createElement(MainGrid, {node: testGrid, screenMode: screenModes.one});
+        const component = componentUtils.renderIntoDocument(element);
+        const domNode = ReactDOM.findDOMNode(component);
+        const gridNode = domNode.querySelector('.grid-main');
+        domNode.parentNode.style.visibility = 'hidden'; // hide it to avoid visual flashes
+        document.body.appendChild(domNode.parentNode);
+
+        // quick way of doing "cards"
+        gridNode.style.position = 'absolute';
+        domNode.querySelector('.grid-row').style.whiteSpace = 'nowrap';
+        _(domNode.querySelectorAll('.grid-cell-module')).forEach(cell => {
+            cell.style.display = 'inline-block';
+            cell.style.width = '100vw';
+        });
+
+        const bodyWidth = document.body.offsetWidth;
+        const halfCellWidth = Math.floor(bodyWidth / 2);
+
+        const overflowLeft = domNode.querySelector('.grid-container-scroll-overflow-left');
+        const overflowRight = domNode.querySelector('.grid-container-scroll-overflow-right');
+
+        // panning right on the leftmost cell activates left overflow
+        let overflow = 150;
+        component.onPan({eventType: Hammer.INPUT_MOVE, deltaX: overflow});
+        expect(overflowLeft.classList.contains('on')).toBe(true);
+        expect(overflowLeft.classList.contains('going-off')).toBe(false);
+        expect(overflowRight.classList.contains('on')).toBe(false);
+        expect(overflowRight.classList.contains('going-off')).toBe(false);
+        expect(overflowLeft.style.transform).toEqual('translateX(' + Math.round(Math.sqrt(Math.abs(overflow % bodyWidth)) * 2) + 'px)');
+        expect(gridNode.style.transform).toEqual('translateX(0px)');
+        expect(gridNode.style.transition).toEqual('none');
+
+        // panning left on the leftmost cell deactivates left overflow and move right
+        let move = -60;
+        component.onPan({eventType: Hammer.INPUT_MOVE, deltaX: move});
+        expect(overflowLeft.classList.contains('on')).toBe(true);
+        expect(overflowLeft.classList.contains('going-off')).toBe(true);
+        expect(overflowRight.classList.contains('on')).toBe(false);
+        expect(overflowRight.classList.contains('going-off')).toBe(false);
+        expect(gridNode.style.transform).toEqual('translateX(' + (move - overflow) + 'px)');
+        expect(gridNode.style.transition).toEqual('none');
+
+        // wait for overflow to disappear
+        setTimeout(() => {
+            expect(overflowLeft.classList.contains('on')).toBe(false);
+            expect(overflowLeft.classList.contains('going-off')).toBe(false);
+
+            // panning more than half on the right from the first cell and stop should focus on the next cell
+            move = -(halfCellWidth + 10);
+            component.onPan({eventType: Hammer.INPUT_MOVE, deltaX: move + overflow});
+            component.onPan({eventType: Hammer.INPUT_END, deltaX: move + overflow});
+
+            // waiting for action to be done
+            setTimeout(() => {
+                expect(Store.getFocusedModuleCellIndex('Test simple grid')).toEqual(1);
+
+                // panning less than half on the right from the second cell and stop should stay on the second cell
+                overflow = 0; // we ended the previous pan so it's a new run
+                move = -(halfCellWidth - 10);
+                component.onPan({eventType: Hammer.INPUT_MOVE, deltaX: move + overflow});
+                component.onPan({eventType: Hammer.INPUT_END, deltaX: move + overflow});
+
+                // waiting for action to be done
+                setTimeout(() => {
+                    expect(Store.getFocusedModuleCellIndex('Test simple grid')).toEqual(1);
+
+                    // panning less than half on the left from the second cell and stop should stay on the second cell
+                    move = halfCellWidth - 10;
+                    component.onPan({eventType: Hammer.INPUT_MOVE, deltaX: move + overflow});
+                    component.onPan({eventType: Hammer.INPUT_END, deltaX: move + overflow});
+
+                    // waiting for action to be done
+                    setTimeout(() => {
+                        expect(Store.getFocusedModuleCellIndex('Test simple grid')).toEqual(1);
+
+                        // panning more than half on the left from the second cell and stop should focus on the previous cell
+                        move = halfCellWidth + 10;
+                        component.onPan({eventType: Hammer.INPUT_MOVE, deltaX: move + overflow});
+                        component.onPan({eventType: Hammer.INPUT_END, deltaX: move + overflow});
+
+                        // waiting for action to be done
+                        setTimeout(() => {
+                            expect(Store.getFocusedModuleCellIndex('Test simple grid')).toEqual(0);
+
+                            // now focus the last cell
+                            Store.__private.focusNextModuleCellByIndex('Test simple grid', 2);
+
+                            // panning left on the rightmost cell activates right overflow
+                            overflow = - 150;
+                            component.onPan({eventType: Hammer.INPUT_MOVE, deltaX: overflow});
+                            expect(overflowRight.classList.contains('on')).toBe(true);
+                            expect(overflowRight.classList.contains('going-off')).toBe(false);
+                            expect(overflowLeft.classList.contains('on')).toBe(false);
+                            expect(overflowLeft.classList.contains('going-off')).toBe(false);
+                            expect(overflowRight.style.transform).toEqual('translateX(-' + Math.round(Math.sqrt(Math.abs(overflow % bodyWidth)) * 2) + 'px)');
+                            expect(gridNode.style.transform).toEqual('translateX(-200vw)'); // -2000vw => moved two cards because we are one the third one
+                            expect(gridNode.style.transition).toEqual('none');
+
+                            // panning left on the leftmost cell deactivates left overflow and move right
+                            move = 60;
+                            component.onPan({eventType: Hammer.INPUT_MOVE, deltaX: move});
+                            expect(overflowRight.classList.contains('on')).toBe(true);
+                            expect(overflowRight.classList.contains('going-off')).toBe(true);
+                            expect(overflowLeft.classList.contains('on')).toBe(false);
+                            expect(overflowLeft.classList.contains('going-off')).toBe(false);
+                            expect(gridNode.style.transform).toEqual('translateX(calc(-200vw + ' + (move - overflow) + 'px))');
+                            expect(gridNode.style.transition).toEqual('none');
+
+                            // wait for overflow to disappear
+                            setTimeout(() => {
+                                expect(overflowRight.classList.contains('on')).toBe(false);
+                                expect(overflowRight.classList.contains('going-off')).toBe(false);
+
+                                // clean dom
+                                domNode.parentNode.style.visibility = null;
+                                document.body.removeChild(domNode.parentNode);
+
+                                // tell jasmine we're done
+                                done();
+                            }, 210);
+                        }, 0.01);
+                    }, 0.01);
+                }, 0.01);
+            }, 0.01);
+        }, 210);
+
+    });
 
 });

@@ -1,13 +1,35 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import classnames from 'classnames';
+
+import _ from 'lodash';
+import Hammer from 'hammerjs';
+import ReactResizeDetector from 'react-resize-detector';
 
 import { Actions } from '../Actions';
 import { Store } from '../Store';
 
 import { DocumentEventsMixin } from '../../Utils/ReactMixins/DocumentEvents';
-import { MousetrapMixin  } from '../../Utils/ReactMixins/Mousetrap';
+import { HammerComponent } from '../../Utils/ReactMixins/Hammer';
+import { MousetrapMixin } from '../../Utils/ReactMixins/Mousetrap';
 import { GridMixin } from './Mixins/Grid';
 import { NodeMixin } from './Mixins/Node';
+
+
+/**
+ * Available modes for the `screenMode` props of MainGrid component
+ *
+ * @memberOf module:Grid.Components.MainGrid
+ *
+ * @property one - Force to always be in "one screen" mode, with swipe to change active module cell
+ * @property multi - Force to always be in "full grid" mode
+ * @property default - Use `one` mode in small screens, and `multi` mode otherwise
+ */
+const screenModes = {
+    one: true,
+    multi: false,
+    default: null
+};
 
 
 /**
@@ -15,8 +37,8 @@ import { NodeMixin } from './Mixins/Node';
  * @namespace
  * @memberOf module:Grid.Components
  * @summary The MainGrid component
- * @mixes module:Grid.Components.Mixins.Node
- * @mixes module:Grid.Components.Mixins.Grid
+ * @mixes module:Grid.Components.Mixins.NodeMixin
+ * @mixes module:Grid.Components.Mixins.GridMixin
  */
 let MainGrid = {
 
@@ -32,13 +54,41 @@ let MainGrid = {
     dropDetectionActivationTimeout: 200,
 
     /**
-     * When the component is created, set the gridName in the state based on the
-     * grid from the props, to be able to update it later
+     * Component props
+     *
+     * @property {bool} screenMode - Define the screen mode behavior of the grid
+     *                               (one of {@link module:Grid.Components.MainGrid.screenModes screenModes}).
+     *                               Default to `screenMode.default`.
+     * @property {int} oneScreenWidthThreshold - Define the width of the grid below which it goes
+     *                                           in "one screen" mode if `screenMode` allows it. Default to `1024`.
+     * @property {int} oneScreenHeightThreshold - Define the height of the grid below which it goes
+     *                                            in "one screen" mode if `screenMode` allows it. Default to `768`.
+     *
+     */
+    propTypes: {
+        screenMode: React.PropTypes.bool
+    },
+
+    /**
+     * Define component props and their default values
+     */
+    getDefaultProps() {
+        return {
+            screenMode: screenModes.default,
+            oneScreenWidthThreshold: 1024,
+            oneScreenHeightThreshold: 768
+        };
+    },
+
+    /**
+     * When the component is created, start in "one screen" mode, and set the gridName in the
+     * state based on the grid from the props, to be able to update it later.
      */
     getInitialState() {
         return {
             // we don't have `this.state.node` yet
-            gridName: this.props.node.getAttribute('name')
+            gridName: this.props.node.getAttribute('name'),
+            oneScreenMode: this.props.screenMode !== screenModes.multi
         };
     },
 
@@ -258,6 +308,28 @@ let MainGrid = {
         };
         Store.on('grid.designMode.**', this.__onDesignModeChange);
         this.activateGridNavigation();
+
+        if (this.props.screenMode !== screenModes.multi) {
+            const [width, height] = this.refs.resizeDetector.containerSize();
+            this.onResize(width, height);
+
+            if (this.state.oneScreenMode) {
+                this.configureHammer();
+            }
+        }
+
+    },
+
+    /**
+     * Configure Hammer for swipe/pan if now in "one screen mode"
+     *
+     * @param {object} prevProps - Component props before the update
+     * @param {object} prevState - Component state before the update
+     */
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.screenMode !== screenModes.multi && !prevState.oneScreenMode && this.state.oneScreenMode) {
+            this.configureHammer();
+        }
     },
 
     /**
@@ -311,6 +383,16 @@ let MainGrid = {
     },
 
     /**
+     * Update grid style when focused
+     *
+     * @param  {string} gridName - The grid name for which the `focus.on` event is triggered
+     */
+    onNavigateTo(gridName) {
+        if (gridName != this.state.gridName) { return; }
+        this.updateMainGridStyle();
+    },
+
+    /**
      * Ask the store to focus on the cell next to the right of the current focused one
      */
     focusRightModuleCell() {
@@ -339,6 +421,194 @@ let MainGrid = {
     },
 
     /**
+     * Called when a swipe was done to go from left or right module cell
+     * Calls {@link module:Grid.Actions.focusLeftModuleCell Grid.Actions.focusLeftModuleCell}
+     * or {@link module:Grid.Actions.focusRightModuleCell Grid.Actions.focusRightModuleCell}
+     *
+     * @param  {event} event - The swipe event from Hammer
+     */
+    onSwipe(event) {
+        let goToDirection;
+        switch (event.direction) {
+            case Hammer.DIRECTION_LEFT:
+                goToDirection = 'Right';
+                break;
+            case Hammer.DIRECTION_RIGHT:
+                goToDirection = 'Left';
+                break;
+            default:
+                return;
+        }
+        if (this && this.panData) {
+            this.panData.cancelled = true;
+        }
+        Actions['focus' + goToDirection + 'ModuleCell'](this.state.gridName, true);
+    },
+
+    /**
+     * Called when a pan was done to go from left or right module cell.
+     *
+     * Calls {@link module:Grid.Actions.focusLeftModuleCell Grid.Actions.focusLeftModuleCell}
+     * or {@link module:Grid.Actions.focusRightModuleCell Grid.Actions.focusRightModuleCell}
+     *
+     * If on a boundary (called "overflow" here), make visually understandable that there is no
+     * module cell on the left/right.
+     *
+     * @param  {event} event - The pan event from Hammer
+     */
+    onPan(event) {
+        switch (event.eventType) {
+            case Hammer.INPUT_START:
+                break;
+
+            case Hammer.INPUT_MOVE:
+                if (!this.panData) {
+                    const gridContainer = ReactDOM.findDOMNode(this.refs.gridContainer);
+                    this.panData = {
+                        gridContainer: gridContainer,
+                        gridContainerIdSet: false,
+
+                        gridWidth: gridContainer.firstChild.offsetWidth,
+                        bodyWidth: document.body.offsetWidth,
+
+                        cancelled: false,
+
+                        overflow: {
+                            delta: 0,
+
+                            left: {
+                                blocked: false,
+                                node: gridContainer.children[1],
+                                delta: null,
+                                offTimer: null
+                            },
+
+                            right: {
+                                blocked: false,
+                                node: gridContainer.children[2],
+                                delta: null,
+                                offTimer: null
+                            }
+                        },
+
+                        activateOverflow(side, delta) {
+                            const data = this.overflow[side];
+                            if (data.offTimer) {
+                                clearTimeout(data.offTimer);
+                                data.offTimer = null;
+                            }
+                            this.overflow.delta = delta;
+                            data.blocked = true;
+                            const newDelta = Math.round(Math.sqrt(Math.abs(delta % this.bodyWidth)) * 2);
+                            if (newDelta != data.delta) {
+                                data.node.classList.remove('going-off');
+                                data.node.classList.add('on');
+                                data.node.style.transform = 'translateX(' + (side == 'right' ? '-' : '') + newDelta + 'px)';
+                                data.node.style.opacity = 0.5 + (1-Math.exp(-0.00001 * Math.pow(delta, 2)))/2;
+                                data.delta = newDelta;
+                            }
+                        },
+
+                        deactivateOverflow(side) {
+                            const data = this.overflow[side];
+                            if (!data.blocked) { return; }
+                            if (data.offTimer) {
+                                clearTimeout(data.offTimer);
+                                data.offTimer = null;
+                            }
+                            data.blocked = false;
+                            data.delta = null;
+                            if (data.node.classList.contains('on')) {
+                                data.node.classList.add('going-off');
+                                data.node.style.transform = '';
+                                data.node.style.opacity = '';
+                                data.offTimer = setTimeout(() => {
+                                    data.offTimer = null;
+                                    data.node.classList.remove('on');
+                                    data.node.classList.remove('going-off');
+                                }, 200);
+                            }
+                        }
+                    };
+
+                    let gridContainerId = gridContainer.getAttribute('id');
+                    if (!gridContainerId) {
+                        gridContainerId = _.uniqueId('gridContainer');
+                        gridContainer.setAttribute('id', gridContainerId);
+                        this.panData.gridContainerIdSet = true;
+                    }
+                    this.panData.gridContainerId = gridContainerId;
+                    this.panData.nbCards = Math.round(this.panData.gridWidth / this.panData.bodyWidth);
+                }
+
+                const deltaX = event.deltaX - this.panData.overflow.delta;
+
+                const index = Store.getFocusedModuleCellIndex(this.state.gridName);
+
+                const canScrollLeft = (index * this.panData.bodyWidth - deltaX > 0);
+                const canScrollRight = ((index + 1) * this.panData.bodyWidth - deltaX < this.panData.gridWidth -1);
+
+                if (deltaX >= 0 && !canScrollLeft) {
+                    if (!this.panData.overflow.left.blocked) {
+                        this.updateMainGridStyle(index * this.panData.bodyWidth + 'px');
+                    }
+                    this.panData.activateOverflow('left', event.deltaX);
+                } else if (deltaX <= 0 && !canScrollRight) {
+                    if (!this.panData.overflow.right.blocked) {
+                        this.updateMainGridStyle((index - this.panData.nbCards + 1)*100 + 'vw');
+                    }
+                    this.panData.activateOverflow('right', event.deltaX);
+                } else {
+                    this.panData.deactivateOverflow('left');
+                    this.panData.deactivateOverflow('right');
+                    this.updateMainGridStyle(deltaX + 'px');
+                }
+                break;
+
+            case Hammer.INPUT_END:
+            case Hammer.INPUT_CANCEL:
+                if (!this.panData) {
+                    break;
+                }
+
+                const panData = this.panData;
+                delete this.panData;
+
+                panData.deactivateOverflow('left');
+                panData.deactivateOverflow('right');
+
+                let cancelPan = true;
+
+                if (event.eventType == Hammer.INPUT_END && !panData.cancelled) {
+                    const deltaX = event.deltaX - panData.overflow.delta;
+
+                    if (Math.abs(deltaX) > panData.bodyWidth / 2) {
+                        const goToDirection = deltaX < 0 ? 'Right' : 'Left';
+                        cancelPan = false;
+                        Actions['focus' + goToDirection + 'ModuleCell'](this.state.gridName, true);
+                    }
+                }
+
+                if (cancelPan) {
+                    this.updateMainGridStyle();
+                }
+
+                break;
+
+        }
+    },
+
+    /**
+     * Configure Hammer to react on swipe/pan events
+     */
+    configureHammer() {
+        const hammer = this.refs.gridContainer.hammer;
+        hammer.get('swipe').set({direction: Hammer.DIRECTION_HORIZONTAL});
+        hammer.add(new Hammer.Pan({direction: Hammer.DIRECTION_HORIZONTAL})).recognizeWith(hammer.get('swipe'));
+        hammer.on('pan', this.onPan);
+    },
+
+    /**
      * Activate the keyboard shortcuts to enable keyboard navigation between
      * module cells
      */
@@ -347,6 +617,8 @@ let MainGrid = {
         this.bindShortcut('ctrl+left', this.focusLeftModuleCell);
         this.bindShortcut('ctrl+down', this.focusBottomModuleCell);
         this.bindShortcut('ctrl+up', this.focusTopModuleCell);
+
+        Store.on('grid.navigate.focus.on', this.onNavigateTo);
     },
 
     /**
@@ -369,6 +641,9 @@ let MainGrid = {
                 throw (e);
             }
         }
+
+        Store.off('grid.navigate.focus.on', this.onNavigateTo);
+
     },
 
     /**
@@ -379,6 +654,7 @@ let MainGrid = {
      * One or more of these classes:
      *
      * - `grid-component`: in all cases
+     * - `grid-component-one-screen-mode`: in the grid is in "one screen" mode
      * - `grid-component-design-mode`: if the grid is in design mode
      * - `grid-component-design-mode-step-*`: if the grid is in design mode, depending of the current step
      * - `grid-component-with-placeholders`: if the grid has placeholders
@@ -388,12 +664,91 @@ let MainGrid = {
         const inDesignMode = this.isInDesignMode();
         const classes = {
             'grid-component': true,
+            'grid-component-one-screen-mode': this.state.oneScreenMode,
             'grid-component-design-mode': inDesignMode,
             'grid-component-with-placeholders': Store.hasPlaceholders(this.state.gridName),
             'grid-component-with-resizers': Store.hasResizers(this.state.gridName)
         };
         classes['grid-component-design-mode-step-' + this.getDesignModeStep()] = inDesignMode;
         return classnames(classes);
+    },
+
+    /**
+     * Update the style of the grid dom node, to translate it horizontally in "one screen" mode.
+     *
+     * @param {int} deltaX - The delta, in pixels, to translate horizontally (passed to `getMainGridStyle`)
+     */
+    updateMainGridStyle(deltaX) {
+        const domNode = ReactDOM.findDOMNode(this);
+
+        if (this.state.oneScreenMode) {
+            const container = domNode.querySelector('.grid-container');
+            container.scrollLeft = 0;
+        }
+
+        const gridNode = domNode.querySelector('.grid-main');
+        const styles = this.getMainGridStyle(deltaX);
+        for (const name in styles) {
+            if (styles.hasOwnProperty(name)) {
+                gridNode.style[name] = styles[name];
+            }
+        }
+    },
+
+    /**
+     * Compute the style for the grid dom node in "one screen" mode. Reset the style if not in this screen mode.
+     *
+     * @param {int} deltaX - The delta, in pixels, to translate horizontally (passed to `getMainGridStyle`)
+     *
+     * @returns {object} - The style properties to apply to the grid
+     */
+    getMainGridStyle(deltaX) {
+        if (!this.state.oneScreenMode) {
+            return {
+                transform: null,
+                transition: null
+            };
+        }
+
+        const index = Store.getFocusedModuleCellIndex(this.state.gridName);
+        let delta = index ? '-' + (index * 100) + 'vw' : '0px';
+        const deltaXSet = (typeof deltaX !== 'undefined');
+        if (deltaXSet) {
+            deltaX = parseInt(deltaX, 10);
+            if (deltaX) {
+                delta = index ? 'calc(' + delta + ' + ' + deltaX + 'px)' : deltaX + 'px';
+            }
+        }
+        return {
+            transform: 'translateX(' + delta + ')',
+            // force no transition if deltaX given, else use the one defined in css file
+            transition: deltaXSet ? 'none' : null
+        };
+    },
+
+    /**
+     * Called when the grid size change, to change the screen mode if allowed by `this.props.screenMode`)
+     *
+     * @param {int} width - The new width of the grid
+     * @param {int} height - The new height of the grid
+     */
+    onResize(width, height) {
+        let oneScreenMode;
+        switch (this.props.screenMode) {
+            case screenModes.one:
+                oneScreenMode = true;
+                break;
+            case screenModes.multi:
+                oneScreenMode = false;
+                break;
+            default:
+                oneScreenMode = (
+                    width < this.props.oneScreenWidthThreshold || height < this.props.oneScreenHeightThreshold
+                );
+        }
+        if (oneScreenMode !== this.state.oneScreenMode) {
+            this.setState({oneScreenMode});
+        }
     },
 
     /**
@@ -434,12 +789,29 @@ let MainGrid = {
             );
         }
 
+        let containerChildren = [this.renderGrid({}, this.getMainGridStyle())];
+
+        if (this.state.oneScreenMode) {
+            containerChildren = (
+                <HammerComponent component="div" className="grid-container" ref="gridContainer" onSwipe={this.onSwipe}>
+                    {containerChildren}
+                    <div className="grid-container-scroll-overflow-left" />
+                    <div className="grid-container-scroll-overflow-right" />
+                </HammerComponent>
+            );
+        }
+
         return (<div className={this.getComponentClasses()}>
             <nav className="grid-toolbar">
                 <label>{this.state.gridName}</label>
                 {undoButton}{redoButton}{addButton}{toggleButton}
             </nav>
-            {this.renderGrid()}
+            {containerChildren}
+            {
+                this.props.screenMode !== screenModes.multi
+                &&
+                <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} ref="resizeDetector" />
+            }
         </div>);
     }
 
@@ -447,4 +819,5 @@ let MainGrid = {
 
 MainGrid = React.createClass(MainGrid);
 
-export { MainGrid };
+
+export { MainGrid, screenModes };

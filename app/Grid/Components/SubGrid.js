@@ -22,7 +22,7 @@ let SubGrid = {
      * Render the component mainly by calling renderRows
      */
     render() {
-        return this.renderGrid();
+        return this.renderGrid({}, {});
     }
 };
 

@@ -43,6 +43,24 @@ export const componentUtils = {
         return Store.getGrid('Test grid');
     },
 
+    makeSimpleTestGrid() {
+        let testGrid = Manipulator.XMLStringToXMLGrid(
+            '<grid name="Test simple grid" space="5px" type="mainGrid">' +
+                '<content>' +
+                    '<row>' +
+                        '<cell type="module"><content component="Module.Test1" text="test 1-1"/></cell>' +
+                        '<cell type="module"><content component="Module.Test2" text="test 1-2"/></cell>' +
+                        '<cell type="module"><content component="Module.Test2" text="test 1-3"/></cell>' +
+                    '</row>' +
+                '</content>' +
+            '</grid>');
+
+        Actions.addGrid(testGrid);
+        Manipulator.setIds(testGrid);
+
+        return Store.getGrid('Test simple grid');
+    },
+
     countRows(component) {
         try {
             return TestUtils.scryRenderedComponentsWithType(component, Row).length;
