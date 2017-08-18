@@ -9,6 +9,6 @@ export const Test1 = React.createClass({
     ],
 
     renderModule() {
-        return 'Module.Test1: ' + this.props.text;
+        return `Module.Test1: ${this.props.text}`;
     }
 });

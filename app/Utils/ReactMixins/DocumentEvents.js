@@ -22,7 +22,7 @@ const DocumentEventsMixin = {
      * The bounded function is cached to always have the same result to use in
      * addEventListener and removeEventListener
      *
-     * @param  {string} methodName - The name of the method to bind
+     * @param  {String} methodName - The name of the method to bind
      *
      * @return {function} - The wanted function, bound to this
      */
@@ -43,8 +43,7 @@ const DocumentEventsMixin = {
     /**
      * Clear from the cache the bound function for the given method name
      *
-     * @param  {string} methodName - The name of the method for which we want to bound version be removed from the cache
-     * @return {} - nothing
+     * @param  {String} methodName - The name of the method for which we want to bound version be removed from the cache
      */
     clearDocumentEventCache(methodName) {
         if (!this._documentEventCache) { return; }
@@ -53,8 +52,6 @@ const DocumentEventsMixin = {
 
     /**
      * Clear the whole cache of bound methods
-     *
-     * @return {} - nothing
      */
     clearAllDocumentEventsCache() {
         if (!this._documentEventCache) { return; }
@@ -67,8 +64,8 @@ const DocumentEventsMixin = {
     /**
      * Add an event listener on "document" for the given event, to call the given method name
      *
-     * @param {string} eventName - The event name to listen to on the document
-     * @param {string} methodName - The name of the method of `this` to call when the event is fired
+     * @param {String} eventName - The event name to listen to on the document
+     * @param {String} methodName - The name of the method of `this` to call when the event is fired
      */
     addDocumentListener(eventName, methodName) {
         if (this._documentEventCache && this._documentEventCache[methodName]) { return; }
@@ -79,8 +76,8 @@ const DocumentEventsMixin = {
     /**
      * Remove the event listener on "document" for the given event, that was set to call the given method name
      *
-     * @param {string} eventName - The event name to stop listening to on the document
-     * @param {string} methodName - The name of the method of `this` to stop calling call when the event is fired
+     * @param {String} eventName - The event name to stop listening to on the document
+     * @param {String} methodName - The name of the method of `this` to stop calling call when the event is fired
      */
     removeDocumentListener(eventName, methodName) {
         if (!this._documentEventCache || !this._documentEventCache[methodName]) { return; }

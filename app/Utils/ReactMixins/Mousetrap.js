@@ -33,12 +33,12 @@ const MousetrapMixin = {
              * This is a subclass of "Error"
              * @class
              *
-             * @param {string} [message=Inconsistency detected] - The raised message
+             * @param {String} [message=Inconsistency detected] - The raised message
              *
-             * @property {string} name - The name of the exception: "Inconsistency"
-             * @property {string} message - The message passed when the exception was raised, or a default value
+             * @property {String} name - The name of the exception: "Inconsistency"
+             * @property {String} message - The message passed when the exception was raised, or a default value
              */
-            Inconsistency: function Inconsistency(message) {
+            Inconsistency(message) {
                 this.name = 'Inconsistency';
                 this.message = message || 'Inconsistency detected';
             }
@@ -49,12 +49,14 @@ const MousetrapMixin = {
      * Bind a keyboard shortcut to a callback
      *
      * @param  {String} key - The string representation of the shortcut to catch
-     * @param  {Function} callback - The callback to call when the shortcut is catched
+     * @param  {Function} callback - The callback to call when the shortcut is caught
      */
     bindShortcut(key, callback) {
         if (!this._mousetrapBindings) { this._mousetrapBindings = {}; }
         if (typeof this._mousetrapBindings[key] !== 'undefined') {
-            throw new MousetrapMixin.statics.Exceptions.Inconsistency("The shortcut <" + key + "> is already defined for this component");
+            throw new MousetrapMixin.statics.Exceptions.Inconsistency(
+                `The shortcut <${key}> is already defined for this component`
+            );
         }
         Mousetrap.bind(key, callback);
         this._mousetrapBindings[key] = callback;
@@ -66,11 +68,13 @@ const MousetrapMixin = {
      * @param  {String} key - The string representation of the shortcut to unbind
      */
     unbindShortcut(key) {
-        if (!this._mousetrapBindings) { return }
+        if (!this._mousetrapBindings) { return; }
         if (typeof this._mousetrapBindings[key] === 'undefined') {
-            throw new MousetrapMixin.statics.Exceptions.Inconsistency("The shortcut <" + key + "> is not defined for this component");
+            throw new MousetrapMixin.statics.Exceptions.Inconsistency(
+                `The shortcut <${key}> is not defined for this component`
+            );
         }
-        Mousetrap.unbind(key);
+        Mousetrap.unbind(key, this._mousetrapBindings[key]);
         delete(this._mousetrapBindings[key]);
     },
 
@@ -78,10 +82,10 @@ const MousetrapMixin = {
      * Unbind all shortcuts associated to this component
      */
     unbindAllShortcuts() {
-        if (!this._mousetrapBindings) { return }
+        if (!this._mousetrapBindings) { return; }
         for (const key in this._mousetrapBindings) {
             if (this._mousetrapBindings.hasOwnProperty(key)) {
-                Mousetrap.unbind(this._mousetrapBindings[key]);
+                Mousetrap.unbind(key, this._mousetrapBindings[key]);
             }
         }
         this._mousetrapBindings = {};

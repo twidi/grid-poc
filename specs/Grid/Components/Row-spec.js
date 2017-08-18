@@ -14,19 +14,17 @@ import { Utils } from '../../Utils';
 import { componentUtils } from './Utils';
 
 
-describe('Grid.Components.Row', function() {
-    let uniqueIdMock;
-
+describe('Grid.Components.Row', () => {
     // main grid, and the row to test defined in beforeEach
     let testGrid;
     let gridRow;
 
-    beforeEach(function(done) {
+    beforeEach((done) => {
         // we want to start each test with a fresh list of grids
         Store.__removeAllGrids();
 
         // we mock the uniqueId function of lodash to know the value to expect
-        uniqueIdMock = Utils.mockUniqueId();
+        Utils.mockUniqueId();
 
         // reset the modules cache for every test
         componentUtils.clearModulesCache();
@@ -39,30 +37,30 @@ describe('Grid.Components.Row', function() {
         setTimeout(done, 0.01);
     });
 
-    afterEach(function() {
+    afterEach(() => {
         componentUtils.unmountAllComponents();
     });
 
-    it('should access its main grid', function() {
-        const element = React.createElement(Row, {node: gridRow});
+    it('should access its main grid', () => {
+        const element = React.createElement(Row, { node: gridRow });
         const component = componentUtils.renderIntoDocument(element);
         expect(component.getGrid()).toBe(testGrid);
     });
 
-    it('should get its id', function() {
-        const element = React.createElement(Row, {node: gridRow});
+    it('should get its id', () => {
+        const element = React.createElement(Row, { node: gridRow });
         const component = componentUtils.renderIntoDocument(element);
         expect(component.getNodeId()).toBe(gridRow.getAttribute('id'));
     });
 
-    it('should get the main grid name', function() {
-        const element = React.createElement(Row, {node: gridRow});
+    it('should get the main grid name', () => {
+        const element = React.createElement(Row, { node: gridRow });
         const component = componentUtils.renderIntoDocument(element);
         expect(component.getGridName()).toEqual('Test grid');
     });
 
-    it('should get the design mode step', function() {
-        const element = React.createElement(Row, {node: gridRow});
+    it('should get the design mode step', () => {
+        const element = React.createElement(Row, { node: gridRow });
         const component = componentUtils.renderIntoDocument(element);
         expect(component.getDesignModeStep()).toEqual('disabled');
 
@@ -70,8 +68,8 @@ describe('Grid.Components.Row', function() {
         expect(component.getDesignModeStep()).toEqual('enabled');
     });
 
-    it('should know if it\'s in design mode', function() {
-        const element = React.createElement(Row, {node: gridRow});
+    it('should know if it\'s in design mode', () => {
+        const element = React.createElement(Row, { node: gridRow });
         const component = componentUtils.renderIntoDocument(element);
         expect(component.isInDesignMode()).toBe(false);
 
@@ -79,8 +77,8 @@ describe('Grid.Components.Row', function() {
         expect(component.isInDesignMode()).toBe(true);
     });
 
-    it('should be able to get its grid cells if no resizers', function() {
-        const element = React.createElement(Row, {node: gridRow});
+    it('should be able to get its grid cells if no resizers', () => {
+        const element = React.createElement(Row, { node: gridRow });
         const component = componentUtils.renderIntoDocument(element);
         const cells = component.getCells();
         const expectedCells = _.toArray(gridRow.querySelectorAll(':scope > cell, :scope > resizer'));
@@ -90,11 +88,11 @@ describe('Grid.Components.Row', function() {
         expect(cells[1].tagName).toEqual('cell');
     });
 
-    it('should be able to get its grid cells with resizers if any', function() {
+    it('should be able to get its grid cells with resizers if any', () => {
         Manipulator.addResizers(testGrid);
         Manipulator.setIds(testGrid);
 
-        const element = React.createElement(Row, {node: gridRow});
+        const element = React.createElement(Row, { node: gridRow });
         const component = componentUtils.renderIntoDocument(element);
         const cells = component.getCells();
         const expectedCells = _.toArray(gridRow.querySelectorAll(':scope > cell, :scope > resizer'));
@@ -105,23 +103,23 @@ describe('Grid.Components.Row', function() {
         expect(cells[2].tagName).toEqual('cell');
     });
 
-    it('should know if it\'s a placeolder or not', function() {
+    it('should know if it\'s a placeholder or not', () => {
         Manipulator.addPlaceholders(testGrid);
         Manipulator.setIds(testGrid);
 
         gridRow = testGrid.querySelector('row[type=placeholder]');
-        let element = React.createElement(Row, {node: gridRow});
+        let element = React.createElement(Row, { node: gridRow });
         let component = componentUtils.renderIntoDocument(element);
         expect(component.isPlaceholder()).toBe(true);
 
         gridRow = testGrid.querySelector('row:not([type=placeholder])');
-        element = React.createElement(Row, {node: gridRow});
+        element = React.createElement(Row, { node: gridRow });
         component = componentUtils.renderIntoDocument(element);
         expect(component.isPlaceholder()).toBe(false);
     });
 
-    it('should render a row', function() {
-        const element = React.createElement(Row, {node: gridRow});
+    it('should render a row', () => {
+        const element = React.createElement(Row, { node: gridRow });
         const component = componentUtils.renderIntoDocument(element);
         const domNode = ReactDOM.findDOMNode(component);
         expect(domNode.tagName).toEqual('DIV');
@@ -138,12 +136,12 @@ describe('Grid.Components.Row', function() {
         expect(domNode.getAttribute('style')).toMatch(/\bflex-grow\s*:\s*2\b/);
     });
 
-    it('should render a placeholder', function() {
+    it('should render a placeholder', () => {
         Manipulator.addPlaceholders(testGrid);
         Manipulator.setIds(testGrid);
 
         const placeholderGridRow = testGrid.querySelector('row[type=placeholder]');
-        const element = React.createElement(Row, {node: placeholderGridRow});
+        const element = React.createElement(Row, { node: placeholderGridRow });
         const component = componentUtils.renderIntoDocument(element);
         const domNode = ReactDOM.findDOMNode(component);
         expect(domNode.tagName).toEqual('DIV');
@@ -151,8 +149,8 @@ describe('Grid.Components.Row', function() {
         expect(domNode.classList.contains('grid-row-placeholder')).toBe(true);
     });
 
-    it('should be able to render its cells if no resizers', function() {
-        const element = React.createElement(Row, {node: gridRow});
+    it('should be able to render its cells if no resizers', () => {
+        const element = React.createElement(Row, { node: gridRow });
         const component = componentUtils.renderIntoDocument(element);
         const cells = component.renderCells();
         expect(cells.length).toEqual(2);
@@ -160,11 +158,11 @@ describe('Grid.Components.Row', function() {
         expect(TestUtils.isElementOfType(cells[1], Cell)).toBe(true);
     });
 
-    it('should be able to render its cells and resizers if any', function() {
+    it('should be able to render its cells and resizers if any', () => {
         Manipulator.addResizers(testGrid);
         Manipulator.setIds(testGrid);
 
-        const element = React.createElement(Row, {node: gridRow});
+        const element = React.createElement(Row, { node: gridRow });
         const component = componentUtils.renderIntoDocument(element);
         const cells = component.renderCells();
         expect(cells.length).toEqual(3);
@@ -173,8 +171,8 @@ describe('Grid.Components.Row', function() {
         expect(TestUtils.isElementOfType(cells[2], Cell)).toBe(true);
     });
 
-    it('should render sub components', function() {
-        const element = React.createElement(Row, {node: gridRow});
+    it('should render sub components', () => {
+        const element = React.createElement(Row, { node: gridRow });
         const component = componentUtils.renderIntoDocument(element);
         expect(componentUtils.countRows(component)).toEqual(3);  // including self
         expect(componentUtils.countModules(component)).toEqual(3);

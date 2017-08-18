@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /**
  * Mixins for react components
  * @namespace

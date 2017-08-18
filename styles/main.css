@@ -226,7 +226,7 @@ html, body, #app, .grid-component {
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 1000;
+    /*z-index: 1000;*/
     background: rgba(255, 255, 255, 0.5);
     z-index: 1;
 }
@@ -261,11 +261,11 @@ html, body, #app, .grid-component {
     }
     .grid-component-one-screen-mode .grid-container-scroll-overflow-left {
         left: -200vw;
-        box-shadow: 100vw 0px 25px 25px rgba(0, 150, 136, 0.6);
+        box-shadow: 100vw 0 25px 25px rgba(0, 150, 136, 0.6);
     }
     .grid-component-one-screen-mode .grid-container-scroll-overflow-right {
         right: -200vw;
-        box-shadow: -100vw 0px 25px 25px rgba(0, 150, 136, 0.6);
+        box-shadow: -100vw 0 25px 25px rgba(0, 150, 136, 0.6);
     }
     .grid-component-one-screen-mode .grid-container-scroll-overflow-left.going-off,
     .grid-component-one-screen-mode .grid-container-scroll-overflow-right.going-off {

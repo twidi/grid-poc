@@ -66,7 +66,7 @@ const NodesHolderMixin = {
      *
      * @alias module:Grid.Components.Mixins.NodesHolder.getExternalNode()
      *
-     * @return {DomMode|nothing} - The dom node to insert, or nothing
+     * @return {Element|Node|null} - The dom node to insert, or nothing
      */
 
      // The method to override must not include the prefix `_`
@@ -95,9 +95,9 @@ const NodesHolderMixin = {
      *
      * If the parentNode if not given, `ReactDOM.findDOMNode(this)` will be used;
      *
-     * @param  {DomNode} domNode - The dom node to add
-     * @param  {string} className - The class name to force the dom node to add to have
-     * @param  {DomNode} [parentNode=null] - The dom node holding the one to add
+     * @param  {Element|Node} domNode - The dom node to add
+     * @param  {String} className - The class name to force the dom node to add to have
+     * @param  {Element|Node} [parentNode=] - The dom node holding the one to add
      *
      * @private
      */
@@ -118,7 +118,7 @@ const NodesHolderMixin = {
         const domNode = ReactDOM.findDOMNode(this);
         for (let i = this.externalNodesClassNames.length - 1; i >= 0; i--) {
             const className = this.externalNodesClassNames[i];
-            const externalNode = domNode.querySelector(':scope > .' + className);
+            const externalNode = domNode.querySelector(`:scope > .${className}`);
             if (externalNode) {
                 this._detachExternalNode(externalNode, domNode);
             }
@@ -131,8 +131,8 @@ const NodesHolderMixin = {
      *
      * If the domNode if not given, `ReactDOM.findDOMNode(this)` will be used;
      *
-     * @param  {string} domNode - The dom node to remove
-     * @param  {DomNode} [parentNode=null] - The dom node holding the one to remove
+     * @param  {Element|Node} domNode - The dom node to remove
+     * @param  {Element|Node} [parentNode=] - The dom node holding the one to remove
      *
      * @private
      */
@@ -170,4 +170,4 @@ const NodesHolderMixin = {
 
 };
 
-export {NodesHolderMixin};
+export { NodesHolderMixin };

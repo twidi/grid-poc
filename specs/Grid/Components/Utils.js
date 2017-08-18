@@ -13,7 +13,7 @@ export const componentUtils = {
     _componentsCache: [],
 
     makeTestGrid() {
-        let testGrid = Manipulator.XMLStringToXMLGrid(
+        const testGrid = Manipulator.XMLStringToXMLGrid(
             '<grid name="Test grid" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row>' +
@@ -44,7 +44,7 @@ export const componentUtils = {
     },
 
     makeSimpleTestGrid() {
-        let testGrid = Manipulator.XMLStringToXMLGrid(
+        const testGrid = Manipulator.XMLStringToXMLGrid(
             '<grid name="Test simple grid" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row>' +
@@ -127,7 +127,7 @@ export const componentUtils = {
     },
 
     renderIntoDocument(element) {
-        let component = TestUtils.renderIntoDocument(element);
+        const component = TestUtils.renderIntoDocument(element);
         this._componentsCache.push(component);
         return component;
     },
@@ -138,25 +138,25 @@ export const componentUtils = {
         // case many React instances that doesn't share mounted components
         if (component.isMounted()) {
             return ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(component).parentNode);
-        } else {
-            return false;
         }
+        return false;
     },
 
     unmountAllComponents() {
         for (let i = this._componentsCache.length - 1; i >= 0; i--) {
-            let component = this._componentsCache[i];
+            const component = this._componentsCache[i];
             try {
                 this.unmountComponent(component);
             } catch (e) {
-                console.log('Unable to unmount component', component, e);
+                console.log('Unable to unmount component', component, e); // eslint-disable-line no-console
             }
         }
         this._componentsCache = [];
     },
 
     simulateDragEvent(domNode, eventName, setDataFunction) {
-        TestUtils.Simulate[eventName](domNode, {dataTransfer: {setData: setDataFunction || function() {} }});
-    },
+        TestUtils.Simulate[eventName](domNode,
+            { dataTransfer: { setData: setDataFunction || function setData() {} } });
+    }
 
 };

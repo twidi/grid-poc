@@ -11,4 +11,4 @@ const Modules = {
     Test2
 };
 
-export {Modules};
+export { Modules };

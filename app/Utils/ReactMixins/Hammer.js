@@ -41,6 +41,7 @@ let HammerComponent = {
 
     componentDidMount() {
         this.hammer = new Hammer(ReactDOM.findDOMNode(this));
+        /* eslint-disable no-multi-spaces */
         if (this.props.action)      this.hammer.on('tap press',     this.props.action);
         if (this.props.onTap)       this.hammer.on('tap',           this.props.onTap);
         if (this.props.onDoubleTap) this.hammer.on('doubletap',     this.props.onDoubleTap);
@@ -61,7 +62,7 @@ let HammerComponent = {
 
         const props = {};
 
-        Object.keys(this.props).forEach(function(i) {
+        Object.keys(this.props).forEach((i) => {
             if (!privateProps[i]) {
                 props[i] = this.props[i];
             }

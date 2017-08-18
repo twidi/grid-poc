@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /**
  * Components used by the Grid
  * @namespace

@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import jasmineReact from 'jasmine-react-helpers-hotfix-0.14';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -16,20 +15,19 @@ import { TestDocumentEventsMixin } from '../../Utils/ReactMixins/DocumentEvents'
 import { Utils } from '../../Utils';
 
 
-describe('Grid.Components.Resizer', function() {
-    let uniqueIdMock;
+describe('Grid.Components.Resizer', () => {
 
     // main grid, and the resizers to test defined in beforeEach
     let testGrid;
     let verticalResizer;
     let horizontalResizer;
 
-    beforeEach(function(done) {
+    beforeEach((done) => {
         // we want to start each test with a fresh list of grids
         Store.__removeAllGrids();
 
         // we mock the uniqueId function of lodash to know the value to expect
-        uniqueIdMock = Utils.mockUniqueId();
+        Utils.mockUniqueId();
 
         // reset the modules cache for every test
         componentUtils.clearModulesCache();
@@ -44,36 +42,36 @@ describe('Grid.Components.Resizer', function() {
         setTimeout(done, 0.01);
     });
 
-    afterEach(function() {
+    afterEach(() => {
         componentUtils.unmountAllComponents();
     });
 
-    it('should manage document events', function(done) {
-        const element = React.createElement(Resizer, {node: verticalResizer});
+    it('should manage document events', (done) => {
+        const element = React.createElement(Resizer, { node: verticalResizer });
         const component = componentUtils.renderIntoDocument(element);
         TestDocumentEventsMixin(component, done);
     });
 
-    it('should access its main grid', function() {
-        const element = React.createElement(Resizer, {node: verticalResizer});
+    it('should access its main grid', () => {
+        const element = React.createElement(Resizer, { node: verticalResizer });
         const component = componentUtils.renderIntoDocument(element);
         expect(component.getGrid()).toBe(testGrid);
     });
 
-    it('should get its id', function() {
-        const element = React.createElement(Resizer, {node: verticalResizer});
+    it('should get its id', () => {
+        const element = React.createElement(Resizer, { node: verticalResizer });
         const component = componentUtils.renderIntoDocument(element);
         expect(component.getNodeId()).toBe(verticalResizer.getAttribute('id'));
     });
 
-    it('should get the main grid name', function() {
-        const element = React.createElement(Resizer, {node: verticalResizer});
+    it('should get the main grid name', () => {
+        const element = React.createElement(Resizer, { node: verticalResizer });
         const component = componentUtils.renderIntoDocument(element);
         expect(component.getGridName()).toEqual('Test grid');
     });
 
-    it('should get the design mode step', function() {
-        const element = React.createElement(Resizer, {node: verticalResizer});
+    it('should get the design mode step', () => {
+        const element = React.createElement(Resizer, { node: verticalResizer });
         const component = componentUtils.renderIntoDocument(element);
         expect(component.getDesignModeStep()).toEqual('disabled');
 
@@ -81,8 +79,8 @@ describe('Grid.Components.Resizer', function() {
         expect(component.getDesignModeStep()).toEqual('enabled');
     });
 
-    it('should know if it\'s in design mode', function() {
-        const element = React.createElement(Resizer, {node: verticalResizer});
+    it('should know if it\'s in design mode', () => {
+        const element = React.createElement(Resizer, { node: verticalResizer });
         const component = componentUtils.renderIntoDocument(element);
         expect(component.isInDesignMode()).toBe(false);
 
@@ -90,20 +88,20 @@ describe('Grid.Components.Resizer', function() {
         expect(component.isInDesignMode()).toBe(true);
     });
 
-    it('should know if it\'s a vertical or horizontal placeholder', function() {
-        let element = React.createElement(Resizer, {node: verticalResizer});
+    it('should know if it\'s a vertical or horizontal placeholder', () => {
+        let element = React.createElement(Resizer, { node: verticalResizer });
         let component = componentUtils.renderIntoDocument(element);
         expect(component.isVertical()).toBe(true);
         expect(component.isHorizontal()).toBe(false);
 
-        element = React.createElement(Resizer, {node: horizontalResizer});
+        element = React.createElement(Resizer, { node: horizontalResizer });
         component = componentUtils.renderIntoDocument(element);
         expect(component.isVertical()).toBe(false);
         expect(component.isHorizontal()).toBe(true);
     });
 
-    it('should render a vertical resizer', function() {
-        const element = React.createElement(Resizer, {node: verticalResizer});
+    it('should render a vertical resizer', () => {
+        const element = React.createElement(Resizer, { node: verticalResizer });
         const component = componentUtils.renderIntoDocument(element);
         const domNode = ReactDOM.findDOMNode(component);
         expect(domNode.tagName).toEqual('DIV');
@@ -112,8 +110,8 @@ describe('Grid.Components.Resizer', function() {
         expect(domNode.classList.contains('grid-resizer-horizontal')).toBe(false);
     });
 
-    it('should render a horizontal resizer', function() {
-        const element = React.createElement(Resizer, {node: horizontalResizer});
+    it('should render a horizontal resizer', () => {
+        const element = React.createElement(Resizer, { node: horizontalResizer });
         const component = componentUtils.renderIntoDocument(element);
         const domNode = ReactDOM.findDOMNode(component);
         expect(domNode.tagName).toEqual('DIV');
@@ -122,11 +120,11 @@ describe('Grid.Components.Resizer', function() {
         expect(domNode.classList.contains('grid-resizer-horizontal')).toBe(true);
     });
 
-    it('should handle mouse down event in design mode', function(done) {
+    it('should handle mouse down event in design mode', (done) => {
         jasmineReact.spyOnClass(Resizer, 'onMouseDown').and.returnValue();
         const resizerProto = jasmineReact.classPrototype(Resizer);
 
-        const element = React.createElement(Resizer, {node: horizontalResizer});
+        const element = React.createElement(Resizer, { node: horizontalResizer });
         const component = componentUtils.renderIntoDocument(element);
         const domNode = ReactDOM.findDOMNode(component);
 
@@ -137,21 +135,21 @@ describe('Grid.Components.Resizer', function() {
         TestUtils.Simulate.mouseDown(domNode);
 
         // leave time for the event to propagate
-        setTimeout(function() {
+        setTimeout(() => {
             // not in design mode, no action called
             expect(resizerProto.onMouseDown).not.toHaveBeenCalled();
 
             // now simulate design mode
             spyOn(component, 'getDesignModeStep').and.returnValue('enabled');
 
-            expect(component.getRenderAttrs()).toEqual({onMouseDown: component.onMouseDown});
+            expect(component.getRenderAttrs()).toEqual({ onMouseDown: component.onMouseDown });
             component.forceUpdate();
 
             // now, click
             TestUtils.Simulate.mouseDown(domNode);
 
             // leave time for the event to propagate
-            setTimeout(function() {
+            setTimeout(() => {
                 // not in design mode, no action called
                 expect(resizerProto.onMouseDown).toHaveBeenCalled();
 
@@ -162,7 +160,7 @@ describe('Grid.Components.Resizer', function() {
 
     });
 
-    it('should activate/deactivate document resize detection on mouse down/up', function(done) {
+    it('should activate/deactivate document resize detection on mouse down/up', (done) => {
         jasmineReact.spyOnClass(Resizer, 'activateResizingDetection').and.callThrough();
         jasmineReact.spyOnClass(Resizer, 'deactivateResizingDetection').and.callThrough();
         const resizerProto = jasmineReact.classPrototype(Resizer);
@@ -173,7 +171,7 @@ describe('Grid.Components.Resizer', function() {
         Store.__private.changeDesignModeStep('Test grid', 'enabled', true);
 
         // render the full grid, we'll need elements around the resizer
-        const gridElement = React.createElement(MainGrid, {node: testGrid});
+        const gridElement = React.createElement(MainGrid, { node: testGrid });
         const gridComponent = componentUtils.renderIntoDocument(gridElement);
 
         // we need the node to be attached to the document for bubbling
@@ -185,7 +183,7 @@ describe('Grid.Components.Resizer', function() {
         TestUtils.Simulate.mouseDown(gridDomNode.querySelector('.grid-resizer'));
 
         // leave time for the event to propagate
-        setTimeout(function() {
+        setTimeout(() => {
             // not in design mode, no action called
             expect(resizerProto.activateResizingDetection.calls.count()).toEqual(1);
             expect(resizerProto.deactivateResizingDetection).not.toHaveBeenCalled();
@@ -193,10 +191,10 @@ describe('Grid.Components.Resizer', function() {
             resizerProto.activateResizingDetection.calls.reset();
 
             // now release mouse to check if events are deactivated
-            document.dispatchEvent(new Event('mouseup', {view: window, bubbles: true}));
+            document.dispatchEvent(new Event('mouseup', { view: window, bubbles: true }));
 
             // leave time for the event to propagate
-            setTimeout(function() {
+            setTimeout(() => {
                 // not in design mode, no action called
                 expect(resizerProto.activateResizingDetection).not.toHaveBeenCalled();
                 expect(resizerProto.deactivateResizingDetection.calls.count()).toEqual(1);
@@ -210,7 +208,7 @@ describe('Grid.Components.Resizer', function() {
         }, 0.01);
     });
 
-    it('should activate resizing on mouse down', function(done) {
+    it('should activate resizing on mouse down', (done) => {
         spyOn(Actions, 'startResizing').and.returnValue();
         jasmineReact.spyOnClass(Resizer, 'getDomNodeSize').and.returnValue(150);
 
@@ -218,25 +216,25 @@ describe('Grid.Components.Resizer', function() {
         Store.__private.changeDesignModeStep('Test grid', 'enabled', true);
 
         // render the full grid, we'll need elements around the resizer
-        const gridElement = React.createElement(MainGrid, {node: testGrid});
+        const gridElement = React.createElement(MainGrid, { node: testGrid });
         const gridComponent = componentUtils.renderIntoDocument(gridElement);
         const gridDomNode = ReactDOM.findDOMNode(gridComponent);
 
         // mouse down on a resizer
         TestUtils.Simulate.mouseDown(
             gridDomNode.querySelector('.grid-resizer-vertical'),
-            { screenX: 100, screenY: 200}
+            { screenX: 100, screenY: 200 }
         );
 
         // leave time for the event to propagate
-        setTimeout(function() {
+        setTimeout(() => {
 
             expect(Actions.startResizing.calls.count()).toEqual(1);
             expect(Actions.startResizing.calls.first().args).toEqual([
                 'Test grid',
                 testGrid.querySelector('resizer[type=vertical]'), // the first one, as we used the first one in the dom,
                 300, // twice the value returned by `returnValue` on the `getDomNodeSize` spy
-                100, // defined in the event call
+                100  // defined in the event call
             ]);
 
             // tell jasmine we're done
@@ -244,7 +242,7 @@ describe('Grid.Components.Resizer', function() {
         }, 0.01);
     });
 
-    it('should continue resizing on mouse move', function(done) {
+    it('should continue resizing on mouse move', (done) => {
         spyOn(Actions, 'resize').and.returnValue();
         jasmineReact.spyOnClass(Resizer, 'getDomNodeSize').and.returnValue(150);
 
@@ -252,7 +250,7 @@ describe('Grid.Components.Resizer', function() {
         Store.__private.changeDesignModeStep('Test grid', 'enabled', true);
 
         // render the full grid, we'll need elements around the resizer
-        const gridElement = React.createElement(MainGrid, {node: testGrid});
+        const gridElement = React.createElement(MainGrid, { node: testGrid });
         const gridComponent = componentUtils.renderIntoDocument(gridElement);
 
         // we need the node to be attached to the document for bubbling
@@ -263,22 +261,24 @@ describe('Grid.Components.Resizer', function() {
         // mouse down on a resizer
         TestUtils.Simulate.mouseDown(
             gridDomNode.querySelector('.grid-resizer-vertical'),
-            { screenX: 100, screenY: 200}
+            { screenX: 100, screenY: 200 }
         );
 
         // leave time for the event to propagate
-        setTimeout(function() {
+        setTimeout(() => {
 
             // now move the mouse to move the resizer
-            document.dispatchEvent(new MouseEvent('mousemove', {view: window, bubbles: true, screenX: 150, screenY: 250}));
+            document.dispatchEvent(
+                new MouseEvent('mousemove', { view: window, bubbles: true, screenX: 150, screenY: 250 })
+            );
 
             // leave time for the event to propagate
-            setTimeout(function() {
+            setTimeout(() => {
 
                 expect(Actions.resize.calls.count()).toEqual(1);
                 expect(Actions.resize.calls.first().args).toEqual([
                     'Test grid',
-                    150, // defined in the event call
+                    150 // defined in the event call
                 ]);
 
                 // we're done, remove the component from the dom
@@ -290,7 +290,7 @@ describe('Grid.Components.Resizer', function() {
         }, 0.01);
     });
 
-    it('should stop resizing on mouse up', function(done) {
+    it('should stop resizing on mouse up', (done) => {
         spyOn(Actions, 'stopResizing').and.returnValue();
         jasmineReact.spyOnClass(Resizer, 'getDomNodeSize').and.returnValue(150);
 
@@ -298,7 +298,7 @@ describe('Grid.Components.Resizer', function() {
         Store.__private.changeDesignModeStep('Test grid', 'enabled', true);
 
         // render the full grid, we'll need elements around the resizer
-        const gridElement = React.createElement(MainGrid, {node: testGrid});
+        const gridElement = React.createElement(MainGrid, { node: testGrid });
         const gridComponent = componentUtils.renderIntoDocument(gridElement);
 
         // we need the node to be attached to the document for bubbling
@@ -309,21 +309,21 @@ describe('Grid.Components.Resizer', function() {
         // mouse down on a resizer
         TestUtils.Simulate.mouseDown(
             gridDomNode.querySelector('.grid-resizer-vertical'),
-            { screenX: 100, screenY: 200}
+            { screenX: 100, screenY: 200 }
         );
 
         // leave time for the event to propagate
-        setTimeout(function() {
+        setTimeout(() => {
 
             // now release mouse to stop the resizing
-            document.dispatchEvent(new Event('mouseup', {view: window, bubbles: true}));
+            document.dispatchEvent(new Event('mouseup', { view: window, bubbles: true }));
 
             // leave time for the event to propagate
-            setTimeout(function() {
+            setTimeout(() => {
 
                 expect(Actions.stopResizing.calls.count()).toEqual(1);
                 expect(Actions.stopResizing.calls.first().args).toEqual([
-                    'Test grid',
+                    'Test grid'
                 ]);
 
                 // we're done, remove the component from the dom
@@ -335,9 +335,9 @@ describe('Grid.Components.Resizer', function() {
         }, 0.01);
     });
 
-    it('should resize elements around', function(done) {
+    it('should resize elements around', (done) => {
         jasmineReact.spyOnClass(Resizer, 'onResizingMove').and.callThrough();
-        jasmineReact.spyOnClass(Resizer, 'setDomNodeRelativeSise').and.returnValue();
+        jasmineReact.spyOnClass(Resizer, 'setDomNodeRelativeSize').and.returnValue();
         const resizerProto = jasmineReact.classPrototype(Resizer);
         jasmineReact.spyOnClass(Resizer, 'getDomNodeSize').and.returnValue(150);
 
@@ -345,7 +345,7 @@ describe('Grid.Components.Resizer', function() {
         Store.__private.changeDesignModeStep('Test grid', 'enabled', true);
 
         // render the full grid, we'll need elements around the resizer
-        const gridElement = React.createElement(MainGrid, {node: testGrid});
+        const gridElement = React.createElement(MainGrid, { node: testGrid });
         const gridComponent = componentUtils.renderIntoDocument(gridElement);
 
         // we need the node to be attached to the document for bubbling
@@ -364,22 +364,24 @@ describe('Grid.Components.Resizer', function() {
         // mouse down on a resizer
         TestUtils.Simulate.mouseDown(
             gridDomNode.querySelector('.grid-resizer-vertical'),
-            { screenX: 100, screenY: 200}
+            { screenX: 100, screenY: 200 }
         );
 
         // leave time for the event to propagate
-        setTimeout(function() {
+        setTimeout(() => {
 
             // now move the mouse to move the resizer
-            document.dispatchEvent(new MouseEvent('mousemove', {view: window, bubbles: true, screenX: 150, screenY: 250}));
+            document.dispatchEvent(
+                new MouseEvent('mousemove', { view: window, bubbles: true, screenX: 150, screenY: 250 })
+            );
 
             // leave time for the event to propagate
-            setTimeout(function() {
+            setTimeout(() => {
 
-                expect(resizerProto.onResizingMove).toHaveBeenCalled(); // called for each resiver
-                expect(resizerProto.setDomNodeRelativeSise.calls.count()).toEqual(2);
-                expect(resizerProto.setDomNodeRelativeSise.calls.first().args[0]).toBe(previous);
-                expect(resizerProto.setDomNodeRelativeSise.calls.mostRecent().args[0]).toBe(next);
+                expect(resizerProto.onResizingMove).toHaveBeenCalled(); // called for each resizer
+                expect(resizerProto.setDomNodeRelativeSize.calls.count()).toEqual(2);
+                expect(resizerProto.setDomNodeRelativeSize.calls.first().args[0]).toBe(previous);
+                expect(resizerProto.setDomNodeRelativeSize.calls.mostRecent().args[0]).toBe(next);
 
                 // we're done, remove the component from the dom
                 document.body.removeChild(gridDomNode.parentNode);

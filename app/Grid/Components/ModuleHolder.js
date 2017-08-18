@@ -12,8 +12,8 @@ import { NodesHolderMixin } from './Mixins/NodesHolder';
  * let the modules components strictly independent of the grid system.
  *
  * The hold module is not rendered as a child but detached/attached to this react
- * component dom node before/after mouting and updating, to avoid rerendering the
- * module at all costs. This is done by {@link module:Grid.Components.Mixins.NodesHolder NodesHolderMixin}
+ * component dom node before/after mounting and updating, to avoid rerendering the
+ * module at all costs. This is done by {@link module:Grid.Components.Mixins NodesHolderMixin}
  *
  * @namespace
  *
@@ -33,7 +33,7 @@ let ModuleHolder = {
 
     /**
      * The type of node that can be attached to the current react component
-     * dom node (managed by {@link module:Grid.Components.Mixins.NodesHolder NodesHolderMixin}):
+     * dom node (managed by {@link module:Grid.Components.Mixins NodesHolderMixin}):
      * - a module
      *
      * @type {Array}
@@ -47,7 +47,7 @@ let ModuleHolder = {
     },
 
     /**
-     * Tell {@link module:Grid.Components.Mixins.NodesHolder NodesHolderMixin}
+     * Tell {@link module:Grid.Components.Mixins NodesHolderMixin}
      * that this react component will always be able to hold a module.
      *
      * @return {boolean} - `true`
@@ -61,11 +61,11 @@ let ModuleHolder = {
      *
      * It's take from the {@link module:Grid.Components.ModulesCache ModulesCache} module
      *
-     * @param  {string} className - The class name of the dom node to return
-     * @return {DomNode} - The module dom node
+     * @param  {String} className - The class name of the dom node to return
+     * @return {Element|Node} - The module dom node
      */
     getExternalNode(className) {
-        if (className == ModulesCache.moduleContainerClassName) {
+        if (className === ModulesCache.moduleContainerClassName) {
             return ModulesCache.getModuleComponent(null, this.props.uniqueKey);
         }
     },
@@ -100,10 +100,10 @@ let ModuleHolder = {
      *
      * @param  {event} event - The dragLeave event
      */
-    onDragLeave() {
+    onDragLeave(event) {
         // in case of fake drop, the dragleave event may occur just before, so w'ill wait a little
         setTimeout(() => {
-            if (Store.getDesignModeStep(this.props.gridName) == 'hovering') {
+            if (Store.getDesignModeStep(this.props.gridName) === 'hovering') {
                 Actions.stopHovering(this.props.gridName);
             }
         }, this.dragLeaveTimeout);
@@ -122,7 +122,7 @@ let ModuleHolder = {
      *
      * Two special cases exist:
      *
-     * - the design mode is "enabled",so we make the element dragable
+     * - the design mode is "enabled",so we make the element draggable
      * - the element is currently dragged, so we activate the dragleave event
      *
      * @return {object} - A "dict" with the attributes
@@ -130,7 +130,7 @@ let ModuleHolder = {
     getRenderAttrs() {
         const attrs = {};
 
-        if (Store.getDesignModeStep(this.props.gridName) == 'enabled') {
+        if (Store.getDesignModeStep(this.props.gridName) === 'enabled') {
             // design mode activated, we can activate dragging
             attrs.draggable = true;
             attrs.onDragStart = this.onDragStart;
@@ -157,22 +157,24 @@ let ModuleHolder = {
     /**
      * Render the module holder, as a simple div with drag attributes/events, and
      * as a child, a div used as a cover over the module (attached via
-     * {@link module:Grid.Components.Mixins.NodesHolder NodesHolderMixin}) to
+     * {@link module:Grid.Components.Mixins NodesHolderMixin}) to
      * drag the dom node without any risk of interacting with the module content.
      * This cover contain a "delete" button in design mode to delete the
      */
     render() {
         let delButton;
-        if (Store.getDesignModeStep(this.props.gridName) == 'enabled' && !Store.isResizing(this.props.gridName)) {
+        if (Store.getDesignModeStep(this.props.gridName) === 'enabled' && !Store.isResizing(this.props.gridName)) {
             delButton = <button onClick={this.removeModule} title="Remove this module">X</button>;
         }
-        return (<div className="module-holder"
-          ref="module-holder"
-          {...this.getRenderAttrs()}>
-                    <div className="module-cover">
+        return (
+            <div className="module-holder"
+              ref="module-holder"
+              {...this.getRenderAttrs()}
+            >
+                <div className="module-cover">
                     {delButton}
-                    </div>
-                </div>);
+                </div>
+            </div>);
     }
 
 };

@@ -28,7 +28,7 @@ let Row = {
      * @return {Boolean} - true if a placeholder
      */
     isPlaceholder() {
-        return this.state.node.getAttribute('type') == 'placeholder';
+        return this.state.node.getAttribute('type') === 'placeholder';
     },
 
     /**
@@ -48,10 +48,10 @@ let Row = {
     renderCells() {
         return _.map(this.getCells(), cell => {
             const type = cell.tagName;
-            if (type == 'cell') {
+            if (type === 'cell') {
                 return <Cell node={cell} key={Store.getNodeId(cell)} />;
             }
-            if (type == 'resizer') {
+            if (type === 'resizer') {
                 return <Resizer node={cell} key={Store.getNodeId(cell)} />;
             }
         });
@@ -60,7 +60,7 @@ let Row = {
     /**
      * Return the classes to use when rendering the current row.
      *
-     * @return {string} - A string containing classes
+     * @return {String} - A string containing classes
      *
      * One or more of these classes:
      *
@@ -95,7 +95,7 @@ let Row = {
     /**
      * Render the component
      *
-     * @returns {div} - A div with classes defined by `getRowClasses`, containing
+     * @returns {Element|Node} - A div with classes defined by `getRowClasses`, containing
      * cells, including resizers, returned by `renderCells`
      */
     render() {

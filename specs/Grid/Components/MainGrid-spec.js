@@ -18,18 +18,17 @@ import { TestDocumentEventsMixin } from '../../Utils/ReactMixins/DocumentEvents'
 import { Utils } from '../../Utils';
 
 
-describe('Grid.Components.MainGrid', function() {
-    let uniqueIdMock;
+describe('Grid.Components.MainGrid', () => {
 
     // main grid defined in beforeEach
     let testGrid;
 
-    beforeEach(function(done) {
+    beforeEach((done) => {
         // we want to start each test with a fresh list of grids
         Store.__removeAllGrids();
 
         // we mock the uniqueId function of lodash to know the value to expect
-        uniqueIdMock = Utils.mockUniqueId();
+        Utils.mockUniqueId();
 
         // reset the modules cache for every test
         componentUtils.clearModulesCache();
@@ -40,50 +39,50 @@ describe('Grid.Components.MainGrid', function() {
         setTimeout(done, 0.01);
     });
 
-    afterEach(function() {
+    afterEach(() => {
         componentUtils.unmountAllComponents();
     });
 
-    it('should manage document events', function(done) {
-        const grid = Store.getGrid('Test grid');
-        const element = React.createElement(MainGrid, {node: testGrid});
+    it('should manage document events', (done) => {
+        Store.getGrid('Test grid');
+        const element = React.createElement(MainGrid, { node: testGrid });
         const component = componentUtils.renderIntoDocument(element);
         TestDocumentEventsMixin(component, done);
     });
 
-    it('should have a grid', function() {
-        const grid = Store.getGrid('Test grid');
-        const element = React.createElement(MainGrid, {node: testGrid});
+    it('should have a grid', () => {
+        Store.getGrid('Test grid');
+        const element = React.createElement(MainGrid, { node: testGrid });
         const component = componentUtils.renderIntoDocument(element);
         expect(component.props.node).toBe(testGrid);
     });
 
-    it('should have a grid name', function() {
-        const element = React.createElement(MainGrid, {node: testGrid});
+    it('should have a grid name', () => {
+        const element = React.createElement(MainGrid, { node: testGrid });
         const component = componentUtils.renderIntoDocument(element);
         expect(component.state.gridName).toEqual('Test grid');
     });
 
-    it('should access its own grid as the main grid', function() {
-        const element = React.createElement(MainGrid, {node: testGrid});
+    it('should access its own grid as the main grid', () => {
+        const element = React.createElement(MainGrid, { node: testGrid });
         const component = componentUtils.renderIntoDocument(element);
         expect(component.getGrid()).toBe(testGrid);
     });
 
-    it('should get its id', function() {
-        const element = React.createElement(MainGrid, {node: testGrid});
+    it('should get its id', () => {
+        const element = React.createElement(MainGrid, { node: testGrid });
         const component = componentUtils.renderIntoDocument(element);
         expect(component.getNodeId()).toBe(testGrid.getAttribute('id'));
     });
 
-    it('should get the main grid name', function() {
-        const element = React.createElement(MainGrid, {node: testGrid});
+    it('should get the main grid name', () => {
+        const element = React.createElement(MainGrid, { node: testGrid });
         const component = componentUtils.renderIntoDocument(element);
         expect(component.getGridName()).toEqual('Test grid');
     });
 
-    it('should get the design mode step', function() {
-        const element = React.createElement(MainGrid, {node: testGrid});
+    it('should get the design mode step', () => {
+        const element = React.createElement(MainGrid, { node: testGrid });
         const component = componentUtils.renderIntoDocument(element);
         expect(component.getDesignModeStep()).toEqual('disabled');
 
@@ -91,8 +90,8 @@ describe('Grid.Components.MainGrid', function() {
         expect(component.getDesignModeStep()).toEqual('enabled');
     });
 
-    it('should know if it\'s in design mode', function() {
-        const element = React.createElement(MainGrid, {node: testGrid});
+    it('should know if it\'s in design mode', () => {
+        const element = React.createElement(MainGrid, { node: testGrid });
         const component = componentUtils.renderIntoDocument(element);
         expect(component.isInDesignMode()).toBe(false);
 
@@ -100,8 +99,8 @@ describe('Grid.Components.MainGrid', function() {
         expect(component.isInDesignMode()).toBe(true);
     });
 
-    it('should be able to get its grid rows if no resizers', function() {
-        const element = React.createElement(MainGrid, {node: testGrid});
+    it('should be able to get its grid rows if no resizers', () => {
+        const element = React.createElement(MainGrid, { node: testGrid });
         const component = componentUtils.renderIntoDocument(element);
         const rows = component.getRows();
         const expectedRows = _.toArray(testGrid.querySelectorAll(':scope > content > row, :scope > content > resizer'));
@@ -111,11 +110,11 @@ describe('Grid.Components.MainGrid', function() {
         expect(rows[1].tagName).toEqual('row');
     });
 
-    it('should be able to get its grid rows and resizers if any', function() {
+    it('should be able to get its grid rows and resizers if any', () => {
         Manipulator.addResizers(testGrid);
         Manipulator.setIds(testGrid);
 
-        const element = React.createElement(MainGrid, {node: testGrid});
+        const element = React.createElement(MainGrid, { node: testGrid });
         const component = componentUtils.renderIntoDocument(element);
         const rows = component.getRows();
         const expectedRows = _.toArray(testGrid.querySelectorAll(':scope > content > row, :scope > content > resizer'));
@@ -127,8 +126,8 @@ describe('Grid.Components.MainGrid', function() {
     });
 
 
-    it('should render a grid', function() {
-        const element = React.createElement(MainGrid, {node: testGrid, screenMode: screenModes.multi});
+    it('should render a grid', () => {
+        const element = React.createElement(MainGrid, { node: testGrid, screenMode: screenModes.multi });
         const component = componentUtils.renderIntoDocument(element);
         const domNode = ReactDOM.findDOMNode(component);
         expect(domNode.tagName).toEqual('DIV');
@@ -149,26 +148,26 @@ describe('Grid.Components.MainGrid', function() {
         expect(gridDomNode.getAttribute('style')).toBe(null);
     });
 
-    it('should be able to render its rows', function() {
-        const element = React.createElement(MainGrid, {node: testGrid});
+    it('should be able to render its rows', () => {
+        const element = React.createElement(MainGrid, { node: testGrid });
         const component = componentUtils.renderIntoDocument(element);
         const rows = component.renderRows();
         expect(rows.length).toEqual(2);
-        _(rows).forEach(function(row) {
+        _(rows).forEach(row => {
             expect(TestUtils.isElementOfType(row, Row)).toBe(true);
         });
     });
 
-    it('should render sub components', function() {
-        const element = React.createElement(MainGrid, {node: testGrid});
+    it('should render sub components', () => {
+        const element = React.createElement(MainGrid, { node: testGrid });
         const component = componentUtils.renderIntoDocument(element);
         expect(componentUtils.countRows(component)).toEqual(4);
         expect(componentUtils.countModules(component)).toEqual(6);
         expect(componentUtils.countSubGrids(component)).toEqual(1);
     });
 
-    it('should update the grid when a design mode event is triggered', function(done) {
-        const element = React.createElement(MainGrid, {node: testGrid});
+    it('should update the grid when a design mode event is triggered', (done) => {
+        const element = React.createElement(MainGrid, { node: testGrid });
         const component = componentUtils.renderIntoDocument(element);
 
         spyOn(component, 'forceUpdate').and.returnValue();
@@ -189,23 +188,23 @@ describe('Grid.Components.MainGrid', function() {
             'grid.designMode.module.remove',
             'grid.designMode.history.add',
             'grid.designMode.history.back',
-            'grid.designMode.history.forward',
+            'grid.designMode.history.forward'
         ];
 
         const notUpdatingEvents = [
-            'grid.designMode.resizing.move',
+            'grid.designMode.resizing.move'
         ];
 
-        let testNextEvent = function() {
+        const testNextEvent = () => {
             const event = events.shift();
             if (!event) {
-                // no nore event, tell jasmine we're done, and exit
+                // no more event, tell jasmine we're done, and exit
                 done();
                 return;
             }
             component.forceUpdate.calls.reset();
             Store.__private.emit(event, 'Test grid');
-            setTimeout(function() {
+            setTimeout(() => {
                 if (_.contains(notUpdatingEvents, event)) {
                     expect(component.forceUpdate).not.toHaveBeenCalled();
                 } else {
@@ -219,10 +218,10 @@ describe('Grid.Components.MainGrid', function() {
 
     });
 
-    it('should change when toggling design mode, managing resizers', function(done) {
-        const element = React.createElement(MainGrid, {node: testGrid});
+    it('should change when toggling design mode, managing resizers', (done) => {
+        const element = React.createElement(MainGrid, { node: testGrid });
         const component = componentUtils.renderIntoDocument(element);
-        const domNode = ReactDOM.findDOMNode(component);
+        let domNode = ReactDOM.findDOMNode(component);
         expect(domNode.classList.contains('grid-component-design-mode')).toBe(false);
         expect(domNode.classList.contains('grid-component-with-placeholders')).toBe(false);
         expect(domNode.classList.contains('grid-component-with-resizers')).toBe(false);
@@ -236,11 +235,11 @@ describe('Grid.Components.MainGrid', function() {
         component.toggleDesignMode();
 
         // give some time to re-render
-        setTimeout(function() {
+        setTimeout(() => {
             expect(component.forceUpdate).toHaveBeenCalled();
             expect(component.forceUpdate.calls.count()).toEqual(1);
 
-            const domNode = ReactDOM.findDOMNode(component);
+            domNode = ReactDOM.findDOMNode(component);
             expect(domNode.classList.contains('grid-component-design-mode')).toBe(true);
             expect(domNode.classList.contains('grid-component-with-placeholders')).toBe(false);
             expect(domNode.classList.contains('grid-component-with-resizers')).toBe(true);
@@ -259,11 +258,11 @@ describe('Grid.Components.MainGrid', function() {
             component.toggleDesignMode();
 
             // give some time to re-render
-            setTimeout(function() {
+            setTimeout(() => {
                 expect(component.forceUpdate).toHaveBeenCalled();
                 expect(component.forceUpdate.calls.count()).toEqual(1);
 
-                const domNode = ReactDOM.findDOMNode(component);
+                domNode = ReactDOM.findDOMNode(component);
                 expect(domNode.classList.contains('grid-component-design-mode')).toBe(false);
                 expect(domNode.classList.contains('grid-component-with-placeholders')).toBe(false);
                 expect(domNode.classList.contains('grid-component-with-resizers')).toBe(false);
@@ -282,15 +281,15 @@ describe('Grid.Components.MainGrid', function() {
         }, 0.01);
     });
 
-    it('should have placeholders when going in dragging mode', function(done) {
-        const element = React.createElement(MainGrid, {node: testGrid});
+    it('should have placeholders when going in dragging mode', (done) => {
+        const element = React.createElement(MainGrid, { node: testGrid });
         const component = componentUtils.renderIntoDocument(element);
         expect(ReactDOM.findDOMNode(component).classList.contains('grid-component-design-mode')).toBe(false);
 
         component.toggleDesignMode();
 
         // give some time to re-render
-        setTimeout(function() {
+        setTimeout(() => {
 
             spyOn(component, 'forceUpdate').and.callThrough();
 
@@ -299,7 +298,7 @@ describe('Grid.Components.MainGrid', function() {
             Store.__private.emit('grid.designMode.dragging.start', 'Test grid');
 
             // give some time to re-render
-            setTimeout(function() {
+            setTimeout(() => {
                 expect(component.forceUpdate).toHaveBeenCalled();
                 expect(component.forceUpdate.calls.count()).toEqual(1);
 
@@ -309,17 +308,20 @@ describe('Grid.Components.MainGrid', function() {
                 expect(domNode.classList.contains('grid-component-with-resizers')).toBe(false);
 
                 // should have placeholders
-                // 4 (before each row) + 2 (end of each grid) + 6 ("module") * 2 (per module) + 2 (wrap maingrid) + 2 (wrap subgrid)
+                // 4 (before each row) + 2 (end of each grid)
+                // + 6 ("module") * 2 (per module) + 2 (wrap main grid) + 2 (wrap subgrid)
                 expect(componentUtils.countRowPlaceholders(component)).toEqual(22);
-                // 6 (1 for each rowPH except module) + 7 (before each cell) + 4 (end of each row) + 6 ("module") * 4 (per module) +  2 (wrap maingrid) + 2 (wrap subgrid)
+                // 6 (1 for each rowPH except module) + 7 (before each cell)
+                // + 4 (end of each row) + 6 ("module") * 4 (per module) +  2 (wrap main grid) + 2 (wrap subgrid)
                 expect(componentUtils.countCellPlaceholders(component)).toEqual(45);
 
                 // should have more components, as modules are wrapped in subgrids
-                // 4 original rows + 22 placeholders + 6 ("module") * 1 (per module) + 1 (wrap maingrid) + 1 (wrap subgrid)
+                // 4 original rows + 22 placeholders + 6 ("module") * 1 (per module)
+                // + 1 (wrap main grid) + 1 (wrap subgrid)
                 expect(componentUtils.countRows(component)).toEqual(34);
                 // 6 original modules
                 expect(componentUtils.countModules(component)).toEqual(6);
-                // 1 wrap arround main grid 1 original + 1 wrap arround original + 6 ("module") * 1 (per module)
+                // 1 wrap around main grid 1 original + 1 wrap around original + 6 ("module") * 1 (per module)
                 expect(componentUtils.countSubGrids(component)).toEqual(9);
 
                 done();
@@ -328,8 +330,9 @@ describe('Grid.Components.MainGrid', function() {
         }, 0.01);
     });
 
-    it('should start/stop listening to dragover/drop event on the document when entering/exiting design mode', function(done) {
-        const element = React.createElement(MainGrid, {node: testGrid});
+    it('should start/stop listening to dragover/drop event on the document when entering/exiting design mode',
+    (done) => {
+        const element = React.createElement(MainGrid, { node: testGrid });
         const component = componentUtils.renderIntoDocument(element);
 
         spyOn(component, 'addDocumentListener').and.returnValue(true);
@@ -337,19 +340,21 @@ describe('Grid.Components.MainGrid', function() {
 
         Store.__private.enterDesignMode('Test grid');
 
-        // leave time for the designMode.enter to be catched
-        setTimeout(function() {
+        // leave time for the designMode.enter to be caught
+        setTimeout(() => {
             expect(component.addDocumentListener.calls.count()).toBe(2);
             expect(component.addDocumentListener.calls.first().args).toEqual(['dragover', 'onDocumentDragOver']);
             expect(component.addDocumentListener.calls.mostRecent().args).toEqual(['drop', 'onDocumentDrop']);
 
             Store.__private.exitDesignMode('Test grid');
 
-            // leave time for the designMode.exit to be catched
-            setTimeout(function() {
+            // leave time for the designMode.exit to be caught
+            setTimeout(() => {
                 expect(component.removeDocumentListener.calls.count()).toBe(2);
                 expect(component.removeDocumentListener.calls.first().args).toEqual(['drop', 'onDocumentDrop']);
-                expect(component.removeDocumentListener.calls.mostRecent().args).toEqual(['dragover', 'onDocumentDragOver']);
+                expect(
+                    component.removeDocumentListener.calls.mostRecent().args
+                ).toEqual(['dragover', 'onDocumentDragOver']);
 
                 // tell jasmine we're done
                 done();
@@ -358,8 +363,8 @@ describe('Grid.Components.MainGrid', function() {
         }, 0.01);
     });
 
-    it('should activate/deactivate drop detection when dragging start/stop (or drop occurs)', function(done) {
-        const element = React.createElement(MainGrid, {node: testGrid});
+    it('should activate/deactivate drop detection when dragging start/stop (or drop occurs)', (done) => {
+        const element = React.createElement(MainGrid, { node: testGrid });
         const component = componentUtils.renderIntoDocument(element);
 
         spyOn(component, 'activateDropDetection').and.callThrough();
@@ -370,29 +375,29 @@ describe('Grid.Components.MainGrid', function() {
         // first shot with start drag + cancel drag
         Store.__private.startDragging('Test grid', testGrid.querySelector('cell[type=module]'));
 
-        // leave time for the designMode.dragging.start to be catched
-        setTimeout(function() {
+        // leave time for the designMode.dragging.start to be caught
+        setTimeout(() => {
             expect(component.activateDropDetection.calls.count()).toEqual(1);
 
             Store.__private.cancelDragging('Test grid');
 
-            // leave time for the designMode.dragging.stop to be catched
-            setTimeout(function() {
+            // leave time for the designMode.dragging.stop to be caught
+            setTimeout(() => {
                 expect(component.deactivateDropDetection.calls.count()).toEqual(1);
 
-                // now second show sith start drag + drop
+                // now second shot with start drag + drop
                 component.activateDropDetection.calls.reset();
                 component.deactivateDropDetection.calls.reset();
                 Store.__private.startDragging('Test grid', testGrid.querySelector('cell[type=module]'));
 
-                // leave time for the designMode.dragging.start to be catched
-                setTimeout(function() {
+                // leave time for the designMode.dragging.start to be caught
+                setTimeout(() => {
                     expect(component.activateDropDetection.calls.count()).toEqual(1);
 
                     Store.__private.drop('Test grid');
 
-                    // leave time for the designMode.drop to be catched
-                    setTimeout(function() {
+                    // leave time for the designMode.drop to be caught
+                    setTimeout(() => {
                         expect(component.deactivateDropDetection.calls.count()).toEqual(1);
 
                         // tell jasmine we're done
@@ -406,12 +411,12 @@ describe('Grid.Components.MainGrid', function() {
 
     });
 
-    it('should dispatch fakedragend event when dragging stops or drop occurs', function(done) {
-        const element = React.createElement(MainGrid, {node: testGrid});
+    it('should dispatch fakedragend event when dragging stops or drop occurs', (done) => {
+        const element = React.createElement(MainGrid, { node: testGrid });
         const component = componentUtils.renderIntoDocument(element);
 
         let fakeDragEndCalled = 0;
-        const fakeDragEndCallback = function() {
+        const fakeDragEndCallback = () => {
             fakeDragEndCalled++;
         };
 
@@ -427,7 +432,7 @@ describe('Grid.Components.MainGrid', function() {
         Store.__private.cancelDragging('Test grid');
 
         // leave time for event to propagate
-        setTimeout(function() {
+        setTimeout(() => {
             expect(component.emitFakeDragEnd.calls.count()).toEqual(1);
             expect(fakeDragEndCalled).toEqual(1);
 
@@ -438,18 +443,21 @@ describe('Grid.Components.MainGrid', function() {
             Store.__private.drop('Test grid');
 
             // leave time for event to propagate
-            setTimeout(function() {
+            setTimeout(() => {
                 expect(component.emitFakeDragEnd.calls.count()).toEqual(2);
                 expect(fakeDragEndCalled).toEqual(2);
 
                 // go back in dragging mode
-                Store.__private.startDragging('Test grid', Store.getGrid('Test grid').querySelector('cell[type=module]'));
+                Store.__private.startDragging(
+                    'Test grid',
+                    Store.getGrid('Test grid').querySelector('cell[type=module]')
+                );
 
                 // then simulate a drop on a placeholder
                 Store.__private.drop('Test grid', Store.getGrid('Test grid').querySelector('cell[type=placeholder]'));
 
                 // leave time for event to propagate
-                setTimeout(function() {
+                setTimeout(() => {
                     expect(component.emitFakeDragEnd.calls.count()).toEqual(3);
                     expect(fakeDragEndCalled).toEqual(3);
 
@@ -462,7 +470,7 @@ describe('Grid.Components.MainGrid', function() {
 
     });
 
-    it('should react to a mouse move/down event as drop if dragging mode is enabled', function(done) {
+    it('should react to a mouse move/down event as drop if dragging mode is enabled', (done) => {
 
         // when fake drop is on a placeholder
         jasmineReact.spyOnClass(MainGrid, 'emitFakeDrop').and.returnValue(true);
@@ -471,7 +479,7 @@ describe('Grid.Components.MainGrid', function() {
 
         const mainGridProto = jasmineReact.classPrototype(MainGrid);
 
-        const element = React.createElement(MainGrid, {node: testGrid});
+        const element = React.createElement(MainGrid, { node: testGrid });
         const component = componentUtils.renderIntoDocument(element);
 
         // we need the node to be attached to the document for bubbling
@@ -490,7 +498,7 @@ describe('Grid.Components.MainGrid', function() {
 
         const triggerEventAndWait = (node, eventType, func) => {
             if (node) {
-                node.dispatchEvent(new Event(eventType, {view: window, bubbles: true}));
+                node.dispatchEvent(new Event(eventType, { view: window, bubbles: true }));
             }
             setTimeout(func, 0.01);
         };
@@ -536,8 +544,9 @@ describe('Grid.Components.MainGrid', function() {
         });
     });
 
-    it('should apply a fake drop event if a drop detected by a mouse move/down event occurs on a placeholder', function(done) {
-        const element = React.createElement(MainGrid, {node: testGrid});
+    it('should apply a fake drop event if a drop detected by a mouse move/down event occurs on a placeholder',
+    (done) => {
+        const element = React.createElement(MainGrid, { node: testGrid });
         const component = componentUtils.renderIntoDocument(element);
 
         // we need the node to be attached to the document for bubbling
@@ -550,7 +559,7 @@ describe('Grid.Components.MainGrid', function() {
         // will store the grid name received via the tested event
         let updatedGridName;
 
-        const callback = function(gridName) {
+        const callback = gridName => {
             callbackCalled = true;
             updatedGridName = gridName;
         };
@@ -560,11 +569,11 @@ describe('Grid.Components.MainGrid', function() {
         Store.__private.startDragging('Test grid', Store.getGrid('Test grid').querySelector('cell[type=module]'));
 
         // leave time to let the start drag events to propagate
-        setTimeout(function() {
+        setTimeout(() => {
 
             // get the placeholder to use to simulate events on it
             // we get the node from the grid and one from the dom, using the fact that `querySelector`
-            // will always return the first in the tree, and both tree are similars
+            // will always return the first in the tree, and both tree are similar
             const placeholder = Store.getGrid('Test grid').querySelector('cell[type=placeholder]');
             const placeholderDomNode = domNode.querySelector('.grid-cell-placeholder');
 
@@ -585,7 +594,7 @@ describe('Grid.Components.MainGrid', function() {
             // simulate a fake drop on the placeholder
             component.emitFakeDrop(placeholderDomNode);
 
-            setTimeout(function() {
+            setTimeout(() => {
                 Store.off('grid.designMode.drop', callback);
 
                 expect(callbackCalled).toBe(true);
@@ -610,8 +619,8 @@ describe('Grid.Components.MainGrid', function() {
         }, 0.01);
     });
 
-    it('should apply drop on (real or fake) drop detected not on a placeholder', function(done) {
-        const element = React.createElement(MainGrid, {node: testGrid});
+    it('should apply drop on (real or fake) drop detected not on a placeholder', (done) => {
+        const element = React.createElement(MainGrid, { node: testGrid });
         const component = componentUtils.renderIntoDocument(element);
 
         // we need the node to be attached to the document for bubbling
@@ -626,12 +635,12 @@ describe('Grid.Components.MainGrid', function() {
         let updatedDropGridName;
         let updatedStopGridName;
 
-        const callbackDrop = function(gridName) {
+        const callbackDrop = gridName => {
             callbackDropCalled = true;
             updatedDropGridName = gridName;
         };
 
-        const callbackStop = function(gridName) {
+        const callbackStop = gridName => {
             callbackStopCalled = true;
             updatedStopGridName = gridName;
         };
@@ -641,9 +650,7 @@ describe('Grid.Components.MainGrid', function() {
         Store.__private.startDragging('Test grid', Store.getGrid('Test grid').querySelector('cell[type=module]'));
 
         // leave time to let the start drag events to propagate
-        setTimeout(function() {
-
-            const draggedCell = Store.__private.grids['Test grid'].nodes.dragging;
+        setTimeout(() => {
 
             // listen that the design mode drop event is fired at the end
             Store.on('grid.designMode.drop', callbackDrop);
@@ -659,7 +666,7 @@ describe('Grid.Components.MainGrid', function() {
             // simulate a fake drop on the placeholder
             component.applyDrop();
 
-            setTimeout(function() {
+            setTimeout(() => {
                 Store.off('grid.designMode.drop', callbackDrop);
                 Store.off('grid.designMode.dragging.stop', callbackStop);
 
@@ -685,17 +692,17 @@ describe('Grid.Components.MainGrid', function() {
         }, 0.01);
     });
 
-    it('should activate grid navigation when mounting', function() {
+    it('should activate grid navigation when mounting', () => {
         jasmineReact.spyOnClass(MainGrid, 'activateGridNavigation').and.callThrough();
 
-        const element = React.createElement(MainGrid, {node: testGrid});
-        const component = componentUtils.renderIntoDocument(element);
+        const element = React.createElement(MainGrid, { node: testGrid });
+        componentUtils.renderIntoDocument(element);
 
         expect(jasmineReact.classPrototype(MainGrid).activateGridNavigation.calls.count()).toEqual(1);
     });
 
-    it('should deactivate/reactivate grid navigation when entering/exiting design mode', function(done) {
-        const element = React.createElement(MainGrid, {node: testGrid});
+    it('should deactivate/reactivate grid navigation when entering/exiting design mode', (done) => {
+        const element = React.createElement(MainGrid, { node: testGrid });
         const component = componentUtils.renderIntoDocument(element);
 
         spyOn(component, 'activateGridNavigation').and.callThrough();
@@ -703,14 +710,14 @@ describe('Grid.Components.MainGrid', function() {
 
         Store.__private.enterDesignMode('Test grid');
 
-        // leave time for the designMode.enter to be catched
-        setTimeout(function() {
+        // leave time for the designMode.enter to be caught
+        setTimeout(() => {
             expect(component.deactivateGridNavigation.calls.count()).toBe(1);
 
             Store.__private.exitDesignMode('Test grid');
 
-            // leave time for the designMode.exit to be catched
-            setTimeout(function() {
+            // leave time for the designMode.exit to be caught
+            setTimeout(() => {
                 expect(component.activateGridNavigation.calls.count()).toBe(1);
 
                 // tell jasmine we're done
@@ -720,8 +727,8 @@ describe('Grid.Components.MainGrid', function() {
         }, 0.01);
     });
 
-    it('should activate/deactivate 4 shortcuts for keyboard navigation', function() {
-        const element = React.createElement(MainGrid, {node: testGrid});
+    it('should activate/deactivate 4 shortcuts for keyboard navigation', () => {
+        const element = React.createElement(MainGrid, { node: testGrid });
         const component = componentUtils.renderIntoDocument(element);
 
         spyOn(component, 'bindShortcut').and.callThrough();
@@ -734,7 +741,7 @@ describe('Grid.Components.MainGrid', function() {
             ['ctrl+right'],
             ['ctrl+left'],
             ['ctrl+down'],
-            ['ctrl+up'],
+            ['ctrl+up']
         ]);
 
         component.activateGridNavigation();
@@ -744,24 +751,24 @@ describe('Grid.Components.MainGrid', function() {
             ['ctrl+right', component.focusRightModuleCell],
             ['ctrl+left', component.focusLeftModuleCell],
             ['ctrl+down', component.focusBottomModuleCell],
-            ['ctrl+up', component.focusTopModuleCell],
+            ['ctrl+up', component.focusTopModuleCell]
         ]);
     });
 
-    it('should navigate through module cells', function() {
+    it('should navigate through module cells', () => {
 
         const directions = {
             right: 'Right',
             left: 'Left',
             up: 'Top',
-            down: 'Bottom',
+            down: 'Bottom'
         };
 
-        let dir1, dir2, method;
+        let method;
 
-        for (dir1 in directions) {
+        for (const dir1 in directions) {
             if (directions.hasOwnProperty(dir1)) {
-                method = 'focus' + directions[dir1] + 'ModuleCell';
+                method = `focus${directions[dir1]}ModuleCell`;
                 jasmineReact.spyOnClass(MainGrid, method).and.callThrough();
                 spyOn(Actions, method).and.returnValue();
             }
@@ -769,38 +776,42 @@ describe('Grid.Components.MainGrid', function() {
 
         const mainGridProto = jasmineReact.classPrototype(MainGrid);
 
-        const element = React.createElement(MainGrid, {node: testGrid});
+        const element = React.createElement(MainGrid, { node: testGrid });
         componentUtils.renderIntoDocument(element);
 
-        for (dir1 in directions) {
+        for (const dir1 in directions) {
             if (directions.hasOwnProperty(dir1)) {
                 // reset spies counters
-                for (dir2 in directions) {
+                for (const dir2 in directions) {
                     if (directions.hasOwnProperty(dir2)) {
-                        method = 'focus' + directions[dir2] + 'ModuleCell';
+                        method = `focus${directions[dir2]}ModuleCell`;
                         mainGridProto[method].calls.reset();
                         Actions[method].calls.reset();
                     }
                 }
 
                 // trigger the action
-                Mousetrap.trigger('ctrl+' + dir1);
+                Mousetrap.trigger(`ctrl+${dir1}`);
 
                 // check calls
-                for (dir2 in directions) {
+                for (const dir2 in directions) {
                     if (directions.hasOwnProperty(dir2)) {
-                        method = 'focus' + directions[dir2] + 'ModuleCell';
-                        const expected = dir1 == dir2 ? 1 : 0;
-                        expect(mainGridProto[method].calls.count()).toEqual(expected, 'ctrl+' + dir1 + ', component.' + method);
-                        expect(Actions[method].calls.count()).toEqual(expected, 'ctrl+' + dir1 + ', action.' + method);
+                        method = `focus${directions[dir2]}ModuleCell`;
+                        const expected = dir1 === dir2 ? 1 : 0;
+                        expect(
+                            mainGridProto[method].calls.count()
+                        ).toEqual(expected, `ctrl+${dir1}, component.${method}`);
+                        expect(
+                            Actions[method].calls.count()
+                        ).toEqual(expected, `ctrl+${dir1}, action.${method}`);
                     }
                 }
             }
         }
     });
 
-    it('should stay in one screen mode if screenMode set to `one`', function(done) {
-        const element = React.createElement(MainGrid, {node: testGrid, screenMode: screenModes.one});
+    it('should stay in one screen mode if screenMode set to `one`', (done) => {
+        const element = React.createElement(MainGrid, { node: testGrid, screenMode: screenModes.one });
         const component = componentUtils.renderIntoDocument(element);
         setTimeout(() => {
             expect(component.state.oneScreenMode).toBe(true);
@@ -816,8 +827,8 @@ describe('Grid.Components.MainGrid', function() {
         }, 0.01);
     });
 
-    it('should avoid one screen mode if screenMode set to `multi`', function(done) {
-        const element = React.createElement(MainGrid, {node: testGrid, screenMode: screenModes.multi});
+    it('should avoid one screen mode if screenMode set to `multi`', (done) => {
+        const element = React.createElement(MainGrid, { node: testGrid, screenMode: screenModes.multi });
         const component = componentUtils.renderIntoDocument(element);
         setTimeout(() => {
             expect(component.state.oneScreenMode).toBe(false);
@@ -833,8 +844,8 @@ describe('Grid.Components.MainGrid', function() {
         }, 0.01);
     });
 
-    it('should change from and to one screen mode if screenMode set to `default` depending of the size', function(done) {
-        const element = React.createElement(MainGrid, {node: testGrid, screenMode: screenModes.default});
+    it('should change from and to one screen mode if screenMode set to `default` depending of the size', (done) => {
+        const element = React.createElement(MainGrid, { node: testGrid, screenMode: screenModes.default });
         const component = componentUtils.renderIntoDocument(element);
         setTimeout(() => {
             component.onResize(10000, 10000);
@@ -849,7 +860,7 @@ describe('Grid.Components.MainGrid', function() {
         }, 0.01);
     });
 
-    it('should call `onResize` if screenMode set to `default` and the grid size changes', function(done) {
+    it('should call `onResize` if screenMode set to `default` and the grid size changes', (done) => {
         const element = React.createElement(MainGrid, {
             node: testGrid,
             screenMode: screenModes.default,
@@ -906,8 +917,8 @@ describe('Grid.Components.MainGrid', function() {
 
     });
 
-    it('should not have transform style in multi screens mode', function(done) {
-        const element = React.createElement(MainGrid, {node: testGrid, screenMode: screenModes.multi});
+    it('should not have transform style in multi screens mode', (done) => {
+        const element = React.createElement(MainGrid, { node: testGrid, screenMode: screenModes.multi });
         const component = componentUtils.renderIntoDocument(element);
         const gridNode = ReactDOM.findDOMNode(component).querySelector('.grid-main');
 
@@ -920,7 +931,7 @@ describe('Grid.Components.MainGrid', function() {
             expect(gridNode.style.transform).toEqual('');
             expect(gridNode.style.transition).toEqual('');
 
-            expect(component.getMainGridStyle(0)).toEqual({
+            expect(component.getMainGridStyle('0px')).toEqual({
                 transform: null,
                 transition: null
             });
@@ -929,7 +940,7 @@ describe('Grid.Components.MainGrid', function() {
                 expect(gridNode.style.transform).toEqual('');
                 expect(gridNode.style.transition).toEqual('');
 
-                expect(component.getMainGridStyle(100)).toEqual({
+                expect(component.getMainGridStyle('100px')).toEqual({
                     transform: null,
                     transition: null
                 });
@@ -944,8 +955,8 @@ describe('Grid.Components.MainGrid', function() {
         }, 0.01);
     });
 
-    it('should have transform style in one screen mode', function(done) {
-        const element = React.createElement(MainGrid, {node: testGrid, screenMode: screenModes.one});
+    it('should have transform style in one screen mode', (done) => {
+        const element = React.createElement(MainGrid, { node: testGrid, screenMode: screenModes.one });
         const component = componentUtils.renderIntoDocument(element);
         const gridNode = ReactDOM.findDOMNode(component).querySelector('.grid-main');
 
@@ -962,21 +973,21 @@ describe('Grid.Components.MainGrid', function() {
             expect(gridNode.style.transition).toEqual('');
 
             // test with deltaX == 0
-            expect(component.getMainGridStyle(0)).toEqual({
+            expect(component.getMainGridStyle('0px')).toEqual({
                 transform: 'translateX(0px)',
                 transition: 'none'
             });
-            component.updateMainGridStyle(0);
+            component.updateMainGridStyle('0px');
             setTimeout(() => {
                 expect(gridNode.style.transform).toEqual('translateX(0px)');
                 expect(gridNode.style.transition).toEqual('none');
 
                 // test with deltaX > 0
-                expect(component.getMainGridStyle(150)).toEqual({
+                expect(component.getMainGridStyle('150px')).toEqual({
                     transform: 'translateX(150px)',
                     transition: 'none'
                 });
-                component.updateMainGridStyle(150);
+                component.updateMainGridStyle('150px');
                 setTimeout(() => {
                     expect(gridNode.style.transform).toEqual('translateX(150px)');
                     expect(gridNode.style.transition).toEqual('none');
@@ -995,21 +1006,21 @@ describe('Grid.Components.MainGrid', function() {
                         expect(gridNode.style.transition).toEqual('');
 
                         // test with deltaX == 0
-                        expect(component.getMainGridStyle(0)).toEqual({
+                        expect(component.getMainGridStyle('0px')).toEqual({
                             transform: 'translateX(-200vw)',
                             transition: 'none'
                         });
-                        component.updateMainGridStyle(0);
+                        component.updateMainGridStyle('0px');
                         setTimeout(() => {
                             expect(gridNode.style.transform).toEqual('translateX(-200vw)');
                             expect(gridNode.style.transition).toEqual('none');
 
                             // test with deltaX > 0
-                            expect(component.getMainGridStyle(150)).toEqual({
+                            expect(component.getMainGridStyle('150px')).toEqual({
                                 transform: 'translateX(calc(-200vw + 150px))',
                                 transition: 'none'
                             });
-                            component.updateMainGridStyle(150);
+                            component.updateMainGridStyle('150px');
                             setTimeout(() => {
                                 expect(gridNode.style.transform).toEqual('translateX(calc(-200vw + 150px))');
                                 expect(gridNode.style.transition).toEqual('none');
@@ -1023,16 +1034,16 @@ describe('Grid.Components.MainGrid', function() {
         }, 0.01);
     });
 
-    it('should focus left or right when swipe in one screen mode', function(done) {
-        const element = React.createElement(MainGrid, {node: testGrid, screenMode: screenModes.one});
+    it('should focus left or right when swipe in one screen mode', (done) => {
+        const element = React.createElement(MainGrid, { node: testGrid, screenMode: screenModes.one });
         const component = componentUtils.renderIntoDocument(element);
 
         // swiping right on the leftmost cell does nothing
-        component.onSwipe({direction: Hammer.DIRECTION_RIGHT});
+        component.onSwipe({ direction: Hammer.DIRECTION_RIGHT });
         setTimeout(() => {
             expect(Store.getFocusedModuleCellIndex('Test grid')).toEqual(0);
             // swiping left on the leftmost cell goes right
-            component.onSwipe({direction: Hammer.DIRECTION_LEFT});
+            component.onSwipe({ direction: Hammer.DIRECTION_LEFT });
             setTimeout(() => {
                 expect(Store.getFocusedModuleCellIndex('Test grid')).toEqual(1);
 
@@ -1042,7 +1053,7 @@ describe('Grid.Components.MainGrid', function() {
                     expect(Store.getFocusedModuleCellIndex('Test grid')).toEqual(5);
 
                     // swiping left on the rightmost cell does nothing
-                    component.onSwipe({direction: Hammer.DIRECTION_LEFT});
+                    component.onSwipe({ direction: Hammer.DIRECTION_LEFT });
                     setTimeout(() => {
                         expect(Store.getFocusedModuleCellIndex('Test grid')).toEqual(5);
 
@@ -1054,9 +1065,9 @@ describe('Grid.Components.MainGrid', function() {
 
     });
 
-    it('should move left of right when  panning in one screen mode', function(done) {
-        const testGrid = componentUtils.makeSimpleTestGrid();
-        const element = React.createElement(MainGrid, {node: testGrid, screenMode: screenModes.one});
+    it('should move left of right when  panning in one screen mode', (done) => {
+        const testGrid2 = componentUtils.makeSimpleTestGrid();
+        const element = React.createElement(MainGrid, { node: testGrid2, screenMode: screenModes.one });
         const component = componentUtils.renderIntoDocument(element);
         const domNode = ReactDOM.findDOMNode(component);
         const gridNode = domNode.querySelector('.grid-main');
@@ -1079,23 +1090,25 @@ describe('Grid.Components.MainGrid', function() {
 
         // panning right on the leftmost cell activates left overflow
         let overflow = 150;
-        component.onPan({eventType: Hammer.INPUT_MOVE, deltaX: overflow});
+        component.onPan({ eventType: Hammer.INPUT_MOVE, deltaX: overflow });
         expect(overflowLeft.classList.contains('on')).toBe(true);
         expect(overflowLeft.classList.contains('going-off')).toBe(false);
         expect(overflowRight.classList.contains('on')).toBe(false);
         expect(overflowRight.classList.contains('going-off')).toBe(false);
-        expect(overflowLeft.style.transform).toEqual('translateX(' + Math.round(Math.sqrt(Math.abs(overflow % bodyWidth)) * 2) + 'px)');
+        expect(overflowLeft.style.transform).toEqual(
+            `translateX(${Math.round(Math.sqrt(Math.abs(overflow % bodyWidth)) * 2)}px)`
+        );
         expect(gridNode.style.transform).toEqual('translateX(0px)');
         expect(gridNode.style.transition).toEqual('none');
 
         // panning left on the leftmost cell deactivates left overflow and move right
         let move = -60;
-        component.onPan({eventType: Hammer.INPUT_MOVE, deltaX: move});
+        component.onPan({ eventType: Hammer.INPUT_MOVE, deltaX: move });
         expect(overflowLeft.classList.contains('on')).toBe(true);
         expect(overflowLeft.classList.contains('going-off')).toBe(true);
         expect(overflowRight.classList.contains('on')).toBe(false);
         expect(overflowRight.classList.contains('going-off')).toBe(false);
-        expect(gridNode.style.transform).toEqual('translateX(' + (move - overflow) + 'px)');
+        expect(gridNode.style.transform).toEqual(`translateX(${move - overflow}px)`);
         expect(gridNode.style.transition).toEqual('none');
 
         // wait for overflow to disappear
@@ -1105,8 +1118,8 @@ describe('Grid.Components.MainGrid', function() {
 
             // panning more than half on the right from the first cell and stop should focus on the next cell
             move = -(halfCellWidth + 10);
-            component.onPan({eventType: Hammer.INPUT_MOVE, deltaX: move + overflow});
-            component.onPan({eventType: Hammer.INPUT_END, deltaX: move + overflow});
+            component.onPan({ eventType: Hammer.INPUT_MOVE, deltaX: move + overflow });
+            component.onPan({ eventType: Hammer.INPUT_END, deltaX: move + overflow });
 
             // waiting for action to be done
             setTimeout(() => {
@@ -1115,8 +1128,8 @@ describe('Grid.Components.MainGrid', function() {
                 // panning less than half on the right from the second cell and stop should stay on the second cell
                 overflow = 0; // we ended the previous pan so it's a new run
                 move = -(halfCellWidth - 10);
-                component.onPan({eventType: Hammer.INPUT_MOVE, deltaX: move + overflow});
-                component.onPan({eventType: Hammer.INPUT_END, deltaX: move + overflow});
+                component.onPan({ eventType: Hammer.INPUT_MOVE, deltaX: move + overflow });
+                component.onPan({ eventType: Hammer.INPUT_END, deltaX: move + overflow });
 
                 // waiting for action to be done
                 setTimeout(() => {
@@ -1124,17 +1137,18 @@ describe('Grid.Components.MainGrid', function() {
 
                     // panning less than half on the left from the second cell and stop should stay on the second cell
                     move = halfCellWidth - 10;
-                    component.onPan({eventType: Hammer.INPUT_MOVE, deltaX: move + overflow});
-                    component.onPan({eventType: Hammer.INPUT_END, deltaX: move + overflow});
+                    component.onPan({ eventType: Hammer.INPUT_MOVE, deltaX: move + overflow });
+                    component.onPan({ eventType: Hammer.INPUT_END, deltaX: move + overflow });
 
                     // waiting for action to be done
                     setTimeout(() => {
                         expect(Store.getFocusedModuleCellIndex('Test simple grid')).toEqual(1);
 
-                        // panning more than half on the left from the second cell and stop should focus on the previous cell
+                        // panning more than half on the left from the second cell
+                        // and stop should focus on the previous cell
                         move = halfCellWidth + 10;
-                        component.onPan({eventType: Hammer.INPUT_MOVE, deltaX: move + overflow});
-                        component.onPan({eventType: Hammer.INPUT_END, deltaX: move + overflow});
+                        component.onPan({ eventType: Hammer.INPUT_MOVE, deltaX: move + overflow });
+                        component.onPan({ eventType: Hammer.INPUT_END, deltaX: move + overflow });
 
                         // waiting for action to be done
                         setTimeout(() => {
@@ -1145,23 +1159,26 @@ describe('Grid.Components.MainGrid', function() {
 
                             // panning left on the rightmost cell activates right overflow
                             overflow = - 150;
-                            component.onPan({eventType: Hammer.INPUT_MOVE, deltaX: overflow});
+                            component.onPan({ eventType: Hammer.INPUT_MOVE, deltaX: overflow });
                             expect(overflowRight.classList.contains('on')).toBe(true);
                             expect(overflowRight.classList.contains('going-off')).toBe(false);
                             expect(overflowLeft.classList.contains('on')).toBe(false);
                             expect(overflowLeft.classList.contains('going-off')).toBe(false);
-                            expect(overflowRight.style.transform).toEqual('translateX(-' + Math.round(Math.sqrt(Math.abs(overflow % bodyWidth)) * 2) + 'px)');
-                            expect(gridNode.style.transform).toEqual('translateX(-200vw)'); // -2000vw => moved two cards because we are one the third one
+                            expect(overflowRight.style.transform).toEqual(
+                                `translateX(-${Math.round(Math.sqrt(Math.abs(overflow % bodyWidth)) * 2)}px)`
+                            );
+                             // -2000vw => moved two cards because we are one the third one
+                            expect(gridNode.style.transform).toEqual('translateX(-200vw)');
                             expect(gridNode.style.transition).toEqual('none');
 
                             // panning left on the leftmost cell deactivates left overflow and move right
                             move = 60;
-                            component.onPan({eventType: Hammer.INPUT_MOVE, deltaX: move});
+                            component.onPan({ eventType: Hammer.INPUT_MOVE, deltaX: move });
                             expect(overflowRight.classList.contains('on')).toBe(true);
                             expect(overflowRight.classList.contains('going-off')).toBe(true);
                             expect(overflowLeft.classList.contains('on')).toBe(false);
                             expect(overflowLeft.classList.contains('going-off')).toBe(false);
-                            expect(gridNode.style.transform).toEqual('translateX(calc(-200vw + ' + (move - overflow) + 'px))');
+                            expect(gridNode.style.transform).toEqual(`translateX(calc(-200vw + ${move - overflow}px))`);
                             expect(gridNode.style.transition).toEqual('none');
 
                             // wait for overflow to disappear

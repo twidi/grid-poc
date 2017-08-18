@@ -6,12 +6,11 @@ import { customMatchers } from './custom-matchers';
 import { Utils } from '../Utils';
 
 
-describe('Grid.Actions', function() {
-    let uniqueIdMock;
+describe('Grid.Actions', () => {
     const defaultHoveringDelay = Store.__private.hoveringDelay;
     const hoveringDelay = 10;
 
-    let createSimpleGrid = function() {
+    const createSimpleGrid = () => {
         // create a grid with two cells (one we'll drag)
         const grid = Manipulator.XMLStringToXMLGrid(
             '<grid name="foo" space="5px" type="mainGrid">' +
@@ -28,16 +27,16 @@ describe('Grid.Actions', function() {
         Store.__private.addGrid(grid);
 
         // force it to be in design mode
-        Store.__private.grids['foo'].designModeStep = 'enabled';
+        Store.__private.grids.foo.designModeStep = 'enabled';
 
         return Store.getGrid('foo');
     };
 
-    beforeEach(function() {
+    beforeEach(() => {
         jasmine.addMatchers(customMatchers);
 
         // we mock the uniqueId function of lodash to know the value to expect
-        uniqueIdMock = Utils.mockUniqueId();
+        Utils.mockUniqueId();
 
         // we want to start each test with a fresh list of grids
         Store.__removeAllGrids();
@@ -47,19 +46,19 @@ describe('Grid.Actions', function() {
 
     });
 
-    afterEach(function() {
+    afterEach(() => {
         // restore hovering delay
         Store.__private.hoveringDelay = defaultHoveringDelay;
     });
 
 
-    it('should add a grid', function(done) {
+    it('should add a grid', (done) => {
         // will set this to True when the callback is called
         let callbackCalled = false;
         // will store the grid name received via the "add" event
         let addedGridName;
 
-        const callback = function(gridName) {
+        const callback = (gridName) => {
             callbackCalled = true;
             addedGridName = gridName;
         };
@@ -74,7 +73,7 @@ describe('Grid.Actions', function() {
         } finally {
 
             // give some time to let the callbacks to be called
-            setTimeout(function() {
+            setTimeout(() => {
                 // clean the listener
                 Store.off('grid.add', callback);
 
@@ -83,8 +82,8 @@ describe('Grid.Actions', function() {
                 expect(addedGridName).toEqual('foo');
 
                 // check if we really have the new grid
-                let addedGrid;
-                expect(function() {
+                let addedGrid = null;
+                expect(() => {
                     addedGrid = Store.getGrid('foo');
                 }).not.toThrowError(Store.Exceptions.GridDoesNotExist);
 
@@ -108,13 +107,13 @@ describe('Grid.Actions', function() {
         }
     });
 
-    it('should enter design mode', function(done) {
+    it('should enter design mode', (done) => {
         // will set this to True when the callback is called
         let callbackCalled = false;
         // will store the grid name received via the tested event
         let updatedGridName;
 
-        const callback = function(gridName) {
+        const callback = (gridName) => {
             callbackCalled = true;
             updatedGridName = gridName;
         };
@@ -131,7 +130,7 @@ describe('Grid.Actions', function() {
         } finally {
 
             // give some time to let the callbacks to be called
-            setTimeout(function() {
+            setTimeout(() => {
                 const newGrid = Store.getGrid('foo');
 
                 // clean the listener
@@ -159,29 +158,29 @@ describe('Grid.Actions', function() {
         }
     });
 
-    it('should add a module', function(done) {
+    it('should add a module', (done) => {
         // will set this to True when the callback is called
         let callbackCalled = false;
         // will store the grid name received via the tested event
         let updatedGridName;
 
-        const callback = function(gridName) {
+        const callback = (gridName) => {
             callbackCalled = true;
             updatedGridName = gridName;
         };
 
         // add a grid to work on
-        const grid = createSimpleGrid();
+        createSimpleGrid();
 
         // listen to the tested event
         Store.on('grid.designMode.module.add', callback);
 
         try {
-            Actions.addModule('foo', 'Module.Test1', {text: 'test text'});
+            Actions.addModule('foo', 'Module.Test1', { text: 'test text' });
         } finally {
 
             // give some time to let the callbacks to be called
-            setTimeout(function() {
+            setTimeout(() => {
                 const newGrid = Store.getGrid('foo');
 
                 // clean the listener
@@ -199,7 +198,9 @@ describe('Grid.Actions', function() {
                     '<grid name="foo" space="5px" type="mainGrid" id="grid-1">' +
                         '<content id="content-2">' +
                             '<row id="row-8">' +
-                                '<cell type="module" id="cell-9" module-index="0"><content component="Module.Test1" text="test text" id="content-10"/></cell>' +
+                                '<cell type="module" id="cell-9" module-index="0">' +
+                                    '<content component="Module.Test1" text="test text" id="content-10"/>' +
+                                '</cell>' +
                             '</row>' +
                             '<row id="row-3">' +
                                 '<cell type="module" id="cell-4" module-index="1"><content id="content-5"/></cell>' +
@@ -222,13 +223,13 @@ describe('Grid.Actions', function() {
         }
     });
 
-    it('should remove a module', function(done) {
+    it('should remove a module', (done) => {
         // will set this to True when the callback is called
         let callbackCalled = false;
         // will store the grid name received via the tested event
         let updatedGridName;
 
-        const callback = function(gridName) {
+        const callback = (gridName) => {
             callbackCalled = true;
             updatedGridName = gridName;
         };
@@ -245,7 +246,7 @@ describe('Grid.Actions', function() {
         } finally {
 
             // give some time to let the callbacks to be called
-            setTimeout(function() {
+            setTimeout(() => {
                 const newGrid = Store.getGrid('foo');
 
                 // clean the listener
@@ -282,13 +283,13 @@ describe('Grid.Actions', function() {
         }
     });
 
-    it('should start dragging', function(done) {
+    it('should start dragging', (done) => {
         // will set this to True when the callback is called
         let callbackCalled = false;
         // will store the grid name received via the tested event
         let updatedGridName;
 
-        const callback = function(gridName) {
+        const callback = (gridName) => {
             callbackCalled = true;
             updatedGridName = gridName;
         };
@@ -306,7 +307,7 @@ describe('Grid.Actions', function() {
         } finally {
 
             // give some time to let the callbacks to be called
-            setTimeout(function() {
+            setTimeout(() => {
                 const newGrid = Store.getGrid('foo');
 
                 // clean the listener
@@ -323,7 +324,9 @@ describe('Grid.Actions', function() {
                 const expected =
                      '<grid name="foo" space="5px" type="mainGrid" id="grid-1" hasPlaceholders="true">' +
                         '<content id="content-2">' +
-                            '<row type="placeholder" id="row-8"><cell type="placeholder" id="cell-9"><content id="content-10"/></cell></row>' +
+                            '<row type="placeholder" id="row-8"><cell type="placeholder" id="cell-9">' +
+                                '<content id="content-10"/></cell>' +
+                            '</row>' +
                             '<row id="row-3">' +
                                 '<cell type="placeholder" id="cell-11"><content id="content-12"/></cell>' +
                                 '<cell type="module" id="cell-6" module-index="0">' +
@@ -331,7 +334,9 @@ describe('Grid.Actions', function() {
                                 '</cell>' +
                                 '<cell type="placeholder" id="cell-13"><content id="content-14"/></cell>' +
                             '</row>' +
-                            '<row type="placeholder" id="row-15"><cell type="placeholder" id="cell-16"><content id="content-17"/></cell></row>' +
+                            '<row type="placeholder" id="row-15">' +
+                                '<cell type="placeholder" id="cell-16"><content id="content-17"/></cell>' +
+                            '</row>' +
                         '</content>' +
                     '</grid>';
 
@@ -345,15 +350,12 @@ describe('Grid.Actions', function() {
         }
     });
 
-    it('should restore state if startDragging fail', function(done) {
+    it('should restore state if startDragging fail', (done) => {
         // will set this to True when the callback is called
         let callbackCalled = false;
-        // will store the grid name received via the tested event
-        let updatedGridName;
 
-        const callback = function(gridName) {
+        const callback = (gridName) => {
             callbackCalled = true;
-            updatedGridName = gridName;
         };
 
         // add a grid to work on
@@ -373,7 +375,7 @@ describe('Grid.Actions', function() {
         } finally {
 
             // give some time to let the callbacks to be called
-            setTimeout(function() {
+            setTimeout(() => {
 
                 // clean the listener
                 Store.off('grid.designMode.dragging.start', callback);
@@ -391,13 +393,13 @@ describe('Grid.Actions', function() {
     });
 
 
-    it('should cancel dragging', function(done) {
+    it('should cancel dragging', (done) => {
         // will set this to True when the callback is called
         let callbackCalled = false;
         // will store the grid name received via the tested event
         let updatedGridName;
 
-        const callback = function(gridName) {
+        const callback = (gridName) => {
             callbackCalled = true;
             updatedGridName = gridName;
         };
@@ -409,20 +411,20 @@ describe('Grid.Actions', function() {
         Actions.startDragging('foo', grid.querySelector('#cell-4'));
 
         // leave some time to go in dragging mode
-        setTimeout(function() {
+        setTimeout(() => {
 
             // listen to the tested event
             Store.on('grid.designMode.dragging.stop', callback);
 
             try {
 
-                Actions.cancelDragging('foo', grid.querySelector('#cell-4'));
+                Actions.cancelDragging('foo');
 
             } finally {
 
 
                 // give some time to let the callbacks to be called
-                setTimeout(function() {
+                setTimeout(() => {
                     const newGrid = Store.getGrid('foo');
                     // it should be the original grid
                     expect(newGrid).toBe(grid);
@@ -442,8 +444,10 @@ describe('Grid.Actions', function() {
                         '<grid name="foo" space="5px" type="mainGrid" id="grid-1">' +
                             '<content id="content-2">' +
                                 '<row id="row-3">' +
-                                    '<cell type="module" id="cell-4" module-index="0"><content id="content-5"/></cell>' +
-                                    '<cell type="module" id="cell-6" module-index="1"><content id="content-7"/></cell>' +
+                                    '<cell type="module" id="cell-4" module-index="0"><content id="content-5"/>' +
+                                    '</cell>' +
+                                    '<cell type="module" id="cell-6" module-index="1"><content id="content-7"/>' +
+                                    '</cell>' +
                                 '</row>' +
                             '</content>' +
                         '</grid>';
@@ -459,13 +463,13 @@ describe('Grid.Actions', function() {
 
     });
 
-    it('should start hovering then stay', function(done) {
+    it('should start hovering then stay', (done) => {
         // will set this to True when the callback is called
         let callbackCalled = false;
         // will store the grid name received via the tested event
         let updatedGridName;
 
-        const callback = function(gridName) {
+        const callback = (gridName) => {
             callbackCalled = true;
             updatedGridName = gridName;
         };
@@ -480,7 +484,7 @@ describe('Grid.Actions', function() {
         Actions.startDragging('foo', grid.querySelector('#cell-4'));
 
         // leave some time to go in dragging mode
-        setTimeout(function() {
+        setTimeout(() => {
 
             // listen to the tested event
             Store.on('grid.designMode.hovering.start', callback);
@@ -492,7 +496,7 @@ describe('Grid.Actions', function() {
             } finally {
 
                 // give some time to let the callbacks to be called
-                setTimeout(function() {
+                setTimeout(() => {
                     const newGrid = Store.getGrid('foo');
 
                     // clean the listener
@@ -512,7 +516,9 @@ describe('Grid.Actions', function() {
                     const expected =
                         '<grid name="foo" space="5px" type="mainGrid" id="grid-1" hasPlaceholders="true">' +
                             '<content id="content-2">' +
-                                '<row type="placeholder" id="row-8"><cell type="placeholder" id="cell-9"><content id="content-10"/></cell></row>' +
+                                '<row type="placeholder" id="row-8">' +
+                                    '<cell type="placeholder" id="cell-9"><content id="content-10"/></cell>' +
+                                '</row>' +
                                 '<row id="row-3">' +
                                     '<cell type="placeholder" id="cell-11"><content id="content-12"/></cell>' +
                                     '<cell type="module" id="cell-6" module-index="0">' +
@@ -520,7 +526,9 @@ describe('Grid.Actions', function() {
                                     '</cell>' +
                                     '<cell type="placeholder" id="cell-13"><content id="content-14"/></cell>' +
                                 '</row>' +
-                                '<row type="placeholder" id="row-15"><cell type="placeholder" id="cell-16"><content id="content-17"/></cell></row>' +
+                                '<row type="placeholder" id="row-15">' +
+                                    '<cell type="placeholder" id="cell-16"><content id="content-17"/></cell>' +
+                                '</row>' +
                             '</content>' +
                         '</grid>';
                     expect(newGrid).toEqualXML(expected);
@@ -532,8 +540,8 @@ describe('Grid.Actions', function() {
                     Store.on('grid.designMode.hovering.stay', callback);
 
                     // wait to enter in real hovering mode
-                    setTimeout(function() {
-                        const newGrid = Store.getGrid('foo');
+                    setTimeout(() => {
+                        const newGrid2 = Store.getGrid('foo');
 
                         // clean the listener
                         Store.off('grid.designMode.hovering.stay', callback);
@@ -548,18 +556,22 @@ describe('Grid.Actions', function() {
                         expect(Store.__private.stayHovering).toHaveBeenCalled();
 
                         // check if the grid the dragged cell moved
-                        const expected =
+                        const expected2 =
                             '<grid name="foo" space="5px" type="mainGrid" id="grid-1">' +
                                 '<content id="content-2">' +
                                     '<row id="row-3">' +
-                                        '<cell type="module" id="cell-6" module-index="0"><content id="content-7"/></cell>' +
+                                        '<cell type="module" id="cell-6" module-index="0">' +
+                                            '<content id="content-7"/>' +
+                                        '</cell>' +
                                     '</row>' +
                                     '<row id="row-15">' +
-                                        '<cell type="module" id="cell-16" module-index="1"><content id="content-5"/></cell>' +
+                                        '<cell type="module" id="cell-16" module-index="1">' +
+                                            '<content id="content-5"/>' +
+                                        '</cell>' +
                                     '</row>' +
                                 '</content>' +
                             '</grid>';
-                        expect(newGrid).toEqualXML(expected);
+                        expect(newGrid2).toEqualXML(expected2);
 
                         // tell jasmine we're done
                         done();
@@ -572,7 +584,7 @@ describe('Grid.Actions', function() {
         }, 0.01);
     });
 
-    it('should change hovering placeholder', function(done) {
+    it('should change hovering placeholder', (done) => {
 
         // will set this to True when the callback is called, on hovering.start and stop
         let callbackCalled1 = false;
@@ -581,12 +593,12 @@ describe('Grid.Actions', function() {
         let updatedGridName1;
         let updatedGridName2;
 
-        const callback1 = function(gridName) {
+        const callback1 = (gridName) => {
             callbackCalled1 = true;
             updatedGridName1 = gridName;
         };
 
-        const callback2 = function(gridName) {
+        const callback2 = (gridName) => {
             callbackCalled2 = true;
             updatedGridName2 = gridName;
         };
@@ -598,7 +610,7 @@ describe('Grid.Actions', function() {
         Actions.startDragging('foo', grid.querySelector('#cell-4'));
 
         // leave some time to go in dragging mode
-        setTimeout(function() {
+        setTimeout(() => {
 
             try {
 
@@ -607,7 +619,7 @@ describe('Grid.Actions', function() {
             } finally {
 
                 // give some time to let the callbacks to be called
-                setTimeout(function() {
+                setTimeout(() => {
 
                     // listen to the tested event
                     Store.on('grid.designMode.hovering.start', callback1);
@@ -621,7 +633,7 @@ describe('Grid.Actions', function() {
                         Actions.startHovering('foo', Store.getGrid('foo').querySelector('#cell-9'));
 
                     } finally {
-                        setTimeout(function() {
+                        setTimeout(() => {
 
 
                             // clean the listeners
@@ -647,7 +659,7 @@ describe('Grid.Actions', function() {
         }, 0.01);
     });
 
-    it('should not start hovering if already hovering the same placeholder', function(done) {
+    it('should not start hovering if already hovering the same placeholder', (done) => {
 
         // here we don't want a fast "hovering delay" to avoid fire the "stayHovering" too fast
         Store.__private.hoveringDelay = defaultHoveringDelay;
@@ -655,7 +667,7 @@ describe('Grid.Actions', function() {
         // will set this to True when the callback is called
         let callbackCalled = false;
 
-        const callback = function(gridName) {
+        const callback = (gridName) => {
             callbackCalled = true;
         };
 
@@ -666,7 +678,7 @@ describe('Grid.Actions', function() {
         Actions.startDragging('foo', grid.querySelector('#cell-4'));
 
         // leave some time to go in dragging mode
-        setTimeout(function() {
+        setTimeout(() => {
 
             try {
 
@@ -675,7 +687,7 @@ describe('Grid.Actions', function() {
             } finally {
 
                 // give some time to let the callbacks to be called
-                setTimeout(function() {
+                setTimeout(() => {
 
                     // listen to the tested event
                     Store.on('grid.designMode.hovering.start', callback);
@@ -688,7 +700,7 @@ describe('Grid.Actions', function() {
                         Actions.startHovering('foo', Store.getGrid('foo').querySelector('#cell-16'));
 
                     } finally {
-                        setTimeout(function() {
+                        setTimeout(() => {
 
                             // clean the listener
                             Store.off('grid.designMode.hovering.start', callback);
@@ -709,14 +721,13 @@ describe('Grid.Actions', function() {
         }, 0.01);
     });
 
-    it('should not start hovering if no placeholder', function(done) {
+    it('should not start hovering if no placeholder', (done) => {
 
         // will set this to True when the callback is called
         let callbackCalled = false;
 
-        const callback = function(gridName) {
+        const callback = (gridName) => {
             callbackCalled = true;
-            updatedGridName = gridName;
         };
 
         // add a grid to work on
@@ -732,7 +743,7 @@ describe('Grid.Actions', function() {
         spyOn(Store.__private, 'clearHoveringTimeout').and.callThrough();
 
         // leave some time to go in dragging mode
-        setTimeout(function() {
+        setTimeout(() => {
 
             try {
 
@@ -741,7 +752,7 @@ describe('Grid.Actions', function() {
             } finally {
 
                 // give some time to let the callbacks to be called
-                setTimeout(function() {
+                setTimeout(() => {
 
                     // clean the listener
                     Store.off('grid.designMode.hovering.start', callback);
@@ -763,15 +774,15 @@ describe('Grid.Actions', function() {
         }, 0.01);
     });
 
-    let itShouldStopHovering = function(text, delay, stayCalled) {
+    const itShouldStopHovering = (text, delay, stayCalled) => {
 
-        it(text, function(done) {
+        it(text, (done) => {
             // will set this to True when the callback is called
             let callbackCalled = false;
             // will store the grid name received via the tested event
             let updatedGridName;
 
-            const callback = function(gridName) {
+            const callback = (gridName) => {
                 callbackCalled = true;
                 updatedGridName = gridName;
             };
@@ -786,7 +797,7 @@ describe('Grid.Actions', function() {
             Actions.startDragging('foo', grid.querySelector('#cell-4'));
 
             // leave some time to go in dragging mode
-            setTimeout(function() {
+            setTimeout(() => {
                 // keep a reference of the grid in dragging mode to compare to it later
                 const dragGrid = Store.getGrid('foo');
 
@@ -794,7 +805,7 @@ describe('Grid.Actions', function() {
                 Actions.startHovering('foo', Store.getGrid('foo').querySelector('#cell-16'));
 
                 // leave some time to go in hovering mode
-                setTimeout(function() {
+                setTimeout(() => {
 
                     if (stayCalled) {
                         expect(Store.__private.stayHovering).toHaveBeenCalled();
@@ -812,7 +823,7 @@ describe('Grid.Actions', function() {
                     } finally {
 
                         // give some time to let the callbacks to be called
-                        setTimeout(function() {
+                        setTimeout(() => {
                             const newGrid = Store.getGrid('foo');
                             // it should be the grid in dragging mode
                             expect(newGrid).toBe(dragGrid);
@@ -831,7 +842,9 @@ describe('Grid.Actions', function() {
                             const expected =
                                 '<grid name="foo" space="5px" type="mainGrid" id="grid-1" hasPlaceholders="true">' +
                                     '<content id="content-2">' +
-                                        '<row type="placeholder" id="row-8"><cell type="placeholder" id="cell-9"><content id="content-10"/></cell></row>' +
+                                        '<row type="placeholder" id="row-8">' +
+                                            '<cell type="placeholder" id="cell-9"><content id="content-10"/></cell>' +
+                                        '</row>' +
                                         '<row id="row-3">' +
                                             '<cell type="placeholder" id="cell-11"><content id="content-12"/></cell>' +
                                             '<cell type="module" id="cell-6" module-index="0">' +
@@ -839,7 +852,9 @@ describe('Grid.Actions', function() {
                                             '</cell>' +
                                             '<cell type="placeholder" id="cell-13"><content id="content-14"/></cell>' +
                                         '</row>' +
-                                        '<row type="placeholder" id="row-15"><cell type="placeholder" id="cell-16"><content id="content-17"/></cell></row>' +
+                                        '<row type="placeholder" id="row-15">' +
+                                            '<cell type="placeholder" id="cell-16"><content id="content-17"/></cell>' +
+                                        '</row>' +
                                     '</content>' +
                                 '</grid>';
                             expect(newGrid).toEqualXML(expected);
@@ -861,15 +876,15 @@ describe('Grid.Actions', function() {
     itShouldStopHovering('should stop hovering when pre-hovering', 0.01, false);
     itShouldStopHovering('should stop hovering when real (stay) hovering', hoveringDelay, true);
 
-    let itShouldDrop = function(text, delay, stayCalled, otherPlaceholder) {
+    const itShouldDrop = (text, delay, stayCalled, otherPlaceholder) => {
 
-        it(text, function(done) {
+        it(text, (done) => {
             // will set this to True when the callback is called
             let callbackCalled = false;
             // will store the grid name received via the tested event
             let updatedGridName;
 
-            const callback = function(gridName) {
+            const callback = (gridName) => {
                 callbackCalled = true;
                 updatedGridName = gridName;
             };
@@ -886,7 +901,7 @@ describe('Grid.Actions', function() {
             Actions.startDragging('foo', grid.querySelector('#cell-4'));
 
             // leave some time to go in dragging mode
-            setTimeout(function() {
+            setTimeout(() => {
 
                 // go to hovering mode
 
@@ -896,7 +911,7 @@ describe('Grid.Actions', function() {
                 Store.on('grid.designMode.drop', callback);
 
                 // leave some time to go in hovering mode
-                setTimeout(function() {
+                setTimeout(() => {
 
                     if (stayCalled) {
                         expect(Store.__private.stayHovering).toHaveBeenCalled();
@@ -911,7 +926,7 @@ describe('Grid.Actions', function() {
                     } finally {
 
                         // give some time to let the callbacks to be called
-                        setTimeout(function() {
+                        setTimeout(() => {
                             const newGrid = Store.getGrid('foo');
 
                             // clean the listener
@@ -962,7 +977,7 @@ describe('Grid.Actions', function() {
 
                             expect(newGrid).toEqualXML(expected);
 
-                            // check that the grid with the module modev is in the history
+                            // check that the grid with the moved module is in the history
                             const gridEntry = Store.__private.getGridEntry('foo');
                             expect(gridEntry.history.length).toBe(2);
                             expect(gridEntry.history[1]).toEqualXML(newGrid);
@@ -984,11 +999,11 @@ describe('Grid.Actions', function() {
     itShouldDrop('should drop module in placeholder when real (stay) hovering', hoveringDelay, true, false);
     itShouldDrop('should drop module in forced placeholder when pre-hovering', 0.01, false, true);
 
-    it('should cancel drop if in dragging mode', function(done) {
+    it('should cancel drop if in dragging mode', (done) => {
         // will set this to True when the callback is called
         let callbackCalled = false;
 
-        const callback = function(gridName) {
+        const callback = (gridName) => {
             callbackCalled = true;
         };
 
@@ -999,19 +1014,19 @@ describe('Grid.Actions', function() {
         Actions.startDragging('foo', grid.querySelector('#cell-4'));
 
         // leave some time to go in dragging mode
-        setTimeout(function() {
+        setTimeout(() => {
 
             // go to hovering mode
             Actions.startHovering('foo', Store.getGrid('foo').querySelector('#cell-16'));
 
             // leave some time to go in hovering mode
-            setTimeout(function() {
+            setTimeout(() => {
 
                 // exit hovering mode
                 Actions.stopHovering('foo');
 
                 // leave some time the exit hovering mode
-                setTimeout(function() {
+                setTimeout(() => {
 
                     // listen to the tested event, should not be called
                     Store.on('grid.designMode.drop', callback);
@@ -1030,7 +1045,7 @@ describe('Grid.Actions', function() {
                     } finally {
 
                         // give some time to let the callbacks to be called
-                        setTimeout(function() {
+                        setTimeout(() => {
 
                             // clean the listener
                             Store.off('grid.designMode.drop', callback);
@@ -1051,14 +1066,14 @@ describe('Grid.Actions', function() {
 
     });
 
-    it('should exit design mode', function(done) {
+    it('should exit design mode', (done) => {
         // will set this to True when the callback is called
         let callbackCalled = false;
         // will store the grid name received via the tested event
         let updatedGridName;
 
 
-        const callback = function(gridName) {
+        const callback = (gridName) => {
             callbackCalled = true;
             updatedGridName = gridName;
         };
@@ -1076,7 +1091,7 @@ describe('Grid.Actions', function() {
         } finally {
 
             // give some time to let the callbacks to be called
-            setTimeout(function() {
+            setTimeout(() => {
                 // clean the listener
                 Store.off('grid.designMode.exit', callback);
 
@@ -1107,13 +1122,13 @@ describe('Grid.Actions', function() {
         }
     });
 
-    it('should start resizing', function(done) {
+    it('should start resizing', (done) => {
         // will set this to True when the callback is called
         let callbackCalled = false;
         // will store the grid name received via the tested event
         let updatedGridName;
 
-        const callback = function(gridName) {
+        const callback = (gridName) => {
             callbackCalled = true;
             updatedGridName = gridName;
         };
@@ -1132,7 +1147,7 @@ describe('Grid.Actions', function() {
 
         } finally {
             // give some time to let the callbacks to be called
-            setTimeout(function() {
+            setTimeout(() => {
 
                 // clean the listener
                 Store.off('grid.designMode.resizing.start', callback);
@@ -1151,7 +1166,7 @@ describe('Grid.Actions', function() {
                     initialPos: 100,
                     previousRelativeSize: 1,
                     nextRelativeSize: 1,
-                    sizeRatio: 0.01,  // 2 (total relative size) / 200 (full size)
+                    sizeRatio: 0.01  // 2 (total relative size) / 200 (full size)
                 });
 
                 // tell jasmine we're done
@@ -1162,7 +1177,7 @@ describe('Grid.Actions', function() {
         }
     });
 
-    it('should continue resizing', function(done) {
+    it('should continue resizing', (done) => {
         // will set this to True when the callback is called
         let callbackCalled = false;
         // will store the grid name received via the tested event
@@ -1170,7 +1185,7 @@ describe('Grid.Actions', function() {
         // will store event callback additional data
         let callbackData;
 
-        const callback = function(gridName, data) {
+        const callback = (gridName, data) => {
             callbackCalled = true;
             updatedGridName = gridName;
             callbackData = data;
@@ -1188,7 +1203,7 @@ describe('Grid.Actions', function() {
         Actions.startResizing('foo', resizer, 200, 100);
 
         // leave some time to go in resizing mode
-        setTimeout(function() {
+        setTimeout(() => {
 
             // listen to the tested event
             Store.on('grid.designMode.resizing.move', callback);
@@ -1199,7 +1214,7 @@ describe('Grid.Actions', function() {
 
             } finally {
                 // give some time to let the callbacks to be called
-                setTimeout(function() {
+                setTimeout(() => {
 
                     // clean the listener
                     Store.off('grid.designMode.resizing.move', callback);
@@ -1209,7 +1224,7 @@ describe('Grid.Actions', function() {
                     expect(updatedGridName).toEqual('foo');
                     expect(callbackData).toEqual({
                         previousRelativeSize: 1.5,
-                        nextRelativeSize: 0.5,
+                        nextRelativeSize: 0.5
                     });
 
                     // check the new designMode step, still "resizing"
@@ -1222,7 +1237,7 @@ describe('Grid.Actions', function() {
                         initialPos: 100,
                         previousRelativeSize: 1,
                         nextRelativeSize: 1,
-                        sizeRatio: 0.01,  // 2 (total relative size) / 200 (full size)
+                        sizeRatio: 0.01  // 2 (total relative size) / 200 (full size)
                     });
 
                     // check that the nodes are updated in the grid
@@ -1238,10 +1253,10 @@ describe('Grid.Actions', function() {
         }, 0.01);
     });
 
-    it('should ignore resizing if out of bound', function(done) {
+    it('should ignore resizing if out of bound', (done) => {
         // will set this to True when the callback is called
         let callbackCalled = false;
-        const callback = function(gridName) {
+        const callback = (gridName) => {
             callbackCalled = true;
         };
 
@@ -1257,7 +1272,7 @@ describe('Grid.Actions', function() {
         Actions.startResizing('foo', resizer, 200, 100);
 
         // leave some time to go in resizing mode
-        setTimeout(function() {
+        setTimeout(() => {
 
             // listen to the tested event
             Store.on('grid.designMode.resizing.move', callback);
@@ -1268,7 +1283,7 @@ describe('Grid.Actions', function() {
 
             } finally {
                 // give some time to let the callbacks to be called
-                setTimeout(function() {
+                setTimeout(() => {
 
                     // clean the listener
                     Store.off('grid.designMode.resizing.move', callback);
@@ -1288,13 +1303,13 @@ describe('Grid.Actions', function() {
         }, 0.01);
     });
 
-    it('should stop resizing', function(done) {
+    it('should stop resizing', (done) => {
         // will set this to True when the callback is called
         let callbackCalled = false;
         // will store the grid name received via the tested event
         let updatedGridName;
 
-        const callback = function(gridName, data) {
+        const callback = (gridName, data) => {
             callbackCalled = true;
             updatedGridName = gridName;
         };
@@ -1311,13 +1326,13 @@ describe('Grid.Actions', function() {
         Actions.startResizing('foo', resizer, 200, 100);
 
         // leave some time to go in resizing mode
-        setTimeout(function() {
+        setTimeout(() => {
 
             // then do a resize
             Actions.resize('foo', 150);
 
             // leave some time the update the relative sizes
-            setTimeout(function() {
+            setTimeout(() => {
 
                 // listen to the tested event
                 Store.on('grid.designMode.resizing.stop', callback);
@@ -1328,7 +1343,7 @@ describe('Grid.Actions', function() {
 
                 } finally {
                     // give some time to let the callbacks to be called
-                    setTimeout(function() {
+                    setTimeout(() => {
                         const newGrid = Store.getGrid('foo');
 
                         // clean the listener
@@ -1365,7 +1380,7 @@ describe('Grid.Actions', function() {
         }, 0.01);
     });
 
-    it('should go through in history', function(done) {
+    it('should go through in history', (done) => {
         // will set this to True when the callbacks are called
         let addCallbackCalled = false;
         let backCallbackCalled = false;
@@ -1375,15 +1390,15 @@ describe('Grid.Actions', function() {
         let backUpdatedGridName;
         let forwardUpdatedGridName;
 
-        const addCallback = function(gridName) {
+        const addCallback = (gridName) => {
             addCallbackCalled = true;
             addUpdatedGridName = gridName;
         };
-        const backCallback = function(gridName) {
+        const backCallback = (gridName) => {
             backCallbackCalled = true;
             backUpdatedGridName = gridName;
         };
-        const forwardCallback = function(gridName) {
+        const forwardCallback = (gridName) => {
             forwardCallbackCalled = true;
             forwardUpdatedGridName = gridName;
         };
@@ -1410,7 +1425,7 @@ describe('Grid.Actions', function() {
         Store.__private.addCurrentGridToHistory('foo');
 
         // leave some time to update the history
-        setTimeout(function() {
+        setTimeout(() => {
             // check if the callback were called
             expect(addCallbackCalled).toBe(true);
             expect(addUpdatedGridName).toEqual('foo');
@@ -1426,7 +1441,7 @@ describe('Grid.Actions', function() {
             Actions.goBackInHistory('foo');
 
             // leave some time to update the history
-            setTimeout(function() {
+            setTimeout(() => {
 
                 // check if the callback were called
                 expect(backCallbackCalled).toBe(true);
@@ -1443,7 +1458,7 @@ describe('Grid.Actions', function() {
                 Actions.goForwardInHistory('foo');
 
                 // leave some time to update the history
-                setTimeout(function() {
+                setTimeout(() => {
 
                     // check if the callback were called
                     expect(forwardCallbackCalled).toBe(true);
@@ -1463,7 +1478,7 @@ describe('Grid.Actions', function() {
         }, 0.01);
     });
 
-    it('should focus a module cell', function(done) {
+    it('should focus a module cell', (done) => {
         let grid = Manipulator.XMLStringToXMLGrid(
             '<grid name="bar" space="5px" type="mainGrid">' +
                 '<content>' +
@@ -1513,12 +1528,12 @@ describe('Grid.Actions', function() {
         let offCellId;
         let onCellId;
 
-        const offCallback = function(gridName, cellId) {
+        const offCallback = (gridName, cellId) => {
             offCallbackCalled = true;
             offUpdatedGridName = gridName;
             offCellId = cellId;
         };
-        const onCallback = function(gridName, cellId) {
+        const onCallback = (gridName, cellId) => {
             onCallbackCalled = true;
             onUpdatedGridName = gridName;
             onCellId = cellId;
@@ -1527,7 +1542,7 @@ describe('Grid.Actions', function() {
         Store.on('grid.navigate.focus.off', offCallback);
         Store.on('grid.navigate.focus.on', onCallback);
 
-        const resetCallbacks = function() {
+        const resetCallbacks = () => {
             offCallbackCalled = false;
             offUpdatedGridName = null;
             offCellId = null;
@@ -1540,7 +1555,7 @@ describe('Grid.Actions', function() {
         Actions.focusModuleCell('bar', null, true);
 
         // leave some time to focus the new node
-        setTimeout(function() {
+        setTimeout(() => {
             expect(Store.__private.grids.bar.focusedModuleCellId).toEqual('c1');
             expect(offCallbackCalled).toBe(false);
             expect(onCallbackCalled).toBe(true);
@@ -1552,7 +1567,7 @@ describe('Grid.Actions', function() {
             Actions.focusModuleCell('bar', grid.querySelector('#c2'));
 
             // leave some time to focus the new node
-            setTimeout(function() {
+            setTimeout(() => {
                 expect(Store.__private.grids.bar.focusedModuleCellId).toEqual('c2');
                 expect(offCallbackCalled).toBe(true);
                 expect(offUpdatedGridName).toEqual('bar');
@@ -1563,7 +1578,7 @@ describe('Grid.Actions', function() {
 
                 // and now test navigation
                 const tests = [
-                    // base-cell, exected top, expected bottom, expected left, expected right
+                    // base-cell, expected top, expected bottom, expected left, expected right
                     ['#c1', undefined, undefined, undefined, '#c2'],
                     ['#c2', undefined, '#c4', '#c1', '#c3'],
                     ['#c3', undefined, '#c6', '#c2', '#c7'],
@@ -1572,7 +1587,7 @@ describe('Grid.Actions', function() {
                     ['#c6', '#c3', undefined, '#c5', '#c9'],
                     ['#c7', undefined, '#c8', '#c3', undefined],
                     ['#c8', '#c7', '#c9', '#c3', undefined],
-                    ['#c9', '#c8', undefined, '#c6', undefined],
+                    ['#c9', '#c8', undefined, '#c6', undefined]
                 ];
 
                 const finalTests = [];
@@ -1584,17 +1599,19 @@ describe('Grid.Actions', function() {
                     finalTests.push([test[0], 'Right', test[4]]);
                 }
 
-                const doTest = function(test) {
+                const doTest = (test) => {
                     resetCallbacks();
 
                     const baseId = test[0].substring(1);
                     Store.__private.grids.bar.focusedModuleCellId = baseId;
-                    Actions['focus' + test[1] + 'ModuleCell']('bar');
+                    Actions[`focus${test[1]}ModuleCell`]('bar');
                     // leave some time to focus the new node
-                    setTimeout(function() {
+                    setTimeout(() => {
                         // if undefined, the focused didn't change, else we use the target
                         const expectedId = (test[2] || test[0]).substring(1);
-                        expect(Store.__private.grids.bar.focusedModuleCellId).toEqual(expectedId, test[1] + ' ' + test[0]);
+                        expect(
+                            Store.__private.grids.bar.focusedModuleCellId
+                        ).toEqual(expectedId, `${test[1]} ${test[0]}`);
 
                         // callbacks are called only if the focused cell changes
                         if (test[2]) {
@@ -1627,7 +1644,7 @@ describe('Grid.Actions', function() {
 
     });
 
-    it('should focus a module cell in direction', function(done) {
+    it('should focus a module cell in direction', (done) => {
 
         let grid = Manipulator.XMLStringToXMLGrid(
             '<grid name="bar" space="5px" type="mainGrid">' +

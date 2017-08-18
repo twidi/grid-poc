@@ -9,8 +9,8 @@ import { NodeMixin } from './Mixins/Node';
  * @namespace
  * @memberOf module:Grid.Components
  * @summary The SubGrid component, inside a cell
- * @mixes module:Grid.Components.Mixins.Node
- * @mixes module:Grid.Components.Mixins.Grid
+ * @mixes module:Grid.Components.Mixins.NodeMixin
+ * @mixes module:Grid.Components.Mixins.GridMixin
  */
 let SubGrid = {
     mixins: [

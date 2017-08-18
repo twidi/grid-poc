@@ -23,12 +23,12 @@ const Manipulator = {
          * This is a subclass of "Error"
          * @class
          *
-         * @param {string} [message=Invalid type detected] - The raised message
+         * @param {String} [message=Invalid type detected] - The raised message
          *
-         * @property {string} name - The name of the exception: "InvalidType"
-         * @property {string} message - The message passed when the exception was raised, or a default value
+         * @property {String} name - The name of the exception: "InvalidType"
+         * @property {String} message - The message passed when the exception was raised, or a default value
          */
-        InvalidType: function InvalidType(message) {
+        InvalidType(message) {
             this.name = 'InvalidType';
             this.message = message || 'Invalid type detected';
         },
@@ -38,12 +38,12 @@ const Manipulator = {
          * This is a subclass of "Error"
          * @class
          *
-         * @param {string} [message=Inconsistency detected] - The raised message
+         * @param {String} [message=Inconsistency detected] - The raised message
          *
-         * @property {string} name - The name of the exception: "Inconsistency"
-         * @property {string} message - The message passed when the exception was raised, or a default value
+         * @property {String} name - The name of the exception: "Inconsistency"
+         * @property {String} message - The message passed when the exception was raised, or a default value
          */
-        Inconsistency: function Inconsistency(message) {
+        Inconsistency(message) {
             this.name = 'Inconsistency';
             this.message = message || 'Inconsistency detected';
         },
@@ -53,12 +53,12 @@ const Manipulator = {
          * This is a subclass of "Error"
          * @class
          *
-         * @param {string} [message=Invalid state detected] - The raised message
+         * @param {String} [message=Invalid state detected] - The raised message
          *
-         * @property {string} name - The name of the exception: "InvalidState"
-         * @property {string} message - The message passed when the exception was raised, or a default value
+         * @property {String} name - The name of the exception: "InvalidState"
+         * @property {String} message - The message passed when the exception was raised, or a default value
          */
-        InvalidState: function InvalidState(message) {
+        InvalidState(message) {
             this.name = 'InvalidState';
             this.message = message || 'Invalid state detected';
         }
@@ -86,9 +86,9 @@ const Manipulator = {
     /**
      * Convert a Grid in XML format to its stringified representation
      *
-     * @param {XML} XMLGrid - The XML Grid to represent in in a stringified XML
+     * @param {Document} XMLGrid - The XML Grid to represent in in a stringified XML
      *
-     * @returns {string} - The stringified XML representation of the XML Grid
+     * @returns {String} - The stringified XML representation of the XML Grid
      */
     XMLGridToXMLString(XMLGrid) {
         return this.XMLSerializer.serializeToString(XMLGrid);
@@ -97,9 +97,9 @@ const Manipulator = {
     /**
      * Convert a string representation of an XML Grid to an XML document
      *
-     * @param {string} XMLString - The string representation of the XML Grid to convert
+     * @param {String} XMLString - The string representation of the XML Grid to convert
      *
-     * @returns {string} - The XML Grid based on the string representation
+     * @returns {Element|Node} - The XML Grid based on the string representation
      */
     XMLStringToXMLGrid(XMLString) {
         return this.DOMParser.parseFromString(XMLString, 'text/xml').documentElement;
@@ -108,9 +108,9 @@ const Manipulator = {
     /**
      * Return a deep clone of the given grid. Nothing is shared between the clones.
      *
-     * @param  {XML} grid - The grid to clone
+     * @param  {Document} grid - The grid to clone
      *
-     * @return {XML} - The clone of the original grid
+     * @return {Document} - The clone of the original grid
      */
     clone(grid) {
         return this.XMLStringToXMLGrid(this.XMLGridToXMLString(grid));
@@ -119,15 +119,15 @@ const Manipulator = {
     /**
      * Create a new XML grid from scratch
      *
-     * @param  {string} name - The name of the new grid to create
-     * @param  {integer} [space=5] - The space between modules in the new grid
+     * @param  {String} name - The name of the new grid to create
+     * @param  {int} [space=5] - The space between modules in the new grid
      *
-     * @returns {XML} - The XML version of the new created grid
+     * @returns {Document} - The XML version of the new created grid
      */
     createBaseGrid(name, space) {
         const grid = this.XMLStringToXMLGrid('<grid><content/></grid>');
         grid.setAttribute('name', name);
-        grid.setAttribute('space', (space || 5) + 'px');
+        grid.setAttribute('space', `${space || 5}px`);
         grid.setAttribute('type', 'mainGrid');
         return grid;
     },
@@ -139,16 +139,16 @@ const Manipulator = {
      * The given cell is transformed in a one of type "grid", and its content
      * will be moved in the inside cell
      *
-     * @param  {XML} cell The cell we want to convert
+     * @param  {Element|Node} cell The cell we want to convert
      *
-     * @return {XML} - The inner cell
+     * @return {Element|Node} - The inner cell
      */
     surroundCellWithGrid(cell) {
         const type = cell.getAttribute('type');
 
         // new types of both cells (existing, and new one inside)
-        const mainCellType = type == 'module' ? 'grid' : type;
-        const innerCellType = type == 'module' ? 'module' : 'grid';
+        const mainCellType = type === 'module' ? 'grid' : type;
+        const innerCellType = type === 'module' ? 'module' : 'grid';
 
         const contentNode = cell.querySelector(':scope > content');
 
@@ -166,15 +166,19 @@ const Manipulator = {
 
     /**
      * Add a row to the given XML grid node. Update the node in place.
-     * Will transform a non-grid node into a grid one, with a first row containing the actuel content
+     * Will transform a non-grid node into a grid one, with a first row containing the actual content
      *
-     * @param {XML} node - The XML grid node on which to add a row (should contain a "type", which must be "mainGrid" or "grid")
-     * @param {XML} [beforeRow=null] - The XML node of a row, on the given node, where to insert the new row before. If not given, the new row is added at the end. Cannot be used if the current type of the node is not "grid".
-     * @param {string} [type=null] - If defined, the value of the "type" attribute to set on the row
+     * @param {Element|Node} node - The XML grid node on which to add a row (should contain a "type",
+     *                              which must be "mainGrid" or "grid")
+     * @param {Element|Node} [beforeRow=] - The XML node of a row, on the given node,
+     *                                      where to insert the new row before.
+     *                                      If not given, the new row is added at the end.
+     *                                      Cannot be used if the current type of the node is not "grid".
+     * @param {String} [type=] - If defined, the value of the "type" attribute to set on the row
      *
-     * @returns {XML} - The added row
+     * @returns {Element|Node} - The added row
      *
-     * @throws {module:Grid.Manipulator.Exceptions.Inconsistency} If "beforeRow" is given but the node is not yet a grid
+     * @throws {module:Grid.Manipulator.Exceptions.Inconsistency} If "beforeRow" is given but the node isn't yet a grid
      * @throws {module:Grid.Manipulator.Exceptions.Inconsistency} If "beforeRow" is not in the content of the "node"
      */
     addRow(node, beforeRow, type) {
@@ -191,7 +195,7 @@ const Manipulator = {
         // we insert the row in the content node
         const contentNode = node.querySelector(':scope > content');
 
-        if (beforeRow && beforeRow.parentNode != contentNode) {
+        if (beforeRow && beforeRow.parentNode !== contentNode) {
             throw new this.Exceptions.Inconsistency('The \'beforeRow\' must be a child of the content of the \'node\'');
         }
         const row = node.ownerDocument.createElement('row');
@@ -211,27 +215,29 @@ const Manipulator = {
     /**
      * Add a cell to the given XML grid row. Update the row in place.
      *
-     * @param {XML} row - The XML grid row on which to add a cell
-     * @param {XML} [beforeCell=null] - The XML node of a cell, on the given row, where to insert the new cell before. If not given, the new cell is added at the end.
-     * @param {string} type - The type of cell to add: "grid" or "module"
-     * @param {XML} [contentNode=null] - The XML "content" node to insert in the cell.
+     * @param {Element|Node} row - The XML grid row on which to add a cell
+     * @param {Element|Node} [beforeCell=] - The XML node of a cell, on the given row,
+     *                                       where to insert the new cell before.
+     *                                       If not given, the new cell is added at the end.
+     * @param {String} type - The type of cell to add: "grid" or "module"
+     * @param {Element|Node} [contentNode=] - The XML "content" node to insert in the cell.
      *     If not given, a new empty "content" node will be created.
      *
-     * @returns {XML} - The added cell (XML), with the type and a content.
+     * @returns {Element|Node} - The added cell (XML), with the type and a content.
      *
      * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the given "type" is not "grid" or "module"
      * @throws {module:Grid.Manipulator.Exceptions.Inconsistency} If "beforeCell" is not in the "row"
      */
     addCell(row, beforeCell, type, contentNode) {
         if (!this.reCellType.test(type)) {
-            throw new this.Exceptions.InvalidType('Cannot add cell of type <' + type + '>. Should be <grid> or <module>');
+            throw new this.Exceptions.InvalidType(`Cannot add cell of type <${type}>. Should be <grid> or <module>`);
         }
         const cell = row.ownerDocument.createElement('cell');
         cell.setAttribute('type', type);
         if (!contentNode) {
             contentNode = row.ownerDocument.createElement('content');
         }
-        if (beforeCell && beforeCell.parentNode != row) {
+        if (beforeCell && beforeCell.parentNode !== row) {
             throw new this.Exceptions.Inconsistency('The \'beforeCell\' must be a child of \'row\'');
         }
         cell.appendChild(contentNode);
@@ -246,7 +252,7 @@ const Manipulator = {
     /**
      * Remove the given cell from the grid it belongs to
      *
-     * @param  {XML} cell - The XML cell to remove
+     * @param  {Element|Node} cell - The XML cell to remove
      */
     removeCell(cell) {
         const parentGrid = this.getNearestGrid(cell);
@@ -257,11 +263,11 @@ const Manipulator = {
     /**
      * Create a content node, to be later inserted into an empty module cell, with the given attributes
      *
-     * @param  {XML} grid - The grid on which the content node is aimed to be attached
+     * @param  {Element|Node} grid - The grid on which the content node is aimed to be attached
      * @param  {Object} attributes - All attributes to include in the content node. Note that all attributes
      *                               will be inserted as text
      *
-     * @return {XML} - The newly created <content> xml node
+     * @return {Element|Node} - The newly created <content> xml node
      */
     createContentNode(grid, attributes) {
         const contentNode = grid.ownerDocument.createElement('content');
@@ -282,16 +288,16 @@ const Manipulator = {
      * this cell into the current grid
      * All this is done recursively by calling the same method for the parent grid
      *
-     * @param  {XML} grid - The XML grid node to clean
+     * @param  {Element|Node} grid - The XML grid node to clean
      *
-     * @returns {} - Returns nothing
-     *
-     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a grid (type nor "grid" nor "mainGrid")
+     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a grid ("grid" or "mainGrid")
      */
     cleanGrid(grid) {
         let nodeType = grid.getAttribute('type');
         if (!this.reGridType.test(nodeType)) {
-            throw new this.Exceptions.InvalidType('Cannot clean node of type <' + nodeType + '>. Should be <grid> or <mainGrid>');
+            throw new this.Exceptions.InvalidType(
+                `Cannot clean node of type <${nodeType}>. Should be <grid> or <mainGrid>`
+            );
         }
 
         // get the next parent grid to compute (we may not be able to do it this way later)
@@ -315,52 +321,48 @@ const Manipulator = {
 
             // remove all empty things, until there is no more
             let somethingRemoved = true;
+            const removeNode = node => {
+                node.parentNode.removeChild(node);
+                somethingRemoved = true;
+            };
+            const cleanPlaceholdersRow = row => {
+                const nbPlaceholderCells = row.querySelectorAll(':scope > cell[type=placeholder]').length;
+                if (nbPlaceholderCells > 1) {
+                    const nbCells = row.querySelectorAll(':scope > cell').length;
+                    if (nbCells === nbPlaceholderCells) {
+                        row.parentNode.removeChild(row);
+                    }
+                }
+            };
             while (somethingRemoved) {
                 somethingRemoved = false;
 
                 // remove all empty cells (assume only possible children is "content")
-                _(contentNode.querySelectorAll('cell:empty')).forEach(cell => {
-                    cell.parentNode.removeChild(cell);
-                    somethingRemoved = true;
-                });
+                _(contentNode.querySelectorAll('cell:empty')).forEach(removeNode);
 
                 // remove all empty rows (assume only possible children are "cells")
-                _(contentNode.querySelectorAll('row:empty')).forEach(row => {
-                    row.parentNode.removeChild(row);
-                    somethingRemoved = true;
-                });
+                _(contentNode.querySelectorAll('row:empty')).forEach(removeNode);
 
-                // remove all grid withtout rows
-                _(contentNode.querySelectorAll('cell[type=grid] > content:empty')).forEach(content => {
-                    content.parentNode.removeChild(content);
-                    somethingRemoved = true;
-                });
+                // remove all grid without rows
+                _(contentNode.querySelectorAll('cell[type=grid] > content:empty')).forEach(removeNode);
 
                 // remove rows having only placeholders cells (and more than one: the other ones used to
                 // hold real cells not here anymore)
-                _(contentNode.querySelectorAll('row:not([type=placeholder])')).forEach(row => {
-                    const nbPlaceholderCells = row.querySelectorAll(':scope > cell[type=placeholder]').length;
-                    if (nbPlaceholderCells > 1) {
-                        const nbCells = row.querySelectorAll(':scope > cell').length;
-                        if (nbCells == nbPlaceholderCells) {
-                            row.parentNode.removeChild(row);
-                        }
-                    }
-                });
+                _(contentNode.querySelectorAll('row:not([type=placeholder])')).forEach(cleanPlaceholdersRow);
 
             }
 
-            // reload contentNode if emptyed above
+            // reload contentNode if emptied above
             contentNode = grid.querySelector(':scope > content');
             let rows = contentNode.querySelectorAll(':scope > row');
 
-            if (rows.length == 1) {
+            if (rows.length === 1) {
                 let cells;
 
                 // move a grid inside the current grid only if it's a subgrid
-                if (nodeType == 'grid') {
+                if (nodeType === 'grid') {
                     cells = rows[0].querySelectorAll(':scope > cell');
-                    if (cells.length == 1) {
+                    if (cells.length === 1) {
                         nodeType = cells[0].getAttribute('type');
                         grid.setAttribute('type', nodeType);
                         grid.removeChild(contentNode);
@@ -379,19 +381,21 @@ const Manipulator = {
                 if (!rows) {
                     rows = contentNode.querySelectorAll(':scope > row');
                 }
-                if (rows.length == 1) {
+                if (rows.length === 1) {
                     if (!cells) {
                         cells = rows[0].querySelectorAll(':scope > cell');
                     }
-                    if (cells.length == 1 && cells[0].getAttribute('type') == 'grid') {
+                    if (cells.length === 1 && cells[0].getAttribute('type') === 'grid') {
                         // add all sub rows to the current grid
-                        _(cells[0].querySelectorAll(':scope > content > row')).forEach(cellRow => contentNode.appendChild(cellRow));
+                        _(cells[0].querySelectorAll(':scope > content > row')).forEach(
+                            cellRow => contentNode.appendChild(cellRow)
+                        );
                         // our original row is now empty, we can remove it
                         contentNode.removeChild(rows[0]);
                     } else if (this.reGridType.test(nodeType)) {  // maybe it's a module now
                         // only one row but many cells... maybe we are the only child of our parent row ?
                         const parentRow = grid.parentNode;
-                        if (parentRow && parentRow.querySelectorAll(':scope > cell').length == 1) {
+                        if (parentRow && parentRow.querySelectorAll(':scope > cell').length === 1) {
                             // ok so we move our cells in our parent row
                             _(cells).forEach(cell => parentRow.appendChild(cell));
                             parentRow.removeChild(grid);
@@ -404,7 +408,8 @@ const Manipulator = {
 
         }
 
-        // Continue for the parent grid (parent is the row, parent.parent is the content, parent.parent.parent is the grid)
+        // Continue for the parent grid
+        // (parent is the row, parent.parent is the content, parent.parent.parent is the grid)
         try {
             if (parentGrid) { this.cleanGrid(parentGrid); }
         } catch (e) {
@@ -421,7 +426,7 @@ const Manipulator = {
     /**
      * Tel if the grid has placeholders
      *
-     * @param {XML} grid - The grid to test
+     * @param {Element|Node} grid - The grid to test
      *
      * @return {Boolean} - true if the grid has placeholders
      */
@@ -433,17 +438,17 @@ const Manipulator = {
      * Add all placeholders in the given grid
      * Add a "hasPlaceholders" attribute (set to "true") on the main grid node.
      *
-     * @param {XML} grid - The grid to insert placeholders in
-     *
-     * @returns {} - Returns nothing
+     * @param {Element|Node} grid - The grid to insert placeholders in
      *
      * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
      * @throws {module:Grid.Manipulator.Exceptions.InvalidState} If the grid already has placeholders or resizers
      */
     addPlaceholders(grid) {
         const nodeType = grid.getAttribute('type');
-        if (nodeType != 'mainGrid') {
-            throw new this.Exceptions.InvalidType('Cannot add placeholders in grid of type <' + nodeType + '>. Should be <mainGrid>');
+        if (nodeType !== 'mainGrid') {
+            throw new this.Exceptions.InvalidType(
+                `Cannot add placeholders in grid of type <${nodeType}>. Should be <mainGrid>`
+            );
         }
         if (this.hasPlaceholders(grid)) {
             throw new this.Exceptions.InvalidState('Cannot add placeholders on a grid which already have them');
@@ -452,12 +457,10 @@ const Manipulator = {
             throw new this.Exceptions.InvalidState('Cannot add resizers on a grid which already have placeholders');
         }
 
-        let placeholder, row, cells, grids, subGrid, isSurround, displayLeftRightPlaceholders;
-
         // surround all grid, including current if it matches
-        grids = grid.parentNode.querySelectorAll('grid, cell[type=grid]');
+        let grids = grid.parentNode.querySelectorAll('grid, cell[type=grid]');
         for (let i = 0; i < grids.length; i++) {
-            subGrid = grids[i];
+            const subGrid = grids[i];
 
             // surround the grid if it has more than one row
             if (subGrid.querySelectorAll(':scope > content > row').length > 1) {
@@ -469,56 +472,60 @@ const Manipulator = {
         // surround all modules if more than one in the grid
         const modules = grid.querySelectorAll('cell[type=module]');
         if (modules.length > 1) {
-            for (let j = 0; j < modules.length; j++) {
-                this.surroundCellWithGrid(modules[j]);
-                modules[j].setAttribute('surround', 1);
+            for (let i = 0; i < modules.length; i++) {
+                this.surroundCellWithGrid(modules[i]);
+                modules[i].setAttribute('surround', 1);
             }
         }
 
         // add cells placeholders on each row
-        let rows = grid.querySelectorAll('row');
-        for (let m = 0; m < rows.length; m++) {
-            row = rows[m];
-            cells = row.querySelectorAll(':scope > cell');
+        const rows = grid.querySelectorAll('row');
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+            const cells = row.querySelectorAll(':scope > cell');
 
             // is the row on a grid here only to surround an other one ?
-            isSurround = row.parentNode.parentNode.hasAttribute('surround');
+            const isSurround = row.parentNode.parentNode.hasAttribute('surround');
 
             // if only one cell, which is a grid, and only one module inside, no need to add
             // left/rights placeholders because ones around the module will do the job
-            displayLeftRightPlaceholders = !(cells.length == 1
-                                          && cells[0].getAttribute('type') == 'grid'
-                                          && row.querySelectorAll('cell[type=module]').length == 1);
+            const displayLeftRightPlaceholders = !(
+                cells.length === 1
+                &&
+                cells[0].getAttribute('type') === 'grid'
+                &&
+                row.querySelectorAll('cell[type=module]').length === 1
+            );
 
             // add a cell placeholders before each cell
-            for (let n = 0; n < cells.length; n++) {
+            for (let j = 0; j < cells.length; j++) {
                 // if it's the first cell and we don't want one on the left/right, do nothing
-                if (n > 0 || displayLeftRightPlaceholders) {
-                    const cell = cells[n];
-                    placeholder = Manipulator.addCell(row, cell, 'placeholder');
+                if (j > 0 || displayLeftRightPlaceholders) {
+                    const cell = cells[j];
+                    const placeholder = Manipulator.addCell(row, cell, 'placeholder');
                     if (isSurround) { placeholder.setAttribute('surround', 1); }
                 }
             }
             // add a cell placeholder after the last cell, except if we don't want one on the left/right
             if (displayLeftRightPlaceholders) {
-                placeholder = Manipulator.addCell(row, null, 'placeholder');
+                const placeholder = Manipulator.addCell(row, null, 'placeholder');
                 if (isSurround) { placeholder.setAttribute('surround', 1); }
             }
         }
 
         // add row placeholders on each grid
         grids = grid.parentNode.querySelectorAll('grid, cell[type=grid]');
-        for (let k = 0; k < grids.length; k++) {
-            const subGrid = grids[k];
-            rows = subGrid.querySelectorAll(':scope > content > row');
+        for (let i = 0; i < grids.length; i++) {
+            const subGrid = grids[i];
+            const gridRows = subGrid.querySelectorAll(':scope > content > row');
 
             // is the cell on a grid here only to surround an other one ?
-            isSurround = subGrid.hasAttribute('surround');
+            const isSurround = subGrid.hasAttribute('surround');
 
             // add a row placeholder before each row
-            for (let l = 0; l < rows.length; l++) {
-                const row = rows[l];
-                placeholder = Manipulator.addCell(
+            for (let j = 0; j < gridRows.length; j++) {
+                const row = gridRows[j];
+                const placeholder = Manipulator.addCell(
                     Manipulator.addRow(subGrid, row, 'placeholder')
                     , null, 'placeholder'
                 );
@@ -526,7 +533,7 @@ const Manipulator = {
             }
 
             // add a row placeholder after the last row
-            placeholder = Manipulator.addCell(
+            const placeholder = Manipulator.addCell(
                 Manipulator.addRow(subGrid, null, 'placeholder')
                 , null, 'placeholder'
             );
@@ -541,17 +548,17 @@ const Manipulator = {
      * Remove all existing placeholders, except ones with a module.
      * Remove the "hasPlaceholders" attribute on the main grid node.
      *
-     * @param  {XML} grid The grid in witch to remove the placeholders
-     *
-     * @returns {} - Returns nothing
+     * @param  {Element|Node} grid The grid in witch to remove the placeholders
      *
      * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
      * @throws {module:Grid.Manipulator.Exceptions.InvalidState} If the grid isn't marked as having placeholders
      */
     removePlaceholders(grid) {
         const nodeType = grid.getAttribute('type');
-        if (nodeType != 'mainGrid') {
-            throw new this.Exceptions.InvalidType('Cannot remove placeholders in grid of type <' + nodeType + '>. Should be <mainGrid>');
+        if (nodeType !== 'mainGrid') {
+            throw new this.Exceptions.InvalidType(
+                `Cannot remove placeholders in grid of type <${nodeType}>. Should be <mainGrid>`
+            );
         }
         if (!this.hasPlaceholders(grid)) {
             throw new this.Exceptions.InvalidState('Cannot remove placeholders on a grid which doesn\'t have any');
@@ -581,11 +588,9 @@ const Manipulator = {
     },
 
     /**
-     * Clean existing placeholders to be in a valid state. Usefull to call after adding/removing a module
+     * Clean existing placeholders to be in a valid state. Useful to call after adding/removing a module
      *
-     * @param  {XML} grid The grid for witch to clean the placeholders
-     *
-     * @returns {} - Returns nothing
+     * @param  {Element|Node} grid The grid for witch to clean the placeholders
      */
     cleanPlaceholders(grid) {
         this.removePlaceholders(grid);
@@ -595,10 +600,10 @@ const Manipulator = {
     /**
      * Return the nearest grid (or mainGrid) for the given node
      *
-     * @param  {XML} node - The grid node (can be a row, cell, content...) for which we want the grid
-     * @param {boolean} includeCurrent - If we test the given node if it's a grid and return it if True
+     * @param  {Element|Node} node - The grid node (can be a row, cell, content...) for which we want the grid
+     * @param {Boolean=false} includeCurrent - If we test the given node if it's a grid and return it if True
      *
-     * @return {XML} - The found grid node, or null if none found (may not happen)
+     * @return {Element|Node} - The found grid node, or null if none found (may not happen)
      */
     getNearestGrid(node, includeCurrent) {
         if (!includeCurrent) {
@@ -610,8 +615,7 @@ const Manipulator = {
                 return null;
             }
             // check if type is grid/mainGrid
-            const nodeType = node.getAttribute ? node.getAttribute('type') : null;
-            if (nodeType && this.reGridType.test(nodeType)) {
+            if (node.getAttribute && this.reGridType.test(node.getAttribute('type'))) {
                 return node;
             }
             // continue with the parentNode
@@ -622,7 +626,7 @@ const Manipulator = {
     /**
      * Tell if the given node contains a subgrid.
      *
-     * @param  {XML} node - The XML node to check for sub grids
+     * @param  {Element|Node} node - The XML node to check for sub grids
      *
      * @return {Boolean} - `true` if the node contains at least one subgrid, or `false`
      */
@@ -633,7 +637,7 @@ const Manipulator = {
     /**
      * Remove a content node from its grid
      *
-     * @param  {XML} contentNode - The "content" node we want to remove
+     * @param  {Element|Node} contentNode - The "content" node we want to remove
      * @param {boolean} [dontClean=false] - Do not try to clean the parent grid node
      */
     removeContentNode(contentNode, dontClean) {
@@ -654,17 +658,18 @@ const Manipulator = {
     /**
      * Move a content node (module) to a placeholder
      *
-     * @param  {XML} contentNode - The content node to move
-     * @param  {XML} placeholderCell - The cell placeholder in which to move the content
+     * @param  {Element|Node} contentNode - The content node to move
+     * @param  {Element|Node} placeholderCell - The cell placeholder in which to move the content
      *
-     * @return {} - Reurns nothing
-     *
-     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the placeholder cell is not a placeholder (type "placeholder")
+     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the placeholder cell is not a placeholder
+     *                                                          (type "placeholder")
      */
     moveContentToPlaceholder(contentNode, placeholderCell) {
         const placeholderType = placeholderCell.getAttribute('type');
-        if (placeholderType != 'placeholder') {
-            throw new this.Exceptions.InvalidType('Cannot move content in cell of type <' + placeholderType + '>. It must be <placeholder>');
+        if (placeholderType !== 'placeholder') {
+            throw new this.Exceptions.InvalidType(
+                `Cannot move content in cell of type <${placeholderType}>. It must be <placeholder>`
+            );
         }
 
         // remove the existing placeholder content
@@ -690,11 +695,11 @@ const Manipulator = {
     /**
      * Create the "content" XML node to use as a module (in a <cell type=module>)
      *
-     * @param  {JSON} params - The params of the module, to be converted in XML.
+     * @param  {object} params - The params of the module, to be converted in XML.
      * It should be a single level object with only string or numbers.
      * There is no validation for now but only these keys are guaranteed to be restored as is.
      *
-     * @return {XML} - The XML content node
+     * @return {Element|Node} - The XML content node
      */
     createModuleNode(params) {
         const node = this.XMLStringToXMLGrid('<content/>');
@@ -710,8 +715,6 @@ const Manipulator = {
      * Set an unique ID on the given node and each of if sub nodes (whole tree)
      * Don't update nodes that already have an ID
      * And set indexes on each module nodes (in xml order)
-     *
-     * @returns {} - Returns nothing
      */
     setIds(node) {
         // set ids
@@ -719,7 +722,7 @@ const Manipulator = {
         if (!node.getAttribute('id')) {
             nodes.unshift(node);
         }
-        _(nodes).forEach(subnode => subnode.setAttribute('id', _.uniqueId(subnode.tagName + '-')));
+        _(nodes).forEach(subnode => subnode.setAttribute('id', _.uniqueId(`${subnode.tagName}-`)));
 
         // set indexes on modules
         const moduleCells = node.querySelectorAll('cell[type=module]');
@@ -732,7 +735,7 @@ const Manipulator = {
     /**
      * Tel if the grid has resizers
      *
-     * @param {XML} grid - The grid to test
+     * @param {Element|Node} grid - The grid to test
      *
      * @return {Boolean} - true if the grid has resizers
      */
@@ -744,17 +747,17 @@ const Manipulator = {
      * Add all resizers in the given grid
      * Add a "hasResizers" attribute (set to "true") on the main grid node.
      *
-     * @param {XML} grid - The grid to insert resizers in
-     *
-     * @returns {} - Returns nothing
+     * @param {Element|Node} grid - The grid to insert resizers in
      *
      * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
      * @throws {module:Grid.Manipulator.Exceptions.InvalidState} If the grid already has resizers or placeholders
      */
     addResizers(grid) {
         const nodeType = grid.getAttribute('type');
-        if (nodeType != 'mainGrid') {
-            throw new this.Exceptions.InvalidType('Cannot add resizers in grid of type <' + nodeType + '>. Should be <mainGrid>');
+        if (nodeType !== 'mainGrid') {
+            throw new this.Exceptions.InvalidType(
+                `Cannot add resizers in grid of type <${nodeType}>. Should be <mainGrid>`
+            );
         }
         if (this.hasResizers(grid)) {
             throw new this.Exceptions.InvalidState('Cannot add resizers on a grid which already have them');
@@ -763,17 +766,15 @@ const Manipulator = {
             throw new this.Exceptions.InvalidState('Cannot add resizers on a grid which already have placeholders');
         }
 
-        let rows, cells;
-
         // add a resizer between each row of a grid
         const grids = grid.parentNode.querySelectorAll('grid, cell[type=grid]');
         for (let i = 0; i < grids.length; i++) {
             // add a horizontal resizer before each row, except before the first one
-            rows = grids[i].querySelectorAll(':scope > content > row');
+            const rows = grids[i].querySelectorAll(':scope > content > row');
             for (let j = 0; j < rows.length; j++) {
                 if (j) { Manipulator.addResizer(rows[j]); }
                 // add a vertical resizer before each row, except before the first one
-                cells = rows[j].querySelectorAll(':scope > cell');
+                const cells = rows[j].querySelectorAll(':scope > cell');
                 for (let k = 1; k < cells.length; k++) {
                     Manipulator.addResizer(cells[k]);
                 }
@@ -787,10 +788,9 @@ const Manipulator = {
     /**
      * Add a resizer before the given XML grid row or cell
      *
-     * @param {XML} beforeNode - The node (row or cell) of the grid before which to add the resizer
-     * @param {string} type - The type of placeholder to add: "vertical" or "horizontal"
+     * @param {Element|Node} beforeNode - The node (row or cell) of the grid before which to add the resizer
      *
-     * @returns {XML} - The added resizer (XML), with the type.
+     * @returns {Element|Node} - The added resizer (XML), with the type.
      *
      * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the given node is not a row neither a cell
      * @throws {module:Grid.Manipulator.Exceptions.Inconsistency} If the given node is the first child
@@ -798,14 +798,16 @@ const Manipulator = {
     addResizer(beforeNode) {
         const nodeType = beforeNode.tagName;
         let resizerType;
-        if (nodeType == 'row') {
+        if (nodeType === 'row') {
             resizerType = 'horizontal';
-        } else if (nodeType == 'cell') {
+        } else if (nodeType === 'cell') {
             resizerType = 'vertical';
         } else {
-            throw new this.Exceptions.InvalidType('Cannot add a resizer before a node of type <' + nodeType + '>. Should be a <rows> or a <cell>');
+            throw new this.Exceptions.InvalidType(
+                `Cannot add a resizer before a node of type <${nodeType}>. Should be a <rows> or a <cell>`
+            );
         }
-        if (beforeNode == beforeNode.parentNode.firstChild) {
+        if (beforeNode === beforeNode.parentNode.firstChild) {
             throw new this.Exceptions.Inconsistency('Cannot add a resizer before the first node');
         }
         const resizer = beforeNode.ownerDocument.createElement('resizer');
@@ -817,17 +819,17 @@ const Manipulator = {
      * Remove all existing resizers
      * Remove the "hasResizers" attribute on the main grid node.
      *
-     * @param  {XML} grid The grid in witch to remove the resizers
-     *
-     * @returns {} - Returns nothing
+     * @param  {Element|Node} grid The grid in witch to remove the resizers
      *
      * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
      * @throws {module:Grid.Manipulator.Exceptions.InvalidState} If the grid isn't marked as having resizers
      */
     removeResizers(grid) {
         const nodeType = grid.getAttribute('type');
-        if (nodeType != 'mainGrid') {
-            throw new this.Exceptions.InvalidType('Cannot remove resizers in grid of type <' + nodeType + '>. Should be <mainGrid>');
+        if (nodeType !== 'mainGrid') {
+            throw new this.Exceptions.InvalidType(
+                `Cannot remove resizers in grid of type <${nodeType}>. Should be <mainGrid>`
+            );
         }
         if (!this.hasResizers(grid)) {
             throw new this.Exceptions.InvalidState('Cannot remove resizers on a grid which doesn\'t have any');
@@ -842,24 +844,24 @@ const Manipulator = {
     /**
      * Get a module cell in a corner of the given row.
      *
-     * @param  {XML} row - The reference row
+     * @param  {Element|Node} row - The reference row
      * @param  {boolean} [atBottom=false] - If `true`, get a module cell from the
      *     bottom of the given cell and if `false`, from the top.
      * @param  {boolean} [atRight=false] - If `true`, get a module cell from the
      *     left of the given cell and if `false`, from the right.
      *
-     * @return {XML} - The asked cell
+     * @return {Element|Node} - The asked cell
      */
     getModuleCellFromRow(row, atBottom, atRight) {
         // top left, we can return the very first module
         if (!atBottom && !atRight) {
-            return row.querySelector('cell[type=module]')
+            return row.querySelector('cell[type=module]');
         }
         const cells = row.children;
         // get the last cell if atRight, else the first one
         const cell = cells[atRight ? cells.length - 1 : 0];
         // if the cell we got is a module, we're done
-        if (cell.getAttribute('type') == 'module') {
+        if (cell.getAttribute('type') === 'module') {
             return cell;
         }
         // if not, it contains rows...
@@ -875,17 +877,17 @@ const Manipulator = {
      *
      * If the given cell is already a module cell, it is the one returned.
      *
-     * @param  {XML} cell - The reference cell
+     * @param  {Element|Node} cell - The reference cell
      * @param  {boolean} [atBottom=false] - If `true`, get a module cell from the
      *     bottom of the given cell and if `false`, from the top.
      * @param  {boolean} [atRight=false] - If `true`, get a module cell from the
      *     left of the given cell and if `false`, from the right.
      *
-     * @return {XML} - The asked cell
+     * @return {Element|Node} - The asked cell
      */
     getModuleCellFromCell(cell, atBottom, atRight) {
         // the cell is already a module, just return it
-        if (cell.getAttribute('type') == 'module') {
+        if (cell.getAttribute('type') === 'module') {
             return cell;
         }
         // return the cell from the first row
@@ -901,19 +903,30 @@ const Manipulator = {
      * If there are many rows on the left/right, the topmost cell will be returned
      * except if asked to get it from the bottom
      *
-     * @param  {XML} cell - The reference cell
+     * @param  {Element|Node} cell - The reference cell
      * @param  {boolean} [toRight=false] - Set to `true` to get the next cell on the right,
      *     to `false` to get the previous one on the left
-     * @param  {boolean} [forceAtBottom=false] - Set to `true` to get the botommost
+     * @param  {boolean} [forceAtBottom=false] - Set to `true` to get the bottommost
      *                                             cell instead of the topmost
      *
-     * @return {XML} - The asked cell
+     * @return {Element|Node|undefined} - The asked cell, or nothing if no next cell
      */
     getNextHorizontalCell(cell, toRight, forceAtBottom) {
         if (!cell) { return; }
         const row = cell.parentNode;
         // we will force `forceAtBottom` if the row we are in is the last one in a multi-row cell
-        const isAtBottom = forceAtBottom || (row && row.parentNode && row.parentNode.children.length > 1 && row == row.parentNode.lastChild);
+        const isAtBottom =
+            forceAtBottom
+            ||
+            (
+                row
+                &&
+                row.parentNode
+                &&
+                row.parentNode.children.length > 1
+                &&
+                row === row.parentNode.lastChild
+            );
         const sibling = toRight ? cell.nextSibling : cell.previousSibling;
         if (sibling) {
             return this.getModuleCellFromCell(sibling, isAtBottom, !toRight);
@@ -930,20 +943,20 @@ const Manipulator = {
      * If there are many cols on the top/bottom, the leftmost cell will be returned
      * except if asked to get it from the right
      *
-     * @param  {XML} cell - The reference cell
+     * @param  {Element|Node} cell - The reference cell
      * @param  {boolean} [toBottom=false] - Set to `true` to get the next cell at the bottom,
      *     to `false` to get the previous one at the top
      * @param  {boolean} [forceAtRight=false] - Set to `true` to get the rightmost
      *    cell instead of the leftmost
      *
-     * @return {XML} - The asked cell
+     * @return {XML|undefined} - The asked cell or nothing if no next vertical cell
      */
     getNextVerticalCell(cell, toBottom, forceAtRight) {
         if (!cell) { return; }
         const row = cell.parentNode;
         if (!row) { return; }
         // we will force `forceAtRight` if the cell we are in is the last one in a multi-cells row
-        const isAtRight = forceAtRight || (row.children.length > 1 && cell == row.lastChild);
+        const isAtRight = forceAtRight || (row.children.length > 1 && cell === row.lastChild);
         const sibling = toBottom ? row.nextSibling : row.previousSibling;
         if (sibling) {
             return this.getModuleCellFromRow(sibling, !toBottom, isAtRight);
@@ -960,9 +973,9 @@ const Manipulator = {
      * If there are many rows on the right, the topmost cell will be returned
      * except if asked to get it from the bottom
      *
-     * @param  {XML} cell - The reference cell
+     * @param  {Element|Node} cell - The reference cell
      *
-     * @return {XML} - The asked cell
+     * @return {Element|Node} - The asked cell
      */
     getRightCell(cell) {
         return this.getNextHorizontalCell(cell, true);
@@ -974,9 +987,9 @@ const Manipulator = {
      * If there are many rows on the left, the topmost cell will be returned
      * except if asked to get it from the bottom
      *
-     * @param  {XML} cell - The reference cell
+     * @param  {Element|Node} cell - The reference cell
      *
-     * @return {XML} - The asked cell
+     * @return {Element|Node} - The asked cell
      */
     getLeftCell(cell) {
         return this.getNextHorizontalCell(cell, false);
@@ -988,9 +1001,9 @@ const Manipulator = {
      * If there are many cols on the bottom, the leftmost cell will be returned
      * except if asked to get it from the right
      *
-     * @param  {XML} cell - The reference cell
+     * @param  {Element|Node} cell - The reference cell
      *
-     * @return {XML} - The asked cell
+     * @return {Element|Node} - The asked cell
      */
     getBottomCell(cell) {
         return this.getNextVerticalCell(cell, true);
@@ -1002,9 +1015,9 @@ const Manipulator = {
      * If there are many cols on the top, the leftmost cell will be returned
      * except if asked to get it from the right
      *
-     * @param  {XML} cell - The reference cell
+     * @param  {Element|Node} cell - The reference cell
      *
-     * @return {XML} - The asked cell
+     * @return {Element|Node} - The asked cell
      */
     getTopCell(cell) {
         return this.getNextVerticalCell(cell, false);

@@ -30,7 +30,7 @@ let Resizer = {
      * @return {Boolean} - true if a the resizer is vertical
      */
     isVertical() {
-        return this.state.node.getAttribute('type') == 'vertical';
+        return this.state.node.getAttribute('type') === 'vertical';
     },
 
     /**
@@ -39,13 +39,13 @@ let Resizer = {
      * @return {Boolean} - true if a the resizer is horizontal
      */
     isHorizontal() {
-        return this.state.node.getAttribute('type') == 'horizontal';
+        return this.state.node.getAttribute('type') === 'horizontal';
     },
 
     /**
      * Return the classes to use when rendering the current resizer.
      *
-     * @return {string} - A string containing classes
+     * @return {String} - A string containing classes
      *
      * One or more of these classes:
      *
@@ -70,23 +70,23 @@ let Resizer = {
      * @param  {String} gridName - The name of the grid where a resizer is moved
      * @param  {Object} resizeData - Contains data used to act in response to this
      * event (`previousRelativeSize` and `nextRelativeSize, the related sizes of
-     * the nodes arround the resizer, on which to apply these values as "flex grow")
+     * the nodes around the resizer, on which to apply these values as "flex grow")
      */
     onResizingMove(gridName, resizeData) {
         if (!Store.isMovingResizer(gridName, this.state.node)) { return; }
         const domNode = this.refs.resizer;
-        this.setDomNodeRelativeSise(domNode.previousSibling, resizeData.previousRelativeSize);
-        this.setDomNodeRelativeSise(domNode.nextSibling, resizeData.nextRelativeSize);
+        this.setDomNodeRelativeSize(domNode.previousSibling, resizeData.previousRelativeSize);
+        this.setDomNodeRelativeSize(domNode.nextSibling, resizeData.nextRelativeSize);
 
     },
 
     /**
      * Use the given relativeSize to update the given domNode flex-grow style property
      *
-     * @param {DomNode} domNode - The dom node tu update
-     * @param {Float} relativeSize - The new relative size to apply
+     * @param {Element|Node} domNode - The dom node tu update
+     * @param {float} relativeSize - The new relative size to apply
      */
-    setDomNodeRelativeSise(domNode, relativeSize) {
+    setDomNodeRelativeSize(domNode, relativeSize) {
         domNode.style.flexGrow = relativeSize;
     },
 
@@ -125,9 +125,9 @@ let Resizer = {
      * Return the "size" of the given dom node. Size is the height of the width
      * depending of the resizer being horizontal or vertical
      *
-     * @param  {DomNode} domNode - The dom node for which we want the size
+     * @param  {Element|Node} domNode - The dom node for which we want the size
      *
-     * @return {Integer} - Size in pixels (without unit)
+     * @return {int} - Size in pixels (without unit)
      */
     getDomNodeSize(domNode) {
         return domNode[this.isHorizontal() ? 'clientHeight' : 'clientWidth'];
@@ -135,10 +135,10 @@ let Resizer = {
 
     /**
      * Return the cursor position on the screen for the given event. Position is
-     * the X or Y coordinage depending of the resizer being vertical or horizontal
+     * the X or Y coordinate depending of the resizer being vertical or horizontal
      *
      * @param  {event} event - The event that must have a `screenX` and `screenY` attributes
-     * @return {Integer} - The asked mouse position
+     * @return {int} - The asked mouse position
      */
     getScreenMousePosition(event) {
         return event[this.isHorizontal() ? 'screenY' : 'screenX'];
@@ -198,7 +198,7 @@ let Resizer = {
      */
     getRenderAttrs() {
         const attrs = {};
-        if (this.getDesignModeStep() == 'enabled') {
+        if (this.getDesignModeStep() === 'enabled') {
             attrs.onMouseDown = this.onMouseDown;
         }
         return attrs;
@@ -207,7 +207,7 @@ let Resizer = {
     /**
      * Render the component
      *
-     * @returns {div} - A empty div with classes defined by `getResizerClasses`
+     * @returns {Element|Node} - A empty div with classes defined by `getResizerClasses`
      */
     render() {
         return <div ref="resizer" className={this.getResizerClasses()} {...this.getRenderAttrs()} />;

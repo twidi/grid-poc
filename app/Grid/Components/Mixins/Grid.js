@@ -19,13 +19,13 @@ const GridMixin = {
      * @return {Boolean} - true if a "main grid", false for a subgrid
      */
     isMainGrid() {
-        return this.getType() == 'mainGrid';
+        return this.getType() === 'mainGrid';
     },
 
     /**
      * Get all the rows of the grid
      *
-     * @return {array} - An array of XML grid rows, including resizers
+     * @return {Element|Node[]} - An array of XML grid rows, including resizers
      */
     getRows() {
         return _.toArray(this.state.node.querySelectorAll(':scope > content > row, :scope > content > resizer'));
@@ -41,9 +41,9 @@ const GridMixin = {
 
         return _.map(this.getRows(), row => {
             const type = row.tagName;
-            if (type == 'row') {
+            if (type === 'row') {
                 return <Row node={row} key={Store.getNodeId(row)} />;
-            } else if (type == 'resizer') {
+            } else if (type === 'resizer') {
                 return <Resizer node={row} key={Store.getNodeId(row)} />;
             }
         });
@@ -54,7 +54,7 @@ const GridMixin = {
      *
      * @param {object} forcedClasses - Dict of classes that are added after the ones computed in this method.
      *
-     * @return {string} - A string containing classes
+     * @return {String} - A string containing classes
      *
      * One or more of these classes:
      *
@@ -65,7 +65,7 @@ const GridMixin = {
      */
     getGridClasses(forcedClasses) {
         const classes = _.merge({
-            'grid': true,
+            grid: true,
             'grid-main': this.isMainGrid(),
             'grid-last-level-with-placeholders': !this.isMainGrid()
                                               && !Store.containsSubGrid(this.state.node)
@@ -96,7 +96,7 @@ const GridMixin = {
     /**
      * Render the grid component
      *
-     * @returns {div} - A div with classes defined by `getGridClasses`, containing
+     * @returns {Element|Node} - A div with classes defined by `getGridClasses`, containing
      * rows, including resizers, returned by `renderRows`
      */
     renderGrid(classes, style) {
@@ -113,4 +113,4 @@ const GridMixin = {
 
 };
 
-export {GridMixin};
+export { GridMixin };

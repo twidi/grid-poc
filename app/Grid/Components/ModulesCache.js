@@ -9,11 +9,11 @@ import { ModuleHolder } from './ModuleHolder';
 /**
  * This JS module will manage the cache of the module and the module holders,
  * which are react components attached to their own "root", to be attached
- * to other react components via {@link module:Grid.Components.Mixins.NodesHolder NodesHolderMixin}
+ * to other react components via {@link module:Grid.Components.Mixins NodesHolderMixin}
  *
  * The two react components created by this module are:
  *
- * - modules, to be strictly independant from the grid, so they won't be rendered
+ * - modules, to be strictly independent from the grid, so they won't be rendered
  *   on grid changes. They are attached to cells in normal mode, and to modules
  *   holders (see below) in design mode.
  *
@@ -56,7 +56,7 @@ const ModulesCache = {
      *
      * (transforms [{name: xx, value:yy}, {name: ww, value:zz}] in {xx: yy, ww: zz})
      *
-     * @param  {XMLNode} xmlNode - The xml node from which we want to extract attributes
+     * @param  {Element|Node} xmlNode - The xml node from which we want to extract attributes
      * @return {object}  - The object with all attributes
      */
     _extractAttributes(xmlNode) {
@@ -88,7 +88,7 @@ const ModulesCache = {
      *
      * - get the content node inside the cell
      * - extract all its attributes that will be used as attributes for the module
-     *   (the `component` attribule will tell which module to create)
+     *   (the `component` attribute will tell which module to create)
      * - compute a key (string) based on these attributes
      * - if the cache is empty, fill it with:
      *   - a react element for the module (not rendered, only created)
@@ -110,7 +110,7 @@ const ModulesCache = {
         let attributes;
 
         if (key) {
-            // extract atributes from the key if we have it
+            // extract attributes from the key if we have it
             attributes = JSON.parse(key);
 
         } else {
@@ -192,9 +192,10 @@ const ModulesCache = {
      * The `cell` and `key` parameters are exclusive
      *
      * @param  {module:Grid.Components.Cell} cell - A cell for which we want the module
-     * @param  {string} key - A key for which we want the module. In this case, the module must already exists, after a call to this method or `getHolderComponent` with a cell parameter
+     * @param  {String} [key=] - A key for which we want the module. In this case, the module must already exists,
+     *                           after a call to this method or `getHolderComponent` with a cell parameter
      *
-     * @return {DomNode} - A dom node holding the module react component
+     * @return {Element|Node} - A dom node holding the module react component
      */
     getModuleComponent(cell, key) {
         const cache = this._getFromCache(cell, key);
@@ -218,7 +219,7 @@ const ModulesCache = {
      * Compute new props for the given react props, comparing to the cache
      *
      * @param  {object} cache - The cache entry having the more recent props we want
-     * @param  {object} source - An object of the react component props
+     * @param  {object} props - An object of the react component props
      *
      * @return {object} - Object having the new props
      *
@@ -227,9 +228,11 @@ const ModulesCache = {
     _getNewHolderProps(cache, props) {
         const newProps = {};
         for (const key in props) {
-            if (typeof cache[key] === 'undefined') { continue; }
-            if (props[key] == cache[key]) { continue; }
-            newProps[key] = cache[key];
+            if (props.hasOwnProperty(key)) {
+                if (typeof cache[key] === 'undefined') { continue; }
+                if (props[key] === cache[key]) { continue; }
+                newProps[key] = cache[key];
+            }
         }
         return newProps;
     },
@@ -253,9 +256,10 @@ const ModulesCache = {
      * The `cell` and `key` parameters are exclusive
      *
      * @param  {module:Grid.Components.Cell} cell - A cell for which we want the module
-     * @param  {string} key - A key for which we want the module. In this case, the module must already exists, after a call to this method or `getHolderComponent` with a cell parameter
+     * @param  {String} [key=] - A key for which we want the module. In this case, the module must already exists,
+     *                           after a call to this method or `getHolderComponent` with a cell parameter
      *
-     * @return {DomNode} - A dom node holding the
+     * @return {Element|Node} - A dom node holding the
      * {@link module:Grid.Components.ModuleHolder ModuleHolder} react component
      */
     getHolderComponent(cell, key) {
@@ -297,4 +301,4 @@ const ModulesCache = {
 
 };
 
-export {ModulesCache};
+export { ModulesCache };

@@ -50,12 +50,12 @@ export const customMatchers = {
                 if (!_.isString(expected)) {
                     expected = Manipulator.XMLGridToXMLString(expected);
                 }
-                let result = {};
+                const result = {};
                 result.pass = util.equals(actual, expected);
                 if (result.pass) {
                     result.message = 'XML is the one wanted';
                 } else {
-                    result.message = 'XML is not the one wanted. Actual VS expected:\n' + actual + '\n' + expected;
+                    result.message = `XML is not the one wanted. Actual VS expected:\n${actual}\n${expected}`;
                 }
                 return result;
             }

@@ -56,9 +56,9 @@ let MainGrid = {
     /**
      * Component props
      *
-     * @property {bool} screenMode - Define the screen mode behavior of the grid
-     *                               (one of {@link module:Grid.Components.MainGrid.screenModes screenModes}).
-     *                               Default to `screenMode.default`.
+     * @property {Boolean} screenMode - Define the screen mode behavior of the grid
+     *                                 (one of {@link module:Grid.Components.MainGrid.screenModes screenModes}).
+     *                                 Default to `screenMode.default`.
      * @property {int} oneScreenWidthThreshold - Define the width of the grid below which it goes
      *                                           in "one screen" mode if `screenMode` allows it. Default to `1024`.
      * @property {int} oneScreenHeightThreshold - Define the height of the grid below which it goes
@@ -98,7 +98,7 @@ let MainGrid = {
      */
     componentWillReceiveProps(nextProps) {
         const newName = nextProps.node.getAttribute('name');
-        if (newName != this.state.gridName) {
+        if (newName !== this.state.gridName) {
             this.setState({
                 gridName: newName
             });
@@ -118,30 +118,30 @@ let MainGrid = {
      * - `grid.designMode.dragging.stop` & `grid.designMode.drop`: stop fake drop detection and trigger `fakedragend`
      * - `grid.designMode.exit`: stop listening to `dragover` and `drop` events on the document
      *
-     * @param {string} eventName - The name of the event that called this function (`grid.designMode.**`)
-     * @param {string} gridName - The name of the grid for which the event was triggered
+     * @param {String} eventName - The name of the event that called this function (`grid.designMode.**`)
+     * @param {String} gridName - The name of the grid for which the event was triggered
      */
     onDesignModeChange(eventName, gridName) {
-        if (gridName != this.state.gridName) { return; }
+        if (gridName !== this.state.gridName) { return; }
 
         const actualGrid = Store.getGrid(this.state.gridName);
 
-        if (actualGrid != this.state.node) {
+        if (actualGrid !== this.state.node) {
             // if the grid is different, update the state, it will rerender
-            this.setState({node: actualGrid});
+            this.setState({ node: actualGrid });
         } else {
             // the grid is the same, but we still want a rerender, so we force it
             // except when a resizer is currently move, we choose to not update
             // the grid in this case and let the resizer apply the new flex values
             // to its previous and next sibling, for faster rendering
-            if (eventName != 'grid.designMode.resizing.move') {
+            if (eventName !== 'grid.designMode.resizing.move') {
                 this.forceUpdate();
             }
         }
 
         // do some specific action depending on the received event
 
-        if (eventName == 'grid.designMode.enter' ) {
+        if (eventName === 'grid.designMode.enter') {
 
             this.deactivateGridNavigation();
 
@@ -151,13 +151,13 @@ let MainGrid = {
             this.addDocumentListener('dragover', 'onDocumentDragOver');
             this.addDocumentListener('drop', 'onDocumentDrop');
 
-        } else if (eventName == 'grid.designMode.dragging.start' ) {
+        } else if (eventName === 'grid.designMode.dragging.start') {
             // starting the drag operation, we start to detect a drop in case of the `drop` event
             // wouldn't have been be fired
 
             this.activateDropDetection();
 
-        } else if (eventName == 'grid.designMode.dragging.stop' || eventName == 'grid.designMode.drop') {
+        } else if (eventName === 'grid.designMode.dragging.stop' || eventName === 'grid.designMode.drop') {
             // ending the drag, or dropping (which is the same: the user stop holding the mouse button),
             // we stop trying to detect the drop, and tell the world whe drag is finished by triggering
             // a `fakedragend` event
@@ -166,7 +166,7 @@ let MainGrid = {
             this.emitFakeDragEnd();
 
 
-        } else if (eventName == 'grid.designMode.exit' ) {
+        } else if (eventName === 'grid.designMode.exit') {
 
             this.activateGridNavigation();
 
@@ -178,7 +178,7 @@ let MainGrid = {
     },
 
     /**
-     * Add some event handlers on the document to try to detect that a drop occurend even if the
+     * Add some event handlers on the document to try to detect that a drop occurred even if the
      * `drop` event was not fired by the browser, using the fact that mouse events are only
      * triggered when the drag and drop operation is finished.
      * The delay is needed in Firefox because a `mousemove` is triggered just after the `dragstart`
@@ -224,7 +224,7 @@ let MainGrid = {
     /**
      * When a fake drop is detected, via a mousedown or mousemove event:
      *
-     * - if the event target is a placeholder, create a `fakedrop` event to be catched
+     * - if the event target is a placeholder, create a `fakedrop` event to be caught
      *   by the placeholder
      * - in all other cases, call `applyDrop`
 
@@ -257,10 +257,10 @@ let MainGrid = {
      *
      * It will be handled on the placeholder as a real drop on itself.
      *
-     * @param  {DomNode} placeholderNode - The placeholder dom node
+     * @param  {Element|Node} placeholderNode - The placeholder dom node
      */
     emitFakeDrop(placeholderNode) {
-        const fakeDropEvent = new Event('fakedrop', {view: window, bubbles: true, target: placeholderNode });
+        const fakeDropEvent = new Event('fakedrop', { view: window, bubbles: true, target: placeholderNode });
         placeholderNode.dispatchEvent(fakeDropEvent);
     },
 
@@ -302,7 +302,7 @@ let MainGrid = {
     componentDidMount() {
         // hack to pass the original event to onDesignModeChange
         const self = this;
-        this.__onDesignModeChange = this.__onDesignModeChange || function(gridName) {
+        this.__onDesignModeChange = this.__onDesignModeChange || function __onDesignModeChange(gridName) {
             // `this` is the eventEmitter server, with `event`, the triggered event
             self.onDesignModeChange(this.event, gridName);
         };
@@ -364,8 +364,8 @@ let MainGrid = {
         ];
         const randomModule = availableModules[Math.floor(availableModules.length * Math.random())];
         const modulesCount = Store.getGrid(this.state.gridName).querySelectorAll('cell[type=module]').length;
-        const randomText = 'test.' + modulesCount;
-        Actions.addModule(this.state.gridName, randomModule, {text: randomText});
+        const randomText = `test.${modulesCount}`;
+        Actions.addModule(this.state.gridName, randomModule, { text: randomText });
     },
 
     /**
@@ -385,10 +385,10 @@ let MainGrid = {
     /**
      * Update grid style when focused
      *
-     * @param  {string} gridName - The grid name for which the `focus.on` event is triggered
+     * @param  {String} gridName - The grid name for which the `focus.on` event is triggered
      */
     onNavigateTo(gridName) {
-        if (gridName != this.state.gridName) { return; }
+        if (gridName !== this.state.gridName) { return; }
         this.updateMainGridStyle();
     },
 
@@ -442,7 +442,7 @@ let MainGrid = {
         if (this && this.panData) {
             this.panData.cancelled = true;
         }
-        Actions['focus' + goToDirection + 'ModuleCell'](this.state.gridName, true);
+        Actions[`focus${goToDirection}ModuleCell`](this.state.gridName, true);
     },
 
     /**
@@ -457,6 +457,7 @@ let MainGrid = {
      * @param  {event} event - The pan event from Hammer
      */
     onPan(event) {
+        let deltaX;
         switch (event.eventType) {
             case Hammer.INPUT_START:
                 break;
@@ -465,7 +466,7 @@ let MainGrid = {
                 if (!this.panData) {
                     const gridContainer = ReactDOM.findDOMNode(this.refs.gridContainer);
                     this.panData = {
-                        gridContainer: gridContainer,
+                        gridContainer,
                         gridContainerIdSet: false,
 
                         gridWidth: gridContainer.firstChild.offsetWidth,
@@ -500,11 +501,11 @@ let MainGrid = {
                             this.overflow.delta = delta;
                             data.blocked = true;
                             const newDelta = Math.round(Math.sqrt(Math.abs(delta % this.bodyWidth)) * 2);
-                            if (newDelta != data.delta) {
+                            if (newDelta !== data.delta) {
                                 data.node.classList.remove('going-off');
                                 data.node.classList.add('on');
-                                data.node.style.transform = 'translateX(' + (side == 'right' ? '-' : '') + newDelta + 'px)';
-                                data.node.style.opacity = 0.5 + (1-Math.exp(-0.00001 * Math.pow(delta, 2)))/2;
+                                data.node.style.transform = `translateX(${side === 'right' ? '-' : ''}${newDelta}px)`;
+                                data.node.style.opacity = 0.5 + (1 - Math.exp(-0.00001 * Math.pow(delta, 2))) / 2;
                                 data.delta = newDelta;
                             }
                         },
@@ -541,27 +542,27 @@ let MainGrid = {
                     this.panData.nbCards = Math.round(this.panData.gridWidth / this.panData.bodyWidth);
                 }
 
-                const deltaX = event.deltaX - this.panData.overflow.delta;
+                deltaX = event.deltaX - this.panData.overflow.delta;
 
                 const index = Store.getFocusedModuleCellIndex(this.state.gridName);
 
                 const canScrollLeft = (index * this.panData.bodyWidth - deltaX > 0);
-                const canScrollRight = ((index + 1) * this.panData.bodyWidth - deltaX < this.panData.gridWidth -1);
+                const canScrollRight = ((index + 1) * this.panData.bodyWidth - deltaX < this.panData.gridWidth - 1);
 
                 if (deltaX >= 0 && !canScrollLeft) {
                     if (!this.panData.overflow.left.blocked) {
-                        this.updateMainGridStyle(index * this.panData.bodyWidth + 'px');
+                        this.updateMainGridStyle(`${index * this.panData.bodyWidth}px`);
                     }
                     this.panData.activateOverflow('left', event.deltaX);
                 } else if (deltaX <= 0 && !canScrollRight) {
                     if (!this.panData.overflow.right.blocked) {
-                        this.updateMainGridStyle((index - this.panData.nbCards + 1)*100 + 'vw');
+                        this.updateMainGridStyle(`${(index - this.panData.nbCards + 1) * 100}vw`);
                     }
                     this.panData.activateOverflow('right', event.deltaX);
                 } else {
                     this.panData.deactivateOverflow('left');
                     this.panData.deactivateOverflow('right');
-                    this.updateMainGridStyle(deltaX + 'px');
+                    this.updateMainGridStyle(`${deltaX}px`);
                 }
                 break;
 
@@ -579,13 +580,13 @@ let MainGrid = {
 
                 let cancelPan = true;
 
-                if (event.eventType == Hammer.INPUT_END && !panData.cancelled) {
-                    const deltaX = event.deltaX - panData.overflow.delta;
+                if (event.eventType === Hammer.INPUT_END && !panData.cancelled) {
+                    deltaX = event.deltaX - panData.overflow.delta;
 
                     if (Math.abs(deltaX) > panData.bodyWidth / 2) {
                         const goToDirection = deltaX < 0 ? 'Right' : 'Left';
                         cancelPan = false;
-                        Actions['focus' + goToDirection + 'ModuleCell'](this.state.gridName, true);
+                        Actions[`focus${goToDirection}ModuleCell`](this.state.gridName, true);
                     }
                 }
 
@@ -603,8 +604,8 @@ let MainGrid = {
      */
     configureHammer() {
         const hammer = this.refs.gridContainer.hammer;
-        hammer.get('swipe').set({direction: Hammer.DIRECTION_HORIZONTAL});
-        hammer.add(new Hammer.Pan({direction: Hammer.DIRECTION_HORIZONTAL})).recognizeWith(hammer.get('swipe'));
+        hammer.get('swipe').set({ direction: Hammer.DIRECTION_HORIZONTAL });
+        hammer.add(new Hammer.Pan({ direction: Hammer.DIRECTION_HORIZONTAL })).recognizeWith(hammer.get('swipe'));
         hammer.on('pan', this.onPan);
     },
 
@@ -622,7 +623,7 @@ let MainGrid = {
     },
 
     /**
-     * Deactivate the keyboard shortcuts to disaable keyboard navigation between
+     * Deactivate the keyboard shortcuts to disable keyboard navigation between
      * module cells
      */
     deactivateGridNavigation() {
@@ -649,7 +650,7 @@ let MainGrid = {
     /**
      * Return the classes to use when rendering the container of the current main grid
      *
-     * @return {string} - A string containing classes
+     * @return {String} - A string containing classes
      *
      * One or more of these classes:
      *
@@ -669,14 +670,14 @@ let MainGrid = {
             'grid-component-with-placeholders': Store.hasPlaceholders(this.state.gridName),
             'grid-component-with-resizers': Store.hasResizers(this.state.gridName)
         };
-        classes['grid-component-design-mode-step-' + this.getDesignModeStep()] = inDesignMode;
+        classes[`grid-component-design-mode-step-${this.getDesignModeStep()}`] = inDesignMode;
         return classnames(classes);
     },
 
     /**
      * Update the style of the grid dom node, to translate it horizontally in "one screen" mode.
      *
-     * @param {int} deltaX - The delta, in pixels, to translate horizontally (passed to `getMainGridStyle`)
+     * @param {String} [deltaX=] - The delta, with its unit, to translate horizontally (passed to `getMainGridStyle`)
      */
     updateMainGridStyle(deltaX) {
         const domNode = ReactDOM.findDOMNode(this);
@@ -698,7 +699,7 @@ let MainGrid = {
     /**
      * Compute the style for the grid dom node in "one screen" mode. Reset the style if not in this screen mode.
      *
-     * @param {int} deltaX - The delta, in pixels, to translate horizontally (passed to `getMainGridStyle`)
+     * @param {String} [deltaX=] - The delta, with its unit, to translate horizontally (passed to `getMainGridStyle`)
      *
      * @returns {object} - The style properties to apply to the grid
      */
@@ -711,16 +712,15 @@ let MainGrid = {
         }
 
         const index = Store.getFocusedModuleCellIndex(this.state.gridName);
-        let delta = index ? '-' + (index * 100) + 'vw' : '0px';
+        let delta = index ? `-${index * 100}vw` : '0px';
         const deltaXSet = (typeof deltaX !== 'undefined');
         if (deltaXSet) {
-            deltaX = parseInt(deltaX, 10);
-            if (deltaX) {
-                delta = index ? 'calc(' + delta + ' + ' + deltaX + 'px)' : deltaX + 'px';
+            if (deltaX && parseInt(deltaX, 10)) {
+                delta = index ? `calc(${delta} + ${deltaX})` : deltaX;
             }
         }
         return {
-            transform: 'translateX(' + delta + ')',
+            transform: `translateX(${delta})`,
             // force no transition if deltaX given, else use the one defined in css file
             transition: deltaXSet ? 'none' : null
         };
@@ -747,7 +747,7 @@ let MainGrid = {
                 );
         }
         if (oneScreenMode !== this.state.oneScreenMode) {
-            this.setState({oneScreenMode});
+            this.setState({ oneScreenMode });
         }
     },
 
@@ -762,12 +762,12 @@ let MainGrid = {
         const designModeStep = this.getDesignModeStep();
 
         // manage the "Add a module" button
-        if (designModeStep == 'enabled') {
+        if (designModeStep === 'enabled') {
             addButton = <button onClick={this.addRandomModule} key="addButton">Add a random module</button>;
         }
 
         // manage the "enter/exit design mode" button
-        if (designModeStep == 'enabled' || designModeStep == 'disabled') {
+        if (designModeStep === 'enabled' || designModeStep === 'disabled') {
             toggleButton = (
                 <button onClick={this.toggleDesignMode} key="toggleButton">
                     {this.isInDesignMode() ? 'Exit' : 'Enter'} design mode
@@ -776,14 +776,22 @@ let MainGrid = {
         }
 
         // manage the "undo" and "redo" buttons
-        if (designModeStep == 'enabled') {
+        if (designModeStep === 'enabled') {
             undoButton = (
-                <button onClick={this.undo} disabled={!Store.canGoBackInHistory(this.state.gridName)} key="undoButton">
+                <button
+                  onClick={this.undo}
+                  disabled={!Store.canGoBackInHistory(this.state.gridName)}
+                  key="undoButton"
+                >
                     Undo
                 </button>
             );
             redoButton = (
-                <button onClick={this.redo} disabled={!Store.canGoForwardInHistory(this.state.gridName)} key="redoButton">
+                <button
+                  onClick={this.redo}
+                  disabled={!Store.canGoForwardInHistory(this.state.gridName)}
+                  key="redoButton"
+                >
                     Redo
                 </button>
             );

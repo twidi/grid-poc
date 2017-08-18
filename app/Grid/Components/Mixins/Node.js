@@ -29,7 +29,7 @@ const NodeMixin = {
      * @param  {object} nextProps - The new props to be received
      */
     componentWillReceiveProps(nextProps) {
-        if (nextProps.node != this.props.node) {
+        if (nextProps.node !== this.props.node) {
             this.setState({
                 node: nextProps.node
             });
@@ -38,7 +38,7 @@ const NodeMixin = {
 
     /**
      * Get the type of the current XML Grid cell
-     * @return {string} - Either "mainGrid", or "placeholder" or nothing for a row,
+     * @return {String} - Either "mainGrid", or "placeholder" or nothing for a row,
      * or "grid", "module" or "placeholder" for a cell
      */
     getType() {
@@ -48,7 +48,7 @@ const NodeMixin = {
     /**
      * Get the ID of the current node
      *
-     * @return {string} - The ID of the node
+     * @return {String} - The ID of the node
      */
     getNodeId() {
         return Store.getNodeId(this.state.node);
@@ -57,7 +57,7 @@ const NodeMixin = {
     /**
      * Get the main grid
      *
-     * @return {XML} - The main grid the current node belongs to
+     * @return {Element|Node} - The main grid the current node belongs to
      */
     getGrid() {
         return Store.getMainGrid(this.state.node);
@@ -66,7 +66,7 @@ const NodeMixin = {
     /**
      * Get the main grid name
      *
-     * @return {XML} - The name of the main grid the current node belongs to
+     * @return {Element|Node} - The name of the main grid the current node belongs to
      */
     getGridName() {
         return Store.getMainGridName(this.state.node);
@@ -75,7 +75,7 @@ const NodeMixin = {
     /**
      * Get the current design mode step for the main Grid
      *
-     * @return {string} - The name of the design mode step
+     * @return {String} - The name of the design mode step
      *
      * @todo: find a way to cache this to avoid calling the getAttribute method every time
      */
@@ -89,8 +89,8 @@ const NodeMixin = {
      * @return {boolean} - True if the grid is in design mode, else False
      */
     isInDesignMode() {
-        return (this.getDesignModeStep() != 'disabled');
+        return (this.getDesignModeStep() !== 'disabled');
     }
 };
 
-export {NodeMixin};
+export { NodeMixin };

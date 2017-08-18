@@ -14,19 +14,17 @@ import { Utils } from '../../Utils';
 import { componentUtils } from './Utils';
 
 
-describe('Grid.Components.SubGrid', function() {
-    let uniqueIdMock;
-
+describe('Grid.Components.SubGrid', () => {
     // main grid, and its subgrid defined in beforeEach
     let testGrid;
     let subGrid;
 
-    beforeEach(function(done) {
+    beforeEach((done) => {
         // we want to start each test with a fresh list of grids
         Store.__removeAllGrids();
 
         // we mock the uniqueId function of lodash to know the value to expect
-        uniqueIdMock = Utils.mockUniqueId();
+        Utils.mockUniqueId();
 
         // reset the modules cache for every test
         componentUtils.clearModulesCache();
@@ -38,30 +36,30 @@ describe('Grid.Components.SubGrid', function() {
         setTimeout(done, 0.01);
     });
 
-    afterEach(function() {
+    afterEach(() => {
         componentUtils.unmountAllComponents();
     });
 
-    it('should access its main grid', function() {
-        const element = React.createElement(SubGrid, {node: subGrid});
+    it('should access its main grid', () => {
+        const element = React.createElement(SubGrid, { node: subGrid });
         const component = componentUtils.renderIntoDocument(element);
         expect(component.getGrid()).toBe(testGrid);
     });
 
-    it('should get its id', function() {
-        const element = React.createElement(SubGrid, {node: subGrid});
+    it('should get its id', () => {
+        const element = React.createElement(SubGrid, { node: subGrid });
         const component = componentUtils.renderIntoDocument(element);
         expect(component.getNodeId()).toBe(subGrid.getAttribute('id'));
     });
 
-    it('should get the main grid name', function() {
-        const element = React.createElement(SubGrid, {node: subGrid});
+    it('should get the main grid name', () => {
+        const element = React.createElement(SubGrid, { node: subGrid });
         const component = componentUtils.renderIntoDocument(element);
         expect(component.getGridName()).toEqual('Test grid');
     });
 
-    it('should get the design mode step', function() {
-        const element = React.createElement(SubGrid, {node: subGrid});
+    it('should get the design mode step', () => {
+        const element = React.createElement(SubGrid, { node: subGrid });
         const component = componentUtils.renderIntoDocument(element);
         expect(component.getDesignModeStep()).toEqual('disabled');
 
@@ -69,8 +67,8 @@ describe('Grid.Components.SubGrid', function() {
         expect(component.getDesignModeStep()).toEqual('enabled');
     });
 
-    it('should know if it\'s in design mode', function() {
-        const element = React.createElement(SubGrid, {node: subGrid});
+    it('should know if it\'s in design mode', () => {
+        const element = React.createElement(SubGrid, { node: subGrid });
         const component = componentUtils.renderIntoDocument(element);
         expect(component.isInDesignMode()).toBe(false);
 
@@ -78,8 +76,8 @@ describe('Grid.Components.SubGrid', function() {
         expect(component.isInDesignMode()).toBe(true);
     });
 
-    it('should be able to get its grid rows if no resizers', function() {
-        const element = React.createElement(SubGrid, {node: subGrid});
+    it('should be able to get its grid rows if no resizers', () => {
+        const element = React.createElement(SubGrid, { node: subGrid });
         const component = componentUtils.renderIntoDocument(element);
         const rows = component.getRows();
         const expectedRows = _.toArray(subGrid.querySelectorAll(':scope > content > row, :scope > content > resizer'));
@@ -89,11 +87,11 @@ describe('Grid.Components.SubGrid', function() {
         expect(rows[1].tagName).toEqual('row');
     });
 
-    it('should be able to get its grid rows and resizers if any', function() {
+    it('should be able to get its grid rows and resizers if any', () => {
         Manipulator.addResizers(testGrid);
         Manipulator.setIds(testGrid);
 
-        const element = React.createElement(SubGrid, {node: subGrid});
+        const element = React.createElement(SubGrid, { node: subGrid });
         const component = componentUtils.renderIntoDocument(element);
         const rows = component.getRows();
         const expectedRows = _.toArray(subGrid.querySelectorAll(':scope > content > row, :scope > content > resizer'));
@@ -104,8 +102,8 @@ describe('Grid.Components.SubGrid', function() {
         expect(rows[2].tagName).toEqual('row');
     });
 
-    it('should be able to render its rows if no resizers', function() {
-        const element = React.createElement(SubGrid, {node: subGrid});
+    it('should be able to render its rows if no resizers', () => {
+        const element = React.createElement(SubGrid, { node: subGrid });
         const component = componentUtils.renderIntoDocument(element);
         const rows = component.renderRows();
         expect(rows.length).toEqual(2);
@@ -113,11 +111,11 @@ describe('Grid.Components.SubGrid', function() {
         expect(TestUtils.isElementOfType(rows[1], Row)).toBe(true);
     });
 
-    it('should be able to render its rows and resizers if any', function() {
+    it('should be able to render its rows and resizers if any', () => {
         Manipulator.addResizers(testGrid);
         Manipulator.setIds(testGrid);
 
-        const element = React.createElement(SubGrid, {node: subGrid});
+        const element = React.createElement(SubGrid, { node: subGrid });
         const component = componentUtils.renderIntoDocument(element);
         const rows = component.renderRows();
         expect(rows.length).toEqual(3);
@@ -126,8 +124,8 @@ describe('Grid.Components.SubGrid', function() {
         expect(TestUtils.isElementOfType(rows[2], Row)).toBe(true);
     });
 
-    it('should render a grid', function() {
-        const element = React.createElement(SubGrid, {node: subGrid});
+    it('should render a grid', () => {
+        const element = React.createElement(SubGrid, { node: subGrid });
         const component = componentUtils.renderIntoDocument(element);
         const domNode = ReactDOM.findDOMNode(component);
         expect(domNode.tagName).toEqual('DIV');
@@ -145,13 +143,13 @@ describe('Grid.Components.SubGrid', function() {
         expect(domNode.getAttribute('style')).toMatch(/\bflex-grow\s*:\s*2\b/);
     });
 
-    it('should have a specific class when its the deepest grid', function() {
+    it('should have a specific class when its the deepest grid', () => {
         Manipulator.addPlaceholders(testGrid);
         Manipulator.setIds(testGrid);
 
         subGrid = testGrid.querySelector('cell[type=grid] cell[type=grid]');
 
-        const element = React.createElement(SubGrid, {node: subGrid});
+        const element = React.createElement(SubGrid, { node: subGrid });
         const component = componentUtils.renderIntoDocument(element);
         const domNode = ReactDOM.findDOMNode(component);
         expect(domNode.tagName).toEqual('DIV');
@@ -160,8 +158,8 @@ describe('Grid.Components.SubGrid', function() {
         expect(domNode.classList.contains('grid-last-level-with-placeholders')).toBe(true);
     });
 
-    it('should render sub components', function() {
-        const element = React.createElement(SubGrid, {node: subGrid});
+    it('should render sub components', () => {
+        const element = React.createElement(SubGrid, { node: subGrid });
         const component = componentUtils.renderIntoDocument(element);
         expect(componentUtils.countRows(component)).toEqual(2);
         expect(componentUtils.countModules(component)).toEqual(2);

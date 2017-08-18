@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 export const Utils = {
     /**
-     * Mock _.uniqueId from lodash, but with a reseted counter, for the duration
+     * Mock _.uniqueId from lodash, but with a reset counter, for the duration
      * of the test. With an helper to help reset in the same test function.
      * Useful in a test to ensure the counter always start with 1
      * @example
@@ -16,16 +16,14 @@ export const Utils = {
 
         /**
          * Copy of the uniqueId function from lodash that will be use as a mock
-         * @param  {[type]} prefix [description]
-         * @return {[type]}        [description]
          */
-        let uniqueId = function (prefix) {
-            let id = ++idCounter;
-            return String(prefix == null ? '' : prefix) + id;
+        const uniqueId = prefix => {
+            const id = ++idCounter;
+            return String(prefix === null ? '' : prefix) + id;
         };
 
         // keep a copy of the original
-        let original = _.uniqueId;
+        const original = _.uniqueId;
 
         // do the mocking
         spyOn(_, 'uniqueId').and.callFake(uniqueId);
@@ -33,7 +31,7 @@ export const Utils = {
         // returns an object with the original function, the mocked one, and
         // a reset helper
         return {
-            original: original,
+            original,
             mocked: uniqueId,
             reset() {
                 idCounter = 0;

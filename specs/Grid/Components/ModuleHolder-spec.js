@@ -15,21 +15,19 @@ import { Utils } from '../../Utils';
 import { componentUtils } from './Utils';
 
 
-describe('Grid.Components.ModuleHolder', function() {
-    let uniqueIdMock;
-
+describe('Grid.Components.ModuleHolder', () => {
     // main grid, the module cell we need, and cache stuff, defined in beforeEach
     let testGrid;
     let moduleGridCell;
     let attributes;
     let cacheKey;
 
-    beforeEach(function(done) {
+    beforeEach((done) => {
         // we want to start each test with a fresh list of grids
         Store.__removeAllGrids();
 
         // we mock the uniqueId function of lodash to know the value to expect
-        uniqueIdMock = Utils.mockUniqueId();
+        Utils.mockUniqueId();
 
         // reset the modules cache for every test
         componentUtils.clearModulesCache();
@@ -43,11 +41,11 @@ describe('Grid.Components.ModuleHolder', function() {
         setTimeout(done, 0.01);
     });
 
-    afterEach(function() {
+    afterEach(() => {
         componentUtils.unmountAllComponents();
     });
 
-    let createCacheEntry = function() {
+    const createCacheEntry = () => {
         // create the module element to store it manually in cache
         const moduleElement = React.createElement(Modules.Test1, attributes);
 
@@ -55,28 +53,28 @@ describe('Grid.Components.ModuleHolder', function() {
         const holderElement = React.createElement(ModuleHolder, {
             uniqueKey: cacheKey,
             gridName: 'Test grid',
-            gridCell: moduleGridCell,
+            gridCell: moduleGridCell
         });
 
         // create the cache entry
         ModulesCache._cache[cacheKey] = {
             gridName: 'Test grid',
             gridCell: moduleGridCell,
-            moduleElement: moduleElement,
-            holderElement: holderElement,
+            moduleElement,
+            holderElement
         };
 
         return ModulesCache._cache[cacheKey];
     };
 
-    it('should render a component with a cover and a module', function(done) {
+    it('should render a component with a cover and a module', (done) => {
         jasmineReact.spyOnClass(ModuleHolder, 'getRenderAttrs').and.callThrough();
 
         const element = createCacheEntry().holderElement;
         const component = componentUtils.renderIntoDocument(element);
 
         // leave some time to render the component
-        setTimeout(function() {
+        setTimeout(() => {
 
             expect(jasmineReact.classPrototype(ModuleHolder).getRenderAttrs).toHaveBeenCalled();
 
@@ -92,7 +90,7 @@ describe('Grid.Components.ModuleHolder', function() {
         }, 0.01);
     });
 
-    it('should make the dom node draggable in design mode', function() {
+    it('should make the dom node draggable in design mode', () => {
         const element = createCacheEntry().holderElement;
         const component = componentUtils.renderIntoDocument(element);
 
@@ -102,11 +100,11 @@ describe('Grid.Components.ModuleHolder', function() {
         const attrs = component.getRenderAttrs();
 
         expect(_.size(attrs)).toEqual(2);
-        expect(attrs['draggable']).toBe(true);
-        expect(attrs['onDragStart']).toBe(component.onDragStart);
+        expect(attrs.draggable).toBe(true);
+        expect(attrs.onDragStart).toBe(component.onDragStart);
     });
 
-    it('should handle the dragleave event if in dragging mode', function() {
+    it('should handle the dragleave event if in dragging mode', () => {
         const element = createCacheEntry().holderElement;
         const component = componentUtils.renderIntoDocument(element);
 
@@ -117,19 +115,19 @@ describe('Grid.Components.ModuleHolder', function() {
         const attrs = component.getRenderAttrs();
 
         expect(_.size(attrs)).toEqual(1);
-        expect(attrs['onDragLeave']).toBe(component.onDragLeave);
+        expect(attrs.onDragLeave).toBe(component.onDragLeave);
     });
 
 
-    it('should attach the module component after being mounted', function(done) {
+    it('should attach the module component after being mounted', (done) => {
         jasmineReact.spyOnClass(ModuleHolder, '_attachExternalNode').and.callThrough();
         jasmineReact.spyOnClass(ModuleHolder, '_detachExternalNode').and.callThrough();
 
         const element = createCacheEntry().holderElement;
-        const component = componentUtils.renderIntoDocument(element);
+        componentUtils.renderIntoDocument(element);
 
         // leave some time to render the component
-        setTimeout(function() {
+        setTimeout(() => {
             const ModuleHolderProto = jasmineReact.classPrototype(ModuleHolder);
             expect(ModuleHolderProto._attachExternalNode.calls.count()).toEqual(1);
             expect(ModuleHolderProto._attachExternalNode.calls.argsFor(0)[1]).toEqual('module-container');
@@ -139,7 +137,7 @@ describe('Grid.Components.ModuleHolder', function() {
     });
 
 
-    it('should detach/attach the module component during update', function(done) {
+    it('should detach/attach the module component during update', (done) => {
         jasmineReact.spyOnClass(ModuleHolder, '_attachExternalNode').and.callThrough();
         jasmineReact.spyOnClass(ModuleHolder, '_detachExternalNode').and.callThrough();
 
@@ -147,18 +145,20 @@ describe('Grid.Components.ModuleHolder', function() {
         const component = componentUtils.renderIntoDocument(element);
 
         // leave some time to render the component
-        setTimeout(function() {
+        setTimeout(() => {
 
             component.forceUpdate();
 
             // leave some time to update the component
-            setTimeout(function() {
+            setTimeout(() => {
                 const ModuleHolderProto = jasmineReact.classPrototype(ModuleHolder);
                 expect(ModuleHolderProto._attachExternalNode.calls.count()).toEqual(2);  // includes initial
                 expect(ModuleHolderProto._attachExternalNode.calls.argsFor(0)[1]).toEqual('module-container');
                 expect(ModuleHolderProto._attachExternalNode.calls.argsFor(1)[1]).toEqual('module-container');
                 expect(ModuleHolderProto._detachExternalNode.calls.count()).toEqual(1);
-                expect(ModuleHolderProto._detachExternalNode.calls.argsFor(0)[0].classList.contains('module-container')).toBe(true);
+                expect(
+                    ModuleHolderProto._detachExternalNode.calls.argsFor(0)[0].classList.contains('module-container')
+                ).toBe(true);
 
                 done();
 
@@ -167,13 +167,13 @@ describe('Grid.Components.ModuleHolder', function() {
         }, 0.01);
     });
 
-    it('should always accept to attach a module', function() {
+    it('should always accept to attach a module', () => {
         const element = createCacheEntry().holderElement;
         const component = componentUtils.renderIntoDocument(element);
         expect(component.canHoldExternalNodes()).toBe(true);
     });
 
-    it('should always return the module to attach', function() {
+    it('should always return the module to attach', () => {
         const element = createCacheEntry().holderElement;
         const component = componentUtils.renderIntoDocument(element);
 
@@ -186,7 +186,7 @@ describe('Grid.Components.ModuleHolder', function() {
     });
 
 
-    it('should not return a module to attach if it\'s not a valid className', function() {
+    it('should not return a module to attach if it\'s not a valid className', () => {
         const element = createCacheEntry().holderElement;
         const component = componentUtils.renderIntoDocument(element);
 
@@ -200,7 +200,7 @@ describe('Grid.Components.ModuleHolder', function() {
         expect(container).toBe(undefined);
     });
 
-    it('should include a delete button in design mode', function() {
+    it('should include a delete button in design mode', () => {
         // check in normal mode
         const element = createCacheEntry().holderElement;
         const component = componentUtils.renderIntoDocument(element);
@@ -223,7 +223,7 @@ describe('Grid.Components.ModuleHolder', function() {
 
     });
 
-    it('should ask to remove the module when the delete button is clicked', function(done) {
+    it('should ask to remove the module when the delete button is clicked', (done) => {
         // removing a module is only valid in design mode
         Store.__private.setDesignModeStep('Test grid', 'enabled');
 
@@ -235,7 +235,7 @@ describe('Grid.Components.ModuleHolder', function() {
         // will store the grid name received via the tested event
         let updatedGridName;
 
-        const callback = function(gridName) {
+        const callback = gridName => {
             callbackCalled = true;
             updatedGridName = gridName;
         };
@@ -247,7 +247,7 @@ describe('Grid.Components.ModuleHolder', function() {
         TestUtils.Simulate.click(ReactDOM.findDOMNode(component).querySelector('.module-cover button'));
 
         // leave some time to render the component
-        setTimeout(function() {
+        setTimeout(() => {
             // stop listening
             Store.off('grid.designMode.module.remove', callback);
 
@@ -261,7 +261,7 @@ describe('Grid.Components.ModuleHolder', function() {
 
     });
 
-    it('should start the dragging', function(done) {
+    it('should start the dragging', (done) => {
 
         // dragging is only valid in design mode
         Store.__private.setDesignModeStep('Test grid', 'enabled');
@@ -274,7 +274,7 @@ describe('Grid.Components.ModuleHolder', function() {
         // will store the grid name received via the tested event
         let updatedGridName;
 
-        const callback = function(gridName) {
+        const callback = gridName => {
             callbackCalled = true;
             updatedGridName = gridName;
         };
@@ -286,7 +286,7 @@ describe('Grid.Components.ModuleHolder', function() {
         componentUtils.simulateDragEvent(ReactDOM.findDOMNode(component), 'dragStart');
 
         // leave some time to render the component
-        setTimeout(function() {
+        setTimeout(() => {
             // stop listening
             Store.off('grid.designMode.dragging.start', callback);
 
@@ -299,7 +299,7 @@ describe('Grid.Components.ModuleHolder', function() {
         }, 0.01);
     });
 
-    it('should stop hovering when leaving the holder', function(done) {
+    it('should stop hovering when leaving the holder', (done) => {
         // when the holder stay a "long time" on a placeholder, the grid goes
         // in "stayhovering" mode and the placeholder is replaced by the holder
         // itself, so moving the mouse out of the holder should stop the hovering
@@ -316,7 +316,7 @@ describe('Grid.Components.ModuleHolder', function() {
         // will store the grid name received via the tested event
         let updatedGridName;
 
-        const callback = function(gridName) {
+        const callback = gridName => {
             callbackCalled = true;
             updatedGridName = gridName;
         };
@@ -331,7 +331,7 @@ describe('Grid.Components.ModuleHolder', function() {
         componentUtils.simulateDragEvent(ReactDOM.findDOMNode(component), 'dragLeave');
 
         // leave some time to render the component
-        setTimeout(function() {
+        setTimeout(() => {
 
             try {
                 // stop listening
@@ -347,7 +347,7 @@ describe('Grid.Components.ModuleHolder', function() {
                 component.dragLeaveTimeout = oldTimeout;
             }
 
-        }, 300); // minimal delay for the settimeout function in onDragLeave, don't know why
+        }, 300); // minimal delay for the setTimeout function in onDragLeave, don't know why
     });
 
 

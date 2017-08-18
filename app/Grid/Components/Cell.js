@@ -18,7 +18,7 @@ import { SubGrid } from './SubGrid';
  *
  * This react component has a special behavior when its type is "module": in this
  * case it will have no react child at all, but they will be attached by
- * {@link module:Grid.Components.Mixins.NodesHolder NodesHolderMixin},
+ * {@link module:Grid.Components.Mixins NodesHolderMixin},
  * ie detaching/attaching the child before/after mounting/updating, and the child
  * will be rendered in its own react root.
  *
@@ -29,7 +29,7 @@ import { SubGrid } from './SubGrid';
  *
  * In non-design mode, the child will be a module component. It's separated from
  * the cell to avoid, at all cost, triggering a rendering when the grid is updated,
- * beacause modules can be heavy (in design mode, it's the module holder that
+ * because modules can be heavy (in design mode, it's the module holder that
  * hold the module, the same way)
  *
  * The module holders node, and the modules ones, are managed by the
@@ -41,8 +41,8 @@ import { SubGrid } from './SubGrid';
  *
  * @summary The Cell component, a cell of a row
  *
- * @mixes module:Grid.Components.Mixins.Node
- * @mixes module:Grid.Components.Mixins.NodesHolder
+ * @mixes module:Grid.Components.Mixins.NodeMixin
+ * @mixes module:Grid.Components.Mixins.NodesHolderMixin
  */
 let Cell = {
 
@@ -57,7 +57,7 @@ let Cell = {
 
     /**
      * Two types of nodes that can be attached to the current react component
-     * dom node (managed by {@link module:Grid.Components.Mixins.NodesHolder NodesHolderMixin}):
+     * dom node (managed by {@link module:Grid.Components.Mixins NodesHolderMixin}):
      * - a module
      * - a {@link module:Grid.Components.ModuleHolder module holder}
      *
@@ -73,7 +73,7 @@ let Cell = {
 
 
     /**
-     * Tell {@link module:Grid.Components.Mixins.NodesHolder NodesHolderMixin}
+     * Tell {@link module:Grid.Components.Mixins NodesHolderMixin}
      * that we only want to handle external nodes if the cell is a module.
      *
      * @return {boolean} - `true` if a module, or `false`
@@ -83,15 +83,15 @@ let Cell = {
     },
 
     /**
-     * Return a node to be attached by {@link module:Grid.Components.Mixins.NodesHolder NodesHolderMixin}:
+     * Return a node to be attached by {@link module:Grid.Components.Mixins NodesHolderMixin}:
      *
      * - a {@link module:Grid.Components.ModuleHolder module holder} if we are in design mode
      * - a module, directly, if we are NOT in design mode
      *
      * The nodes are returned by the {@link module:Grid.Components.ModulesCache ModulesCache} module.
      *
-     * @param  {string} className - The class name of the dom node to return
-     * @return {DomNode} - Either the module dom node, or the holder one, or nothing if it's not a module
+     * @param  {String} className - The class name of the dom node to return
+     * @return {Element|Node|undefined} - Either the module dom node, or the holder one, or nothing if it's not a module
      */
     getExternalNode(className) {
         // don't return anything if it's not a module (this shouldn't be necessary because
@@ -99,12 +99,12 @@ let Cell = {
         if (!this.isModule()) { return; }
 
         // will attach module only if not in design mode
-        if (className == ModulesCache.moduleContainerClassName && !this.isInDesignMode()) {
+        if (className === ModulesCache.moduleContainerClassName && !this.isInDesignMode()) {
             return ModulesCache.getModuleComponent(this);
         }
 
         // will attach module holder only if in design mode
-        if (className == ModulesCache.holderContainerClassName && this.isInDesignMode()) {
+        if (className === ModulesCache.holderContainerClassName && this.isInDesignMode()) {
             return ModulesCache.getHolderComponent(this);
         }
     },
@@ -115,7 +115,7 @@ let Cell = {
      * @return {Boolean} - `true` if a placeholder cell
      */
     isPlaceholder() {
-        return this.getType() == 'placeholder';
+        return this.getType() === 'placeholder';
     },
 
     /**
@@ -124,7 +124,7 @@ let Cell = {
      * @return {Boolean} - `true` if a "grid" cell (subgrid)
      */
     isSubGrid() {
-        return this.getType() == 'grid';
+        return this.getType() === 'grid';
     },
 
     /**
@@ -133,13 +133,13 @@ let Cell = {
      * @return {Boolean} - `true` if a "module" cell
      */
     isModule() {
-        return this.getType() == 'module';
+        return this.getType() === 'module';
     },
 
     /**
      * Render the cell as a SubGrid component
      *
-     * @return {module:Grid.Components.SubGrid} - The rendered {@link module:Grid.Components.SubGrid SubGrid} component
+     * @return {Element|Node} - The rendered {@link module:Grid.Components.SubGrid SubGrid} component
      */
     renderAsSubGrid() {
         return <SubGrid node={this.state.node} />;
@@ -148,7 +148,7 @@ let Cell = {
     /**
      * Return the classes to use when rendering the current module cell
      *
-     * @return {string} - A string containing classes
+     * @return {String} - A string containing classes
      *
      * One or more of these classes:
      *
@@ -179,16 +179,15 @@ let Cell = {
      * - `flexGrow`: the relative size of the cell as defined in the grid
      */
     getModuleStyle() {
-        const style = {
+        return {
             flexGrow: Store.getRelativeSize(this.state.node)
         };
-        return style;
     },
 
     /**
      * Render the cell as a standalone component: a empty div that, if it's a module, will hold
      * the real module component (not directly rendered),
-     * via {@link module:Grid.Components.Mixins.NodesHolder NodesHolderMixin}
+     * via {@link module:Grid.Components.Mixins NodesHolderMixin}
      * Tell if the current cell has the focus (itself or one of its child node)
      *
      * @return {Boolean} - `true` if the cell has the focus, or `false`
@@ -200,8 +199,7 @@ let Cell = {
         // the cell itself
         if (activeElement === domNode) { return true; }
         // one of its child node
-        if (domNode.contains(activeElement)) { return true; }
-        return false;
+        return !!domNode.contains(activeElement);
     },
 
     /**
@@ -221,11 +219,11 @@ let Cell = {
      * The class is added via direct dom manipulation to avoid rerender the cell,
      * but the class is also correctly managed by the `getModuleCellClasses` method.
      *
-     * @param  {string} gridName - The grid name for which the `focus.on` event is triggered
+     * @param  {String} gridName - The grid name for which the `focus.on` event is triggered
      * @param  {int} focusedModuleCellId - The id of the module cell that is the new focused one
      */
     onNavigateTo(gridName, focusedModuleCellId) {
-        if (!this.isModule() || gridName != this.getGridName() || this.getNodeId() != focusedModuleCellId) {
+        if (!this.isModule() || gridName !== this.getGridName() || this.getNodeId() !== focusedModuleCellId) {
             return;
         }
 
@@ -245,11 +243,11 @@ let Cell = {
      * The class is removed via direct dom manipulation to avoid rerender the cell,
      * but the class is also correctly managed by the `getModuleCellClasses` method.
      *
-     * @param  {string} gridName - The grid name for which the `focus.off` event is triggered
+     * @param  {String} gridName - The grid name for which the `focus.off` event is triggered
      * @param  {int} oldFocusedModuleCellId - The id of the module cell that was the focused one
      */
     onNavigateFrom(gridName, oldFocusedModuleCellId) {
-        if (!this.isModule() || gridName != this.getGridName() || this.getNodeId() != oldFocusedModuleCellId) {
+        if (!this.isModule() || gridName !== this.getGridName() || this.getNodeId() !== oldFocusedModuleCellId) {
             return;
         }
 
@@ -280,13 +278,19 @@ let Cell = {
     /**
      * Render the cell as a standalone component: a empty div that will hold
      * the real module component (not directly rendered),
-     * via {@link module:Grid.Components.Mixins.NodesHolder NodesHolderMixin}
+     * via {@link module:Grid.Components.Mixins NodesHolderMixin}
      *
      * The `tabindex` attribute of the dom node is set to `0` to make the cell
      * focusable.
      */
     renderAsModule() {
-        return <div className={this.getModuleCellClasses()} style={this.getModuleStyle()} tabIndex="0" onFocus={this.onFocusModuleCell} />;
+        return (
+            <div
+              className={this.getModuleCellClasses()}
+              style={this.getModuleStyle()}
+              tabIndex="0"
+              onFocus={this.onFocusModuleCell}
+            />);
     },
 
     /**

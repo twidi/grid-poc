@@ -129,7 +129,7 @@ let Placeholder = {
      * @param  {event} event - The event that triggered this method
      */
     onDocumentDetectDrop(event) {
-        if (Store.isDragging(this.getGridName()) && event.target == this.refs.placeholder) {
+        if (Store.isDragging(this.getGridName()) && event.target === this.refs.placeholder) {
             this.deactivateDropDetection();
             document.dispatchEvent(new Event('fakedragend'));
             Actions.drop(this.getGridName(), this.state.node);
@@ -149,13 +149,14 @@ let Placeholder = {
     /**
      * Return the classes to use when rendering the current placeholder
      *
-     * @return {string} - A string containing classes
+     * @return {String} - A string containing classes
      *
      * One or more of these classes:
      *
      * - `grid-cell`: in all cases
      * - `grid-cell-placeholder`: in all cases
-     * - `grid-cell-placeholder-surround`: if the node as the `surround` attribute (placeholder that will use half it's grid content for the drag/drop module)
+     * - `grid-cell-placeholder-surround`: if the node as the `surround` attribute (placeholder that will
+     *                                     use half it's grid content for the drag/drop module)
      * - `grid-cell-placeholder-prehovering`: if in "prehovering" mode, and it's the hovered placeholder
      *
      */
@@ -165,7 +166,11 @@ let Placeholder = {
             'grid-cell-placeholder': true,
             'grid-cell-placeholder-surround': this.state.node.hasAttribute('surround')
         };
-        classes['grid-cell-placeholder-prehovering'] = (this.getDesignModeStep() == 'prehovering' && Store.isHoveringPlaceholder(this.getGridName(), this.state.node));
+        classes['grid-cell-placeholder-prehovering'] = (
+            this.getDesignModeStep() === 'prehovering'
+            &&
+            Store.isHoveringPlaceholder(this.getGridName(), this.state.node)
+        );
         return classnames(classes);
     },
 
@@ -179,11 +184,14 @@ let Placeholder = {
      * The `drop` event is managed on the document, by the grid itself
      */
     render() {
-        return (<div className={this.getClasses()}
-          ref="placeholder"
-          onDragEnter={this.onDragEnter}
-          onDragOver={this.onDragOver}
-          onDragLeave={this.onDragLeave} />);
+        return (
+            <div className={this.getClasses()}
+              ref="placeholder"
+              onDragEnter={this.onDragEnter}
+              onDragOver={this.onDragOver}
+              onDragLeave={this.onDragLeave}
+            />
+        );
     }
 
 

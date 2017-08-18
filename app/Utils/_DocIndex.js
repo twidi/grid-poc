@@ -1,4 +1,4 @@
 /**
- * Some gobal utilities
+ * Some global utilities
  * @module Utils
  */
