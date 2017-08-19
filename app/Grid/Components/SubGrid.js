@@ -1,4 +1,5 @@
 import React from 'react';
+import createReactClass from 'create-react-class';
 
 import { GridMixin } from './Mixins/Grid';
 import { NodeMixin } from './Mixins/Node';
@@ -26,6 +27,6 @@ let SubGrid = {
     }
 };
 
-SubGrid = React.createClass(SubGrid);
+SubGrid = createReactClass(SubGrid);
 
 export { SubGrid };

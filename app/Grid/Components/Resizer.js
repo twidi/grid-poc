@@ -1,4 +1,5 @@
 import React from 'react';
+import createReactClass from 'create-react-class';
 import classnames from 'classnames';
 
 import { Actions } from '../Actions';
@@ -215,6 +216,6 @@ let Resizer = {
 
 };
 
-Resizer = React.createClass(Resizer);
+Resizer = createReactClass(Resizer);
 
 export { Resizer };

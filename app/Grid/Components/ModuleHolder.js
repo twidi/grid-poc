@@ -1,4 +1,5 @@
 import React from 'react';
+import createReactClass from 'create-react-class';
 
 import { Actions } from '../Actions';
 import { Store } from '../Store';
@@ -179,6 +180,6 @@ let ModuleHolder = {
 
 };
 
-ModuleHolder = React.createClass(ModuleHolder);
+ModuleHolder = createReactClass(ModuleHolder);
 
 export { ModuleHolder };

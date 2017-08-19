@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import jasmineReact from 'jasmine-react-helpers-hotfix-0.14';
+import jasmineReact from 'jasmine-react-helpers';
 import React from 'react';
 import ReactDOM from 'react-dom';
 

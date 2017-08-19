@@ -1,5 +1,6 @@
 
 import React from 'react';
+import createReactClass from 'create-react-class';
 
 import { Actions } from './Grid/Actions';
 import { Manipulator } from './Grid/Manipulator';
@@ -7,7 +8,7 @@ import { Store } from './Grid/Store';
 
 import { MainGrid } from './Grid/Components/MainGrid';
 
-export const App = React.createClass({
+export const App = createReactClass({
     getInitialState() {
         return {
             gridName: null

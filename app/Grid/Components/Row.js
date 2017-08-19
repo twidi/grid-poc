@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
+import createReactClass from 'create-react-class';
 import classnames from 'classnames';
 
 import { Store } from '../Store';
@@ -104,6 +105,6 @@ let Row = {
 
 };
 
-Row = React.createClass(Row);
+Row = createReactClass(Row);
 
 export { Row };

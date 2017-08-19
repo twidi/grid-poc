@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom';
-import TestUtils from 'react-addons-test-utils';
+import TestUtils from 'react-dom/test-utils';
 
 import { Actions } from '../../../app/Grid/Actions';
 import { Manipulator } from '../../../app/Grid/Manipulator';
@@ -133,13 +133,7 @@ export const componentUtils = {
     },
 
     unmountComponent(component) {
-        // used in unmountAllComponents, it's a copy of the same function in
-        // jasmine-react, but we cannot use it as it seems that we have in this
-        // case many React instances that doesn't share mounted components
-        if (component.isMounted()) {
-            return ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(component).parentNode);
-        }
-        return false;
+        return ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(component).parentNode);
     },
 
     unmountAllComponents() {

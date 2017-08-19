@@ -1,4 +1,5 @@
 import React from 'react';
+import createReactClass from 'create-react-class';
 import classnames from 'classnames';
 
 import { Actions } from '../Actions';
@@ -197,6 +198,6 @@ let Placeholder = {
 
 };
 
-Placeholder = React.createClass(Placeholder);
+Placeholder = createReactClass(Placeholder);
 
 export { Placeholder };

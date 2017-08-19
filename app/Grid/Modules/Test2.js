@@ -1,9 +1,11 @@
 import React from 'react';
+import createReactClass from 'create-react-class';
+
 
 import { ModuleMixin } from './Mixins/Module';
 
 
-export const Test2 = React.createClass({
+export const Test2 = createReactClass({
     mixins: [
         ModuleMixin
     ],

@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import createReactClass from 'create-react-class';
 import classnames from 'classnames';
 
 import { DocumentEventsMixin } from '../../Utils/ReactMixins/DocumentEvents';
@@ -316,6 +317,6 @@ let Cell = {
 
 };
 
-Cell = React.createClass(Cell);
+Cell = createReactClass(Cell);
 
 export { Cell };

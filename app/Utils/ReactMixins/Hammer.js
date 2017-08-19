@@ -2,6 +2,8 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 import Hammer from 'hammerjs';
 
@@ -29,8 +31,8 @@ let HammerComponent = {
     displayName: 'Hammer',
 
     propTypes: {
-        component: React.PropTypes.any,
-        className: React.PropTypes.string
+        component: PropTypes.any,
+        className: PropTypes.string
     },
 
     getDefaultProps() {
@@ -74,6 +76,6 @@ let HammerComponent = {
 };
 
 
-HammerComponent = React.createClass(HammerComponent);
+HammerComponent = createReactClass(HammerComponent);
 
 export { HammerComponent };

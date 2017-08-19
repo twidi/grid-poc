@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import TestUtils from 'react-addons-test-utils';
-import jasmineReact from 'jasmine-react-helpers-hotfix-0.14';
+import TestUtils from 'react-dom/test-utils';
+import jasmineReact from 'jasmine-react-helpers';
 import Mousetrap from 'br-mousetrap';
 import Hammer from 'hammerjs';
 

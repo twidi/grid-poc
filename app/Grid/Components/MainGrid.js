@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import _ from 'lodash';
@@ -66,7 +68,7 @@ let MainGrid = {
      *
      */
     propTypes: {
-        screenMode: React.PropTypes.bool
+        screenMode: PropTypes.bool
     },
 
     /**
@@ -825,7 +827,7 @@ let MainGrid = {
 
 };
 
-MainGrid = React.createClass(MainGrid);
+MainGrid = createReactClass(MainGrid);
 
 
 export { MainGrid, screenModes };
