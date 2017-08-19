@@ -701,7 +701,7 @@ const Private = {
             return;
         }
 
-        if (!_.contains(this.designModeValidSteps[currentStep], step)) {
+        if (!_.includes(this.designModeValidSteps[currentStep], step)) {
             throw new this.Exceptions.InvalidDesignModeStep(
                 `The given design mode step <${step}> is not valid step to go `
                 + `after the current one which is <${currentStep}>`

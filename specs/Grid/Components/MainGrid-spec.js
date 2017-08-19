@@ -205,7 +205,7 @@ describe('Grid.Components.MainGrid', () => {
             component.forceUpdate.calls.reset();
             Store.__private.emit(event, 'Test grid');
             setTimeout(() => {
-                if (_.contains(notUpdatingEvents, event)) {
+                if (_.includes(notUpdatingEvents, event)) {
                     expect(component.forceUpdate).not.toHaveBeenCalled();
                 } else {
                     expect(component.forceUpdate).toHaveBeenCalled();

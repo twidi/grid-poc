@@ -8,26 +8,30 @@ const config = _.merge({
     entry: path.join(__dirname, '../app/main'),
     cache: false,
     devtool: 'sourcemap',
-    plugins: [
+    plugins: baseConfig.webpackPlugins.concat([
         new webpack.optimize.DedupePlugin(),
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': '"production"'
         }),
-        new webpack.optimize.UglifyJsPlugin({ compress: { warnings: false } }),
-        new webpack.optimize.OccurenceOrderPlugin(),
+        new webpack.optimize.UglifyJsPlugin(),
+        new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.optimize.AggressiveMergingPlugin(),
         new webpack.NoErrorsPlugin()
-    ]
-}, baseConfig);
+    ])
+}, baseConfig.webpackConfig);
 
-config.module.loaders.push({
-    test: /\.(js|jsx)$/,
-    loader: 'babel',
+config.module.rules.push({
+    test: /\.js$/,
     exclude: /(node_modules|bower_components)/,
-    query: {
-        presets: ['react', 'es2015']
-    },
-    include: path.join(__dirname, '/../app')
+    include: path.join(__dirname, '/../app'),
+    use: [
+        {
+            loader: 'babel-loader',
+            options: {
+                presets: ['react', 'es2015']
+            }
+        }
+    ]
 });
 
 module.exports = config;

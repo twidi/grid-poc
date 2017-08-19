@@ -265,7 +265,7 @@ html, body, #app, .grid-component {
     }
     .grid-component-one-screen-mode .grid-container-scroll-overflow-right {
         right: -200vw;
-        box-shadow: -100vw 0 25px 25px rgba(0, 150, 136, 0.6);
+        box-shadow: -100vw 0px 25px 25px rgba(0, 150, 136, 0.6);
     }
     .grid-component-one-screen-mode .grid-container-scroll-overflow-left.going-off,
     .grid-component-one-screen-mode .grid-container-scroll-overflow-right.going-off {

@@ -1,23 +1,31 @@
 const path = require('path');
 
 module.exports = {
-    devtool: 'eval',
+    devtool: 'source-map',
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.(png|jpg|gif|woff|woff2|css|sass|scss|less|styl)$/,
-                loader: 'null-loader'
+                use: [
+                    {
+                        loader: 'null-loader'
+                    }
+                ]
             },
             {
-                test: /\.jsx?$/,
-                loader: 'babel',
+                test: /\.js$/,
                 exclude: /(node_modules|bower_components)/,
-                query: {
-                    presets: ['react', 'es2015']
-                },
                 include: [
                     path.join(__dirname, '/../app'),
                     path.join(__dirname, '/../specs')
+                ],
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: ['react', 'es2015']
+                        }
+                    }
                 ]
             }
         ]

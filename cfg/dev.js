@@ -11,20 +11,23 @@ const config = _.merge({
         './app/main'
     ],
     cache: true,
-    debug: true,
     devtool: 'source-map',
-    plugins: [
+    plugins: baseConfig.webpackPlugins.concat([
         new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoErrorsPlugin()
-    ]
-}, baseConfig);
+        new webpack.NoEmitOnErrorsPlugin()
+    ])
+}, baseConfig.webpackConfig);
 
 // Add needed loaders
-config.module.loaders.push({
-    test: /\.jsx?$/,
-    loader: 'react-hot!babel?presets[]=react,presets[]=es2015,plugins[]=transform-react-display-name',
+config.module.rules.push({
+    test: /\.js$/,
     exclude: /(node_modules|bower_components)/,
-    include: path.join(__dirname, '/../app')
+    include: path.join(__dirname, '/../app'),
+    use: [
+        {
+            loader: 'babel-loader'
+        }
+    ]
 });
 
 module.exports = config;
