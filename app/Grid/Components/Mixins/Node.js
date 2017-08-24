@@ -57,7 +57,7 @@ const NodeMixin = {
     /**
      * Get the main grid
      *
-     * @return {Element|Node} - The main grid the current node belongs to
+     * @return {Element|Node|XML} - The main grid the current node belongs to
      */
     getGrid() {
         return Store.getMainGrid(this.state.node);
@@ -66,7 +66,7 @@ const NodeMixin = {
     /**
      * Get the main grid name
      *
-     * @return {Element|Node} - The name of the main grid the current node belongs to
+     * @return {Element|Node|XML} - The name of the main grid the current node belongs to
      */
     getGridName() {
         return Store.getMainGridName(this.state.node);

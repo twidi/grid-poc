@@ -47,7 +47,7 @@ let Row = {
      * @return {module:Grid.Components.Cell[]} - An array of {@link module:Grid.Components.Cell Cell} components
      */
     renderCells() {
-        return _.map(this.getCells(), cell => {
+        return _.map(this.getCells(), (cell) => {
             const type = cell.tagName;
             if (type === 'cell') {
                 return <Cell node={cell} key={Store.getNodeId(cell)} />;
@@ -96,7 +96,7 @@ let Row = {
     /**
      * Render the component
      *
-     * @returns {Element|Node} - A div with classes defined by `getRowClasses`, containing
+     * @returns {Element|Node|XML} - A div with classes defined by `getRowClasses`, containing
      * cells, including resizers, returned by `renderCells`
      */
     render() {

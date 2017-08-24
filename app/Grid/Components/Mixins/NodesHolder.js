@@ -50,7 +50,7 @@ const NodesHolderMixin = {
      * @return {boolean} - `true` if the component can handle external nodes, or `false` if not
      */
 
-     // The method to override must not include the prefix `_`
+    // The method to override must not include the prefix `_`
     _canHoldExternalNodes() {},
 
 
@@ -69,7 +69,7 @@ const NodesHolderMixin = {
      * @return {Element|Node|null} - The dom node to insert, or nothing
      */
 
-     // The method to override must not include the prefix `_`
+    // The method to override must not include the prefix `_`
     _getExternalNode() {},
 
     /**
@@ -95,15 +95,15 @@ const NodesHolderMixin = {
      *
      * If the parentNode if not given, `ReactDOM.findDOMNode(this)` will be used;
      *
-     * @param  {Element|Node} domNode - The dom node to add
+     * @param  {Element|Node|XML} domNode - The dom node to add
      * @param  {String} className - The class name to force the dom node to add to have
-     * @param  {Element|Node} [parentNode=] - The dom node holding the one to add
+     * @param  {Element|Node|XML} [parentNode=] - The dom node holding the one to add
      *
      * @private
      */
     _attachExternalNode(domNode, className, parentNode) {
         if (!domNode.classList.contains(className)) {
-            domNode.add(className);
+            domNode.classList.add(className);
         }
         (parentNode || ReactDOM.findDOMNode(this)).appendChild(domNode);
     },
@@ -131,8 +131,8 @@ const NodesHolderMixin = {
      *
      * If the domNode if not given, `ReactDOM.findDOMNode(this)` will be used;
      *
-     * @param  {Element|Node} domNode - The dom node to remove
-     * @param  {Element|Node} [parentNode=] - The dom node holding the one to remove
+     * @param  {Element|Node|XML} domNode - The dom node to remove
+     * @param  {Element|Node|XML} [parentNode=] - The dom node holding the one to remove
      *
      * @private
      */

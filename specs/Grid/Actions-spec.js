@@ -1166,7 +1166,7 @@ describe('Grid.Actions', () => {
                     initialPos: 100,
                     previousRelativeSize: 1,
                     nextRelativeSize: 1,
-                    sizeRatio: 0.01  // 2 (total relative size) / 200 (full size)
+                    sizeRatio: 0.01 // 2 (total relative size) / 200 (full size)
                 });
 
                 // tell jasmine we're done
@@ -1237,7 +1237,7 @@ describe('Grid.Actions', () => {
                         initialPos: 100,
                         previousRelativeSize: 1,
                         nextRelativeSize: 1,
-                        sizeRatio: 0.01  // 2 (total relative size) / 200 (full size)
+                        sizeRatio: 0.01 // 2 (total relative size) / 200 (full size)
                     });
 
                     // check that the nodes are updated in the grid

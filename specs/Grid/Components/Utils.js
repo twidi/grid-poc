@@ -9,7 +9,7 @@ import { Row } from '../../../app/Grid/Components/Row';
 import { SubGrid } from '../../../app/Grid/Components/SubGrid';
 import { ModulesCache } from '../../../app/Grid/Components/ModulesCache';
 
-export const componentUtils = {
+const componentUtils = {
     _componentsCache: [],
 
     makeTestGrid() {
@@ -154,3 +154,5 @@ export const componentUtils = {
     }
 
 };
+
+export { componentUtils };

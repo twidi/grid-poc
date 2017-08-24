@@ -8,7 +8,6 @@ import { Manipulator } from '../../../app/Grid/Manipulator';
 import { Placeholder } from '../../../app/Grid/Components/Placeholder';
 import { Store } from '../../../app/Grid/Store';
 
-
 import { componentUtils } from './Utils';
 import { TestDocumentEventsMixin } from '../../Utils/ReactMixins/DocumentEvents';
 import { Utils } from '../../Utils';
@@ -228,7 +227,7 @@ describe('Grid.Components.Placeholder', () => {
 
         try {
 
-             // cannot use react event simulator for fake events
+            // cannot use react event simulator for fake events
             let fakeDropEvent = new Event('fakedrop', { view: window, bubbles: true, target: domNode });
             domNode.dispatchEvent(fakeDropEvent);
 

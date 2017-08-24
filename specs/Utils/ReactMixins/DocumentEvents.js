@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-export const TestDocumentEventsMixin = (obj, done) => {
+const TestDocumentEventsMixin = (obj, done) => {
 
     // backup existing cache
     const existingCache = _.clone(obj._documentEventCache);
@@ -9,7 +9,7 @@ export const TestDocumentEventsMixin = (obj, done) => {
 
     let callbackCalled = false;
     let calledEvent = null;
-    obj.testCallback = event => {
+    obj.testCallback = (event) => {
         callbackCalled = true;
         calledEvent = event;
     };
@@ -81,3 +81,5 @@ export const TestDocumentEventsMixin = (obj, done) => {
     }, 0.01);
 
 };
+
+export { TestDocumentEventsMixin };

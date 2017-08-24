@@ -152,7 +152,7 @@ describe('Grid.Components.ModuleHolder', () => {
             // leave some time to update the component
             setTimeout(() => {
                 const ModuleHolderProto = jasmineReact.classPrototype(ModuleHolder);
-                expect(ModuleHolderProto._attachExternalNode.calls.count()).toEqual(2);  // includes initial
+                expect(ModuleHolderProto._attachExternalNode.calls.count()).toEqual(2); // includes initial
                 expect(ModuleHolderProto._attachExternalNode.calls.argsFor(0)[1]).toEqual('module-container');
                 expect(ModuleHolderProto._attachExternalNode.calls.argsFor(1)[1]).toEqual('module-container');
                 expect(ModuleHolderProto._detachExternalNode.calls.count()).toEqual(1);
@@ -235,7 +235,7 @@ describe('Grid.Components.ModuleHolder', () => {
         // will store the grid name received via the tested event
         let updatedGridName;
 
-        const callback = gridName => {
+        const callback = (gridName) => {
             callbackCalled = true;
             updatedGridName = gridName;
         };
@@ -274,7 +274,7 @@ describe('Grid.Components.ModuleHolder', () => {
         // will store the grid name received via the tested event
         let updatedGridName;
 
-        const callback = gridName => {
+        const callback = (gridName) => {
             callbackCalled = true;
             updatedGridName = gridName;
         };
@@ -316,7 +316,7 @@ describe('Grid.Components.ModuleHolder', () => {
         // will store the grid name received via the tested event
         let updatedGridName;
 
-        const callback = gridName => {
+        const callback = (gridName) => {
             callbackCalled = true;
             updatedGridName = gridName;
         };

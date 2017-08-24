@@ -39,7 +39,7 @@ const GridMixin = {
     renderRows() {
         const { Row } = require('../Row');
 
-        return _.map(this.getRows(), row => {
+        return _.map(this.getRows(), (row) => {
             const type = row.tagName;
             if (type === 'row') {
                 return <Row node={row} key={Store.getNodeId(row)} />;
@@ -96,15 +96,15 @@ const GridMixin = {
     /**
      * Render the grid component
      *
-     * @returns {Element|Node} - A div with classes defined by `getGridClasses`, containing
+     * @returns {Element|Node|XML} - A div with classes defined by `getGridClasses`, containing
      * rows, including resizers, returned by `renderRows`
      */
     renderGrid(classes, style) {
         return (
-            <div className={this.getGridClasses(classes)}
-              ref="gridNode"
-              style={this.getGridStyle(style)}
-              key={this.getGridName()}
+            <div
+                className={this.getGridClasses(classes)}
+                style={this.getGridStyle(style)}
+                key={this.getGridName()}
             >
                 {this.renderRows()}
             </div>

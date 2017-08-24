@@ -15,6 +15,7 @@ import { SubGrid } from '../../../app/Grid/Components/SubGrid';
 import { Utils } from '../../Utils';
 import { componentUtils } from './Utils';
 
+
 describe('Grid.Components.Cell', () => {
     // main grid and some cells, defined in beforeEach
     let testGrid;
@@ -254,7 +255,7 @@ describe('Grid.Components.Cell', () => {
             setTimeout(() => {
                 expect(_.keys(ModulesCache._cache).length).toEqual(1);
                 const cellProto = jasmineReact.classPrototype(Cell);
-                expect(cellProto._attachExternalNode.calls.count()).toEqual(2);  // includes initial
+                expect(cellProto._attachExternalNode.calls.count()).toEqual(2); // includes initial
                 expect(cellProto._attachExternalNode.calls.argsFor(0)[1]).toEqual('module-container');
                 expect(cellProto._attachExternalNode.calls.argsFor(1)[1]).toEqual('module-container');
                 expect(cellProto._detachExternalNode.calls.count()).toEqual(1);

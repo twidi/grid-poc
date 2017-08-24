@@ -163,7 +163,7 @@ describe('Grid.Components.SubGrid', () => {
         const component = componentUtils.renderIntoDocument(element);
         expect(componentUtils.countRows(component)).toEqual(2);
         expect(componentUtils.countModules(component)).toEqual(2);
-        expect(componentUtils.countSubGrids(component)).toEqual(1);  // self!
+        expect(componentUtils.countSubGrids(component)).toEqual(1); // self!
     });
 
 });

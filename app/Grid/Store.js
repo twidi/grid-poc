@@ -99,7 +99,7 @@ let Store = {
      *
      * @param  {String} gridName - Name of the grid to get
      *
-     * @return {Element|Node} - The wanted XML grid
+     * @return {Element|Node|XML} - The wanted XML grid
      */
     getGrid(gridName) {
         const grid = this.getGridEntry(gridName);
@@ -114,7 +114,7 @@ let Store = {
      * @param  {String} gridName - Name of the grid to get
      * @param  {String} nodeId - Id of the grid node to get
      *
-     * @return {Element|Node} - The wanted XML node
+     * @return {Element|Node|XML} - The wanted XML node
      *
      * @throws {module:Grid.Store.Exceptions.GridDoesNotExist} If the given name does not match an existing grid name
      * @throws {module:Grid.Store.Exceptions.NodeDoesNotExist} If the given id does not match an existing node id
@@ -134,7 +134,7 @@ let Store = {
     /**
      * Return the id attribute of the given node
      *
-     * @param  {Element|Node} node - The XML node for which we want the id
+     * @param  {Element|Node|XML} node - The XML node for which we want the id
      *
      * @return {String} - The id attribute of the node
      */
@@ -145,9 +145,9 @@ let Store = {
     /**
      * Return the main grid for the given node
      *
-     * @param  {Element|Node} node - The XML node for which we want the grid
+     * @param  {Element|Node|XML} node - The XML node for which we want the grid
      *
-     * @return {Element|Node} - The main grid of the node
+     * @return {Element|Node|XML} - The main grid of the node
      */
     getMainGrid(node) {
         return node.ownerDocument.documentElement;
@@ -156,7 +156,7 @@ let Store = {
     /**
      * Return the name of the main grid
      *
-     * @param  {Element|Node} node - The XML node for which we want the grid
+     * @param  {Element|Node|XML} node - The XML node for which we want the grid
      *
      * @return {String} - The name of the main grid
      */
@@ -192,7 +192,7 @@ let Store = {
      * Tell if the given cell is the one currently dragged on the given grid
      *
      * @param  {String} gridName - Name of the grid for which we want to do the check
-     * @param  {Element|Node}  cell - The cell we want to check if it's the currently dragged one
+     * @param  {Element|Node|XML}  cell - The cell we want to check if it's the currently dragged one
      *
      * @return {Boolean} - `true` if the cell is the currently dragged one,or `false`
      */
@@ -218,7 +218,7 @@ let Store = {
      * Tell if the given placeholder is the one currently hovered on the given grid
      *
      * @param  {String} gridName - Name of the grid for which we want to do the check
-     * @param  {Element|Node}  placeholder - The placeholder we want to check if it's the currently hovered one
+     * @param  {Element|Node|XML}  placeholder - The placeholder we want to check if it's the currently hovered one
      *
      * @return {Boolean} - `true` if the placeholder is the currently hovered one,or `false`
      */
@@ -244,7 +244,7 @@ let Store = {
      * Tell if the given resizer is the one currently dragged on the given grid
      *
      * @param  {String} gridName - Name of the grid for which we want to do the check
-     * @param  {Element|Node}  resizer - The resizer we want to check if it's the currently dragged one
+     * @param  {Element|Node|XML}  resizer - The resizer we want to check if it's the currently dragged one
      *
      * @return {Boolean} - `true` if the resizer is the currently dragged one,or `false`
      */
@@ -257,7 +257,7 @@ let Store = {
     /**
      * Tell if the given node contains a subgrid.
      *
-     * @param  {Element|Node} node - The XML node to check for sub grids
+     * @param  {Element|Node|XML} node - The XML node to check for sub grids
      *
      * @return {Boolean} - `true` if the node contains at least one subgrid, or `false`
      */
@@ -292,7 +292,7 @@ let Store = {
     /**
      * Return the value of the "relativeSize" attribute of the given node
      *
-     * @param  {Element|Node} node - The node for which we want the size
+     * @param  {Element|Node|XML} node - The node for which we want the size
      *
      * @return {float} - The float-converted value of the attribute, or 1 if not defined
      */
@@ -329,7 +329,7 @@ let Store = {
      * Tell if the given module cell is the currently focused one
      *
      * @param  {String} gridName - The name of the grid for which we ask
-     * @param  {Element|Node} moduleCell - The module cell to ask if it is focused
+     * @param  {Element|Node|XML} moduleCell - The module cell to ask if it is focused
      *
      * @return {Boolean} - `true` if it's the focused cell, or `false`
      */
@@ -363,11 +363,9 @@ let Store = {
      * @private
      */
     __removeAllGrids() {
-        for (const gridName in this.grids) {
-            if (this.grids.hasOwnProperty(gridName)) {
-                delete this.grids[gridName];
-            }
-        }
+        _.forOwn(this.grids, (grid, gridName) => {
+            delete this.grids[gridName];
+        });
     }
 };
 
@@ -391,7 +389,7 @@ const Private = {
      * All stored grids, by name, each entry having:
      * @type {Object}
      * @property {String} name - The name of the grid
-     * @property {Element|Node} grid - The XML grid
+     * @property {Element|Node|XML} grid - The XML grid
      * @property {String} designModeStep - The current design mode step for this grid
      * @property {String} focusedModuleCellId - The ID of the actual focused cell
      *
@@ -508,7 +506,7 @@ const Private = {
      * It's an action, should be called via
      * {@link module:Grid.Actions.enterDesignMode Grid.Actions.addGrid}
      *
-     * @param {Element|Node} grid - The grid to add to the list
+     * @param {Element|Node|XML} grid - The grid to add to the list
      *
      * @fires module:Grid.Store#"grid.add"
      */
@@ -600,7 +598,7 @@ const Private = {
      * {@link module:Grid.Actions.enterDesignMode Grid.Actions.removeModule}
      *
      * @param  {String} gridName - The grid from which we want to remove the module
-     * @param  {Element|Node} moduleCell - The module cell to remove
+     * @param  {Element|Node|XML} moduleCell - The module cell to remove
      *
      * @fires module:Grid.Store#"grid.designMode.module.remove"
      */
@@ -747,9 +745,9 @@ const Private = {
      * Check that a gridName is valid, and if the node is given, if it belongs to this grid
      *
      * @param  {String} gridName - The grid name to check
-     * @param  {Element|Node} [node=] - The node to check
+     * @param  {Element|Node|XML} [node=] - The node to check
      *
-     * @returns {Element|Node} - The node, eventually updated to be the actual one in the grid
+     * @returns {Element|Node|XML} - The node, eventually updated to be the actual one in the grid
      *
      * @throws {module:Grid.Store.Exceptions.GridDoesNotExist} If the given name does not match an existing grid name
      * @throws {module:Grid.Store.Exceptions.Inconsistency} If the given node does not belongs to the grid
@@ -786,7 +784,7 @@ const Private = {
      * @param  {String} gridName - The name of the grid for which we want to restore its backup
      * @param  {String} backupName - The name of the backup to restore
      *
-     * @return {Element|Node} - The backed-up grid now restored
+     * @return {Element|Node|XML} - The backed-up grid now restored
      */
     restoreGrid(gridName, backupName) {
         const backup = this.grids[gridName].backups[backupName];
@@ -813,7 +811,7 @@ const Private = {
      * Save the reference of a grid node, with a specific name
      *
      * @param  {String} gridName - The name of the grid for which we want to save a node
-     * @param  {Element|Node} node - The XML grid node we want to save a reference for
+     * @param  {Element|Node|XML} node - The XML grid node we want to save a reference for
      * @param  {String} saveName - The name of the saving node, for later reference
      */
     saveNode(gridName, node, saveName) {
@@ -825,9 +823,9 @@ const Private = {
      * It may not be the same node if the grid was backed-up
      *
      * @param  {String} gridName - The grid in which to search for the given node
-     * @param  {Element|Node} node - The node we want to find in the grid, using its ID
+     * @param  {Element|Node|XML} node - The node we want to find in the grid, using its ID
      *
-     * @return {Element|Node} - The wanted node from the actual grid
+     * @return {Element|Node|XML} - The wanted node from the actual grid
      */
     getSameNodeInActualGrid(gridName, node) {
         return this.getGridNodeById(gridName, node.getAttribute('id'));
@@ -842,7 +840,7 @@ const Private = {
      * @param  {boolean} [dontUpdate=false] - Do not try to find the node in the actual grid
      *                                        (if the node was removed for example)
      *
-     * @return {Element|Node} - The wanted node grid (or null if not found)
+     * @return {Element|Node|XML} - The wanted node grid (or null if not found)
      */
     getSavedNode(gridName, saveName, dontUpdate) {
         // get the reference actually saved
@@ -914,7 +912,7 @@ const Private = {
      * {@link module:Grid.Actions.startDragging Grid.Actions.startDragging}
      *
      * @param {String} gridName - The name of the grid for witch we want to stop dragging
-     * @param  {Element|Node} moduleCell - The module cell to drag
+     * @param  {Element|Node|XML} moduleCell - The module cell to drag
      *
      * @fires module:Grid.Store#"grid.designMode.dragging.start"
      */
@@ -1002,7 +1000,7 @@ const Private = {
      * {@link module:Grid.Actions.startHovering Grid.Actions.startHovering}
      *
      * @param {String} gridName - The name of the grid on witch the hovering occurs
-     * @param {Element|Node} [placeholderCell=] - The "placeholder" cell where we the module is hover
+     * @param {Element|Node|XML} [placeholderCell=] - The "placeholder" cell where we the module is hover
      *
      * @fires module:Grid.Store#"grid.designMode.hovering.start"
      */
@@ -1015,7 +1013,7 @@ const Private = {
 
         // we already have an hovering cell...
         if (currentHovering) {
-           // do nothing if existing hovering is the same
+            // do nothing if existing hovering is the same
             if (currentHovering === placeholderCell
                     || currentHovering.getAttribute('id') === placeholderCell.getAttribute('id')) {
                 return;
@@ -1135,7 +1133,7 @@ const Private = {
      * {@link module:Grid.Actions.drop Grid.Actions.drop}
      *
      * @param {String} gridName - The name of the grid for witch we want to start dragging
-     * @param {Element|Node} [placeholderCell=] - The "placeholder" cell where we want to drag the cell
+     * @param {Element|Node|XML} [placeholderCell=] - The "placeholder" cell where we want to drag the cell
      * to be dropped on. If defined, will replace the one saved in the store.
      *
      * @fires module:Grid.Store#"grid.designMode.drop"
@@ -1210,7 +1208,7 @@ const Private = {
      * {@link module:Grid.Actions.drop Grid.Actions.startResizing}
      *
      * @param  {String} gridName - The name of the grid on witch the resizing occurs
-     * @param  {Element|Node} resizer - The resizer of the grid being moved
+     * @param  {Element|Node|XML} resizer - The resizer of the grid being moved
      * @param  {int} fullSize - The full size (height if horizontal resizer, else width)
      *                              of the previous and next nodes
      * @param  {int} initialPos - The position of the mouse acting as a starting point for the resizing
@@ -1480,7 +1478,7 @@ const Private = {
      * {@link module:Grid.Actions.drop Grid.Actions.focusModuleCell}
      *
      * @param  {String} gridName - The name of the grid for which we want to focus a cell
-     * @param  {Element|Node} [moduleCell=] - The module cell we want to set the focus on
+     * @param  {Element|Node|XML} [moduleCell=] - The module cell we want to set the focus on
      * @param  {Boolean} [defaultToFirstModuleCell=false]
      *         - `true` if we want to focus the first available cell if the given one is not available
      *

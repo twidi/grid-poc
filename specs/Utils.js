@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
-export const Utils = {
+
+const Utils = {
     /**
      * Mock _.uniqueId from lodash, but with a reset counter, for the duration
      * of the test. With an helper to help reset in the same test function.
@@ -17,7 +18,7 @@ export const Utils = {
         /**
          * Copy of the uniqueId function from lodash that will be use as a mock
          */
-        const uniqueId = prefix => {
+        const uniqueId = (prefix) => {
             const id = ++idCounter;
             return String(prefix === null ? '' : prefix) + id;
         };
@@ -39,3 +40,5 @@ export const Utils = {
         };
     }
 };
+
+export { Utils };

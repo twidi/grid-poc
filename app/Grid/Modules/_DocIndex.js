@@ -4,4 +4,4 @@
  * @namespace
  * @memberOf module:Grid
  */
-const Modules = {};  // sadly needed here for jsdoc
+const Modules = {}; // sadly needed here for jsdoc

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import Mousetrap from 'br-mousetrap';
 
 import { Exceptions } from '../Exceptions';
@@ -75,7 +76,7 @@ const MousetrapMixin = {
             );
         }
         Mousetrap.unbind(key, this._mousetrapBindings[key]);
-        delete(this._mousetrapBindings[key]);
+        delete this._mousetrapBindings[key];
     },
 
     /**
@@ -83,11 +84,9 @@ const MousetrapMixin = {
      */
     unbindAllShortcuts() {
         if (!this._mousetrapBindings) { return; }
-        for (const key in this._mousetrapBindings) {
-            if (this._mousetrapBindings.hasOwnProperty(key)) {
-                Mousetrap.unbind(key, this._mousetrapBindings[key]);
-            }
-        }
+        _.forOwn(this._mousetrapBindings, (callback, key) => {
+            Mousetrap.unbind(key, callback);
+        });
         this._mousetrapBindings = {};
     },
 

@@ -3,7 +3,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
 
-
 import { Cell } from '../../../app/Grid/Components/Cell';
 import { Manipulator } from '../../../app/Grid/Manipulator';
 import { Resizer } from '../../../app/Grid/Components/Resizer';
@@ -174,7 +173,7 @@ describe('Grid.Components.Row', () => {
     it('should render sub components', () => {
         const element = React.createElement(Row, { node: gridRow });
         const component = componentUtils.renderIntoDocument(element);
-        expect(componentUtils.countRows(component)).toEqual(3);  // including self
+        expect(componentUtils.countRows(component)).toEqual(3); // including self
         expect(componentUtils.countModules(component)).toEqual(3);
         expect(componentUtils.countSubGrids(component)).toEqual(1);
     });

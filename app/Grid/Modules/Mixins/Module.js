@@ -1,8 +1,10 @@
 import React from 'react';
 
 
-export const ModuleMixin = {
+const ModuleMixin = {
     render() {
         return <div className="module"><span>{this.renderModule()}</span></div>;
     }
 };
+
+export { ModuleMixin };

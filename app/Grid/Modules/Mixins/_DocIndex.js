@@ -4,4 +4,4 @@
  * @namespace
  * @memberOf module:Grid.Modules
  */
-const Mixins = {};  // sadly needed here for jsdoc
+const Mixins = {}; // sadly needed here for jsdoc

@@ -61,7 +61,7 @@ describe('Grid.Store', () => {
 
     it('should return a node by its id', () => {
         const grid = createSimpleGrid();
-        _(_.toArray(grid.querySelectorAll('*')).concat([grid])).forEach(node => {
+        _(_.toArray(grid.querySelectorAll('*')).concat([grid])).forEach((node) => {
             expect(Store.getGridNodeById('foo', node.getAttribute('id'))).toBe(node);
         });
 
@@ -69,7 +69,7 @@ describe('Grid.Store', () => {
 
     it('should return the main grid of a node', () => {
         const grid = createSimpleGrid();
-        _(grid.querySelectorAll('*')).forEach(node => {
+        _(grid.querySelectorAll('*')).forEach((node) => {
             expect(Store.getMainGrid(node)).toBe(grid);
         });
         expect(Store.getMainGrid(grid)).toBe(grid);
@@ -78,7 +78,7 @@ describe('Grid.Store', () => {
 
     it('should return the id attribute of a node', () => {
         const grid = createSimpleGrid();
-        _(grid.querySelectorAll('*')).forEach(node => {
+        _(grid.querySelectorAll('*')).forEach((node) => {
             expect(Store.getNodeId(node)).toBe(node.getAttribute('id'));
         });
         expect(Store.getNodeId(grid)).toBe(grid.getAttribute('id'));
@@ -86,7 +86,7 @@ describe('Grid.Store', () => {
 
     it('should return the name of the main grid for a node', () => {
         const grid = createSimpleGrid();
-        _(grid.querySelectorAll('*')).forEach(node => {
+        _(grid.querySelectorAll('*')).forEach((node) => {
             expect(Store.getMainGridName(node)).toBe('foo');
         });
         expect(Store.getMainGridName(grid)).toBe('foo');
@@ -337,7 +337,7 @@ describe('Grid.Store', () => {
 
         it('should ignore setting the current design mode step', () => {
             createSimpleGrid();
-            ['disabled', 'enabled', 'dragging', 'prehovering', 'hovering'].forEach(step => {
+            ['disabled', 'enabled', 'dragging', 'prehovering', 'hovering'].forEach((step) => {
                 Store.__private.setDesignModeStep('foo', step);
                 expect(() => {
                     Store.__private.changeDesignModeStep('foo', step, true);
@@ -374,7 +374,7 @@ describe('Grid.Store', () => {
 
             _.each(tests, (rules, initialStep) => {
                 // check that setting denied new steps raises an error
-                rules.denied.forEach(invalidStep => {
+                rules.denied.forEach((invalidStep) => {
                     Store.__private.setDesignModeStep('foo', initialStep);
 
                     expect(() => {
@@ -389,7 +389,7 @@ describe('Grid.Store', () => {
                 });
 
                 // check that setting allowed steps does not raise any errors
-                rules.allowed.forEach(validStep => {
+                rules.allowed.forEach((validStep) => {
                     Store.__private.setDesignModeStep('foo', initialStep);
 
                     expect(() => {
@@ -413,7 +413,7 @@ describe('Grid.Store', () => {
             };
 
             _.each(tests, (steps, initialStep) => {
-                steps.forEach(step => {
+                steps.forEach((step) => {
                     it(`should add/keep them from ${initialStep} to ${step}`, () => {
                         const grid = createSimpleGrid();
 
@@ -465,7 +465,7 @@ describe('Grid.Store', () => {
             };
 
             _.each(tests, (steps, initialStep) => {
-                steps.forEach(step => {
+                steps.forEach((step) => {
                     it(`should remove/ignore them from ${initialStep} to ${step}`, () => {
                         const grid = createSimpleGrid();
                         Manipulator.addPlaceholders(grid);
@@ -521,7 +521,7 @@ describe('Grid.Store', () => {
             };
 
             _.each(tests, (steps, initialStep) => {
-                steps.forEach(step => {
+                steps.forEach((step) => {
                     it(`should add/keep them from ${initialStep} to ${step}`, () => {
                         const grid = createSimpleGrid();
 
@@ -571,7 +571,7 @@ describe('Grid.Store', () => {
             };
 
             _.each(tests, (steps, initialStep) => {
-                steps.forEach(step => {
+                steps.forEach((step) => {
                     it(`should remove/ignore them from ${initialStep} to ${step}`, () => {
                         const grid = createSimpleGrid();
                         Manipulator.addResizers(grid);
@@ -622,7 +622,7 @@ describe('Grid.Store', () => {
             createSimpleGrid();
 
             // test each entry (default mode is "disabled" so we don't start with it)
-            ['enabled', 'dragging', 'prehovering', 'hovering', 'disabled'].forEach(step => {
+            ['enabled', 'dragging', 'prehovering', 'hovering', 'disabled'].forEach((step) => {
                 Store.__private.setDesignModeStep('foo', step);
                 expect(Store.__private.grids.foo.designModeStep).toEqual(step);
             });

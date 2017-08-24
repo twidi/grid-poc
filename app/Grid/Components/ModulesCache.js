@@ -6,6 +6,7 @@ import stringify from 'json-stable-stringify';
 import { Modules } from '../Modules';
 import { ModuleHolder } from './ModuleHolder';
 
+
 /**
  * This JS module will manage the cache of the module and the module holders,
  * which are react components attached to their own "root", to be attached
@@ -56,7 +57,7 @@ const ModulesCache = {
      *
      * (transforms [{name: xx, value:yy}, {name: ww, value:zz}] in {xx: yy, ww: zz})
      *
-     * @param  {Element|Node} xmlNode - The xml node from which we want to extract attributes
+     * @param  {Element|Node|XML} xmlNode - The xml node from which we want to extract attributes
      * @return {object}  - The object with all attributes
      */
     _extractAttributes(xmlNode) {
@@ -165,14 +166,12 @@ const ModulesCache = {
                 holderElement
             };
 
-        } else {
+        } else if (cell) {
 
             // if the cache exists update grid related data
-            if (cell) {
-                const cache = this._cache[key];
-                cache.gridName = cell.getGridName();
-                cache.gridCell = cell.state.node;
-            }
+            const cache = this._cache[key];
+            cache.gridName = cell.getGridName();
+            cache.gridCell = cell.state.node;
 
         }
 
@@ -195,7 +194,7 @@ const ModulesCache = {
      * @param  {String} [key=] - A key for which we want the module. In this case, the module must already exists,
      *                           after a call to this method or `getHolderComponent` with a cell parameter
      *
-     * @return {Element|Node} - A dom node holding the module react component
+     * @return {Element|Node|XML} - A dom node holding the module react component
      */
     getModuleComponent(cell, key) {
         const cache = this._getFromCache(cell, key);
@@ -227,13 +226,11 @@ const ModulesCache = {
      */
     _getNewHolderProps(cache, props) {
         const newProps = {};
-        for (const key in props) {
-            if (props.hasOwnProperty(key)) {
-                if (typeof cache[key] === 'undefined') { continue; }
-                if (props[key] === cache[key]) { continue; }
-                newProps[key] = cache[key];
-            }
-        }
+        _.forOwn(props, (value, key) => {
+            if (typeof cache[key] === 'undefined') { return; }
+            if (value === cache[key]) { return; }
+            newProps[key] = cache[key];
+        });
         return newProps;
     },
 
@@ -259,7 +256,7 @@ const ModulesCache = {
      * @param  {String} [key=] - A key for which we want the module. In this case, the module must already exists,
      *                           after a call to this method or `getHolderComponent` with a cell parameter
      *
-     * @return {Element|Node} - A dom node holding the
+     * @return {Element|Node|XML} - A dom node holding the
      * {@link module:Grid.Components.ModuleHolder ModuleHolder} react component
      */
     getHolderComponent(cell, key) {

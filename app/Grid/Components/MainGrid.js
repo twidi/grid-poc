@@ -7,12 +7,12 @@ import classnames from 'classnames';
 import _ from 'lodash';
 import Hammer from 'hammerjs';
 import ReactResizeDetector from 'react-resize-detector';
+import HammerComponent from 'react-hammerjs';
 
 import { Actions } from '../Actions';
 import { Store } from '../Store';
 
 import { DocumentEventsMixin } from '../../Utils/ReactMixins/DocumentEvents';
-import { HammerComponent } from '../../Utils/ReactMixins/Hammer';
 import { MousetrapMixin } from '../../Utils/ReactMixins/Mousetrap';
 import { GridMixin } from './Mixins/Grid';
 import { NodeMixin } from './Mixins/Node';
@@ -131,14 +131,12 @@ let MainGrid = {
         if (actualGrid !== this.state.node) {
             // if the grid is different, update the state, it will rerender
             this.setState({ node: actualGrid });
-        } else {
+        } else if (eventName !== 'grid.designMode.resizing.move') {
             // the grid is the same, but we still want a rerender, so we force it
             // except when a resizer is currently move, we choose to not update
             // the grid in this case and let the resizer apply the new flex values
             // to its previous and next sibling, for faster rendering
-            if (eventName !== 'grid.designMode.resizing.move') {
-                this.forceUpdate();
-            }
+            this.forceUpdate();
         }
 
         // do some specific action depending on the received event
@@ -259,7 +257,7 @@ let MainGrid = {
      *
      * It will be handled on the placeholder as a real drop on itself.
      *
-     * @param  {Element|Node} placeholderNode - The placeholder dom node
+     * @param  {Element|Node|XML} placeholderNode - The placeholder dom node
      */
     emitFakeDrop(placeholderNode) {
         const fakeDropEvent = new Event('fakedrop', { view: window, bubbles: true, target: placeholderNode });
@@ -312,7 +310,7 @@ let MainGrid = {
         this.activateGridNavigation();
 
         if (this.props.screenMode !== screenModes.multi) {
-            const [width, height] = this.refs.resizeDetector.containerSize();
+            const [width, height] = this.resizeDetectorRef.containerSize();
             this.onResize(width, height);
 
             if (this.state.oneScreenMode) {
@@ -466,7 +464,7 @@ let MainGrid = {
 
             case Hammer.INPUT_MOVE:
                 if (!this.panData) {
-                    const gridContainer = ReactDOM.findDOMNode(this.refs.gridContainer);
+                    const gridContainer = ReactDOM.findDOMNode(this.gridContainerRef);
                     this.panData = {
                         gridContainer,
                         gridContainerIdSet: false,
@@ -507,7 +505,7 @@ let MainGrid = {
                                 data.node.classList.remove('going-off');
                                 data.node.classList.add('on');
                                 data.node.style.transform = `translateX(${side === 'right' ? '-' : ''}${newDelta}px)`;
-                                data.node.style.opacity = 0.5 + (1 - Math.exp(-0.00001 * Math.pow(delta, 2))) / 2;
+                                data.node.style.opacity = 0.5 + ((1 - Math.exp(-0.00001 * (delta ** 2))) / 2);
                                 data.delta = newDelta;
                             }
                         },
@@ -548,8 +546,8 @@ let MainGrid = {
 
                 const index = Store.getFocusedModuleCellIndex(this.state.gridName);
 
-                const canScrollLeft = (index * this.panData.bodyWidth - deltaX > 0);
-                const canScrollRight = ((index + 1) * this.panData.bodyWidth - deltaX < this.panData.gridWidth - 1);
+                const canScrollLeft = (index * this.panData.bodyWidth) - deltaX > 0;
+                const canScrollRight = ((index + 1) * this.panData.bodyWidth) - deltaX < this.panData.gridWidth - 1;
 
                 if (deltaX >= 0 && !canScrollLeft) {
                     if (!this.panData.overflow.left.blocked) {
@@ -558,7 +556,7 @@ let MainGrid = {
                     this.panData.activateOverflow('left', event.deltaX);
                 } else if (deltaX <= 0 && !canScrollRight) {
                     if (!this.panData.overflow.right.blocked) {
-                        this.updateMainGridStyle(`${(index - this.panData.nbCards + 1) * 100}vw`);
+                        this.updateMainGridStyle(`${((index - this.panData.nbCards) + 1) * 100}vw`);
                     }
                     this.panData.activateOverflow('right', event.deltaX);
                 } else {
@@ -605,7 +603,7 @@ let MainGrid = {
      * Configure Hammer to react on swipe/pan events
      */
     configureHammer() {
-        const hammer = this.refs.gridContainer.hammer;
+        const hammer = this.gridContainerRef.hammer;
         hammer.get('swipe').set({ direction: Hammer.DIRECTION_HORIZONTAL });
         hammer.add(new Hammer.Pan({ direction: Hammer.DIRECTION_HORIZONTAL })).recognizeWith(hammer.get('swipe'));
         hammer.on('pan', this.onPan);
@@ -691,11 +689,9 @@ let MainGrid = {
 
         const gridNode = domNode.querySelector('.grid-main');
         const styles = this.getMainGridStyle(deltaX);
-        for (const name in styles) {
-            if (styles.hasOwnProperty(name)) {
-                gridNode.style[name] = styles[name];
-            }
-        }
+        _.forOwn(styles, (style, name) => {
+            gridNode.style[name] = style;
+        });
     },
 
     /**
@@ -781,18 +777,18 @@ let MainGrid = {
         if (designModeStep === 'enabled') {
             undoButton = (
                 <button
-                  onClick={this.undo}
-                  disabled={!Store.canGoBackInHistory(this.state.gridName)}
-                  key="undoButton"
+                    onClick={this.undo}
+                    disabled={!Store.canGoBackInHistory(this.state.gridName)}
+                    key="undoButton"
                 >
                     Undo
                 </button>
             );
             redoButton = (
                 <button
-                  onClick={this.redo}
-                  disabled={!Store.canGoForwardInHistory(this.state.gridName)}
-                  key="redoButton"
+                    onClick={this.redo}
+                    disabled={!Store.canGoForwardInHistory(this.state.gridName)}
+                    key="redoButton"
                 >
                     Redo
                 </button>
@@ -803,24 +799,31 @@ let MainGrid = {
 
         if (this.state.oneScreenMode) {
             containerChildren = (
-                <HammerComponent component="div" className="grid-container" ref="gridContainer" onSwipe={this.onSwipe}>
-                    {containerChildren}
-                    <div className="grid-container-scroll-overflow-left" />
-                    <div className="grid-container-scroll-overflow-right" />
+                <HammerComponent onSwipe={this.onSwipe} ref={(c) => { this.gridContainerRef = c; }}>
+                    <div className="grid-container">
+                        {containerChildren}
+                        <div className="grid-container-scroll-overflow-left" />
+                        <div className="grid-container-scroll-overflow-right" />
+                    </div>
                 </HammerComponent>
             );
         }
 
         return (<div className={this.getComponentClasses()}>
             <nav className="grid-toolbar">
-                <label>{this.state.gridName}</label>
+                <span>{this.state.gridName}</span>
                 {undoButton}{redoButton}{addButton}{toggleButton}
             </nav>
             {containerChildren}
             {
                 this.props.screenMode !== screenModes.multi
                 &&
-                <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} ref="resizeDetector" />
+                <ReactResizeDetector
+                    handleWidth
+                    handleHeight
+                    onResize={this.onResize}
+                    ref={(c) => { this.resizeDetectorRef = c; }}
+                />
             }
         </div>);
     }

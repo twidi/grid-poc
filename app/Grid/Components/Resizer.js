@@ -75,7 +75,7 @@ let Resizer = {
      */
     onResizingMove(gridName, resizeData) {
         if (!Store.isMovingResizer(gridName, this.state.node)) { return; }
-        const domNode = this.refs.resizer;
+        const domNode = this.resizerRef;
         this.setDomNodeRelativeSize(domNode.previousSibling, resizeData.previousRelativeSize);
         this.setDomNodeRelativeSize(domNode.nextSibling, resizeData.nextRelativeSize);
 
@@ -84,7 +84,7 @@ let Resizer = {
     /**
      * Use the given relativeSize to update the given domNode flex-grow style property
      *
-     * @param {Element|Node} domNode - The dom node tu update
+     * @param {Element|Node|XML} domNode - The dom node tu update
      * @param {float} relativeSize - The new relative size to apply
      */
     setDomNodeRelativeSize(domNode, relativeSize) {
@@ -126,7 +126,7 @@ let Resizer = {
      * Return the "size" of the given dom node. Size is the height of the width
      * depending of the resizer being horizontal or vertical
      *
-     * @param  {Element|Node} domNode - The dom node for which we want the size
+     * @param  {Element|Node|XML} domNode - The dom node for which we want the size
      *
      * @return {int} - Size in pixels (without unit)
      */
@@ -150,7 +150,7 @@ let Resizer = {
         event.stopPropagation();
         event.preventDefault();
 
-        const domNode = this.refs.resizer;
+        const domNode = this.resizerRef;
 
         // compute the total size of the nodes before and after the resizer
         const fullSize = this.getDomNodeSize(domNode.previousSibling) + this.getDomNodeSize(domNode.nextSibling);
@@ -208,10 +208,16 @@ let Resizer = {
     /**
      * Render the component
      *
-     * @returns {Element|Node} - A empty div with classes defined by `getResizerClasses`
+     * @returns {Element|Node|XML} - A empty div with classes defined by `getResizerClasses`
      */
     render() {
-        return <div ref="resizer" className={this.getResizerClasses()} {...this.getRenderAttrs()} />;
+        return (
+            <div
+                ref={(c) => { this.resizerRef = c; }}
+                className={this.getResizerClasses()}
+                {...this.getRenderAttrs()}
+            />
+        );
     }
 
 };

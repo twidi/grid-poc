@@ -2,11 +2,12 @@ import _ from 'lodash';
 
 import { Manipulator } from './../../app/Grid/Manipulator';
 
+
 /**
  * Jasmine custom matchers for the whole Grid test suite
  * @type {Object}
  */
-export const customMatchers = {
+const customMatchers = {
     /**
      * Easily compare two XML grids, given as string or XML nodes.
      * If no match, produce the error with actual and expected on both lines to
@@ -62,3 +63,5 @@ export const customMatchers = {
         };
     }
 };
+
+export { customMatchers };

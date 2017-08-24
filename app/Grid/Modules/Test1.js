@@ -1,11 +1,10 @@
-import React from 'react';
 import createReactClass from 'create-react-class';
 
 
 import { ModuleMixin } from './Mixins/Module';
 
 
-export const Test1 = createReactClass({
+const Test1 = createReactClass({
     mixins: [
         ModuleMixin
     ],
@@ -14,3 +13,5 @@ export const Test1 = createReactClass({
         return `Module.Test1: ${this.props.text}`;
     }
 });
+
+export { Test1 };

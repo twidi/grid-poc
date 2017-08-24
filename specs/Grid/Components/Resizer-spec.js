@@ -234,7 +234,7 @@ describe('Grid.Components.Resizer', () => {
                 'Test grid',
                 testGrid.querySelector('resizer[type=vertical]'), // the first one, as we used the first one in the dom,
                 300, // twice the value returned by `returnValue` on the `getDomNodeSize` spy
-                100  // defined in the event call
+                100 // defined in the event call
             ]);
 
             // tell jasmine we're done

@@ -4,4 +4,4 @@
  * @namespace
  * @memberOf module:Utils
  */
-const ReactMixins = {};  // sadly needed here for jsdoc
+const ReactMixins = {}; // sadly needed here for jsdoc

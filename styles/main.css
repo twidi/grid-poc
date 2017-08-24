@@ -19,7 +19,7 @@ html, body, #app, .grid-component {
     font-size: 20px;
     text-align: right;
 }
-    .grid-toolbar label {
+    .grid-toolbar > span {
         float: left;
     }
     .grid-toolbar button {

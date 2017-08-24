@@ -140,7 +140,7 @@ let Cell = {
     /**
      * Render the cell as a SubGrid component
      *
-     * @return {Element|Node} - The rendered {@link module:Grid.Components.SubGrid SubGrid} component
+     * @return {Element|Node|XML} - The rendered {@link module:Grid.Components.SubGrid SubGrid} component
      */
     renderAsSubGrid() {
         return <SubGrid node={this.state.node} />;
@@ -287,11 +287,12 @@ let Cell = {
     renderAsModule() {
         return (
             <div
-              className={this.getModuleCellClasses()}
-              style={this.getModuleStyle()}
-              tabIndex="0"
-              onFocus={this.onFocusModuleCell}
-            />);
+                className={this.getModuleCellClasses()}
+                style={this.getModuleStyle()}
+                tabIndex="0"
+                onFocus={this.onFocusModuleCell}
+            />
+        );
     },
 
     /**

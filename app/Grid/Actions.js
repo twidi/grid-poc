@@ -16,7 +16,7 @@ let Actions = {
      *
      * @type {function}
      *
-     * @param {Element|Node} grid - The grid to add to the list
+     * @param {Element|Node|XML} grid - The grid to add to the list
      *
      * @fires module:Grid.Store#"grid.add"
      */
@@ -41,7 +41,7 @@ let Actions = {
      * @type {function}
      *
      * @param  {String} gridName - The grid from which we want to remove the module
-     * @param  {Element|Node} moduleCell - The module cell to remove
+     * @param  {Element|Node|XML} moduleCell - The module cell to remove
      *
      * @fires module:Grid.Store#"grid.designMode.module.remove"
      */
@@ -76,7 +76,7 @@ let Actions = {
      * @type {function}
      *
      * @param {String} gridName - The name of the grid for witch we want to start dragging
-     * @param {Element|Node} moduleCell - The "module" cell containing the module we want to drag
+     * @param {Element|Node|XML} moduleCell - The "module" cell containing the module we want to drag
      *
      * @fires module:Grid.Store#"grid.designMode.dragging.start"
      */
@@ -99,7 +99,7 @@ let Actions = {
      * @type {function}
      *
      * @param {String} gridName - The name of the grid on witch the hovering occurs
-     * @param {Element|Node} [placeholderCell=] - The "placeholder" cell where we the module is hover
+     * @param {Element|Node|XML} [placeholderCell=] - The "placeholder" cell where we the module is hover
      *
      * @fires module:Grid.Store#"grid.designMode.hovering.start"
      */
@@ -122,7 +122,7 @@ let Actions = {
      * @type {function}
      *
      * @param {String} gridName - The name of the grid for witch we want to start dragging
-     * @param {Element|Node} [placeholderCell=] - The "placeholder" cell where we want to drag the cell
+     * @param {Element|Node|XML} [placeholderCell=] - The "placeholder" cell where we want to drag the cell
      * to be dropped on. If defined, will replace the one saved in the store.
      *
      * @fires module:Grid.Store#"grid.designMode.drop"
@@ -135,7 +135,7 @@ let Actions = {
      * @type {function}
      *
      * @param  {String} gridName - The name of the grid on witch the resizing occurs
-     * @param  {Element|Node} resizer - The resizer of the grid being moved
+     * @param  {Element|Node|XML} resizer - The resizer of the grid being moved
      * @param  {int} fullSize - The full size (height if horizontal resizer, or width)
      *                              of the previous and next nodes
      * @param  {int} initialPos - The position of the mouse acting as a starting point for the resizing
@@ -197,7 +197,7 @@ let Actions = {
      * @type {function}
      *
      * @param  {String} gridName - The name of the grid for which we want to focus a cell
-     * @param  {Element|Node} [moduleCell=] - The module cell we want to set the focus on
+     * @param  {Element|Node|XML} [moduleCell=] - The module cell we want to set the focus on
      * @param  {Boolean} [defaultToFirstModuleCell=false]
      *         - `true` if we want to focus the first available cell if the given one is not available
      *

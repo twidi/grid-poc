@@ -8,6 +8,7 @@ import { ModulesCache } from './ModulesCache';
 
 import { NodesHolderMixin } from './Mixins/NodesHolder';
 
+
 /**
  * This react component will hold a module in design mode, managing dragging, to
  * let the modules components strictly independent of the grid system.
@@ -63,7 +64,7 @@ let ModuleHolder = {
      * It's take from the {@link module:Grid.Components.ModulesCache ModulesCache} module
      *
      * @param  {String} className - The class name of the dom node to return
-     * @return {Element|Node} - The module dom node
+     * @return {Element|Node|XML} - The module dom node
      */
     getExternalNode(className) {
         if (className === ModulesCache.moduleContainerClassName) {
@@ -85,7 +86,7 @@ let ModuleHolder = {
         // hack to hide the del button on the dragged view (rendered by the browser
         // before we can render the holder).
         // It's removed on the next update, via componentDidUpdate
-        this.refs['module-holder'].classList.add('module-holder-browser-dragging');
+        this.moduleHolderRef.classList.add('module-holder-browser-dragging');
 
         Actions.startDragging(this.props.gridName, this.props.gridCell);
         event.dataTransfer.setData('application/x-grid-module', this.props.gridName);
@@ -152,7 +153,7 @@ let ModuleHolder = {
      * as we now need to have the delete button displayed
      */
     componentDidUpdate() {
-        this.refs['module-holder'].classList.remove('module-holder-browser-dragging');
+        this.moduleHolderRef.classList.remove('module-holder-browser-dragging');
     },
 
     /**
@@ -168,9 +169,10 @@ let ModuleHolder = {
             delButton = <button onClick={this.removeModule} title="Remove this module">X</button>;
         }
         return (
-            <div className="module-holder"
-              ref="module-holder"
-              {...this.getRenderAttrs()}
+            <div
+                className="module-holder"
+                ref={(c) => { this.moduleHolderRef = c; }}
+                {...this.getRenderAttrs()}
             >
                 <div className="module-cover">
                     {delButton}

@@ -139,7 +139,7 @@ describe('Grid.Components.MainGrid', () => {
         const navDomNode = domNode.children[0];
         expect(navDomNode.tagName).toEqual('NAV');
         expect(navDomNode.classList.contains('grid-toolbar')).toBe(true);
-        const gridDomNode = ReactDOM.findDOMNode(component.refs.gridNode);
+        const gridDomNode = domNode.querySelector('.grid-main');
         expect(gridDomNode.classList.contains('grid')).toBe(true);
         expect(gridDomNode.classList.contains('grid-main')).toBe(true);
         expect(gridDomNode.classList.contains('grid-last-level-with-placeholders')).toBe(false);
@@ -153,7 +153,7 @@ describe('Grid.Components.MainGrid', () => {
         const component = componentUtils.renderIntoDocument(element);
         const rows = component.renderRows();
         expect(rows.length).toEqual(2);
-        _(rows).forEach(row => {
+        _(rows).forEach((row) => {
             expect(TestUtils.isElementOfType(row, Row)).toBe(true);
         });
     });
@@ -250,8 +250,8 @@ describe('Grid.Components.MainGrid', () => {
             expect(componentUtils.countSubGrids(component)).toEqual(1);
             // but with some resizers now
             expect(componentUtils.countResizers(component)).toEqual(5);
-            expect(componentUtils.countVerticalResizers(component)).toEqual(3);  // 1 group of 2 cells, 1 of 3 => 1 + 2
-            expect(componentUtils.countHorizontalResizers(component)).toEqual(2);  // 2 grids of 2 rows => 1+1
+            expect(componentUtils.countVerticalResizers(component)).toEqual(3); // 1 group of 2 cells, 1 of 3 => 1 + 2
+            expect(componentUtils.countHorizontalResizers(component)).toEqual(2); // 2 grids of 2 rows => 1+1
 
             // go back
             component.forceUpdate.calls.reset();
@@ -331,37 +331,38 @@ describe('Grid.Components.MainGrid', () => {
     });
 
     it('should start/stop listening to dragover/drop event on the document when entering/exiting design mode',
-    (done) => {
-        const element = React.createElement(MainGrid, { node: testGrid });
-        const component = componentUtils.renderIntoDocument(element);
+        (done) => {
+            const element = React.createElement(MainGrid, { node: testGrid });
+            const component = componentUtils.renderIntoDocument(element);
 
-        spyOn(component, 'addDocumentListener').and.returnValue(true);
-        spyOn(component, 'removeDocumentListener').and.returnValue(true);
+            spyOn(component, 'addDocumentListener').and.returnValue(true);
+            spyOn(component, 'removeDocumentListener').and.returnValue(true);
 
-        Store.__private.enterDesignMode('Test grid');
+            Store.__private.enterDesignMode('Test grid');
 
-        // leave time for the designMode.enter to be caught
-        setTimeout(() => {
-            expect(component.addDocumentListener.calls.count()).toBe(2);
-            expect(component.addDocumentListener.calls.first().args).toEqual(['dragover', 'onDocumentDragOver']);
-            expect(component.addDocumentListener.calls.mostRecent().args).toEqual(['drop', 'onDocumentDrop']);
-
-            Store.__private.exitDesignMode('Test grid');
-
-            // leave time for the designMode.exit to be caught
+            // leave time for the designMode.enter to be caught
             setTimeout(() => {
-                expect(component.removeDocumentListener.calls.count()).toBe(2);
-                expect(component.removeDocumentListener.calls.first().args).toEqual(['drop', 'onDocumentDrop']);
-                expect(
-                    component.removeDocumentListener.calls.mostRecent().args
-                ).toEqual(['dragover', 'onDocumentDragOver']);
+                expect(component.addDocumentListener.calls.count()).toBe(2);
+                expect(component.addDocumentListener.calls.first().args).toEqual(['dragover', 'onDocumentDragOver']);
+                expect(component.addDocumentListener.calls.mostRecent().args).toEqual(['drop', 'onDocumentDrop']);
 
-                // tell jasmine we're done
-                done();
+                Store.__private.exitDesignMode('Test grid');
 
+                // leave time for the designMode.exit to be caught
+                setTimeout(() => {
+                    expect(component.removeDocumentListener.calls.count()).toBe(2);
+                    expect(component.removeDocumentListener.calls.first().args).toEqual(['drop', 'onDocumentDrop']);
+                    expect(
+                        component.removeDocumentListener.calls.mostRecent().args
+                    ).toEqual(['dragover', 'onDocumentDragOver']);
+
+                    // tell jasmine we're done
+                    done();
+
+                }, 0.01);
             }, 0.01);
-        }, 0.01);
-    });
+        }
+    );
 
     it('should activate/deactivate drop detection when dragging start/stop (or drop occurs)', (done) => {
         const element = React.createElement(MainGrid, { node: testGrid });
@@ -545,79 +546,80 @@ describe('Grid.Components.MainGrid', () => {
     });
 
     it('should apply a fake drop event if a drop detected by a mouse move/down event occurs on a placeholder',
-    (done) => {
-        const element = React.createElement(MainGrid, { node: testGrid });
-        const component = componentUtils.renderIntoDocument(element);
+        (done) => {
+            const element = React.createElement(MainGrid, { node: testGrid });
+            const component = componentUtils.renderIntoDocument(element);
 
-        // we need the node to be attached to the document for bubbling
-        const domNode = ReactDOM.findDOMNode(component);
-        domNode.parentNode.style.display = 'none';
-        document.body.appendChild(domNode.parentNode);
+            // we need the node to be attached to the document for bubbling
+            const domNode = ReactDOM.findDOMNode(component);
+            domNode.parentNode.style.display = 'none';
+            document.body.appendChild(domNode.parentNode);
 
-        // will set this to True when the callback is called
-        let callbackCalled = false;
-        // will store the grid name received via the tested event
-        let updatedGridName;
+            // will set this to True when the callback is called
+            let callbackCalled = false;
+            // will store the grid name received via the tested event
+            let updatedGridName;
 
-        const callback = gridName => {
-            callbackCalled = true;
-            updatedGridName = gridName;
-        };
+            const callback = (gridName) => {
+                callbackCalled = true;
+                updatedGridName = gridName;
+            };
 
-        // simulate grid in dragging mode
-        Store.__private.enterDesignMode('Test grid');
-        Store.__private.startDragging('Test grid', Store.getGrid('Test grid').querySelector('cell[type=module]'));
+            // simulate grid in dragging mode
+            Store.__private.enterDesignMode('Test grid');
+            Store.__private.startDragging('Test grid', Store.getGrid('Test grid').querySelector('cell[type=module]'));
 
-        // leave time to let the start drag events to propagate
-        setTimeout(() => {
-
-            // get the placeholder to use to simulate events on it
-            // we get the node from the grid and one from the dom, using the fact that `querySelector`
-            // will always return the first in the tree, and both tree are similar
-            const placeholder = Store.getGrid('Test grid').querySelector('cell[type=placeholder]');
-            const placeholderDomNode = domNode.querySelector('.grid-cell-placeholder');
-
-            const draggedCell = Store.__private.grids['Test grid'].nodes.dragging;
-
-            // listen that the design mode drop event is fired at the end
-            Store.on('grid.designMode.drop', callback);
-
-            // we'll catch some function calls to be sure that everything happens correctly
-
-            // we ask the store to drop
-            spyOn(Actions, 'drop').and.callThrough();
-            // as we didn't hover before, the drop method will force the hover
-            spyOn(Store.__private, 'startHovering').and.callThrough();
-            // and the dragged cell will me moved on the placeholder (effective drop)
-            spyOn(Manipulator, 'moveContentToPlaceholder').and.callThrough();
-
-            // simulate a fake drop on the placeholder
-            component.emitFakeDrop(placeholderDomNode);
-
+            // leave time to let the start drag events to propagate
             setTimeout(() => {
-                Store.off('grid.designMode.drop', callback);
 
-                expect(callbackCalled).toBe(true);
-                expect(updatedGridName).toBe('Test grid');
+                // get the placeholder to use to simulate events on it
+                // we get the node from the grid and one from the dom, using the fact that `querySelector`
+                // will always return the first in the tree, and both tree are similar
+                const placeholder = Store.getGrid('Test grid').querySelector('cell[type=placeholder]');
+                const placeholderDomNode = domNode.querySelector('.grid-cell-placeholder');
 
-                expect(Actions.drop.calls.count()).toEqual(1);
-                expect(Actions.drop.calls.first().args).toEqual(['Test grid', placeholder]);
+                const draggedCell = Store.__private.grids['Test grid'].nodes.dragging;
 
-                expect(Store.__private.startHovering.calls.count()).toEqual(1);
-                expect(Store.__private.startHovering.calls.first().args).toEqual(['Test grid', placeholder]);
+                // listen that the design mode drop event is fired at the end
+                Store.on('grid.designMode.drop', callback);
 
-                expect(Manipulator.moveContentToPlaceholder.calls.count()).toEqual(1);
-                expect(Manipulator.moveContentToPlaceholder.calls.first().args).toEqual([draggedCell, placeholder]);
+                // we'll catch some function calls to be sure that everything happens correctly
 
-                // we're done, remove the component from the dom
-                document.body.removeChild(domNode.parentNode);
+                // we ask the store to drop
+                spyOn(Actions, 'drop').and.callThrough();
+                // as we didn't hover before, the drop method will force the hover
+                spyOn(Store.__private, 'startHovering').and.callThrough();
+                // and the dragged cell will me moved on the placeholder (effective drop)
+                spyOn(Manipulator, 'moveContentToPlaceholder').and.callThrough();
 
-                // tell jasmine we're done
-                done();
+                // simulate a fake drop on the placeholder
+                component.emitFakeDrop(placeholderDomNode);
 
+                setTimeout(() => {
+                    Store.off('grid.designMode.drop', callback);
+
+                    expect(callbackCalled).toBe(true);
+                    expect(updatedGridName).toBe('Test grid');
+
+                    expect(Actions.drop.calls.count()).toEqual(1);
+                    expect(Actions.drop.calls.first().args).toEqual(['Test grid', placeholder]);
+
+                    expect(Store.__private.startHovering.calls.count()).toEqual(1);
+                    expect(Store.__private.startHovering.calls.first().args).toEqual(['Test grid', placeholder]);
+
+                    expect(Manipulator.moveContentToPlaceholder.calls.count()).toEqual(1);
+                    expect(Manipulator.moveContentToPlaceholder.calls.first().args).toEqual([draggedCell, placeholder]);
+
+                    // we're done, remove the component from the dom
+                    document.body.removeChild(domNode.parentNode);
+
+                    // tell jasmine we're done
+                    done();
+
+                }, 0.01);
             }, 0.01);
-        }, 0.01);
-    });
+        }
+    );
 
     it('should apply drop on (real or fake) drop detected not on a placeholder', (done) => {
         const element = React.createElement(MainGrid, { node: testGrid });
@@ -635,12 +637,12 @@ describe('Grid.Components.MainGrid', () => {
         let updatedDropGridName;
         let updatedStopGridName;
 
-        const callbackDrop = gridName => {
+        const callbackDrop = (gridName) => {
             callbackDropCalled = true;
             updatedDropGridName = gridName;
         };
 
-        const callbackStop = gridName => {
+        const callbackStop = (gridName) => {
             callbackStopCalled = true;
             updatedStopGridName = gridName;
         };
@@ -764,50 +766,43 @@ describe('Grid.Components.MainGrid', () => {
             down: 'Bottom'
         };
 
-        let method;
-
-        for (const dir1 in directions) {
-            if (directions.hasOwnProperty(dir1)) {
-                method = `focus${directions[dir1]}ModuleCell`;
-                jasmineReact.spyOnClass(MainGrid, method).and.callThrough();
-                spyOn(Actions, method).and.returnValue();
-            }
-        }
+        _.forOwn(directions, (direction) => {
+            const method = `focus${direction}ModuleCell`;
+            jasmineReact.spyOnClass(MainGrid, method).and.callThrough();
+            spyOn(Actions, method).and.returnValue();
+        });
 
         const mainGridProto = jasmineReact.classPrototype(MainGrid);
 
         const element = React.createElement(MainGrid, { node: testGrid });
         componentUtils.renderIntoDocument(element);
 
-        for (const dir1 in directions) {
-            if (directions.hasOwnProperty(dir1)) {
-                // reset spies counters
-                for (const dir2 in directions) {
-                    if (directions.hasOwnProperty(dir2)) {
-                        method = `focus${directions[dir2]}ModuleCell`;
-                        mainGridProto[method].calls.reset();
-                        Actions[method].calls.reset();
-                    }
-                }
+        _.forOwn(directions, (direction1, key1) => {
 
-                // trigger the action
-                Mousetrap.trigger(`ctrl+${dir1}`);
+            // reset spies counters
+            _.forOwn(directions, (direction2) => {
+                const method = `focus${direction2}ModuleCell`;
+                mainGridProto[method].calls.reset();
+                Actions[method].calls.reset();
+            });
 
-                // check calls
-                for (const dir2 in directions) {
-                    if (directions.hasOwnProperty(dir2)) {
-                        method = `focus${directions[dir2]}ModuleCell`;
-                        const expected = dir1 === dir2 ? 1 : 0;
-                        expect(
-                            mainGridProto[method].calls.count()
-                        ).toEqual(expected, `ctrl+${dir1}, component.${method}`);
-                        expect(
-                            Actions[method].calls.count()
-                        ).toEqual(expected, `ctrl+${dir1}, action.${method}`);
-                    }
-                }
-            }
-        }
+            // trigger the action
+            Mousetrap.trigger(`ctrl+${key1}`);
+
+            // check calls
+            _.forOwn(directions, (direction2, key2) => {
+                const method = `focus${direction2}ModuleCell`;
+                const expected = key1 === key2 ? 1 : 0;
+                expect(
+                    mainGridProto[method].calls.count()
+                ).toEqual(expected, `ctrl+${key1}, component.${method}`);
+                expect(
+                    Actions[method].calls.count()
+                ).toEqual(expected, `ctrl+${key1}, action.${method}`);
+            });
+
+        });
+
     });
 
     it('should stay in one screen mode if screenMode set to `one`', (done) => {
@@ -880,26 +875,26 @@ describe('Grid.Components.MainGrid', () => {
         // both bigger than threshold => multi screens mode
         domNode.style.width = '200px';
         domNode.style.height = '500px';
-        component.refs.resizeDetector.handleScroll();
+        component.resizeDetectorRef.handleScroll();
         setTimeout(() => {
             expect(component.state.oneScreenMode).toBe(false);
 
             // width smaller than threshold and height bigger => one screen mode
             domNode.style.width = '50px';
-            component.refs.resizeDetector.handleScroll();
+            component.resizeDetectorRef.handleScroll();
             setTimeout(() => {
                 expect(component.state.oneScreenMode).toBe(true);
 
                 // both exactly threshold => multi screens mode
                 domNode.style.width = '100px';
                 domNode.style.height = '400px';
-                component.refs.resizeDetector.handleScroll();
+                component.resizeDetectorRef.handleScroll();
                 setTimeout(() => {
                     expect(component.state.oneScreenMode).toBe(false);
 
                     // width exactly threshold and height smaller => one screen mode
                     domNode.style.height = '300px';
-                    component.refs.resizeDetector.handleScroll();
+                    component.resizeDetectorRef.handleScroll();
                     setTimeout(() => {
                         expect(component.state.oneScreenMode).toBe(true);
 
@@ -1077,7 +1072,7 @@ describe('Grid.Components.MainGrid', () => {
         // quick way of doing "cards"
         gridNode.style.position = 'absolute';
         domNode.querySelector('.grid-row').style.whiteSpace = 'nowrap';
-        _(domNode.querySelectorAll('.grid-cell-module')).forEach(cell => {
+        _(domNode.querySelectorAll('.grid-cell-module')).forEach((cell) => {
             cell.style.display = 'inline-block';
             cell.style.width = '100vw';
         });
@@ -1158,7 +1153,7 @@ describe('Grid.Components.MainGrid', () => {
                             Store.__private.focusNextModuleCellByIndex('Test simple grid', 2);
 
                             // panning left on the rightmost cell activates right overflow
-                            overflow = - 150;
+                            overflow = -150;
                             component.onPan({ eventType: Hammer.INPUT_MOVE, deltaX: overflow });
                             expect(overflowRight.classList.contains('on')).toBe(true);
                             expect(overflowRight.classList.contains('going-off')).toBe(false);
@@ -1167,7 +1162,7 @@ describe('Grid.Components.MainGrid', () => {
                             expect(overflowRight.style.transform).toEqual(
                                 `translateX(-${Math.round(Math.sqrt(Math.abs(overflow % bodyWidth)) * 2)}px)`
                             );
-                             // -2000vw => moved two cards because we are one the third one
+                            // -200vw => moved two cards because we are on the third one
                             expect(gridNode.style.transform).toEqual('translateX(-200vw)');
                             expect(gridNode.style.transition).toEqual('none');
 

@@ -2,6 +2,7 @@ import _ from 'lodash';
 import jasmineReact from 'jasmine-react-helpers';
 import React from 'react';
 import ReactDOM from 'react-dom';
+
 import { Manipulator } from '../../../app/Grid/Manipulator';
 import { Store } from '../../../app/Grid/Store';
 
@@ -22,7 +23,7 @@ describe('Grid.Components.ModulesCache', () => {
     const makeCellComponent = (cell, props) => {
         const cellElement = React.createElement(cell, props);
         cellComponent = componentUtils.renderIntoDocument(cellElement);
-        updateCellComponentProps = newProps => {
+        updateCellComponentProps = (newProps) => {
             const cellElement2 = React.createElement(cell, Object.assign({}, props, newProps));
             cellComponent = componentUtils.renderIntoDocument(cellElement2);
         };
