@@ -156,15 +156,48 @@ describe('Grid.Data.Actions', () => {
         }
     });
 
-    it('should add a module', (done) => {
+    it('should create a row when adding the first module', (done) => {
+        // create an empty grid
+        const grid = Manipulator.createBaseGrid('bar');
+        Manipulator.setIds(grid);
+        Actions.addGrid(grid);
+
+        setTimeout(() => {
+            Actions.addModule('bar', 'Modules.Test1', { text: 'test text' });
+
+            setTimeout(() => {
+                const newGrid = Store.getGrid('bar');
+
+                const expected =
+                    '<grid name="bar" space="5px" type="mainGrid" id="grid-1">' +
+                        '<content id="content-2">' +
+                            '<row id="row-3">' +
+                                '<cell type="module" id="cell-4" module-index="0">' +
+                                    '<content component="Modules.Test1" text="test text" id="content-5"/>' +
+                                '</cell>' +
+                            '</row>' +
+                        '</content>' +
+                    '</grid>';
+
+                expect(newGrid).toEqualXML(expected);
+
+                done();
+            }, 0.01);
+        }, 0.01);
+    });
+
+    it('should add a module after first cell or focused cell', (done) => {
         // will set this to True when the callback is called
         let callbackCalled = false;
         // will store the grid name received via the tested event
         let updatedGridName;
+        // will store the new cell id
+        let addedCellId;
 
-        const callback = (gridName) => {
+        const callback = (gridName, newCellId) => {
             callbackCalled = true;
             updatedGridName = gridName;
+            addedCellId = newCellId;
         };
 
         // add a grid to work on
@@ -187,21 +220,20 @@ describe('Grid.Data.Actions', () => {
                 // check if the callback were called
                 expect(callbackCalled).toBe(true);
                 expect(updatedGridName).toEqual('foo');
+                expect(addedCellId).toEqual('cell-8');
 
                 // check that we are still in design mode
                 expect(Store.getDesignModeStep('foo')).toEqual('enabled');
 
-                // check if the grid has a new row with the module
+                // check if the grid has a new cell with a module just after the first cell
                 const expected =
                     '<grid name="foo" space="5px" type="mainGrid" id="grid-1">' +
                         '<content id="content-2">' +
-                            '<row id="row-8">' +
-                                '<cell type="module" id="cell-9" module-index="0">' +
-                                    '<content component="Modules.Test1" text="test text" id="content-10"/>' +
-                                '</cell>' +
-                            '</row>' +
                             '<row id="row-3">' +
-                                '<cell type="module" id="cell-4" module-index="1"><content id="content-5"/></cell>' +
+                                '<cell type="module" id="cell-4" module-index="0"><content id="content-5"/></cell>' +
+                                '<cell type="module" id="cell-8" module-index="1">' +
+                                    '<content component="Modules.Test1" text="test text" id="content-9"/>' +
+                                '</cell>' +
                                 '<cell type="module" id="cell-6" module-index="2"><content id="content-7"/></cell>' +
                             '</row>' +
                         '</content>' +
@@ -213,9 +245,44 @@ describe('Grid.Data.Actions', () => {
                 expect(gridEntry.history.length).toBe(2);
                 expect(gridEntry.history[1]).toEqualXML(newGrid);
 
-                // tell jasmine we're done
-                done();
+                // now focus this new cell and add a new module just after
+                Actions.focusModuleCell('foo', newGrid.querySelector('#cell-8'));
 
+                // give some time to the cell to be focused
+                setTimeout(() => {
+                    Actions.addModule('foo', 'Modules.Test2', { text: 'test text2' });
+
+                    // give some time to the module to be added
+                    setTimeout(() => {
+                        const newNewGrid = Store.getGrid('foo');
+
+                        // check if the grid has a new cell with a module just after the focused cell
+                        const newExpected =
+                            '<grid name="foo" space="5px" type="mainGrid" id="grid-1">' +
+                                '<content id="content-2">' +
+                                    '<row id="row-3">' +
+                                        '<cell type="module" id="cell-4" module-index="0">' +
+                                            '<content id="content-5"/>' +
+                                        '</cell>' +
+                                        '<cell type="module" id="cell-8" module-index="1">' +
+                                            '<content component="Modules.Test1" text="test text" id="content-9"/>' +
+                                        '</cell>' +
+                                        '<cell type="module" id="cell-10" module-index="2">' +
+                                            '<content component="Modules.Test2" text="test text2" id="content-11"/>' +
+                                        '</cell>' +
+                                        '<cell type="module" id="cell-6" module-index="3">' +
+                                            '<content id="content-7"/>' +
+                                        '</cell>' +
+                                    '</row>' +
+                                '</content>' +
+                            '</grid>';
+                        expect(newNewGrid).toEqualXML(newExpected);
+
+                        // tell jasmine we're done
+                        done();
+
+                    }, 0.01);
+                }, 0.01);
             }, 0.01);
 
         }

@@ -546,7 +546,7 @@ const Private = {
     },
 
     /**
-     * Add a module to the given grid
+     * Add a module to the given grid after the current focused cell (default to after the first one)
      *
      * It's an action, should be called via
      * {@link module:Grid.Data.Actions.addModule Actions.addModule}
@@ -571,10 +571,26 @@ const Private = {
         const attributes = _.extend({ component: module }, params);
         const contentNode = Manipulator.createContentNode(grid, attributes);
 
-        // add a row with this module only
-        const firstRow = grid.querySelector('row');
-        const newRow = Manipulator.addRow(grid, firstRow);
-        Manipulator.addCell(newRow, null, 'module', contentNode);
+        const currentCell = this.getFocusedModuleCell(gridName) || grid.querySelector('cell');
+        let row;
+        let beforeCell = null;
+        if (currentCell) {
+            // get the row of the cell
+            row = currentCell.parentNode;
+            beforeCell = currentCell.nextSibling;
+            if (!beforeCell
+                ||
+                beforeCell.nodeName !== 'cell'
+                ||
+                beforeCell.getAttribute('type') !== 'module'
+            ) { beforeCell = null; }
+        } else {
+            // add a row with this module only
+            const firstRow = grid.querySelector('row');
+            row = Manipulator.addRow(grid, firstRow);
+        }
+
+        const newCell = Manipulator.addCell(row, beforeCell, 'module', contentNode);
 
         // put the grid in a good state
         if (hasResizers) {
@@ -592,7 +608,7 @@ const Private = {
          *
          * @property {String} name - The name of the updated Grid
          */
-        this.emit('grid.designMode.module.add', gridName);
+        this.emit('grid.designMode.module.add', gridName, newCell.getAttribute('id'));
     },
 
     /**

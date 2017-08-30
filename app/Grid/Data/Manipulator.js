@@ -184,7 +184,7 @@ const Manipulator = {
      *     If "beforeRow" is not in the content of the "node"
      */
     addRow(node, beforeRow, type) {
-        /* If this is not a grid node, create a first row this the actual
+        /* If this is not a grid node, create a first row with the actual
          * content in a cell */
         if (!this.reGridType.test(node.getAttribute('type'))) {
             // not compatible when we ask for inserting the new row before a new one
