@@ -115,7 +115,6 @@ describe('Grid.Components.MainGrid', () => {
         expect(rows[2].tagName).toEqual('row');
     });
 
-
     it('should render a grid', () => {
         const element = React.createElement(MainGrid, { node: testGrid, screenMode: MainGrid.screenModes.multi });
         const component = componentUtils.renderIntoDocument(element);
@@ -1229,4 +1228,25 @@ describe('Grid.Components.MainGrid', () => {
         expect(menuLabel).toBe(null);
     });
 
+    it('should focus newly added cell', (done) => {
+        const element = React.createElement(MainGrid, { node: testGrid });
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
+
+        const gridEntry = Store.__private.getGridEntry('Test grid');
+
+        expect(testGrid.querySelectorAll('cell[type=module]').length).toBe(6);
+        expect(gridEntry.focusedModuleCellId).toBe(null);
+
+        component.addRandomModule();
+
+        // leave some time for the add + focus to be done
+        setTimeout(() => {
+            expect(testGrid.querySelectorAll('cell[type=module]').length).toBe(7);
+            expect(gridEntry.focusedModuleCellId).toBe('cell-42');
+
+            done();
+
+        }, 0.01);
+
+    });
 });

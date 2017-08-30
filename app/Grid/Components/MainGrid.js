@@ -335,7 +335,7 @@ class BaseMainGrid extends Grid {
     }
 
     /**
-     * Add a random module to the grid, with random content text.
+     * Add a random module to the grid, with random content text, then focus it.
      */
     addRandomModule() {
         const availableModules = [
@@ -346,6 +346,27 @@ class BaseMainGrid extends Grid {
         const modulesCount = Store.getGrid(this.state.gridName).querySelectorAll('cell[type=module]').length;
         const randomText = `test.${modulesCount}`;
         Actions.addModule(this.state.gridName, randomModule, { text: randomText });
+
+        // if many add, each one will add a listener to `grid.designMode.module.add`, so
+        // we save a uuid (in this, bound to the function) to compare it with the on
+        // in the closure to only focus if it's the correct callback
+        const uuid = _.uniqueId();
+        let focusNewModuleCell = function focusNewModuleCell(gridName, newCellId) {
+            if (this.uuid === uuid) {
+                const grid = Store.getGrid(gridName);
+                const newCell = grid.querySelector(`#${newCellId}`);
+                if (newCell) {
+                    Actions.focusModuleCell(gridName, newCell, false);
+                }
+            }
+            Store.off('grid.designMode.module.add', focusNewModuleCell);
+        };
+        focusNewModuleCell = focusNewModuleCell.bind({
+            component: this,
+            uuid
+        });
+
+        Store.on('grid.designMode.module.add', focusNewModuleCell);
     }
 
     /**
