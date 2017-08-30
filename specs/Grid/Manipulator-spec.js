@@ -1,10 +1,10 @@
-import { Manipulator } from '../../app/Grid/Manipulator';
+import { Manipulator } from '../../app/Grid/Data';
 
-import { customMatchers } from './custom-matchers';
+import { customMatchers } from '../customMatchers';
 import { Utils } from '../Utils';
 
 
-describe('Grid.Manipulator', () => {
+describe('Grid.Data.Manipulator', () => {
     let uniqueIdMock;
 
     beforeEach(() => {

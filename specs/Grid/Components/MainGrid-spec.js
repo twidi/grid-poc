@@ -6,15 +6,12 @@ import jasmineReact from 'jasmine-react-helpers';
 import Mousetrap from 'br-mousetrap';
 import Hammer from 'hammerjs';
 
-import { Actions } from '../../../app/Grid/Actions';
-import { Manipulator } from '../../../app/Grid/Manipulator';
-import { Store } from '../../../app/Grid/Store';
+import { Actions, Manipulator, Store } from '../../../app/Grid/Data';
 
-import { MainGrid, screenModes } from '../../../app/Grid/Components/MainGrid';
-import { Row } from '../../../app/Grid/Components/Row';
+import { Row, MainGrid } from '../../../app/Grid/Components';
+import { BaseMainGrid } from '../../../app/Grid/Components/MainGrid';
 
 import { componentUtils } from './Utils';
-import { TestDocumentEventsMixin } from '../../Utils/ReactMixins/DocumentEvents';
 import { Utils } from '../../Utils';
 
 
@@ -43,47 +40,40 @@ describe('Grid.Components.MainGrid', () => {
         componentUtils.unmountAllComponents();
     });
 
-    it('should manage document events', (done) => {
-        Store.getGrid('Test grid');
-        const element = React.createElement(MainGrid, { node: testGrid });
-        const component = componentUtils.renderIntoDocument(element);
-        TestDocumentEventsMixin(component, done);
-    });
-
     it('should have a grid', () => {
         Store.getGrid('Test grid');
         const element = React.createElement(MainGrid, { node: testGrid });
-        const component = componentUtils.renderIntoDocument(element);
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
         expect(component.props.node).toBe(testGrid);
     });
 
     it('should have a grid name', () => {
         const element = React.createElement(MainGrid, { node: testGrid });
-        const component = componentUtils.renderIntoDocument(element);
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
         expect(component.state.gridName).toEqual('Test grid');
     });
 
     it('should access its own grid as the main grid', () => {
         const element = React.createElement(MainGrid, { node: testGrid });
-        const component = componentUtils.renderIntoDocument(element);
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
         expect(component.getGrid()).toBe(testGrid);
     });
 
     it('should get its id', () => {
         const element = React.createElement(MainGrid, { node: testGrid });
-        const component = componentUtils.renderIntoDocument(element);
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
         expect(component.getNodeId()).toBe(testGrid.getAttribute('id'));
     });
 
     it('should get the main grid name', () => {
         const element = React.createElement(MainGrid, { node: testGrid });
-        const component = componentUtils.renderIntoDocument(element);
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
         expect(component.getGridName()).toEqual('Test grid');
     });
 
     it('should get the design mode step', () => {
         const element = React.createElement(MainGrid, { node: testGrid });
-        const component = componentUtils.renderIntoDocument(element);
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
         expect(component.getDesignModeStep()).toEqual('disabled');
 
         Store.__private.setDesignModeStep('Test grid', 'enabled');
@@ -92,7 +82,7 @@ describe('Grid.Components.MainGrid', () => {
 
     it('should know if it\'s in design mode', () => {
         const element = React.createElement(MainGrid, { node: testGrid });
-        const component = componentUtils.renderIntoDocument(element);
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
         expect(component.isInDesignMode()).toBe(false);
 
         Store.__private.setDesignModeStep('Test grid', 'enabled');
@@ -101,7 +91,7 @@ describe('Grid.Components.MainGrid', () => {
 
     it('should be able to get its grid rows if no resizers', () => {
         const element = React.createElement(MainGrid, { node: testGrid });
-        const component = componentUtils.renderIntoDocument(element);
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
         const rows = component.getRows();
         const expectedRows = _.toArray(testGrid.querySelectorAll(':scope > content > row, :scope > content > resizer'));
         expect(rows).toEqual(expectedRows);
@@ -115,7 +105,7 @@ describe('Grid.Components.MainGrid', () => {
         Manipulator.setIds(testGrid);
 
         const element = React.createElement(MainGrid, { node: testGrid });
-        const component = componentUtils.renderIntoDocument(element);
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
         const rows = component.getRows();
         const expectedRows = _.toArray(testGrid.querySelectorAll(':scope > content > row, :scope > content > resizer'));
         expect(rows).toEqual(expectedRows);
@@ -127,7 +117,7 @@ describe('Grid.Components.MainGrid', () => {
 
 
     it('should render a grid', () => {
-        const element = React.createElement(MainGrid, { node: testGrid, screenMode: screenModes.multi });
+        const element = React.createElement(MainGrid, { node: testGrid, screenMode: MainGrid.screenModes.multi });
         const component = componentUtils.renderIntoDocument(element);
         const domNode = ReactDOM.findDOMNode(component);
         expect(domNode.tagName).toEqual('DIV');
@@ -150,7 +140,7 @@ describe('Grid.Components.MainGrid', () => {
 
     it('should be able to render its rows', () => {
         const element = React.createElement(MainGrid, { node: testGrid });
-        const component = componentUtils.renderIntoDocument(element);
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
         const rows = component.renderRows();
         expect(rows.length).toEqual(2);
         _(rows).forEach((row) => {
@@ -160,7 +150,7 @@ describe('Grid.Components.MainGrid', () => {
 
     it('should render sub components', () => {
         const element = React.createElement(MainGrid, { node: testGrid });
-        const component = componentUtils.renderIntoDocument(element);
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
         expect(componentUtils.countRows(component)).toEqual(4);
         expect(componentUtils.countModules(component)).toEqual(6);
         expect(componentUtils.countSubGrids(component)).toEqual(1);
@@ -168,7 +158,7 @@ describe('Grid.Components.MainGrid', () => {
 
     it('should update the grid when a design mode event is triggered', (done) => {
         const element = React.createElement(MainGrid, { node: testGrid });
-        const component = componentUtils.renderIntoDocument(element);
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
 
         spyOn(component, 'forceUpdate').and.returnValue();
 
@@ -220,7 +210,7 @@ describe('Grid.Components.MainGrid', () => {
 
     it('should change when toggling design mode, managing resizers', (done) => {
         const element = React.createElement(MainGrid, { node: testGrid });
-        const component = componentUtils.renderIntoDocument(element);
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
         let domNode = ReactDOM.findDOMNode(component);
         expect(domNode.classList.contains('grid-component-design-mode')).toBe(false);
         expect(domNode.classList.contains('grid-component-with-placeholders')).toBe(false);
@@ -283,7 +273,7 @@ describe('Grid.Components.MainGrid', () => {
 
     it('should have placeholders when going in dragging mode', (done) => {
         const element = React.createElement(MainGrid, { node: testGrid });
-        const component = componentUtils.renderIntoDocument(element);
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
         expect(ReactDOM.findDOMNode(component).classList.contains('grid-component-design-mode')).toBe(false);
 
         component.toggleDesignMode();
@@ -333,28 +323,32 @@ describe('Grid.Components.MainGrid', () => {
     it('should start/stop listening to dragover/drop event on the document when entering/exiting design mode',
         (done) => {
             const element = React.createElement(MainGrid, { node: testGrid });
-            const component = componentUtils.renderIntoDocument(element);
+            const component = componentUtils.renderIntoDocument(element).wrappedRef;
 
-            spyOn(component, 'addDocumentListener').and.returnValue(true);
+            spyOn(component, 'addDocumentEventListener').and.returnValue(true);
             spyOn(component, 'removeDocumentListener').and.returnValue(true);
 
             Store.__private.enterDesignMode('Test grid');
 
             // leave time for the designMode.enter to be caught
             setTimeout(() => {
-                expect(component.addDocumentListener.calls.count()).toBe(2);
-                expect(component.addDocumentListener.calls.first().args).toEqual(['dragover', 'onDocumentDragOver']);
-                expect(component.addDocumentListener.calls.mostRecent().args).toEqual(['drop', 'onDocumentDrop']);
+                expect(component.addDocumentEventListener.calls.count()).toBe(2);
+                expect(
+                    component.addDocumentEventListener.calls.first().args
+                ).toEqual(['dragover', component.onDocumentDragOver]);
+                expect(component.addDocumentEventListener.calls.mostRecent().args
+                ).toEqual(['drop', component.onDocumentDrop]);
 
                 Store.__private.exitDesignMode('Test grid');
 
                 // leave time for the designMode.exit to be caught
                 setTimeout(() => {
                     expect(component.removeDocumentListener.calls.count()).toBe(2);
-                    expect(component.removeDocumentListener.calls.first().args).toEqual(['drop', 'onDocumentDrop']);
+                    expect(component.removeDocumentListener.calls.first().args
+                    ).toEqual(['drop', component.onDocumentDrop]);
                     expect(
                         component.removeDocumentListener.calls.mostRecent().args
-                    ).toEqual(['dragover', 'onDocumentDragOver']);
+                    ).toEqual(['dragover', component.onDocumentDragOver]);
 
                     // tell jasmine we're done
                     done();
@@ -366,7 +360,7 @@ describe('Grid.Components.MainGrid', () => {
 
     it('should activate/deactivate drop detection when dragging start/stop (or drop occurs)', (done) => {
         const element = React.createElement(MainGrid, { node: testGrid });
-        const component = componentUtils.renderIntoDocument(element);
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
 
         spyOn(component, 'activateDropDetection').and.callThrough();
         spyOn(component, 'deactivateDropDetection').and.callThrough();
@@ -414,7 +408,7 @@ describe('Grid.Components.MainGrid', () => {
 
     it('should dispatch fakedragend event when dragging stops or drop occurs', (done) => {
         const element = React.createElement(MainGrid, { node: testGrid });
-        const component = componentUtils.renderIntoDocument(element);
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
 
         let fakeDragEndCalled = 0;
         const fakeDragEndCallback = () => {
@@ -474,14 +468,14 @@ describe('Grid.Components.MainGrid', () => {
     it('should react to a mouse move/down event as drop if dragging mode is enabled', (done) => {
 
         // when fake drop is on a placeholder
-        jasmineReact.spyOnClass(MainGrid, 'emitFakeDrop').and.returnValue(true);
+        jasmineReact.spyOnClass(BaseMainGrid, 'emitFakeDrop').and.returnValue(true);
         // when fake drop is NOT on a placeholder
-        jasmineReact.spyOnClass(MainGrid, 'applyDrop').and.returnValue(true);
+        jasmineReact.spyOnClass(BaseMainGrid, 'applyDrop').and.returnValue(true);
 
-        const mainGridProto = jasmineReact.classPrototype(MainGrid);
+        const mainGridProto = jasmineReact.classPrototype(BaseMainGrid);
 
         const element = React.createElement(MainGrid, { node: testGrid });
-        const component = componentUtils.renderIntoDocument(element);
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
 
         // we need the node to be attached to the document for bubbling
         const domNode = ReactDOM.findDOMNode(component);
@@ -548,7 +542,7 @@ describe('Grid.Components.MainGrid', () => {
     it('should apply a fake drop event if a drop detected by a mouse move/down event occurs on a placeholder',
         (done) => {
             const element = React.createElement(MainGrid, { node: testGrid });
-            const component = componentUtils.renderIntoDocument(element);
+            const component = componentUtils.renderIntoDocument(element).wrappedRef;
 
             // we need the node to be attached to the document for bubbling
             const domNode = ReactDOM.findDOMNode(component);
@@ -623,7 +617,7 @@ describe('Grid.Components.MainGrid', () => {
 
     it('should apply drop on (real or fake) drop detected not on a placeholder', (done) => {
         const element = React.createElement(MainGrid, { node: testGrid });
-        const component = componentUtils.renderIntoDocument(element);
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
 
         // we need the node to be attached to the document for bubbling
         const domNode = ReactDOM.findDOMNode(component);
@@ -695,17 +689,17 @@ describe('Grid.Components.MainGrid', () => {
     });
 
     it('should activate grid navigation when mounting', () => {
-        jasmineReact.spyOnClass(MainGrid, 'activateGridNavigation').and.callThrough();
+        jasmineReact.spyOnClass(BaseMainGrid, 'activateGridNavigation').and.callThrough();
 
         const element = React.createElement(MainGrid, { node: testGrid });
         componentUtils.renderIntoDocument(element);
 
-        expect(jasmineReact.classPrototype(MainGrid).activateGridNavigation.calls.count()).toEqual(1);
+        expect(jasmineReact.classPrototype(BaseMainGrid).activateGridNavigation.calls.count()).toEqual(1);
     });
 
     it('should deactivate/reactivate grid navigation when entering/exiting design mode', (done) => {
         const element = React.createElement(MainGrid, { node: testGrid });
-        const component = componentUtils.renderIntoDocument(element);
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
 
         spyOn(component, 'activateGridNavigation').and.callThrough();
         spyOn(component, 'deactivateGridNavigation').and.callThrough();
@@ -730,30 +724,47 @@ describe('Grid.Components.MainGrid', () => {
     });
 
     it('should activate/deactivate 4 shortcuts for keyboard navigation', () => {
+        jasmineReact.spyOnClass(MainGrid, 'bindShortcut').and.callThrough();
+        jasmineReact.spyOnClass(MainGrid, 'unbindShortcut').and.callThrough();
+        const mainGridProto = jasmineReact.classPrototype(MainGrid);
+
         const element = React.createElement(MainGrid, { node: testGrid });
         const component = componentUtils.renderIntoDocument(element);
+        const componentGrid = component.wrappedRef;
 
-        spyOn(component, 'bindShortcut').and.callThrough();
-        spyOn(component, 'unbindShortcut').and.callThrough();
+        expect(mainGridProto.bindShortcut.calls.count()).toBe(4);
+        expect(mainGridProto.unbindShortcut.calls.count()).toBe(0);
+        expect(mainGridProto.bindShortcut.calls.allArgs()).toEqual([
+            ['ctrl+right', componentGrid.focusRightModuleCell],
+            ['ctrl+left', componentGrid.focusLeftModuleCell],
+            ['ctrl+down', componentGrid.focusBottomModuleCell],
+            ['ctrl+up', componentGrid.focusTopModuleCell]
+        ]);
 
-        component.deactivateGridNavigation();
-        expect(component.bindShortcut.calls.count()).toBe(0);
-        expect(component.unbindShortcut.calls.count()).toBe(4);
-        expect(component.unbindShortcut.calls.allArgs()).toEqual([
+        mainGridProto.bindShortcut.calls.reset();
+        mainGridProto.unbindShortcut.calls.reset();
+
+        componentGrid.deactivateGridNavigation();
+        expect(mainGridProto.bindShortcut.calls.count()).toBe(0);
+        expect(mainGridProto.unbindShortcut.calls.count()).toBe(4);
+        expect(mainGridProto.unbindShortcut.calls.allArgs()).toEqual([
             ['ctrl+right'],
             ['ctrl+left'],
             ['ctrl+down'],
             ['ctrl+up']
         ]);
 
-        component.activateGridNavigation();
-        expect(component.unbindShortcut.calls.count()).toBe(4); // the same
-        expect(component.bindShortcut.calls.count()).toBe(4);
-        expect(component.bindShortcut.calls.allArgs()).toEqual([
-            ['ctrl+right', component.focusRightModuleCell],
-            ['ctrl+left', component.focusLeftModuleCell],
-            ['ctrl+down', component.focusBottomModuleCell],
-            ['ctrl+up', component.focusTopModuleCell]
+        mainGridProto.bindShortcut.calls.reset();
+        mainGridProto.unbindShortcut.calls.reset();
+
+        componentGrid.activateGridNavigation();
+        expect(mainGridProto.unbindShortcut.calls.count()).toBe(0);
+        expect(mainGridProto.bindShortcut.calls.count()).toBe(4);
+        expect(mainGridProto.bindShortcut.calls.allArgs()).toEqual([
+            ['ctrl+right', componentGrid.focusRightModuleCell],
+            ['ctrl+left', componentGrid.focusLeftModuleCell],
+            ['ctrl+down', componentGrid.focusBottomModuleCell],
+            ['ctrl+up', componentGrid.focusTopModuleCell]
         ]);
     });
 
@@ -768,11 +779,11 @@ describe('Grid.Components.MainGrid', () => {
 
         _.forOwn(directions, (direction) => {
             const method = `focus${direction}ModuleCell`;
-            jasmineReact.spyOnClass(MainGrid, method).and.callThrough();
+            jasmineReact.spyOnClass(BaseMainGrid, method).and.callThrough();
             spyOn(Actions, method).and.returnValue();
         });
 
-        const mainGridProto = jasmineReact.classPrototype(MainGrid);
+        const mainGridProto = jasmineReact.classPrototype(BaseMainGrid);
 
         const element = React.createElement(MainGrid, { node: testGrid });
         componentUtils.renderIntoDocument(element);
@@ -806,8 +817,8 @@ describe('Grid.Components.MainGrid', () => {
     });
 
     it('should stay in one screen mode if screenMode set to `one`', (done) => {
-        const element = React.createElement(MainGrid, { node: testGrid, screenMode: screenModes.one });
-        const component = componentUtils.renderIntoDocument(element);
+        const element = React.createElement(MainGrid, { node: testGrid, screenMode: MainGrid.screenModes.one });
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
         setTimeout(() => {
             expect(component.state.oneScreenMode).toBe(true);
             component.onResize(10000, 10000);
@@ -823,8 +834,8 @@ describe('Grid.Components.MainGrid', () => {
     });
 
     it('should avoid one screen mode if screenMode set to `multi`', (done) => {
-        const element = React.createElement(MainGrid, { node: testGrid, screenMode: screenModes.multi });
-        const component = componentUtils.renderIntoDocument(element);
+        const element = React.createElement(MainGrid, { node: testGrid, screenMode: MainGrid.screenModes.multi });
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
         setTimeout(() => {
             expect(component.state.oneScreenMode).toBe(false);
             component.onResize(10000, 10000);
@@ -840,8 +851,8 @@ describe('Grid.Components.MainGrid', () => {
     });
 
     it('should change from and to one screen mode if screenMode set to `default` depending of the size', (done) => {
-        const element = React.createElement(MainGrid, { node: testGrid, screenMode: screenModes.default });
-        const component = componentUtils.renderIntoDocument(element);
+        const element = React.createElement(MainGrid, { node: testGrid, screenMode: MainGrid.screenModes.default });
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
         setTimeout(() => {
             component.onResize(10000, 10000);
             setTimeout(() => {
@@ -858,11 +869,11 @@ describe('Grid.Components.MainGrid', () => {
     it('should call `onResize` if screenMode set to `default` and the grid size changes', (done) => {
         const element = React.createElement(MainGrid, {
             node: testGrid,
-            screenMode: screenModes.default,
+            screenMode: MainGrid.screenModes.default,
             oneScreenWidthThreshold: 100,
             oneScreenHeightThreshold: 400
         });
-        const component = componentUtils.renderIntoDocument(element);
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
 
         const domNode = ReactDOM.findDOMNode(component);
         // we need the node to be attached to the document to have a size
@@ -913,8 +924,8 @@ describe('Grid.Components.MainGrid', () => {
     });
 
     it('should not have transform style in multi screens mode', (done) => {
-        const element = React.createElement(MainGrid, { node: testGrid, screenMode: screenModes.multi });
-        const component = componentUtils.renderIntoDocument(element);
+        const element = React.createElement(MainGrid, { node: testGrid, screenMode: MainGrid.screenModes.multi });
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
         const gridNode = ReactDOM.findDOMNode(component).querySelector('.grid-main');
 
         expect(component.getMainGridStyle()).toEqual({
@@ -951,8 +962,8 @@ describe('Grid.Components.MainGrid', () => {
     });
 
     it('should have transform style in one screen mode', (done) => {
-        const element = React.createElement(MainGrid, { node: testGrid, screenMode: screenModes.one });
-        const component = componentUtils.renderIntoDocument(element);
+        const element = React.createElement(MainGrid, { node: testGrid, screenMode: MainGrid.screenModes.one });
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
         const gridNode = ReactDOM.findDOMNode(component).querySelector('.grid-main');
 
         // cell index is 0
@@ -1030,8 +1041,8 @@ describe('Grid.Components.MainGrid', () => {
     });
 
     it('should focus left or right when swipe in one screen mode', (done) => {
-        const element = React.createElement(MainGrid, { node: testGrid, screenMode: screenModes.one });
-        const component = componentUtils.renderIntoDocument(element);
+        const element = React.createElement(MainGrid, { node: testGrid, screenMode: MainGrid.screenModes.one });
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
 
         // swiping right on the leftmost cell does nothing
         component.onSwipe({ direction: Hammer.DIRECTION_RIGHT });
@@ -1062,8 +1073,8 @@ describe('Grid.Components.MainGrid', () => {
 
     it('should move left of right when  panning in one screen mode', (done) => {
         const testGrid2 = componentUtils.makeSimpleTestGrid();
-        const element = React.createElement(MainGrid, { node: testGrid2, screenMode: screenModes.one });
-        const component = componentUtils.renderIntoDocument(element);
+        const element = React.createElement(MainGrid, { node: testGrid2, screenMode: MainGrid.screenModes.one });
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
         const domNode = ReactDOM.findDOMNode(component);
         const gridNode = domNode.querySelector('.grid-main');
         domNode.parentNode.style.visibility = 'hidden'; // hide it to avoid visual flashes

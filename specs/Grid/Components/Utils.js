@@ -1,13 +1,10 @@
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
 
-import { Actions } from '../../../app/Grid/Actions';
-import { Manipulator } from '../../../app/Grid/Manipulator';
-import { Store } from '../../../app/Grid/Store';
+import { Actions, Manipulator, Store } from '../../../app/Grid/Data';
 
-import { Row } from '../../../app/Grid/Components/Row';
-import { SubGrid } from '../../../app/Grid/Components/SubGrid';
-import { ModulesCache } from '../../../app/Grid/Components/ModulesCache';
+import { Row, SubGrid } from '../../../app/Grid/Components';
+import { ModulesCache } from '../../../app/Grid/Components/Utils';
 
 const componentUtils = {
     _componentsCache: [],
@@ -17,22 +14,22 @@ const componentUtils = {
             '<grid name="Test grid" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row>' +
-                        '<cell type="module"><content component="Module.Test1" text="test 1-1"/></cell>' +
+                        '<cell type="module"><content component="Modules.Test1" text="test 1-1"/></cell>' +
                         '<cell type="grid">' +
                             '<content>' +
                                 '<row>' +
-                                    '<cell type="module"><content component="Module.Test2" text="test 2-1"/></cell>' +
+                                    '<cell type="module"><content component="Modules.Test2" text="test 2-1"/></cell>' +
                                 '</row>' +
                                 '<row>' +
-                                    '<cell type="module"><content component="Module.Test1" text="test 1-2"/></cell>' +
+                                    '<cell type="module"><content component="Modules.Test1" text="test 1-2"/></cell>' +
                                 '</row>' +
                             '</content>' +
                         '</cell>' +
                     '</row>' +
                     '<row>' +
-                        '<cell type="module"><content component="Module.Test1" text="test 1-3"/></cell>' +
-                        '<cell type="module"><content component="Module.Test2" text="test 2-2"/></cell>' +
-                        '<cell type="module"><content component="Module.Test2" text="test 2-3"/></cell>' +
+                        '<cell type="module"><content component="Modules.Test1" text="test 1-3"/></cell>' +
+                        '<cell type="module"><content component="Modules.Test2" text="test 2-2"/></cell>' +
+                        '<cell type="module"><content component="Modules.Test2" text="test 2-3"/></cell>' +
                     '</row>' +
                 '</content>' +
             '</grid>');
@@ -48,9 +45,9 @@ const componentUtils = {
             '<grid name="Test simple grid" space="5px" type="mainGrid">' +
                 '<content>' +
                     '<row>' +
-                        '<cell type="module"><content component="Module.Test1" text="test 1-1"/></cell>' +
-                        '<cell type="module"><content component="Module.Test2" text="test 1-2"/></cell>' +
-                        '<cell type="module"><content component="Module.Test2" text="test 1-3"/></cell>' +
+                        '<cell type="module"><content component="Modules.Test1" text="test 1-1"/></cell>' +
+                        '<cell type="module"><content component="Modules.Test2" text="test 1-2"/></cell>' +
+                        '<cell type="module"><content component="Modules.Test2" text="test 1-3"/></cell>' +
                     '</row>' +
                 '</content>' +
             '</grid>');

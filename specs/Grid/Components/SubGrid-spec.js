@@ -3,12 +3,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
 
-import { Manipulator } from '../../../app/Grid/Manipulator';
+import { Manipulator, Store } from '../../../app/Grid/Data';
 
-import { Resizer } from '../../../app/Grid/Components/Resizer';
-import { Row } from '../../../app/Grid/Components/Row';
-import { Store } from '../../../app/Grid/Store';
-import { SubGrid } from '../../../app/Grid/Components/SubGrid';
+import { Resizer, Row, SubGrid } from '../../../app/Grid/Components';
 
 import { Utils } from '../../Utils';
 import { componentUtils } from './Utils';

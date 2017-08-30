@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import createReactClass from 'create-react-class';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
@@ -9,90 +8,56 @@ import Hammer from 'hammerjs';
 import ReactResizeDetector from 'react-resize-detector';
 import HammerComponent from 'react-hammerjs';
 
-import { Actions } from '../Actions';
-import { Store } from '../Store';
+import { Actions, Store } from '../Data';
 
-import { DocumentEventsMixin } from '../../Utils/ReactMixins/DocumentEvents';
-import { MousetrapMixin } from '../../Utils/ReactMixins/Mousetrap';
-import { GridMixin } from './Mixins/Grid';
-import { NodeMixin } from './Mixins/Node';
+import { Grid } from './Bases';
+import { activateMouseTrap } from '../../Utils/React/Hoc';
+import { Exceptions as MousetrapExceptions } from '../../Utils/React/Hoc/Mousetrap';
 
 
 /**
- * Available modes for the `screenMode` props of MainGrid component
+ * MainGrid component, composed of rows. Can manage designMode and navigate
  *
- * @memberOf module:Grid.Components.MainGrid
+ * Enhanced by {@link module:Grid.Components.Hoc.convertToNodesHolder}
  *
- * @property one - Force to always be in "one screen" mode, with swipe to change active module cell
- * @property multi - Force to always be in "full grid" mode
- * @property default - Use `one` mode in small screens, and `multi` mode otherwise
- */
-const screenModes = {
-    one: true,
-    multi: false,
-    default: null
-};
-
-
-/**
- * MainGrid component, composed of rows. Can enter/exit designMode
- * @namespace
  * @memberOf module:Grid.Components
+ *
  * @summary The MainGrid component
- * @mixes module:Grid.Components.Mixins.NodeMixin
- * @mixes module:Grid.Components.Mixins.GridMixin
+ *
+ * @extends module:Grid.Components.Bases.Grid
  */
-let MainGrid = {
-
-    displayName: 'MainGrid',
-
-    mixins: [
-        DocumentEventsMixin,
-        MousetrapMixin,
-        NodeMixin,
-        GridMixin
-    ],
-
-    dropDetectionActivationTimeout: 200,
-
-    /**
-     * Component props
-     *
-     * @property {Boolean} screenMode - Define the screen mode behavior of the grid
-     *                                 (one of {@link module:Grid.Components.MainGrid.screenModes screenModes}).
-     *                                 Default to `screenMode.default`.
-     * @property {int} oneScreenWidthThreshold - Define the width of the grid below which it goes
-     *                                           in "one screen" mode if `screenMode` allows it. Default to `1024`.
-     * @property {int} oneScreenHeightThreshold - Define the height of the grid below which it goes
-     *                                            in "one screen" mode if `screenMode` allows it. Default to `768`.
-     *
-     */
-    propTypes: {
-        screenMode: PropTypes.bool
-    },
-
-    /**
-     * Define component props and their default values
-     */
-    getDefaultProps() {
-        return {
-            screenMode: screenModes.default,
-            oneScreenWidthThreshold: 1024,
-            oneScreenHeightThreshold: 768
-        };
-    },
+class BaseMainGrid extends Grid {
 
     /**
      * When the component is created, start in "one screen" mode, and set the gridName in the
      * state based on the grid from the props, to be able to update it later.
      */
-    getInitialState() {
-        return {
-            // we don't have `this.state.node` yet
-            gridName: this.props.node.getAttribute('name'),
-            oneScreenMode: this.props.screenMode !== screenModes.multi
-        };
-    },
+    constructor(props) {
+        super(props);
+        this.onDocumentDragOver = this.onDocumentDragOver.bind(this);
+        this.onDocumentDrop = this.onDocumentDrop.bind(this);
+        this.onDocumentDetectDrop = this.onDocumentDetectDrop.bind(this);
+        this.onDocumentDragEnd = this.onDocumentDragEnd.bind(this);
+        this.focusRightModuleCell = this.focusRightModuleCell.bind(this);
+        this.focusLeftModuleCell = this.focusLeftModuleCell.bind(this);
+        this.focusBottomModuleCell = this.focusBottomModuleCell.bind(this);
+        this.focusTopModuleCell = this.focusTopModuleCell.bind(this);
+        this.onResize = this.onResize.bind(this);
+        this.onNavigateTo = this.onNavigateTo.bind(this);
+        this.onPan = this.onPan.bind(this);
+        this.onSwipe = this.onSwipe.bind(this);
+        this.addRandomModule = this.addRandomModule.bind(this);
+        this.undo = this.undo.bind(this);
+        this.redo = this.redo.bind(this);
+        this.toggleDesignMode = this.toggleDesignMode.bind(this);
+
+        this.saveResizeDetectorRef = (ref) => { this.resizeDetectorRef = ref; };
+        this.saveGridContainerRef = (ref) => { this.gridContainerRef = ref; };
+
+        // this.state defined in GridNode, parent of Grid, parent of MainGrid
+        this.state.gridName = props.node.getAttribute('name');
+        this.state.oneScreenMode = props.screenMode !== BaseMainGrid.screenModes.multi;
+    }
 
     /**
      * When the component props are updated, set the gridName in the state based
@@ -105,7 +70,7 @@ let MainGrid = {
                 gridName: newName
             });
         }
-    },
+    }
 
     /**
      * Update the grid when a `grid.designMode` event is caught, only when the given name is the
@@ -148,8 +113,8 @@ let MainGrid = {
             // entering design mode, we start by now to listen do `dragover` and `drop` events on
             // the whole document
 
-            this.addDocumentListener('dragover', 'onDocumentDragOver');
-            this.addDocumentListener('drop', 'onDocumentDrop');
+            this.addDocumentEventListener('dragover', this.onDocumentDragOver);
+            this.addDocumentEventListener('drop', this.onDocumentDrop);
 
         } else if (eventName === 'grid.designMode.dragging.start') {
             // starting the drag operation, we start to detect a drop in case of the `drop` event
@@ -172,10 +137,18 @@ let MainGrid = {
 
             // exiting the design mode, we can stop listening to dragover and drop events
 
-            this.removeDocumentListener('drop', 'onDocumentDrop');
-            this.removeDocumentListener('dragover', 'onDocumentDragOver');
+            this.removeDocumentListener('drop', this.onDocumentDrop);
+            this.removeDocumentListener('dragover', this.onDocumentDragOver);
         }
-    },
+    }
+
+    addDocumentEventListener(eventName, callback) {
+        document.addEventListener(eventName, callback);
+    }
+
+    removeDocumentListener(eventName, callback) {
+        document.removeEventListener(eventName, callback);
+    }
 
     /**
      * Add some event handlers on the document to try to detect that a drop occurred even if the
@@ -194,11 +167,11 @@ let MainGrid = {
         this.dropDetectionActivated = true;
         setTimeout(() => {
             if (!this.dropDetectionActivated) { return; }
-            this.addDocumentListener('mousemove', 'onDocumentDetectDrop');
-            this.addDocumentListener('mousedown', 'onDocumentDetectDrop');
-            this.addDocumentListener('fakedragend', 'onDocumentDragEnd');
-        }, this.dropDetectionActivationTimeout);
-    },
+            this.addDocumentEventListener('mousemove', this.onDocumentDetectDrop);
+            this.addDocumentEventListener('mousedown', this.onDocumentDetectDrop);
+            this.addDocumentEventListener('fakedragend', this.onDocumentDragEnd);
+        }, BaseMainGrid.dropDetectionActivationTimeout);
+    }
 
     /**
      * Stop listening to events defined in `activateDropDetection`
@@ -206,10 +179,10 @@ let MainGrid = {
     deactivateDropDetection() {
         if (!this.dropDetectionActivated) { return; }
         this.dropDetectionActivated = false;
-        this.removeDocumentListener('mousemove', 'onDocumentDetectDrop');
-        this.removeDocumentListener('mousedown', 'onDocumentDetectDrop');
-        this.removeDocumentListener('fakedragend', 'onDocumentDragEnd');
-    },
+        this.removeDocumentListener('mousemove', this.onDocumentDetectDrop);
+        this.removeDocumentListener('mousedown', this.onDocumentDetectDrop);
+        this.removeDocumentListener('fakedragend', this.onDocumentDragEnd);
+    }
 
     /**
      * When a drop operation is done, this method respond to the `fakedragend` event
@@ -219,7 +192,7 @@ let MainGrid = {
      */
     onDocumentDragEnd(event) {
         this.deactivateDropDetection();
-    },
+    }
 
     /**
      * When a fake drop is detected, via a mousedown or mousemove event:
@@ -238,7 +211,7 @@ let MainGrid = {
                 this.applyDrop();
             }
         }
-    },
+    }
 
     /**
      * Called when a real `drop` event is triggered anywhere on the document.
@@ -250,7 +223,7 @@ let MainGrid = {
         event.preventDefault();
         event.stopPropagation();
         this.applyDrop();
-    },
+    }
 
     /**
      * Emit on fake drop event on the given placeholder node.
@@ -262,7 +235,7 @@ let MainGrid = {
     emitFakeDrop(placeholderNode) {
         const fakeDropEvent = new Event('fakedrop', { view: window, bubbles: true, target: placeholderNode });
         placeholderNode.dispatchEvent(fakeDropEvent);
-    },
+    }
 
     /**
      * Emit a fake drag end event on the document, to tell the world that the whole
@@ -270,20 +243,20 @@ let MainGrid = {
      */
     emitFakeDragEnd() {
         document.dispatchEvent(new Event('fakedragend'));
-    },
+    }
 
     /**
      * Called by `onDocumentDetectDrop` and `onDocumentDrop`, it will:
      *
      * - stop the drop detection
      * - tell the world that the drag is finish by triggering a `fakedragend` event
-     * - apply the drop by calling {@link module:Grid.Actions.drop drop}
+     * - apply the drop by calling {@link module:Grid.Data.Actions.drop}
      */
     applyDrop() {
         this.deactivateDropDetection();
         this.emitFakeDragEnd();
         Actions.drop(this.state.gridName);
-    },
+    }
 
     /**
      * Cancel the `dragover` event when received, to tell the browser that we
@@ -293,7 +266,7 @@ let MainGrid = {
      */
     onDocumentDragOver(event) {
         event.preventDefault();
-    },
+    }
 
     /**
      * Called just after attaching the component to the dom, to watch changes of the
@@ -309,7 +282,7 @@ let MainGrid = {
         Store.on('grid.designMode.**', this.__onDesignModeChange);
         this.activateGridNavigation();
 
-        if (this.props.screenMode !== screenModes.multi) {
+        if (this.props.screenMode !== BaseMainGrid.screenModes.multi) {
             const [width, height] = this.resizeDetectorRef.containerSize();
             this.onResize(width, height);
 
@@ -317,8 +290,7 @@ let MainGrid = {
                 this.configureHammer();
             }
         }
-
-    },
+    }
 
     /**
      * Configure Hammer for swipe/pan if now in "one screen mode"
@@ -327,10 +299,15 @@ let MainGrid = {
      * @param {object} prevState - Component state before the update
      */
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.screenMode !== screenModes.multi && !prevState.oneScreenMode && this.state.oneScreenMode) {
+        if (this.props.screenMode !== BaseMainGrid.screenModes.multi
+            &&
+            !prevState.oneScreenMode
+            &&
+            this.state.oneScreenMode
+        ) {
             this.configureHammer();
         }
-    },
+    }
 
     /**
      * Called before detaching the component from the dom, to stop watching
@@ -341,7 +318,7 @@ let MainGrid = {
         Store.off('grid.designMode.**', this.__onDesignModeChange);
         this.deactivateDropDetection();
         this.deactivateGridNavigation();
-    },
+    }
 
     /**
      * Enter or exit the design mode of the grid depending of its current status
@@ -352,7 +329,7 @@ let MainGrid = {
         } else {
             Actions.enterDesignMode(this.state.gridName);
         }
-    },
+    }
 
     /**
      * Add a random module to the grid, with random content text.
@@ -366,21 +343,21 @@ let MainGrid = {
         const modulesCount = Store.getGrid(this.state.gridName).querySelectorAll('cell[type=module]').length;
         const randomText = `test.${modulesCount}`;
         Actions.addModule(this.state.gridName, randomModule, { text: randomText });
-    },
+    }
 
     /**
      * Ask the store to restore the previous version of the grid in its history
      */
     undo() {
         Actions.goBackInHistory(this.state.gridName);
-    },
+    }
 
     /**
      * Ask the store to restore the next version of the grid in its history
      */
     redo() {
         Actions.goForwardInHistory(this.state.gridName);
-    },
+    }
 
     /**
      * Update grid style when focused
@@ -390,40 +367,40 @@ let MainGrid = {
     onNavigateTo(gridName) {
         if (gridName !== this.state.gridName) { return; }
         this.updateMainGridStyle();
-    },
+    }
 
     /**
      * Ask the store to focus on the cell next to the right of the current focused one
      */
     focusRightModuleCell() {
         Actions.focusRightModuleCell(this.state.gridName);
-    },
+    }
 
     /**
      * Ask the store to focus on the cell next to the left of the current focused one
      */
     focusLeftModuleCell() {
         Actions.focusLeftModuleCell(this.state.gridName);
-    },
+    }
 
     /**
      * Ask the store to focus on the cell next to the bottom of the current focused one
      */
     focusBottomModuleCell() {
         Actions.focusBottomModuleCell(this.state.gridName);
-    },
+    }
 
     /**
      * Ask the store to focus on the cell next to the top of the current focused one
      */
     focusTopModuleCell() {
         Actions.focusTopModuleCell(this.state.gridName);
-    },
+    }
 
     /**
      * Called when a swipe was done to go from left or right module cell
-     * Calls {@link module:Grid.Actions.focusLeftModuleCell Grid.Actions.focusLeftModuleCell}
-     * or {@link module:Grid.Actions.focusRightModuleCell Grid.Actions.focusRightModuleCell}
+     * Calls {@link module:Grid.Data.Actions.focusLeftModuleCell}
+     * or {@link module:Grid.Data.Actions.focusRightModuleCell}
      *
      * @param  {event} event - The swipe event from Hammer
      */
@@ -443,13 +420,13 @@ let MainGrid = {
             this.panData.cancelled = true;
         }
         Actions[`focus${goToDirection}ModuleCell`](this.state.gridName, true);
-    },
+    }
 
     /**
      * Called when a pan was done to go from left or right module cell.
      *
-     * Calls {@link module:Grid.Actions.focusLeftModuleCell Grid.Actions.focusLeftModuleCell}
-     * or {@link module:Grid.Actions.focusRightModuleCell Grid.Actions.focusRightModuleCell}
+     * Calls {@link module:Grid.Data.Actions.focusLeftModuleCell}
+     * or {@link module:Grid.Data.Actions.focusRightModuleCell}
      *
      * If on a boundary (called "overflow" here), make visually understandable that there is no
      * module cell on the left/right.
@@ -597,7 +574,7 @@ let MainGrid = {
                 break;
 
         }
-    },
+    }
 
     /**
      * Configure Hammer to react on swipe/pan events
@@ -607,20 +584,20 @@ let MainGrid = {
         hammer.get('swipe').set({ direction: Hammer.DIRECTION_HORIZONTAL });
         hammer.add(new Hammer.Pan({ direction: Hammer.DIRECTION_HORIZONTAL })).recognizeWith(hammer.get('swipe'));
         hammer.on('pan', this.onPan);
-    },
+    }
 
     /**
      * Activate the keyboard shortcuts to enable keyboard navigation between
      * module cells
      */
     activateGridNavigation() {
-        this.bindShortcut('ctrl+right', this.focusRightModuleCell);
-        this.bindShortcut('ctrl+left', this.focusLeftModuleCell);
-        this.bindShortcut('ctrl+down', this.focusBottomModuleCell);
-        this.bindShortcut('ctrl+up', this.focusTopModuleCell);
+        this.props.bindShortcut('ctrl+right', this.focusRightModuleCell);
+        this.props.bindShortcut('ctrl+left', this.focusLeftModuleCell);
+        this.props.bindShortcut('ctrl+down', this.focusBottomModuleCell);
+        this.props.bindShortcut('ctrl+up', this.focusTopModuleCell);
 
         Store.on('grid.navigate.focus.on', this.onNavigateTo);
-    },
+    }
 
     /**
      * Deactivate the keyboard shortcuts to disable keyboard navigation between
@@ -628,14 +605,14 @@ let MainGrid = {
      */
     deactivateGridNavigation() {
         try {
-            this.unbindShortcut('ctrl+right');
-            this.unbindShortcut('ctrl+left');
-            this.unbindShortcut('ctrl+down');
-            this.unbindShortcut('ctrl+up');
+            this.props.unbindShortcut('ctrl+right');
+            this.props.unbindShortcut('ctrl+left');
+            this.props.unbindShortcut('ctrl+down');
+            this.props.unbindShortcut('ctrl+up');
         } catch (e) {
-            if (e instanceof MousetrapMixin.statics.Exceptions.Inconsistency) {
+            if (e instanceof MousetrapExceptions.Inconsistency) {
                 // We silently ignore this exception. It may happen if the
-                // `unbindAllShortcuts` of the MousetrapMixin was called just
+                // `unbindAllShortcuts` of the Mousetrap HOC was called just
                 // before
             } else {
                 // other cases, throw the original exception
@@ -644,8 +621,7 @@ let MainGrid = {
         }
 
         Store.off('grid.navigate.focus.on', this.onNavigateTo);
-
-    },
+    }
 
     /**
      * Return the classes to use when rendering the container of the current main grid
@@ -672,7 +648,7 @@ let MainGrid = {
         };
         classes[`grid-component-design-mode-step-${this.getDesignModeStep()}`] = inDesignMode;
         return classnames(classes);
-    },
+    }
 
     /**
      * Update the style of the grid dom node, to translate it horizontally in "one screen" mode.
@@ -692,7 +668,7 @@ let MainGrid = {
         _.forOwn(styles, (style, name) => {
             gridNode.style[name] = style;
         });
-    },
+    }
 
     /**
      * Compute the style for the grid dom node in "one screen" mode. Reset the style if not in this screen mode.
@@ -722,7 +698,7 @@ let MainGrid = {
             // force no transition if deltaX given, else use the one defined in css file
             transition: deltaXSet ? 'none' : null
         };
-    },
+    }
 
     /**
      * Called when the grid size change, to change the screen mode if allowed by `this.props.screenMode`)
@@ -733,10 +709,10 @@ let MainGrid = {
     onResize(width, height) {
         let oneScreenMode;
         switch (this.props.screenMode) {
-            case screenModes.one:
+            case BaseMainGrid.screenModes.one:
                 oneScreenMode = true;
                 break;
-            case screenModes.multi:
+            case BaseMainGrid.screenModes.multi:
                 oneScreenMode = false;
                 break;
             default:
@@ -747,7 +723,7 @@ let MainGrid = {
         if (oneScreenMode !== this.state.oneScreenMode) {
             this.setState({ oneScreenMode });
         }
-    },
+    }
 
     /**
      * Will render the component
@@ -799,7 +775,7 @@ let MainGrid = {
 
         if (this.state.oneScreenMode) {
             containerChildren = (
-                <HammerComponent onSwipe={this.onSwipe} ref={(c) => { this.gridContainerRef = c; }}>
+                <HammerComponent onSwipe={this.onSwipe} ref={this.saveGridContainerRef}>
                     <div className="grid-container">
                         {containerChildren}
                         <div className="grid-container-scroll-overflow-left" />
@@ -816,21 +792,83 @@ let MainGrid = {
             </nav>
             {containerChildren}
             {
-                this.props.screenMode !== screenModes.multi
+                this.props.screenMode !== BaseMainGrid.screenModes.multi
                 &&
                 <ReactResizeDetector
                     handleWidth
                     handleHeight
                     onResize={this.onResize}
-                    ref={(c) => { this.resizeDetectorRef = c; }}
+                    ref={this.saveResizeDetectorRef}
                 />
             }
         </div>);
     }
 
+}
+
+BaseMainGrid.displayName = 'MainGrid';
+
+/**
+ * Delay after drag start to wait before activating drop detection
+ * @type {int}
+ *
+ */
+BaseMainGrid.dropDetectionActivationTimeout = 200;
+
+/**
+ * Available modes for the `screenMode` props of MainGrid component
+ *
+ * @property one - Force to always be in "one screen" mode, with swipe to change active module cell
+ * @property multi - Force to always be in "full grid" mode
+ * @property default - Use `one` mode in small screens, and `multi` mode otherwise
+ */
+BaseMainGrid.screenModes = {
+    one: true,
+    multi: false,
+    default: null
 };
 
-MainGrid = createReactClass(MainGrid);
+/**
+ * Component props
+ *
+ * @property {Boolean} screenMode - Define the screen mode behavior of the grid
+ *                                 (one of {@link module:Grid.Components.MainGrid.screenModes}).
+ *                                 Default to `screenMode.default`.
+ * @property {int} oneScreenWidthThreshold - Define the width of the grid below which it goes
+ *                                           in "one screen" mode if `screenMode` allows it. Default to `1024`.
+ * @property {int} oneScreenHeightThreshold - Define the height of the grid below which it goes
+ *                                            in "one screen" mode if `screenMode` allows it. Default to `768`.
+ *
+ */
+BaseMainGrid.propTypes = {
+    screenMode: PropTypes.bool,
+    oneScreenWidthThreshold: PropTypes.number,
+    oneScreenHeightThreshold: PropTypes.number
+};
+
+/**
+ * Define component props and their default values
+ */
+BaseMainGrid.defaultProps = {
+    screenMode: BaseMainGrid.screenModes.default,
+    oneScreenWidthThreshold: 1024,
+    oneScreenHeightThreshold: 768
+};
 
 
-export { MainGrid, screenModes };
+/**
+ * {@link module:Grid.Components.BaseMainGrid} extended with
+ * {@link module:Utils.React.Hoc.activateMouseTrap}
+ *
+ * @memberOf module:Grid.Components
+ *
+ * @class
+ *
+*/
+const MainGrid = activateMouseTrap(BaseMainGrid);
+
+MainGrid.dropDetectionActivationTimeout = BaseMainGrid.dropDetectionActivationTimeout;
+MainGrid.screenModes = BaseMainGrid.screenModes;
+
+
+export { BaseMainGrid, MainGrid };

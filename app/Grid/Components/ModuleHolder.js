@@ -1,12 +1,9 @@
 import React from 'react';
-import createReactClass from 'create-react-class';
 
-import { Actions } from '../Actions';
-import { Store } from '../Store';
+import { Actions, Store } from '../Data';
 
-import { ModulesCache } from './ModulesCache';
-
-import { NodesHolderMixin } from './Mixins/NodesHolder';
+import { ModulesCache } from './Utils';
+import { convertToNodesHolder } from './Hoc';
 
 
 /**
@@ -15,65 +12,25 @@ import { NodesHolderMixin } from './Mixins/NodesHolder';
  *
  * The hold module is not rendered as a child but detached/attached to this react
  * component dom node before/after mounting and updating, to avoid rerendering the
- * module at all costs. This is done by {@link module:Grid.Components.Mixins NodesHolderMixin}
- *
- * @namespace
+ * module at all costs. This is done by {@link module:Grid.Components.Hoc.convertToNodesHolder}
  *
  * @memberOf module:Grid.Components
  *
  * @summary A component to hold a module in design mode
  */
-let ModuleHolder = {
+class BaseModuleHolder extends React.Component {
 
-    displayName: 'ModuleHolder',
+    constructor(props) {
+        super(props);
+        this.onDragStart = this.onDragStart.bind(this);
+        this.onDragLeave = this.onDragLeave.bind(this);
+        this.removeModule = this.removeModule.bind(this);
 
-    mixins: [
-        NodesHolderMixin
-    ],
-
-    dragLeaveTimeout: 200,
-
-    /**
-     * The type of node that can be attached to the current react component
-     * dom node (managed by {@link module:Grid.Components.Mixins NodesHolderMixin}):
-     * - a module
-     *
-     * @type {Array}
-     */
-    externalNodesClassNames: [],
-
-    // Workaround to avoid issue due to circular dependencies between ModulesCache
-    // and ModuleHolder
-    componentWillMount() {
-        this.externalNodesClassNames = [ModulesCache.moduleContainerClassName];
-    },
+        this.saveModuleHolderRef = (ref) => { this.moduleHolderRef = ref; };
+    }
 
     /**
-     * Tell {@link module:Grid.Components.Mixins NodesHolderMixin}
-     * that this react component will always be able to hold a module.
-     *
-     * @return {boolean} - `true`
-     */
-    canHoldExternalNodes() {
-        return true;
-    },
-
-    /**
-     * Return the module to attach to the current react component dom node.
-     *
-     * It's take from the {@link module:Grid.Components.ModulesCache ModulesCache} module
-     *
-     * @param  {String} className - The class name of the dom node to return
-     * @return {Element|Node|XML} - The module dom node
-     */
-    getExternalNode(className) {
-        if (className === ModulesCache.moduleContainerClassName) {
-            return ModulesCache.getModuleComponent(null, this.props.uniqueKey);
-        }
-    },
-
-    /**
-     * Call {@link module:Grid.Actions.startDragging startDragging} action when the drags of
+     * Call {@link module:Grid.Data.Actions.startDragging} action when the drags of
      * the dom node starts.
      *
      * Before anything else, a class is added to the dom element to hide the delete
@@ -91,14 +48,14 @@ let ModuleHolder = {
         Actions.startDragging(this.props.gridName, this.props.gridCell);
         event.dataTransfer.setData('application/x-grid-module', this.props.gridName);
         event.dataTransfer.effectAllowed = 'move';
-    },
+    }
 
     /**
      * Called when the dragged module leave this holder. It happens when the
      * placeholder is replaced by the holder after a certain amount of time
      * (when designModeStep goes from `prehovering` to `hovering)
      *
-     * It calls {@link module:Grid.Actions.stopHovering stopHovering}
+     * It calls {@link module:Grid.Data.Actions.stopHovering}
      *
      * @param  {event} event - The dragLeave event
      */
@@ -108,8 +65,8 @@ let ModuleHolder = {
             if (Store.getDesignModeStep(this.props.gridName) === 'hovering') {
                 Actions.stopHovering(this.props.gridName);
             }
-        }, this.dragLeaveTimeout);
-    },
+        }, BaseModuleHolder.dragLeaveTimeout);
+    }
 
     /**
      * Called when the "delete" button is clicked, to call the actions asking the
@@ -117,7 +74,7 @@ let ModuleHolder = {
      */
     removeModule() {
         Actions.removeModule(this.props.gridName, this.props.gridCell);
-    },
+    }
 
     /**
      * Return the attributes to use in the main div node in the render method
@@ -146,20 +103,23 @@ let ModuleHolder = {
         }
 
         return attrs;
-    },
+    }
 
     /**
      * Called just after an update, remove the class temporarily set in onDragStart,
      * as we now need to have the delete button displayed
+     *
+     * @param {object} prevProps - Component props before the update
+     * @param {object} prevState - Component state before the update
      */
-    componentDidUpdate() {
+    componentDidUpdate(prevProps, prevState) {
         this.moduleHolderRef.classList.remove('module-holder-browser-dragging');
-    },
+    }
 
     /**
      * Render the module holder, as a simple div with drag attributes/events, and
      * as a child, a div used as a cover over the module (attached via
-     * {@link module:Grid.Components.Mixins NodesHolderMixin}) to
+     * {@link module:Grid.Components.Hoc.convertToNodesHolder}) to
      * drag the dom node without any risk of interacting with the module content.
      * This cover contain a "delete" button in design mode to delete the
      */
@@ -171,7 +131,7 @@ let ModuleHolder = {
         return (
             <div
                 className="module-holder"
-                ref={(c) => { this.moduleHolderRef = c; }}
+                ref={this.saveModuleHolderRef}
                 {...this.getRenderAttrs()}
             >
                 <div className="module-cover">
@@ -180,8 +140,62 @@ let ModuleHolder = {
             </div>);
     }
 
+}
+
+
+BaseModuleHolder.displayName = 'ModuleHolder';
+
+BaseModuleHolder.dragLeaveTimeout = 200;
+
+
+/**
+ * The type of node that can be attached to the current react component
+ * dom node (managed by {@link module:Grid.Components.Hoc.convertToNodesHolder}):
+ * - a module
+ *
+ * @type {Array}
+ */
+const externalNodesClassNames = [ModulesCache.moduleContainerClassName];
+
+/**
+ * Tell {@link module:Grid.Components.Hoc.convertToNodesHolder}
+ * that this react component will always be able to hold a module.
+ *
+ * @return {boolean} - `true`
+ */
+const canHoldExternalNodes = wrappedComponent => true;
+
+/**
+ * Return the module to attach to the current react component dom node.
+ *
+ * It's take from the {@link module:Grid.Components.Utils.ModulesCache} module
+ *
+ * @param {XML} wrappedComponent - The component for which we want the node
+ * @param  {String} className - The class name of the dom node to return
+ * @return {Element|Node|XML} - The module dom node
+ */
+const getExternalNode = (wrappedComponent, className) => {
+    if (className === ModulesCache.moduleContainerClassName) {
+        return ModulesCache.getModuleComponent(null, wrappedComponent.props.uniqueKey);
+    }
 };
 
-ModuleHolder = createReactClass(ModuleHolder);
+/**
+ * {@link module:Grid.Components.BaseModuleHolder} extended with
+ * {@link module:Grid.Components.Hoc.convertToNodesHolder}
+ *
+ * @memberOf module:Grid.Components
+ *
+ * @class
+ *
+*/
+const ModuleHolder = convertToNodesHolder(
+    BaseModuleHolder,
+    externalNodesClassNames,
+    canHoldExternalNodes,
+    getExternalNode
+);
 
-export { ModuleHolder };
+ModuleHolder.dragLeaveTimeout = BaseModuleHolder.dragLeaveTimeout;
+
+export { BaseModuleHolder, ModuleHolder };

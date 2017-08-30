@@ -1,17 +1,11 @@
-import createReactClass from 'create-react-class';
+import React from 'react';
+import { Module } from './Bases';
 
 
-import { ModuleMixin } from './Mixins/Module';
-
-
-const Test2 = createReactClass({
-    mixins: [
-        ModuleMixin
-    ],
-
+class Test2 extends Module {
     renderModule() {
-        return `Module.Test2: ${this.props.text}`;
+        return <span>Modules.Test2: {this.props.text}</span>;
     }
-});
+}
 
 export { Test2 };

@@ -3,11 +3,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
 
-import { Cell } from '../../../app/Grid/Components/Cell';
-import { Manipulator } from '../../../app/Grid/Manipulator';
-import { Resizer } from '../../../app/Grid/Components/Resizer';
-import { Row } from '../../../app/Grid/Components/Row';
-import { Store } from '../../../app/Grid/Store';
+import { Manipulator, Store } from '../../../app/Grid/Data';
+import { Cell, Resizer, Row } from '../../../app/Grid/Components';
 
 import { Utils } from '../../Utils';
 import { componentUtils } from './Utils';

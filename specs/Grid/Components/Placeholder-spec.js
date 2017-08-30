@@ -1,15 +1,11 @@
-import _ from 'lodash';
 import jasmineReact from 'jasmine-react-helpers';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { Actions } from '../../../app/Grid/Actions';
-import { Manipulator } from '../../../app/Grid/Manipulator';
-import { Placeholder } from '../../../app/Grid/Components/Placeholder';
-import { Store } from '../../../app/Grid/Store';
+import { Actions, Manipulator, Store } from '../../../app/Grid/Data';
+import { Placeholder } from '../../../app/Grid/Components';
 
 import { componentUtils } from './Utils';
-import { TestDocumentEventsMixin } from '../../Utils/ReactMixins/DocumentEvents';
 import { Utils } from '../../Utils';
 
 
@@ -39,12 +35,6 @@ describe('Grid.Components.Placeholder', () => {
 
     afterEach(() => {
         componentUtils.unmountAllComponents();
-    });
-
-    it('should manage document events', (done) => {
-        const element = React.createElement(Placeholder, { node: gridPlaceholder });
-        const component = componentUtils.renderIntoDocument(element);
-        TestDocumentEventsMixin(component, done);
     });
 
     it('should render a placeholder', () => {
@@ -88,11 +78,6 @@ describe('Grid.Components.Placeholder', () => {
         // should be activated on mount
         expect(placeholderProto.activateDropDetection.calls.count()).toEqual(1);
         expect(placeholderProto.deactivateDropDetection.calls.count()).toEqual(0);
-
-        // we should have two events in cache
-        expect(_.size(component._documentEventCache)).toEqual(2);
-        expect(_.has(component._documentEventCache, 'onDocumentDetectDrop')).toBe(true);
-        expect(_.has(component._documentEventCache, 'onDocumentDragEnd')).toBe(true);
 
         placeholderProto.activateDropDetection.calls.reset();
         placeholderProto.deactivateDropDetection.calls.reset();

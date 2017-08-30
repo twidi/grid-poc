@@ -2,16 +2,20 @@ import _ from 'lodash';
 import React from 'react';
 import classnames from 'classnames';
 
-import { Store } from '../../Store';
-import { Resizer } from '../Resizer';
+import { Store } from '../../Data';
+import { GridNode } from './Node';
+
 
 /**
- * A mixin to use for MainGrid and Grid components
- * @mixin
- * @memberOf module:Grid.Components.Mixins
- * @summary A mixin to use for MainGrid and Grid components
+ * A base class to use for MainGrid and Grid components
+ *
+ * @extends module.Grid.Components.Bases.GridNode
+ *
+ * @memberOf module:Grid.Components.Bases
+ *
+ * @summary A base class to use for MainGrid and Grid components
  */
-const GridMixin = {
+class Grid extends GridNode {
 
     /**
      * Tell if the grid is "main grid"
@@ -20,7 +24,7 @@ const GridMixin = {
      */
     isMainGrid() {
         return this.getType() === 'mainGrid';
-    },
+    }
 
     /**
      * Get all the rows of the grid
@@ -29,15 +33,20 @@ const GridMixin = {
      */
     getRows() {
         return _.toArray(this.state.node.querySelectorAll(':scope > content > row, :scope > content > resizer'));
-    },
+    }
 
     /**
      * Return a list of all the rows, including resizers, rendered
      *
-     * @return {module:Grid.Components.Row[]} - An array of {@link module:Grid.Components.Row Row} components
+     * @return {module:Grid.Components.Row[]} - An array of {@link module:Grid.Components.Row} components
      */
     renderRows() {
+
+        /* eslint-disable global-require */
+        // use require to manage circular dependencies
+        const { Resizer } = require('../Resizer');
         const { Row } = require('../Row');
+        /* eslint-enable global-require */
 
         return _.map(this.getRows(), (row) => {
             const type = row.tagName;
@@ -47,7 +56,7 @@ const GridMixin = {
                 return <Resizer node={row} key={Store.getNodeId(row)} />;
             }
         });
-    },
+    }
 
     /**
      * Return the classes to use when rendering the current grid
@@ -72,7 +81,7 @@ const GridMixin = {
                                               && Store.hasPlaceholders(this.getGridName())
         }, forcedClasses);
         return classnames(classes);
-    },
+    }
 
     /**
      * Return the inline styles to use when rendering the current grid
@@ -91,7 +100,7 @@ const GridMixin = {
             style.flexGrow = Store.getRelativeSize(this.state.node);
         }
         return _.merge(style, forcedStyle);
-    },
+    }
 
     /**
      * Render the grid component
@@ -110,7 +119,8 @@ const GridMixin = {
             </div>
         );
     }
+}
 
-};
+Grid.displayName = 'Grid';
 
-export { GridMixin };
+export { Grid };

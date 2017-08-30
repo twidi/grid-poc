@@ -1,28 +1,23 @@
 import _ from 'lodash';
 import React from 'react';
-import createReactClass from 'create-react-class';
 import classnames from 'classnames';
 
-import { Store } from '../Store';
+import { Store } from '../Data';
+import { GridNode } from './Bases';
+import { Cell, Resizer } from './';
 
-import { NodeMixin } from './Mixins/Node';
-import { Cell } from './Cell';
-import { Resizer } from './Resizer';
 
 /**
  * Row component, a row of a grid, composed of cells
- * @namespace
+ *
  * @memberOf module:Grid.Components
+ *
  * @summary The Row component, a row of a grid
- * @mixes module:Grid.Components.Mixins.Node
+ *
+ * @extends module:Grid.Components.Bases.GridNode
  */
-let Row = {
+class Row extends GridNode {
 
-    displayName: 'Row',
-
-    mixins: [
-        NodeMixin
-    ],
     /**
      * Tell if the row is a placeholder
      *
@@ -30,7 +25,7 @@ let Row = {
      */
     isPlaceholder() {
         return this.state.node.getAttribute('type') === 'placeholder';
-    },
+    }
 
     /**
      * Get all the cells of the row
@@ -39,12 +34,12 @@ let Row = {
      */
     getCells() {
         return _.toArray(this.state.node.querySelectorAll(':scope > cell, :scope > resizer'));
-    },
+    }
 
     /**
      * Return a list of all the cells, including resizers, rendered
      *
-     * @return {module:Grid.Components.Cell[]} - An array of {@link module:Grid.Components.Cell Cell} components
+     * @return {module:Grid.Components.Cell[]} - An array of {@link module:Grid.Components.Cell} components
      */
     renderCells() {
         return _.map(this.getCells(), (cell) => {
@@ -56,7 +51,7 @@ let Row = {
                 return <Resizer node={cell} key={Store.getNodeId(cell)} />;
             }
         });
-    },
+    }
 
     /**
      * Return the classes to use when rendering the current row.
@@ -74,7 +69,7 @@ let Row = {
             'grid-row': true,
             'grid-row-placeholder': this.isPlaceholder()
         });
-    },
+    }
 
     /**
      * Return the inline styles to use when rendering the current row
@@ -91,7 +86,7 @@ let Row = {
             style.flexGrow = Store.getRelativeSize(this.state.node);
         }
         return style;
-    },
+    }
 
     /**
      * Render the component
@@ -103,8 +98,9 @@ let Row = {
         return <div className={this.getRowClasses()} style={this.getRowStyle()}>{this.renderCells()}</div>;
     }
 
-};
+}
 
-Row = createReactClass(Row);
+Row.displayName = 'Row';
+
 
 export { Row };

@@ -1,29 +1,31 @@
 import React from 'react';
-import createReactClass from 'create-react-class';
 import classnames from 'classnames';
 
-import { Actions } from '../Actions';
-import { Store } from '../Store';
+import { Actions, Store } from '../Data';
 
-import { DocumentEventsMixin } from '../../Utils/ReactMixins/DocumentEvents';
-import { NodeMixin } from './Mixins/Node';
+import { GridNode } from './Bases';
 
 
 /**
  * Resizer component, simple node to be moved to allow resizing
- * @namespace
+ *
  * @memberOf module:Grid.Components
+ *
  * @summary Resizer component
- * @mixes module:Grid.Components.Mixins.Node
+ *
+ * @extends module:Grid.Components.Bases.GridNode
  */
-let Resizer = {
+class Resizer extends GridNode {
 
-    displayName: 'Resizer',
+    constructor(props) {
+        super(props);
+        this.onMouseDown = this.onMouseDown.bind(this);
+        this.onDocumentMouseMove = this.onDocumentMouseMove.bind(this);
+        this.onDocumentMouseUp = this.onDocumentMouseUp.bind(this);
+        this.onResizingMove = this.onResizingMove.bind(this);
 
-    mixins: [
-        DocumentEventsMixin,
-        NodeMixin
-    ],
+        this.saveResizerRef = (ref) => { this.resizerRef = ref; };
+    }
 
     /**
      * Tell if the row is a vertical
@@ -32,7 +34,7 @@ let Resizer = {
      */
     isVertical() {
         return this.state.node.getAttribute('type') === 'vertical';
-    },
+    }
 
     /**
      * Tell if the row is a horizontal
@@ -41,7 +43,7 @@ let Resizer = {
      */
     isHorizontal() {
         return this.state.node.getAttribute('type') === 'horizontal';
-    },
+    }
 
     /**
      * Return the classes to use when rendering the current resizer.
@@ -62,7 +64,7 @@ let Resizer = {
             'grid-resizer-vertical': isVertical,
             'grid-resizer-horizontal': !isVertical
         });
-    },
+    }
 
     /**
      * Called in response to the `grid.designMode.resizing.move` event, when the
@@ -79,7 +81,7 @@ let Resizer = {
         this.setDomNodeRelativeSize(domNode.previousSibling, resizeData.previousRelativeSize);
         this.setDomNodeRelativeSize(domNode.nextSibling, resizeData.nextRelativeSize);
 
-    },
+    }
 
     /**
      * Use the given relativeSize to update the given domNode flex-grow style property
@@ -89,7 +91,7 @@ let Resizer = {
      */
     setDomNodeRelativeSize(domNode, relativeSize) {
         domNode.style.flexGrow = relativeSize;
-    },
+    }
 
     /**
      * Called before detaching the component from the dom, to stop watching for
@@ -97,7 +99,7 @@ let Resizer = {
      */
     componentWillUnmount() {
         this.deactivateResizingDetection();
-    },
+    }
 
     /**
      * Add a handler on the document to act react then the mouse is moved, or
@@ -108,9 +110,9 @@ let Resizer = {
      */
     activateResizingDetection() {
         Store.on('grid.designMode.resizing.move', this.onResizingMove);
-        this.addDocumentListener('mousemove', 'onDocumentMouseMove');
-        this.addDocumentListener('mouseup', 'onDocumentMouseUp');
-    },
+        document.addEventListener('mousemove', this.onDocumentMouseMove);
+        document.addEventListener('mouseup', this.onDocumentMouseUp);
+    }
 
     /**
      * Stop listening to events defined in `activateResizingDetection`, and to
@@ -118,9 +120,9 @@ let Resizer = {
      */
     deactivateResizingDetection() {
         Store.off('grid.designMode.resizing.move', this.onResizingMove);
-        this.removeDocumentListener('mousemove', 'onDocumentMouseMove');
-        this.removeDocumentListener('mouseup', 'onDocumentMouseUp');
-    },
+        document.removeEventListener('mousemove', this.onDocumentMouseMove);
+        document.removeEventListener('mouseup', this.onDocumentMouseUp);
+    }
 
     /**
      * Return the "size" of the given dom node. Size is the height of the width
@@ -132,7 +134,7 @@ let Resizer = {
      */
     getDomNodeSize(domNode) {
         return domNode[this.isHorizontal() ? 'clientHeight' : 'clientWidth'];
-    },
+    }
 
     /**
      * Return the cursor position on the screen for the given event. Position is
@@ -143,7 +145,7 @@ let Resizer = {
      */
     getScreenMousePosition(event) {
         return event[this.isHorizontal() ? 'screenY' : 'screenX'];
-    },
+    }
 
     onMouseDown(event) {
         // say the world that we intercepted the event
@@ -164,7 +166,7 @@ let Resizer = {
         // listen to mousemove and mouseup events on the document o detect when
         // the user move or stop its resizing
         this.activateResizingDetection();
-    },
+    }
 
     /**
      * Called when the mouse move over the document after a resizing started, to
@@ -174,7 +176,7 @@ let Resizer = {
      */
     onDocumentMouseMove(event) {
         Actions.resize(this.getGridName(), this.getScreenMousePosition(event));
-    },
+    }
 
     /**
      * Called when the mouse is released over the document during a resizing, to
@@ -185,7 +187,7 @@ let Resizer = {
     onDocumentMouseUp(event) {
         this.deactivateResizingDetection();
         Actions.stopResizing(this.getGridName());
-    },
+    }
 
     /**
      * Return the attributes to use in the main node in the render method
@@ -203,7 +205,7 @@ let Resizer = {
             attrs.onMouseDown = this.onMouseDown;
         }
         return attrs;
-    },
+    }
 
     /**
      * Render the component
@@ -213,15 +215,15 @@ let Resizer = {
     render() {
         return (
             <div
-                ref={(c) => { this.resizerRef = c; }}
+                ref={this.saveResizerRef}
                 className={this.getResizerClasses()}
                 {...this.getRenderAttrs()}
             />
         );
     }
 
-};
+}
 
-Resizer = createReactClass(Resizer);
+Resizer.displayName = 'Resizer';
 
 export { Resizer };

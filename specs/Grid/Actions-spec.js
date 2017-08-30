@@ -1,12 +1,10 @@
-import { Actions } from '../../app/Grid/Actions';
-import { Manipulator } from '../../app/Grid/Manipulator';
-import { Store } from '../../app/Grid/Store';
+import { Actions, Manipulator, Store } from '../../app/Grid/Data';
 
-import { customMatchers } from './custom-matchers';
+import { customMatchers } from '../customMatchers';
 import { Utils } from '../Utils';
 
 
-describe('Grid.Actions', () => {
+describe('Grid.Data.Actions', () => {
     const defaultHoveringDelay = Store.__private.hoveringDelay;
     const hoveringDelay = 10;
 
@@ -176,7 +174,7 @@ describe('Grid.Actions', () => {
         Store.on('grid.designMode.module.add', callback);
 
         try {
-            Actions.addModule('foo', 'Module.Test1', { text: 'test text' });
+            Actions.addModule('foo', 'Modules.Test1', { text: 'test text' });
         } finally {
 
             // give some time to let the callbacks to be called
@@ -199,7 +197,7 @@ describe('Grid.Actions', () => {
                         '<content id="content-2">' +
                             '<row id="row-8">' +
                                 '<cell type="module" id="cell-9" module-index="0">' +
-                                    '<content component="Module.Test1" text="test text" id="content-10"/>' +
+                                    '<content component="Modules.Test1" text="test text" id="content-10"/>' +
                                 '</cell>' +
                             '</row>' +
                             '<row id="row-3">' +

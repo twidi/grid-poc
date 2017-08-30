@@ -1,12 +1,12 @@
 import _ from 'lodash';
 
-import { Exceptions } from '../Utils/Exceptions';
+import { Exceptions } from '../../Utils';
 
 
 /**
  * Manipulates grid data
- * @namespace
- * @memberOf module:Grid
+ * @memberOf module:Grid.Data
+ * @class
  */
 const Manipulator = {
     XMLSerializer: new XMLSerializer(),
@@ -178,8 +178,10 @@ const Manipulator = {
      *
      * @returns {Element|Node|XML} - The added row
      *
-     * @throws {module:Grid.Manipulator.Exceptions.Inconsistency} If "beforeRow" is given but the node isn't yet a grid
-     * @throws {module:Grid.Manipulator.Exceptions.Inconsistency} If "beforeRow" is not in the content of the "node"
+     * @throws {module:Grid.Data.Manipulator.Exceptions.Inconsistency}
+     *     If "beforeRow" is given but the node isn't yet a grid
+     * @throws {module:Grid.Data.Manipulator.Exceptions.Inconsistency}
+     *     If "beforeRow" is not in the content of the "node"
      */
     addRow(node, beforeRow, type) {
         /* If this is not a grid node, create a first row this the actual
@@ -225,8 +227,8 @@ const Manipulator = {
      *
      * @returns {Element|Node|XML} - The added cell (XML), with the type and a content.
      *
-     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the given "type" is not "grid" or "module"
-     * @throws {module:Grid.Manipulator.Exceptions.Inconsistency} If "beforeCell" is not in the "row"
+     * @throws {module:Grid.Data.Manipulator.Exceptions.InvalidType} If the given "type" is not "grid" or "module"
+     * @throws {module:Grid.Data.Manipulator.Exceptions.Inconsistency} If "beforeCell" is not in the "row"
      */
     addCell(row, beforeCell, type, contentNode) {
         if (!this.reCellType.test(type)) {
@@ -288,7 +290,7 @@ const Manipulator = {
      *
      * @param  {Element|Node|XML} grid - The XML grid node to clean
      *
-     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a grid ("grid" or "mainGrid")
+     * @throws {module:Grid.Data.Manipulator.Exceptions.InvalidType} If the grid is not a grid ("grid" or "mainGrid")
      */
     cleanGrid(grid) {
         let nodeType = grid.getAttribute('type');
@@ -438,8 +440,8 @@ const Manipulator = {
      *
      * @param {Element|Node|XML} grid - The grid to insert placeholders in
      *
-     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
-     * @throws {module:Grid.Manipulator.Exceptions.InvalidState} If the grid already has placeholders or resizers
+     * @throws {module:Grid.Data.Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
+     * @throws {module:Grid.Data.Manipulator.Exceptions.InvalidState} If the grid already has placeholders or resizers
      */
     addPlaceholders(grid) {
         const nodeType = grid.getAttribute('type');
@@ -548,8 +550,8 @@ const Manipulator = {
      *
      * @param  {Element|Node|XML} grid The grid in witch to remove the placeholders
      *
-     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
-     * @throws {module:Grid.Manipulator.Exceptions.InvalidState} If the grid isn't marked as having placeholders
+     * @throws {module:Grid.Data.Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
+     * @throws {module:Grid.Data.Manipulator.Exceptions.InvalidState} If the grid isn't marked as having placeholders
      */
     removePlaceholders(grid) {
         const nodeType = grid.getAttribute('type');
@@ -599,7 +601,7 @@ const Manipulator = {
      * Return the nearest grid (or mainGrid) for the given node
      *
      * @param  {Element|Node|XML} node - The grid node (can be a row, cell, content...) for which we want the grid
-     * @param {Boolean=false} includeCurrent - If we test the given node if it's a grid and return it if True
+     * @param {Boolean} [includeCurrent=false] - If we test the given node if it's a grid and return it if True
      *
      * @return {Element|Node|XML} - The found grid node, or null if none found (may not happen)
      */
@@ -659,7 +661,7 @@ const Manipulator = {
      * @param  {Element|Node|XML} contentNode - The content node to move
      * @param  {Element|Node|XML} placeholderCell - The cell placeholder in which to move the content
      *
-     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the placeholder cell is not a placeholder
+     * @throws {module:Grid.Data.Manipulator.Exceptions.InvalidType} If the placeholder cell is not a placeholder
      *                                                          (type "placeholder")
      */
     moveContentToPlaceholder(contentNode, placeholderCell) {
@@ -745,8 +747,8 @@ const Manipulator = {
      *
      * @param {Element|Node|XML} grid - The grid to insert resizers in
      *
-     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
-     * @throws {module:Grid.Manipulator.Exceptions.InvalidState} If the grid already has resizers or placeholders
+     * @throws {module:Grid.Data.Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
+     * @throws {module:Grid.Data.Manipulator.Exceptions.InvalidState} If the grid already has resizers or placeholders
      */
     addResizers(grid) {
         const nodeType = grid.getAttribute('type');
@@ -788,8 +790,8 @@ const Manipulator = {
      *
      * @returns {Element|Node|XML} - The added resizer (XML), with the type.
      *
-     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the given node is not a row neither a cell
-     * @throws {module:Grid.Manipulator.Exceptions.Inconsistency} If the given node is the first child
+     * @throws {module:Grid.Data.Manipulator.Exceptions.InvalidType} If the given node is not a row neither a cell
+     * @throws {module:Grid.Data.Manipulator.Exceptions.Inconsistency} If the given node is the first child
      */
     addResizer(beforeNode) {
         const nodeType = beforeNode.tagName;
@@ -817,8 +819,8 @@ const Manipulator = {
      *
      * @param  {Element|Node|XML} grid The grid in witch to remove the resizers
      *
-     * @throws {module:Grid.Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
-     * @throws {module:Grid.Manipulator.Exceptions.InvalidState} If the grid isn't marked as having resizers
+     * @throws {module:Grid.Data.Manipulator.Exceptions.InvalidType} If the grid is not a main grid (type "mainGrid")
+     * @throws {module:Grid.Data.Manipulator.Exceptions.InvalidState} If the grid isn't marked as having resizers
      */
     removeResizers(grid) {
         const nodeType = grid.getAttribute('type');

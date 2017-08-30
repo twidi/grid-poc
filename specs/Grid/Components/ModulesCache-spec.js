@@ -1,13 +1,11 @@
 import _ from 'lodash';
-import jasmineReact from 'jasmine-react-helpers';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { Manipulator } from '../../../app/Grid/Manipulator';
-import { Store } from '../../../app/Grid/Store';
+import { Manipulator, Store } from '../../../app/Grid/Data';
 
-import { Cell } from '../../../app/Grid/Components/Cell';
-import { ModulesCache } from '../../../app/Grid/Components/ModulesCache';
+import { Cell } from '../../../app/Grid/Components';
+import { ModulesCache } from '../../../app/Grid/Components/Utils';
 
 import { Utils } from '../../Utils';
 import { componentUtils } from './Utils';
@@ -21,12 +19,12 @@ describe('Grid.Components.ModulesCache', () => {
     let updateCellComponentProps;
 
     const makeCellComponent = (cell, props) => {
-        const cellElement = React.createElement(cell, props);
-        cellComponent = componentUtils.renderIntoDocument(cellElement);
         updateCellComponentProps = (newProps) => {
-            const cellElement2 = React.createElement(cell, Object.assign({}, props, newProps));
-            cellComponent = componentUtils.renderIntoDocument(cellElement2);
+            const cellElement = React.createElement(cell, Object.assign({}, props, newProps));
+            cellComponent = componentUtils.renderIntoDocument(cellElement);
+            spyOn(cellComponent, 'canHoldExternalNodes').and.returnValue(false);
         };
+        updateCellComponentProps({}); // will create the first one
     };
 
     beforeEach((done) => {
@@ -36,14 +34,13 @@ describe('Grid.Components.ModulesCache', () => {
         // we mock the uniqueId function of lodash to know the value to expect
         Utils.mockUniqueId();
 
-        // reset the modules cache for every test
-        componentUtils.clearModulesCache();
-
         // we add a grid with some content
         testGrid = componentUtils.makeTestGrid();
         const moduleGridCell = testGrid.querySelector('cell[type=module]');
-        jasmineReact.spyOnClass(Cell, 'canHoldExternalNodes').and.returnValue(false);
         makeCellComponent(Cell, { node: moduleGridCell });
+
+        // reset the modules cache for every test
+        componentUtils.clearModulesCache();
 
         setTimeout(done, 0.01);
     });
@@ -77,7 +74,7 @@ describe('Grid.Components.ModulesCache', () => {
     it('should get a module component', (done) => {
         spyOn(ReactDOM, 'render').and.callThrough();
 
-        const container = ModulesCache.getModuleComponent(cellComponent);
+        const container = ModulesCache.getModuleComponent(cellComponent.wrappedRef);
 
         // give some time to render the module component
         setTimeout(() => {
@@ -99,7 +96,7 @@ describe('Grid.Components.ModulesCache', () => {
     it('should get a module holder component', (done) => {
         spyOn(ReactDOM, 'render').and.callThrough();
 
-        const container = ModulesCache.getHolderComponent(cellComponent);
+        const container = ModulesCache.getHolderComponent(cellComponent.wrappedRef);
 
         // give some time to render the holder component
         setTimeout(() => {
@@ -125,7 +122,7 @@ describe('Grid.Components.ModulesCache', () => {
     });
 
     it('should get a module component from cache if called again with a cell', (done) => {
-        const container = ModulesCache.getModuleComponent(cellComponent);
+        const container = ModulesCache.getModuleComponent(cellComponent.wrappedRef);
         const component = getModuleComponent();
 
         // give some time to render the module component
@@ -133,7 +130,7 @@ describe('Grid.Components.ModulesCache', () => {
 
             spyOn(ReactDOM, 'render').and.callThrough();
 
-            const newContainer = ModulesCache.getModuleComponent(cellComponent);
+            const newContainer = ModulesCache.getModuleComponent(cellComponent.wrappedRef);
 
             // nothing was rendered again
             expect(ReactDOM.render.calls.count()).toEqual(0);
@@ -147,7 +144,7 @@ describe('Grid.Components.ModulesCache', () => {
     });
 
     it('should get a module holder component from cache if called again with a cell', (done) => {
-        const container = ModulesCache.getHolderComponent(cellComponent);
+        const container = ModulesCache.getHolderComponent(cellComponent.wrappedRef);
         const component = getHolderComponent();
 
         // give some time to render
@@ -156,7 +153,7 @@ describe('Grid.Components.ModulesCache', () => {
             spyOn(ReactDOM, 'render').and.callThrough();
             spyOn(component, 'forceUpdate').and.callThrough();
 
-            const newContainer = ModulesCache.getHolderComponent(cellComponent);
+            const newContainer = ModulesCache.getHolderComponent(cellComponent.wrappedRef);
 
             // give some time to render the holder component again
             setTimeout(() => {
@@ -179,7 +176,7 @@ describe('Grid.Components.ModulesCache', () => {
     });
 
     it('should rerender the holder component if the module was moved elsewhere', (done) => {
-        const container = ModulesCache.getHolderComponent(cellComponent);
+        const container = ModulesCache.getHolderComponent(cellComponent.wrappedRef);
         const component = getHolderComponent();
 
         // give some time to render the holder component
@@ -191,7 +188,7 @@ describe('Grid.Components.ModulesCache', () => {
             spyOn(ReactDOM, 'render').and.callThrough();
             spyOn(component, 'forceUpdate').and.callThrough();
 
-            const newContainer = ModulesCache.getHolderComponent(cellComponent);
+            const newContainer = ModulesCache.getHolderComponent(cellComponent.wrappedRef);
 
             // give some time to render the holder component again
             setTimeout(() => {
@@ -213,7 +210,7 @@ describe('Grid.Components.ModulesCache', () => {
     });
 
     it('should rerender the holder component if the cell props was updated', (done) => {
-        const container = ModulesCache.getHolderComponent(cellComponent);
+        const container = ModulesCache.getHolderComponent(cellComponent.wrappedRef);
         const component = getHolderComponent();
 
         // give some time to render the holder component
@@ -230,7 +227,7 @@ describe('Grid.Components.ModulesCache', () => {
                 spyOn(ReactDOM, 'render').and.callThrough();
                 spyOn(component, 'forceUpdate').and.callThrough();
 
-                const newContainer = ModulesCache.getHolderComponent(cellComponent);
+                const newContainer = ModulesCache.getHolderComponent(cellComponent.wrappedRef);
 
                 // give some time to render the holder component again
                 setTimeout(() => {
@@ -254,7 +251,7 @@ describe('Grid.Components.ModulesCache', () => {
     });
 
     it('should get only new props for the holder component', (done) => {
-        ModulesCache.getHolderComponent(cellComponent);
+        ModulesCache.getHolderComponent(cellComponent.wrappedRef);
 
         // give some time to render the holder component
         setTimeout(() => {
@@ -275,7 +272,7 @@ describe('Grid.Components.ModulesCache', () => {
     });
 
     it('should return a module from cache from a key', (done) => {
-        const container = ModulesCache.getModuleComponent(cellComponent);
+        const container = ModulesCache.getModuleComponent(cellComponent.wrappedRef);
         const component = getModuleComponent();
 
         // give some time to render the module component
@@ -297,7 +294,7 @@ describe('Grid.Components.ModulesCache', () => {
     });
 
     it('should return a module holder from cache from a key', (done) => {
-        const container = ModulesCache.getHolderComponent(cellComponent);
+        const container = ModulesCache.getHolderComponent(cellComponent.wrappedRef);
         const component = getHolderComponent();
 
         // give some time to render the module component

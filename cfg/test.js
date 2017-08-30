@@ -1,4 +1,5 @@
 const path = require('path');
+const CircularDependencyPlugin = require('circular-dependency-plugin');
 
 module.exports = {
     devtool: 'inline-source-map',
@@ -29,5 +30,14 @@ module.exports = {
                 ]
             }
         ]
-    }
+    },
+    plugins: [
+        new CircularDependencyPlugin({
+            exclude: /node_modules/,
+            failOnError: false,
+            onDetected({paths, compilation}) {
+                compilation.errors.push(new Error(paths.join(' -> ')));
+            }
+        })
+    ]
 };

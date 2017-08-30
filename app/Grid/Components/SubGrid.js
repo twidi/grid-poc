@@ -1,22 +1,16 @@
-import createReactClass from 'create-react-class';
-
-import { GridMixin } from './Mixins/Grid';
-import { NodeMixin } from './Mixins/Node';
+import { Grid } from './Bases';
 
 
 /**
  * SubGrid component, a grid inside a cell, composed of rows
- * @namespace
+ *
  * @memberOf module:Grid.Components
+ *
  * @summary The SubGrid component, inside a cell
- * @mixes module:Grid.Components.Mixins.NodeMixin
- * @mixes module:Grid.Components.Mixins.GridMixin
+ *
+ * @extends module:Grid.Components.Bases.Grid
  */
-let SubGrid = {
-    mixins: [
-        NodeMixin,
-        GridMixin
-    ],
+class SubGrid extends Grid {
 
     /**
      * Render the component mainly by calling renderRows
@@ -24,8 +18,8 @@ let SubGrid = {
     render() {
         return this.renderGrid({}, {});
     }
-};
+}
 
-SubGrid = createReactClass(SubGrid);
+SubGrid.displayName = 'SubGrid';
 
 export { SubGrid };

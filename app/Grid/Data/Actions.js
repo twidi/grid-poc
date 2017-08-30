@@ -4,8 +4,8 @@ import flux from 'flux-react';
 
 /**
  * Grid store actions
- * @namespace
- * @memberOf module:Grid
+ * @memberOf module:Grid.Data
+ * @class
  */
 let Actions = {
     // Here are just definitions of functions. There are really created by the
@@ -18,7 +18,7 @@ let Actions = {
      *
      * @param {Element|Node|XML} grid - The grid to add to the list
      *
-     * @fires module:Grid.Store#"grid.add"
+     * @fires module:Grid.Data.Store#"grid.add"
      */
     addGrid(grid) {},
 
@@ -31,7 +31,7 @@ let Actions = {
      * @param {String} module - The path of the module to use
      * @param {Object} params - An flat object with all attributes of this module
      *
-     * @fires module:Grid.Store#"grid.designMode.module.add"
+     * @fires module:Grid.Data.Store#"grid.designMode.module.add"
      */
     addModule(gridName, module, params) {},
 
@@ -43,7 +43,7 @@ let Actions = {
      * @param  {String} gridName - The grid from which we want to remove the module
      * @param  {Element|Node|XML} moduleCell - The module cell to remove
      *
-     * @fires module:Grid.Store#"grid.designMode.module.remove"
+     * @fires module:Grid.Data.Store#"grid.designMode.module.remove"
      */
     removeModule(gridName, moduleCell) {},
 
@@ -54,7 +54,7 @@ let Actions = {
      *
      * @param {String} gridName - The name of the grid for witch we want to enter the design mode
      *
-     * @fires module:Grid.Store#"grid.designMode.enter"
+     * @fires module:Grid.Data.Store#"grid.designMode.enter"
      */
     enterDesignMode(gridName) {},
 
@@ -66,7 +66,7 @@ let Actions = {
      *
      * @param {String} gridName - The name of the grid for witch we want to exit the design mode
      *
-     * @fires module:Grid.Store#"grid.designMode.exit"
+     * @fires module:Grid.Data.Store#"grid.designMode.exit"
      */
     exitDesignMode(gridName) {},
 
@@ -78,7 +78,7 @@ let Actions = {
      * @param {String} gridName - The name of the grid for witch we want to start dragging
      * @param {Element|Node|XML} moduleCell - The "module" cell containing the module we want to drag
      *
-     * @fires module:Grid.Store#"grid.designMode.dragging.start"
+     * @fires module:Grid.Data.Store#"grid.designMode.dragging.start"
      */
     startDragging(gridName, moduleCell) {},
 
@@ -89,7 +89,7 @@ let Actions = {
      *
      * @param {String} gridName - The name of the grid for witch we want to stop dragging
      *
-     * @fires module:Grid.Store#"grid.designMode.dragging.stop"
+     * @fires module:Grid.Data.Store#"grid.designMode.dragging.stop"
      */
     cancelDragging(gridName) {},
 
@@ -101,7 +101,7 @@ let Actions = {
      * @param {String} gridName - The name of the grid on witch the hovering occurs
      * @param {Element|Node|XML} [placeholderCell=] - The "placeholder" cell where we the module is hover
      *
-     * @fires module:Grid.Store#"grid.designMode.hovering.start"
+     * @fires module:Grid.Data.Store#"grid.designMode.hovering.start"
      */
     startHovering(gridName, placeholderCell) {},
 
@@ -112,7 +112,7 @@ let Actions = {
      *
      * @param {String} gridName - The name of the grid on witch the hovering occurs
      *
-     * @fires module:Grid.Store#"grid.designMode.hovering.stop"
+     * @fires module:Grid.Data.Store#"grid.designMode.hovering.stop"
      */
     stopHovering(gridName) {},
 
@@ -125,7 +125,7 @@ let Actions = {
      * @param {Element|Node|XML} [placeholderCell=] - The "placeholder" cell where we want to drag the cell
      * to be dropped on. If defined, will replace the one saved in the store.
      *
-     * @fires module:Grid.Store#"grid.designMode.drop"
+     * @fires module:Grid.Data.Store#"grid.designMode.drop"
      */
     drop(gridName, placeholderCell) {},
 
@@ -140,7 +140,7 @@ let Actions = {
      *                              of the previous and next nodes
      * @param  {int} initialPos - The position of the mouse acting as a starting point for the resizing
      *
-     * @fires module:Grid.Store#"grid.designMode.resizing.start"
+     * @fires module:Grid.Data.Store#"grid.designMode.resizing.start"
      */
     startResizing(gridName, resizer, fullSize, initialPos) {},
 
@@ -153,7 +153,7 @@ let Actions = {
      * @param  {int} currentPos - The position of the mouse at the moment where the action is called
      *                                to compute the new sizes of the previous and next nodes
      *
-     * @fires module:Grid.Store#"grid.designMode.resizing.move"
+     * @fires module:Grid.Data.Store#"grid.designMode.resizing.move"
      */
     resize(gridName, currentPos) {},
 
@@ -164,7 +164,7 @@ let Actions = {
      *
      * @param  {String} gridName - The name of the grid on witch the resizing occurs
      *
-     * @fires module:Grid.Store#"grid.designMode.resizing.stop"
+     * @fires module:Grid.Data.Store#"grid.designMode.resizing.stop"
      */
     stopResizing(gridName) {},
 
@@ -175,7 +175,7 @@ let Actions = {
      *
      * @param  {String} gridName - The name of the grid on witch the undo occurs
      *
-     * @fires module:Grid.Store#"grid.designMode.history.back"
+     * @fires module:Grid.Data.Store#"grid.designMode.history.back"
      */
     goBackInHistory(gridName) {},
 
@@ -186,7 +186,7 @@ let Actions = {
      *
      * @param  {String} gridName - The name of the grid on witch the redo occurs
      *
-     * @fires module:Grid.Store#"grid.designMode.history.forward"
+     * @fires module:Grid.Data.Store#"grid.designMode.history.forward"
      */
     goForwardInHistory(gridName) {},
 
@@ -201,8 +201,8 @@ let Actions = {
      * @param  {Boolean} [defaultToFirstModuleCell=false]
      *         - `true` if we want to focus the first available cell if the given one is not available
      *
-     * @fires module:Grid.Store#"grid.navigate.focus.off"
-     * @fires module:Grid.Store#"grid.navigate.focus.on"
+     * @fires module:Grid.Data.Store#"grid.navigate.focus.off"
+     * @fires module:Grid.Data.Store#"grid.navigate.focus.on"
      */
     focusModuleCell(gridName, moduleCell, defaultToFirstModuleCell) {},
 
@@ -212,11 +212,11 @@ let Actions = {
      * @type {function}
      *
      * @param  {String} gridName - The name of the grid where we want to focus a cell
-     * @param  {Boolean=false} useModuleIndex - `true` to focus on the next module in the index order.
-     *                                          `false` to try to get the nearest module on the right
+     * @param  {Boolean} [useModuleIndex=false] - `true` to focus on the next module in the index order.
+     *                                            `false` to try to get the nearest module on the right
      *
-     * @fires module:Grid.Store#"grid.navigate.focus.off"
-     * @fires module:Grid.Store#"grid.navigate.focus.on"
+     * @fires module:Grid.Data.Store#"grid.navigate.focus.off"
+     * @fires module:Grid.Data.Store#"grid.navigate.focus.on"
      */
     focusRightModuleCell(gridName, useModuleIndex) {},
 
@@ -226,11 +226,11 @@ let Actions = {
      * @type {function}
      *
      * @param  {String} gridName - The name of the grid where we want to focus a cell
-     * @param  {Boolean=False} useModuleIndex - `true` to focus on the previous module in the index order.
-     *                                          `false` to try to get the nearest module on the left
+     * @param  {Boolean} [useModuleIndex=False] - `true` to focus on the previous module in the index order.
+     *                                            `false` to try to get the nearest module on the left
      *
-     * @fires module:Grid.Store#"grid.navigate.focus.off"
-     * @fires module:Grid.Store#"grid.navigate.focus.on"
+     * @fires module:Grid.Data.Store#"grid.navigate.focus.off"
+     * @fires module:Grid.Data.Store#"grid.navigate.focus.on"
      */
     focusLeftModuleCell(gridName, useModuleIndex) {},
 
@@ -241,8 +241,8 @@ let Actions = {
      *
      * @param  {String} gridName - The name of the grid where we want to focus a cell
      *
-     * @fires module:Grid.Store#"grid.navigate.focus.off"
-     * @fires module:Grid.Store#"grid.navigate.focus.on"
+     * @fires module:Grid.Data.Store#"grid.navigate.focus.off"
+     * @fires module:Grid.Data.Store#"grid.navigate.focus.on"
      */
     focusBottomModuleCell(gridName) {},
 
@@ -253,8 +253,8 @@ let Actions = {
      *
      * @param  {String} gridName - The name of the grid where we want to focus a cell
      *
-     * @fires module:Grid.Store#"grid.navigate.focus.off"
-     * @fires module:Grid.Store#"grid.navigate.focus.on"
+     * @fires module:Grid.Data.Store#"grid.navigate.focus.off"
+     * @fires module:Grid.Data.Store#"grid.navigate.focus.on"
      */
     focusTopModuleCell(gridName) {}
 };

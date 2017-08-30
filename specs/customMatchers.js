@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { Manipulator } from './../../app/Grid/Manipulator';
+import { Manipulator } from '../app/Grid/Data';
 
 
 /**
@@ -20,7 +20,7 @@ const customMatchers = {
 
      * import { customMatchers } from './custom-matchers';
      *
-     * describe("Grid.Manipulator", function() {
+     * describe("Grid.Data.Manipulator", function() {
      *
      *     beforeEach(function() {
      *         jasmine.addMatchers(customMatchers);

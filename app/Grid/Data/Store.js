@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import flux from 'flux-react';
 
-import { Exceptions } from '../Utils/Exceptions';
+import { Exceptions } from '../../Utils';
 
 import { Actions } from './Actions';
 import { Manipulator } from './Manipulator';
@@ -9,8 +9,9 @@ import { Manipulator } from './Manipulator';
 
 /**
  * The Grid store. This is the public interface
- * @namespace
- * @memberOf module:Grid
+ * @memberOf module:Grid.Data
+ * @class
+
  */
 let Store = {
 
@@ -116,8 +117,10 @@ let Store = {
      *
      * @return {Element|Node|XML} - The wanted XML node
      *
-     * @throws {module:Grid.Store.Exceptions.GridDoesNotExist} If the given name does not match an existing grid name
-     * @throws {module:Grid.Store.Exceptions.NodeDoesNotExist} If the given id does not match an existing node id
+     * @throws {module:Grid.Data.Store.Exceptions.GridDoesNotExist}
+     *     If the given name does not match an existing grid name
+     * @throws {module:Grid.Data.Store.Exceptions.NodeDoesNotExist}
+     *     If the given id does not match an existing node id
      */
     getGridNodeById(gridName, nodeId) {
         const grid = this.getGrid(gridName);
@@ -294,7 +297,7 @@ let Store = {
      *
      * @param  {Element|Node|XML} node - The node for which we want the size
      *
-     * @return {float} - The float-converted value of the attribute, or 1 if not defined
+     * @return {Number} - The float-converted value of the attribute, or 1 if not defined
      */
     getRelativeSize(node) {
         return parseFloat(node.getAttribute('relativeSize') || 1);
@@ -372,9 +375,9 @@ let Store = {
 
 /**
  * Private interface of the Store module. Everything can only be accessed inside the Store itself
- * @namespace
- * @memberOf module:Grid.Store
+ * @memberOf module:Grid.Data.Store
  * @inner
+ * @class
  *
  */
 const Private = {
@@ -492,7 +495,8 @@ const Private = {
      * - `grid`: the XML grid
      * - `designModeStep`: the current design mode step for the grid
      *
-     * @throws {module:Grid.Store.Exceptions.GridDoesNotExist} If the given name does not match an existing grid name
+     * @throws {module:Grid.Data.Store.Exceptions.GridDoesNotExist}
+     *     If the given name does not match an existing grid name
      */
     getGridEntry(gridName) {
         if (!_.has(this.grids, gridName)) {
@@ -504,11 +508,11 @@ const Private = {
     /**
      * Add a grid to the list of grids.
      * It's an action, should be called via
-     * {@link module:Grid.Actions.enterDesignMode Grid.Actions.addGrid}
+     * {@link module:Grid.Data.Actions.addGrid Actions.addGrid}
      *
      * @param {Element|Node|XML} grid - The grid to add to the list
      *
-     * @fires module:Grid.Store#"grid.add"
+     * @fires module:Grid.Data.Store#"grid.add"
      */
     addGrid(grid) {
         const name = grid.getAttribute('name');
@@ -534,7 +538,7 @@ const Private = {
         /**
          * Event fired when a grid is added to the Grid store
          *
-         * @event module:Grid.Store#"grid.add"
+         * @event module:Grid.Data.Store#"grid.add"
          *
          * @property {String} name - The name of the added Grid
          */
@@ -545,13 +549,13 @@ const Private = {
      * Add a module to the given grid
      *
      * It's an action, should be called via
-     * {@link module:Grid.Actions.enterDesignMode Grid.Actions.addModule}
+     * {@link module:Grid.Data.Actions.addModule Actions.addModule}
      *
      * @param {String} gridName - The name of the grid on which to add the module
      * @param {String} module - The path of the module to use
      * @param {Object} params - An flat object with all attributes of this module
      *
-     * @fires module:Grid.Store#"grid.designMode.module.add"
+     * @fires module:Grid.Data.Store#"grid.designMode.module.add"
      */
     addModule(gridName, module, params) {
         const grid = this.getGrid(gridName);
@@ -584,7 +588,7 @@ const Private = {
         /**
          * Event fired when a module is added to a grid
          *
-         * @event module:Grid.Store#"grid.designMode.module.add"
+         * @event module:Grid.Data.Store#"grid.designMode.module.add"
          *
          * @property {String} name - The name of the updated Grid
          */
@@ -595,12 +599,12 @@ const Private = {
      * Remove a module from the given grid
      *
      * It's an action, should be called via
-     * {@link module:Grid.Actions.enterDesignMode Grid.Actions.removeModule}
+     * {@link module:Grid.Data.Actions.removeModule Actions.removeModule}
      *
      * @param  {String} gridName - The grid from which we want to remove the module
      * @param  {Element|Node|XML} moduleCell - The module cell to remove
      *
-     * @fires module:Grid.Store#"grid.designMode.module.remove"
+     * @fires module:Grid.Data.Store#"grid.designMode.module.remove"
      */
     removeModule(gridName, moduleCell) {
         const grid = this.getGrid(gridName);
@@ -625,7 +629,7 @@ const Private = {
         /**
          * Event fired when a module is removed from a grid
          *
-         * @event module:Grid.Store#"grid.designMode.module.remove"
+         * @event module:Grid.Data.Store#"grid.designMode.module.remove"
          *
          * @property {String} name - The name of the updated Grid
          */
@@ -636,11 +640,11 @@ const Private = {
      * Set design mode for the given grid.
      *
      * It's an action, should be called via
-     * {@link module:Grid.Actions.enterDesignMode Grid.Actions.enterDesignMode}
+     * {@link module:Grid.Data.Actions.enterDesignMode Actions.enterDesignMode}
      *
      * @param {String} gridName - The name of the grid for witch we want to enter the design mode
      *
-     * @fires module:Grid.Store#"grid.designMode.enter"
+     * @fires module:Grid.Data.Store#"grid.designMode.enter"
      */
     enterDesignMode(gridName) {
         this.changeDesignModeStep(gridName, 'enabled');
@@ -648,7 +652,7 @@ const Private = {
         /**
          * Event fired when a grid enters design mode
          *
-         * @event module:Grid.Store#"grid.designMode.enter"
+         * @event module:Grid.Data.Store#"grid.designMode.enter"
          *
          * @property {String} gridName - The name of the updated grid
          */
@@ -659,11 +663,11 @@ const Private = {
      * Exit design mode for the given grid.
      *
      * It's an action, should be called via
-     * {@link module:Grid.Actions.exitDesignMode Grid.Actions.exitDesignMode}
+     * {@link module:Grid.Data.Actions.exitDesignMode Actions.exitDesignMode}
      *
      * @param {String} gridName - The name of the grid for witch we want to exit the design mode
      *
-     * @fires module:Grid.Store#"grid.designMode.exit"
+     * @fires module:Grid.Data.Store#"grid.designMode.exit"
      */
     exitDesignMode(gridName) {
         this.changeDesignModeStep(gridName, 'disabled');
@@ -671,7 +675,7 @@ const Private = {
         /**
          * Event fired when a grid exits design mode
          *
-         * @event module:Grid.Store#"grid.designMode.exit"
+         * @event module:Grid.Data.Store#"grid.designMode.exit"
          *
          * @property {String} gridName - The name of the updated grid
          */
@@ -749,8 +753,10 @@ const Private = {
      *
      * @returns {Element|Node|XML} - The node, eventually updated to be the actual one in the grid
      *
-     * @throws {module:Grid.Store.Exceptions.GridDoesNotExist} If the given name does not match an existing grid name
-     * @throws {module:Grid.Store.Exceptions.Inconsistency} If the given node does not belongs to the grid
+     * @throws {module:Grid.Data.Store.Exceptions.GridDoesNotExist}
+     *     If the given name does not match an existing grid name
+     * @throws {module:Grid.Data.Store.Exceptions.Inconsistency}
+     *     If the given node does not belongs to the grid
      */
     checkConsistency(gridName, node) {
         this.getGrid(gridName);
@@ -909,12 +915,12 @@ const Private = {
      * Start dragging the given module in the given grid.
      *
      * It's an action, should be called via
-     * {@link module:Grid.Actions.startDragging Grid.Actions.startDragging}
+     * {@link module:Grid.Data.Actions.startDragging Actions.startDragging}
      *
      * @param {String} gridName - The name of the grid for witch we want to stop dragging
      * @param  {Element|Node|XML} moduleCell - The module cell to drag
      *
-     * @fires module:Grid.Store#"grid.designMode.dragging.start"
+     * @fires module:Grid.Data.Store#"grid.designMode.dragging.start"
      */
     startDragging(gridName, moduleCell) {
         try {
@@ -939,7 +945,7 @@ const Private = {
             /**
              * Event fired when a module starts to be dragged over a grid
              *
-             * @event module:Grid.Store#"grid.designMode.dragging.start"
+             * @event module:Grid.Data.Store#"grid.designMode.dragging.start"
              *
              * @property {String} name - The name of the Grid where the dragging occurs
              */
@@ -959,11 +965,11 @@ const Private = {
      * Stop dragging the currently dragged module in the given grid.
      *
      * It's an action, should be called via
-     * {@link module:Grid.Actions.cancelDragging Grid.Actions.cancelDragging}
+     * {@link module:Grid.Data.Actions.cancelDragging Actions.cancelDragging}
      *
      * @param {String} gridName - The name of the grid for witch we want to stop dragging
      *
-     * @fires module:Grid.Store#"grid.designMode.dragging.stop"
+     * @fires module:Grid.Data.Store#"grid.designMode.dragging.stop"
      */
     cancelDragging(gridName) {
         this.checkConsistency(gridName);
@@ -980,7 +986,7 @@ const Private = {
         /**
          * Event fired when a module stop to be dragged over a grid
          *
-         * @event module:Grid.Store#"grid.designMode.dragging.stop"
+         * @event module:Grid.Data.Store#"grid.designMode.dragging.stop"
          *
          * @property {String} name - The name of the Grid where the dragging occurs
          */
@@ -997,12 +1003,12 @@ const Private = {
      * The currently dragged module stays on a placeholder.
      *
      * It's an action, should be called via
-     * {@link module:Grid.Actions.startHovering Grid.Actions.startHovering}
+     * {@link module:Grid.Data.Actions.startHovering Actions.startHovering}
      *
      * @param {String} gridName - The name of the grid on witch the hovering occurs
      * @param {Element|Node|XML} [placeholderCell=] - The "placeholder" cell where we the module is hover
      *
-     * @fires module:Grid.Store#"grid.designMode.hovering.start"
+     * @fires module:Grid.Data.Store#"grid.designMode.hovering.start"
      */
     startHovering(gridName, placeholderCell) {
         placeholderCell = this.checkConsistency(gridName, placeholderCell);
@@ -1037,7 +1043,7 @@ const Private = {
         /**
          * Event fired when a dragged module starts to hover a placeholder
          *
-         * @event module:Grid.Store#"grid.designMode.hovering.start"
+         * @event module:Grid.Data.Store#"grid.designMode.hovering.start"
          *
          * @property {String} name - The name of the Grid where the dragging occurs
          */
@@ -1049,7 +1055,7 @@ const Private = {
      *
      * @param {String} gridName - The name of the grid on witch the hovering occurs
      *
-     * @fires module:Grid.Store#"grid.designMode.hovering.stay"
+     * @fires module:Grid.Data.Store#"grid.designMode.hovering.stay"
      */
     stayHovering(gridName) {
         this.checkConsistency(gridName);
@@ -1082,7 +1088,7 @@ const Private = {
          * Event fired when a dragged module stay over a placeholder a long
          * time, the placeholder being replaced by the module
          *
-         * @event module:Grid.Store#"grid.designMode.hovering.stay"
+         * @event module:Grid.Data.Store#"grid.designMode.hovering.stay"
          *
          * @property {String} name - The name of the Grid where the dragging occurs
          */
@@ -1093,11 +1099,11 @@ const Private = {
      * The currently dragged module moves away from the placeholder it was hover.
      *
      * It's an action, should be called via
-     * {@link module:Grid.Actions.stopHovering Grid.Actions.stopHovering}
+     * {@link module:Grid.Data.Actions.stopHovering Actions.stopHovering}
      *
      * @param {String} gridName - The name of the grid on witch the hovering occurs
      *
-     * @fires module:Grid.Store#"grid.designMode.hovering.stop"
+     * @fires module:Grid.Data.Store#"grid.designMode.hovering.stop"
      */
     stopHovering(gridName) {
         this.checkConsistency(gridName);
@@ -1119,7 +1125,7 @@ const Private = {
         /**
          * Event fired when a dragged module stops hovering a placeholder
          *
-         * @event module:Grid.Store#"grid.designMode.hovering.stop"
+         * @event module:Grid.Data.Store#"grid.designMode.hovering.stop"
          *
          * @property {String} name - The name of the Grid where the dragging occurs
          */
@@ -1130,13 +1136,13 @@ const Private = {
      * Drop the currently dragged module in the given placeholder.
      *
      * It's an action, should be called via
-     * {@link module:Grid.Actions.drop Grid.Actions.drop}
+     * {@link module:Grid.Data.Actions.drop Actions.drop}
      *
      * @param {String} gridName - The name of the grid for witch we want to start dragging
      * @param {Element|Node|XML} [placeholderCell=] - The "placeholder" cell where we want to drag the cell
      * to be dropped on. If defined, will replace the one saved in the store.
      *
-     * @fires module:Grid.Store#"grid.designMode.drop"
+     * @fires module:Grid.Data.Store#"grid.designMode.drop"
      */
     drop(gridName, placeholderCell) {
         // stop the delay to go in real hovering mode
@@ -1188,7 +1194,7 @@ const Private = {
         /**
          * Event fired when a dragged module is dropped
          *
-         * @event module:Grid.Store#"grid.designMode.drop"
+         * @event module:Grid.Data.Store#"grid.designMode.drop"
          *
          * @property {String} name - The name of the Grid where the dragging occurs
          */
@@ -1205,7 +1211,7 @@ const Private = {
      * Start moving the given resizer on the given grid
      *
      * It's an action, should be called via
-     * {@link module:Grid.Actions.drop Grid.Actions.startResizing}
+     * {@link module:Grid.Data.Actions.startResizing Actions.startResizing}
      *
      * @param  {String} gridName - The name of the grid on witch the resizing occurs
      * @param  {Element|Node|XML} resizer - The resizer of the grid being moved
@@ -1213,7 +1219,7 @@ const Private = {
      *                              of the previous and next nodes
      * @param  {int} initialPos - The position of the mouse acting as a starting point for the resizing
      *
-     * @fires module:Grid.Store#"grid.designMode.resizing.start"
+     * @fires module:Grid.Data.Store#"grid.designMode.resizing.start"
      */
     startResizing(gridName, resizer, fullSize, initialPos) {
         this.checkConsistency(gridName);
@@ -1240,7 +1246,7 @@ const Private = {
         /**
          * Event fired when a resizer starts to be moved
          *
-         * @event module:Grid.Store#"grid.designMode.resizing.start"
+         * @event module:Grid.Data.Store#"grid.designMode.resizing.start"
          *
          * @property {String} name - The name of the Grid where the resizing occurs
          */
@@ -1251,13 +1257,13 @@ const Private = {
      * Move a resizer to resize its previous and next nodes
      *
      * It's an action, should be called via
-     * {@link module:Grid.Actions.drop Grid.Actions.resize}
+     * {@link module:Grid.Data.Actions.resize Actions.resize}
      *
      * @param  {String} gridName - The name of the grid on witch the resizing occurs
      * @param  {int} currentPos - The position of the mouse at the moment where the action is called
      *                                to compute the new sizes of the previous and next nodes
      *
-     * @fires module:Grid.Store#"grid.designMode.resizing.move"
+     * @fires module:Grid.Data.Store#"grid.designMode.resizing.move"
      */
     resize(gridName, currentPos) {
         this.checkConsistency(gridName);
@@ -1282,7 +1288,7 @@ const Private = {
         /**
          * Event fired when a resizer is moved over the grid
          *
-         * @event module:Grid.Store#"grid.designMode.resizing.move"
+         * @event module:Grid.Data.Store#"grid.designMode.resizing.move"
          *
          * @property {String} name - The name of the Grid where the resizing occurs
          */
@@ -1298,11 +1304,11 @@ const Private = {
      * Stop moving the given resizer on the given grid
      *
      * It's an action, should be called via
-     * {@link module:Grid.Actions.drop Grid.Actions.stopResizing}
+     * {@link module:Grid.Data.Actions.stopResizing Actions.stopResizing}
      *
      * @param  {String} gridName - The name of the grid on witch the resizing occurs
      *
-     * @fires module:Grid.Store#"grid.designMode.resizing.stop"
+     * @fires module:Grid.Data.Store#"grid.designMode.resizing.stop"
      */
     stopResizing(gridName) {
         this.checkConsistency(gridName);
@@ -1313,7 +1319,7 @@ const Private = {
         /**
          * Event fired when a resizer is released
          *
-         * @event module:Grid.Store#"grid.designMode.resizing.stop"
+         * @event module:Grid.Data.Store#"grid.designMode.resizing.stop"
          *
          * @property {String} name - The name of the Grid where the resizing occurs
          */
@@ -1365,7 +1371,7 @@ const Private = {
         /**
          * Event fired when a new version of a grid is added to its history.
          *
-         * @event module:Grid.Store#"grid.designMode.history.add"
+         * @event module:Grid.Data.Store#"grid.designMode.history.add"
          *
          * @property {String} name - The name of the Grid where the history was changed
          */
@@ -1401,11 +1407,11 @@ const Private = {
      * Use the previous version of grid found in its history
      *
      * It's an action, should be called via
-     * {@link module:Grid.Actions.drop Grid.Actions.goBackInHistory}
+     * {@link module:Grid.Data.Actions.goBackInHistory Actions.goBackInHistory}
      *
      * @param  {String} gridName - The name of the grid on witch the undo occurs
      *
-     * @fires module:Grid.Store#"grid.designMode.history.back"
+     * @fires module:Grid.Data.Store#"grid.designMode.history.back"
      */
     goBackInHistory(gridName) {
         if (!this.canGoBackInHistory(gridName)) {
@@ -1420,7 +1426,7 @@ const Private = {
         /**
          * Event fired when we go back to the previous version of a grid in its history
          *
-         * @event module:Grid.Store#"grid.designMode.history.back"
+         * @event module:Grid.Data.Store#"grid.designMode.history.back"
          *
          * @property {String} name - The name of the Grid where the history was changed
          */
@@ -1431,11 +1437,11 @@ const Private = {
      * Use the next version of grid found in its history
      *
      * It's an action, should be called via
-     * {@link module:Grid.Actions.drop Grid.Actions.goForwardInHistory}
+     * {@link module:Grid.Data.Actions.goForwardInHistory Actions.goForwardInHistory}
      *
      * @param  {String} gridName - The name of the grid on witch the redo occurs
      *
-     * @fires module:Grid.Store#"grid.designMode.history.forward"
+     * @fires module:Grid.Data.Store#"grid.designMode.history.forward"
      */
     goForwardInHistory(gridName) {
         if (!this.canGoForwardInHistory(gridName)) {
@@ -1450,7 +1456,7 @@ const Private = {
         /**
          * Event fired when we go forward to the next version of a grid in its history
          *
-         * @event module:Grid.Store#"grid.designMode.history.forward"
+         * @event module:Grid.Data.Store#"grid.designMode.history.forward"
          *
          * @property {String} name - The name of the Grid where the history was changed
          */
@@ -1475,15 +1481,15 @@ const Private = {
      * the first available module cell if asked
      *
      * It's an action, should be called via
-     * {@link module:Grid.Actions.drop Grid.Actions.focusModuleCell}
+     * {@link module:Grid.Data.Actions.focusModuleCell Actions.focusModuleCell}
      *
      * @param  {String} gridName - The name of the grid for which we want to focus a cell
      * @param  {Element|Node|XML} [moduleCell=] - The module cell we want to set the focus on
      * @param  {Boolean} [defaultToFirstModuleCell=false]
      *         - `true` if we want to focus the first available cell if the given one is not available
      *
-     * @fires module:Grid.Store#"grid.navigate.focus.off"
-     * @fires module:Grid.Store#"grid.navigate.focus.on"
+     * @fires module:Grid.Data.Store#"grid.navigate.focus.off"
+     * @fires module:Grid.Data.Store#"grid.navigate.focus.on"
      */
     focusModuleCell(gridName, moduleCell, defaultToFirstModuleCell) {
         const gridEntry = this.getGridEntry(gridName);
@@ -1498,7 +1504,7 @@ const Private = {
             /**
              * Event fired when we a cell that was focused lost the focus
              *
-             * @event module:Grid.Store#"grid.navigate.focus.off
+             * @event module:Grid.Data.Store#"grid.navigate.focus.off
              *
              * @property {String} name - The name of the Grid where the focus change
              * @property {int} oldFocusedModuleCellId - The ID of the module cell
@@ -1510,7 +1516,7 @@ const Private = {
         /**
          * Event fired when we a cell that gain the focus
          *
-         * @event module:Grid.Store#"grid.navigate.focus.on
+         * @event module:Grid.Data.Store#"grid.navigate.focus.on
          *
          * @property {String} name - The name of the Grid where the focus change
          * @property {int} oldFocusedModuleCellId - The ID of the module cell
@@ -1564,14 +1570,14 @@ const Private = {
      * Try to focus the next module cell on the right of the current one for the given grid
      *
      * It's an action, should be called via
-     * {@link module:Grid.Actions.drop Grid.Actions.focusRightModuleCell}
+     * {@link module:Grid.Data.Actions.focusRightModuleCell Actions.focusRightModuleCell}
      *
      * @param  {String} gridName - The name of the grid where we want to focus a cell
-     * @param  {Boolean=false} useModuleIndex - `true` to focus on the next module in the index order.
-     *                                          `false` to try to get the nearest module on the right
+     * @param  {Boolean} [useModuleIndex==false] - `true` to focus on the next module in the index order.
+     *                                             `false` to try to get the nearest module on the right
      *
-     * @fires module:Grid.Store#"grid.navigate.focus.off"
-     * @fires module:Grid.Store#"grid.navigate.focus.on"
+     * @fires module:Grid.Data.Store#"grid.navigate.focus.off"
+     * @fires module:Grid.Data.Store#"grid.navigate.focus.on"
      */
     focusRightModuleCell(gridName, useModuleIndex) {
         if (useModuleIndex) {
@@ -1585,14 +1591,14 @@ const Private = {
      * Try to focus the previous module cell on the left of the current one for the given grid
      *
      * It's an action, should be called via
-     * {@link module:Grid.Actions.drop Grid.Actions.focusLeftModuleCell}
+     * {@link module:Grid.Data.Actions.focusLeftModuleCell Actions.focusLeftModuleCell}
      *
      * @param  {String} gridName - The name of the grid where we want to focus a cell
-     * @param  {Boolean=false} useModuleIndex - `true` to focus on the previous module in the index order.
-     *                                          `false` to try to get the nearest module on the left
+     * @param  {Boolean} [useModuleIndex=false] - `true` to focus on the previous module in the index order.
+     *                                            `false` to try to get the nearest module on the left
      *
-     * @fires module:Grid.Store#"grid.navigate.focus.off"
-     * @fires module:Grid.Store#"grid.navigate.focus.on"
+     * @fires module:Grid.Data.Store#"grid.navigate.focus.off"
+     * @fires module:Grid.Data.Store#"grid.navigate.focus.on"
      */
     focusLeftModuleCell(gridName, useModuleIndex) {
         if (useModuleIndex) {
@@ -1606,12 +1612,12 @@ const Private = {
      * Try to focus the next module cell on the bottom of the current one for the given grid
      *
      * It's an action, should be called via
-     * {@link module:Grid.Actions.drop Grid.Actions.focusBottomModuleCell}
+     * {@link module:Grid.Data.Actions.focusBottomModuleCell Actions.focusBottomModuleCell}
      *
      * @param  {String} gridName - The name of the grid where we want to focus a cell
      *
-     * @fires module:Grid.Store#"grid.navigate.focus.off"
-     * @fires module:Grid.Store#"grid.navigate.focus.on"
+     * @fires module:Grid.Data.Store#"grid.navigate.focus.off"
+     * @fires module:Grid.Data.Store#"grid.navigate.focus.on"
      */
     focusBottomModuleCell(gridName) {
         this.focusNextModuleCell(gridName, 'getBottomCell');
@@ -1621,12 +1627,12 @@ const Private = {
      * Try to focus the previous module cell on the top of the current one for the given grid
      *
      * It's an action, should be called via
-     * {@link module:Grid.Actions.drop Grid.Actions.focusTopModuleCell}
+     * {@link module:Grid.Data.Actions.focusTopModuleCell Actions.focusTopModuleCell}
      *
      * @param  {String} gridName - The name of the grid where we want to focus a cell
      *
-     * @fires module:Grid.Store#"grid.navigate.focus.off"
-     * @fires module:Grid.Store#"grid.navigate.focus.on"
+     * @fires module:Grid.Data.Store#"grid.navigate.focus.off"
+     * @fires module:Grid.Data.Store#"grid.navigate.focus.on"
      */
     focusTopModuleCell(gridName) {
         this.focusNextModuleCell(gridName, 'getTopCell');

@@ -1,14 +1,12 @@
 import _ from 'lodash';
 
-import { Actions } from '../../app/Grid/Actions';
-import { Manipulator } from '../../app/Grid/Manipulator';
-import { Store } from '../../app/Grid/Store';
+import { Actions, Manipulator, Store } from '../../app/Grid/Data';
 
-import { customMatchers } from './custom-matchers';
+import { customMatchers } from '../customMatchers';
 import { Utils } from '../Utils';
 
 
-describe('Grid.Store', () => {
+describe('Grid.Data.Store', () => {
     beforeEach(() => {
         jasmine.addMatchers(customMatchers);
 

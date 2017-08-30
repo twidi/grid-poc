@@ -1,6 +1,7 @@
 const path = require('path');
 const autoprefixer = require('autoprefixer');
 const webpack = require('webpack');
+const CircularDependencyPlugin = require('circular-dependency-plugin');
 
 // Needed to load CSS (and fonts) in parallel
 // var ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -62,6 +63,10 @@ module.exports = {
                     autoprefixer
                 ]
             }
+        }),
+        new CircularDependencyPlugin({
+            exclude: /node_modules/,
+            failOnError: false
         })
     ]
 };

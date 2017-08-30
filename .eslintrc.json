@@ -35,6 +35,7 @@
             "always"
         ],
         "space-before-function-paren": "off",
+        "class-methods-use-this": "off",
         "comma-dangle": ["error", "never"],
         "consistent-return": "off",
         "default-case": "off",
@@ -48,12 +49,18 @@
         "import/no-mutable-exports": "off",
         "import/prefer-default-export": "off",
         "import/no-extraneous-dependencies": ["error", {"devDependencies": ["specs/**/*.js"]}],
+        "no-class-assign": "off",
         "no-continue": "off",
         "no-underscore-dangle": "off",
         "no-unused-vars": ["error", { "args": "none" }],
         "max-len": ["error", 120],
         "jsx-a11y/no-noninteractive-tabindex": "off",
-        "react/prefer-es6-class": ["error", "never"],
+        "react/prefer-es6-class": ["error", "always"],
+        "react/jsx-no-bind": ["error", {
+            "ignoreRefs": false,
+            "allowArrowFunctions": false,
+            "allowBind": false
+        }],
         "react/prop-types": "off",
         "react/sort-comp": "off",
         "react/jsx-filename-extension": ["error", { "extensions": [".js", ".jsx"] }],

@@ -3,15 +3,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import TestUtils from 'react-dom/test-utils';
 
-import { MainGrid } from '../../../app/Grid/Components/MainGrid';
-import { Resizer } from '../../../app/Grid/Components/Resizer';
+import { Actions, Manipulator, Store } from '../../../app/Grid/Data';
 
-import { Actions } from '../../../app/Grid/Actions';
-import { Manipulator } from '../../../app/Grid/Manipulator';
-import { Store } from '../../../app/Grid/Store';
+import { MainGrid, Resizer } from '../../../app/Grid/Components';
 
 import { componentUtils } from './Utils';
-import { TestDocumentEventsMixin } from '../../Utils/ReactMixins/DocumentEvents';
 import { Utils } from '../../Utils';
 
 
@@ -44,12 +40,6 @@ describe('Grid.Components.Resizer', () => {
 
     afterEach(() => {
         componentUtils.unmountAllComponents();
-    });
-
-    it('should manage document events', (done) => {
-        const element = React.createElement(Resizer, { node: verticalResizer });
-        const component = componentUtils.renderIntoDocument(element);
-        TestDocumentEventsMixin(component, done);
     });
 
     it('should access its main grid', () => {

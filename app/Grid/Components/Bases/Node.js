@@ -1,26 +1,23 @@
-import { Store } from '../../Store';
+import React from 'react';
+
+import { Store } from '../../Data';
 
 
 /**
- * A mixin to use for all grid components based on a XML grid node
+ * A base class to use for all grid components based on a XML grid node
  *
- * @mixin
- * @memberOf module:Grid.Components.Mixins
- * @summary A mixin to use for all grid components based on a XML grid node
+ * @memberOf module:Grid.Components.Bases
+ *
+ * @summary A base class to use for all grid components based on a XML grid node
  */
-const NodeMixin = {
+class GridNode extends React.Component {
 
-    /**
-     * When the component is created, set the node in the state based on the
-     * node from the props, to be able to update it later
-     *
-     * @return {object} - The initial state
-     */
-    getInitialState() {
-        return {
-            node: this.props.node
+    constructor(props) {
+        super(props);
+        this.state = {
+            node: props.node
         };
-    },
+    }
 
     /**
      * When the component props are updated, set the node in the state based
@@ -34,7 +31,8 @@ const NodeMixin = {
                 node: nextProps.node
             });
         }
-    },
+    }
+
 
     /**
      * Get the type of the current XML Grid cell
@@ -43,7 +41,7 @@ const NodeMixin = {
      */
     getType() {
         return this.state.node.getAttribute('type');
-    },
+    }
 
     /**
      * Get the ID of the current node
@@ -52,7 +50,7 @@ const NodeMixin = {
      */
     getNodeId() {
         return Store.getNodeId(this.state.node);
-    },
+    }
 
     /**
      * Get the main grid
@@ -61,7 +59,7 @@ const NodeMixin = {
      */
     getGrid() {
         return Store.getMainGrid(this.state.node);
-    },
+    }
 
     /**
      * Get the main grid name
@@ -70,7 +68,7 @@ const NodeMixin = {
      */
     getGridName() {
         return Store.getMainGridName(this.state.node);
-    },
+    }
 
     /**
      * Get the current design mode step for the main Grid
@@ -81,7 +79,7 @@ const NodeMixin = {
      */
     getDesignModeStep() {
         return Store.getDesignModeStep(this.getGridName());
-    },
+    }
 
     /**
      * Get the design mode status of this component
@@ -91,6 +89,9 @@ const NodeMixin = {
     isInDesignMode() {
         return (this.getDesignModeStep() !== 'disabled');
     }
-};
 
-export { NodeMixin };
+}
+
+GridNode.displayName = 'GridNode';
+
+export { GridNode };
