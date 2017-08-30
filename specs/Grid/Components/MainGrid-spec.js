@@ -302,7 +302,7 @@ describe('Grid.Components.MainGrid', () => {
                 // + 6 ("module") * 2 (per module) + 2 (wrap main grid) + 2 (wrap subgrid)
                 expect(componentUtils.countRowPlaceholders(component)).toEqual(22);
                 // 6 (1 for each rowPH except module) + 7 (before each cell)
-                // + 4 (end of each row) + 6 ("module") * 4 (per module) +  2 (wrap main grid) + 2 (wrap subgrid)
+                // + 4 (end of each row) + 6 ("module") * 4 (per module) + 2 (wrap main grid) + 2 (wrap subgrid)
                 expect(componentUtils.countCellPlaceholders(component)).toEqual(45);
 
                 // should have more components, as modules are wrapped in subgrids
@@ -529,7 +529,7 @@ describe('Grid.Components.MainGrid', () => {
 
                             // we're done, remove the component from the dom
                             document.body.removeChild(domNode.parentNode);
-                            //  tell jasmine we're done
+                            // tell jasmine we're done
                             done();
 
                         });
@@ -1071,7 +1071,7 @@ describe('Grid.Components.MainGrid', () => {
 
     });
 
-    it('should move left of right when  panning in one screen mode', (done) => {
+    it('should move left of right when panning in one screen mode', (done) => {
         const testGrid2 = componentUtils.makeSimpleTestGrid();
         const element = React.createElement(MainGrid, { node: testGrid2, screenMode: MainGrid.screenModes.one });
         const component = componentUtils.renderIntoDocument(element).wrappedRef;
@@ -1205,6 +1205,28 @@ describe('Grid.Components.MainGrid', () => {
             }, 0.01);
         }, 210);
 
+    });
+
+    it('should have a menu button in the navbar in one screen mode', () => {
+        const element = React.createElement(MainGrid, { node: testGrid, screenMode: MainGrid.screenModes.one });
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
+        const domNode = ReactDOM.findDOMNode(component);
+        const uuid = component.uuid;
+        const menuCheckbox = domNode.querySelector(`:scope > nav > input[type=checkbox]#menu-button-${uuid}`);
+        const menuLabel = domNode.querySelector(`:scope > nav > label[for=menu-button-${uuid}]`);
+        expect(menuCheckbox).not.toBe(null);
+        expect(menuLabel).not.toBe(null);
+    });
+
+    it('should not have a menu button in the navbar in multi screens mode', () => {
+        const element = React.createElement(MainGrid, { node: testGrid, screenMode: MainGrid.screenModes.multi });
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
+        const domNode = ReactDOM.findDOMNode(component);
+        const uuid = component.uuid;
+        const menuCheckbox = domNode.querySelector(`:scope > nav > input[type=checkbox]#menu-button-${uuid}`);
+        const menuLabel = domNode.querySelector(`:scope > nav > label[for=menu-button-${uuid}]`);
+        expect(menuCheckbox).toBe(null);
+        expect(menuLabel).toBe(null);
     });
 
 });

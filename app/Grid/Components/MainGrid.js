@@ -34,6 +34,9 @@ class BaseMainGrid extends Grid {
      */
     constructor(props) {
         super(props);
+
+        this.uuid = _.uniqueId();
+
         this.onDocumentDragOver = this.onDocumentDragOver.bind(this);
         this.onDocumentDrop = this.onDocumentDrop.bind(this);
         this.onDocumentDetectDrop = this.onDocumentDetectDrop.bind(this);
@@ -444,7 +447,6 @@ class BaseMainGrid extends Grid {
                     const gridContainer = ReactDOM.findDOMNode(this.gridContainerRef);
                     this.panData = {
                         gridContainer,
-                        gridContainerIdSet: false,
 
                         gridWidth: gridContainer.firstChild.offsetWidth,
                         bodyWidth: document.body.offsetWidth,
@@ -509,13 +511,6 @@ class BaseMainGrid extends Grid {
                         }
                     };
 
-                    let gridContainerId = gridContainer.getAttribute('id');
-                    if (!gridContainerId) {
-                        gridContainerId = _.uniqueId('gridContainer');
-                        gridContainer.setAttribute('id', gridContainerId);
-                        this.panData.gridContainerIdSet = true;
-                    }
-                    this.panData.gridContainerId = gridContainerId;
                     this.panData.nbCards = Math.round(this.panData.gridWidth / this.panData.bodyWidth);
                 }
 
@@ -771,9 +766,15 @@ class BaseMainGrid extends Grid {
             );
         }
 
+        let navBarSideMenu = [];
         let containerChildren = [this.renderGrid({}, this.getMainGridStyle())];
 
         if (this.state.oneScreenMode) {
+            const menuButtonId = `menu-button-${this.uuid}`;
+            navBarSideMenu = [
+                <input type="checkbox" id={menuButtonId} />,
+                <label className="menu-button" key="menuButton" htmlFor={menuButtonId}>Menu</label>
+            ];
             containerChildren = (
                 <HammerComponent onSwipe={this.onSwipe} ref={this.saveGridContainerRef}>
                     <div className="grid-container">
@@ -785,10 +786,12 @@ class BaseMainGrid extends Grid {
             );
         }
 
+
         return (<div className={this.getComponentClasses()}>
             <nav className="grid-toolbar">
-                <span>{this.state.gridName}</span>
-                {undoButton}{redoButton}{addButton}{toggleButton}
+                {this.state.oneScreenMode && navBarSideMenu}
+                <h1>{this.state.gridName}</h1>
+                <div className="buttons">{undoButton}{redoButton}{addButton}{toggleButton}</div>
             </nav>
             {containerChildren}
             {

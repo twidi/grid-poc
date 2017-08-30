@@ -12,19 +12,22 @@ html, body, #app, .grid-component {
 .grid-toolbar {
     background: #009688;
     color: white;
-    line-height: 64px;
-    padding-left: 24px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
     font-weight: bold;
     font-size: 20px;
-    text-align: right;
+    display: flex;
+    flex-direction: row;
+    padding: 8px;
 }
-    .grid-toolbar > span {
-        float: left;
+    .grid-toolbar h1 {
+        font-size: inherit;
+        margin: 0;
+        padding: 0;
+        flex: 1;
     }
-    .grid-toolbar button {
+    .grid-toolbar .buttons button {
         cursor: pointer;
-        margin-right: 20px;
+        margin-left: 20px;
     }
 
 .grid-component {
@@ -241,6 +244,47 @@ html, body, #app, .grid-component {
         display: none;
     }
 
+
+.grid-component-one-screen-mode .grid-toolbar {
+    line-height: 1.2em;
+}
+    .grid-component-one-screen-mode .grid-toolbar label {
+        cursor: pointer;
+        margin-right: 8px;
+    }
+        .grid-component-one-screen-mode .grid-toolbar label:after {
+            content: "•";
+            padding-left: 8px;
+        }
+    .grid-component-one-screen-mode .grid-toolbar .buttons {
+        position: absolute;
+        top: calc(1.2em + 16px);
+        height: calc(100vh - 1.2em - 16px);
+        display: flex;
+        flex-direction: column;
+        width: 100px;
+        left: -100px;
+        background: inherit;
+        z-index: 2;
+        box-sizing: border-box;
+        padding: 8px 8px 0;
+        transition: transform 0.25s;
+        box-shadow: 1px 0 3px rgba(0,0,0,0.12), 1px 0 2px rgba(0,0,0,0.24);
+    }
+        .grid-component-one-screen-mode .grid-toolbar .buttons button {
+            margin-left: 0;
+            margin-bottom: 8px;
+
+        }
+    .grid-component-one-screen-mode .grid-toolbar > input[type=checkbox] {
+        position: absolute;
+        top: -50px;
+        left: -50px;
+    }
+
+        .grid-component-one-screen-mode .grid-toolbar > input[type=checkbox]:checked ~ .buttons {
+            transform: translateX(100px);
+        }
 
 .grid-component-one-screen-mode .grid-container {
     overflow: hidden;
