@@ -820,12 +820,15 @@ describe('Grid.Components.MainGrid', () => {
         const component = componentUtils.renderIntoDocument(element).wrappedRef;
         setTimeout(() => {
             expect(component.state.oneScreenMode).toBe(true);
+            expect(Store.isOneScreenMode('Test grid')).toBe(true);
             component.onResize(10000, 10000);
             setTimeout(() => {
                 expect(component.state.oneScreenMode).toBe(true);
+                expect(Store.isOneScreenMode('Test grid')).toBe(true);
                 component.onResize(100, 100);
                 setTimeout(() => {
                     expect(component.state.oneScreenMode).toBe(true);
+                    expect(Store.isOneScreenMode('Test grid')).toBe(true);
                     done();
                 }, 0.01);
             }, 0.01);
@@ -837,12 +840,15 @@ describe('Grid.Components.MainGrid', () => {
         const component = componentUtils.renderIntoDocument(element).wrappedRef;
         setTimeout(() => {
             expect(component.state.oneScreenMode).toBe(false);
+            expect(Store.isOneScreenMode('Test grid')).toBe(false);
             component.onResize(10000, 10000);
             setTimeout(() => {
                 expect(component.state.oneScreenMode).toBe(false);
+                expect(Store.isOneScreenMode('Test grid')).toBe(false);
                 component.onResize(100, 100);
                 setTimeout(() => {
                     expect(component.state.oneScreenMode).toBe(false);
+                    expect(Store.isOneScreenMode('Test grid')).toBe(false);
                     done();
                 }, 0.01);
             }, 0.01);
@@ -856,9 +862,11 @@ describe('Grid.Components.MainGrid', () => {
             component.onResize(10000, 10000);
             setTimeout(() => {
                 expect(component.state.oneScreenMode).toBe(false);
+                expect(Store.isOneScreenMode('Test grid')).toBe(false);
                 component.onResize(100, 100);
                 setTimeout(() => {
                     expect(component.state.oneScreenMode).toBe(true);
+                    expect(Store.isOneScreenMode('Test grid')).toBe(true);
                     done();
                 }, 0.01);
             }, 0.01);

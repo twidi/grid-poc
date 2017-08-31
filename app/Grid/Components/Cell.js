@@ -124,9 +124,6 @@ class BaseCell extends GridNode {
     }
 
     /**
-     * Render the cell as a standalone component: a empty div that, if it's a module, will hold
-     * the real module component (not directly rendered),
-     * via {@link module:Grid.Components.Hoc.convertToNodesHolder}
      * Tell if the current cell has the focus (itself or one of its child node)
      *
      * @return {Boolean} - `true` if the cell has the focus, or `false`

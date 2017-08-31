@@ -60,6 +60,9 @@ class BaseMainGrid extends Grid {
         // this.state defined in GridNode, parent of Grid, parent of MainGrid
         this.state.gridName = props.node.getAttribute('name');
         this.state.oneScreenMode = props.screenMode !== BaseMainGrid.screenModes.multi;
+        if (this.state.oneScreenMode) {
+            Actions.enterOneScreenMode(this.state.gridName);
+        }
     }
 
     /**
@@ -737,6 +740,7 @@ class BaseMainGrid extends Grid {
                 );
         }
         if (oneScreenMode !== this.state.oneScreenMode) {
+            Actions[oneScreenMode ? 'enterOneScreenMode' : 'exitOneScreenMode'](this.state.gridName);
             this.setState({ oneScreenMode });
         }
     }

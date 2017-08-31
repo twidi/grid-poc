@@ -361,6 +361,18 @@ let Store = {
     },
 
     /**
+     * Get the one-screen mode step for a grid from the store by its name.
+     *
+     * @param  {String} gridName - Name of the grid for which we want the one-screen step
+     *
+     * @return {bool} - The current one-screen step of the grid
+     */
+    isOneScreenMode(gridName) {
+        const grid = this.getGridEntry(gridName);
+        return grid.oneScreenMode;
+    },
+
+    /**
      * Remove all the grids
      *
      * @private
@@ -395,6 +407,7 @@ const Private = {
      * @property {Element|Node|XML} grid - The XML grid
      * @property {String} designModeStep - The current design mode step for this grid
      * @property {String} focusedModuleCellId - The ID of the actual focused cell
+     * @property {bool} oneScreenMode - If the grid is currently in one-screen-only mode
      *
      * @property {Array} history - History of grids to allow undo/redo
      * @property {int} currentHistoryIndex - The current index in history
@@ -523,6 +536,7 @@ const Private = {
             name,
             grid,
             designModeStep: 'disabled',
+            oneScreenMode: false,
             focusedModuleCellId: null,
             history: [],
             currentHistoryIndex: -1.0,
@@ -748,7 +762,6 @@ const Private = {
 
         this.setDesignModeStep(gridName, step);
     },
-
 
     /**
      * Set the design mode step for a grid from the store by its name.
@@ -1652,6 +1665,63 @@ const Private = {
      */
     focusTopModuleCell(gridName) {
         this.focusNextModuleCell(gridName, 'getTopCell');
+    },
+
+    /**
+     * Set one-screen for the given grid.
+     *
+     * It's an action, should be called via
+     * {@link module:Grid.Data.Actions.enterOneScreenMode Actions.enterOneScreenMode}
+     *
+     * @param {String} gridName - The name of the grid for witch we want to enter the one-screen mode
+     *
+     * @fires module:Grid.Data.Store#"grid.oneScreenMode.enter"
+     */
+    enterOneScreenMode(gridName) {
+        this.setOneScreenMode(gridName, true);
+
+        /**
+         * Event fired when a grid enters one-screen mode
+         *
+         * @event module:Grid.Data.Store#"grid.oneScreenMode.enter"
+         *
+         * @property {String} gridName - The name of the updated grid
+         */
+        this.emit('grid.oneScreenMode.enter', gridName);
+    },
+
+    /**
+     * Exit one-screen mode for the given grid.
+     *
+     * It's an action, should be called via
+     * {@link module:Grid.Data.Actions.exitOneScreenMode Actions.exitOneScreenMode}
+     *
+     * @param {String} gridName - The name of the grid for witch we want to exit the one-screen mode
+     *
+     * @fires module:Grid.Data.Store#"grid.oneScreenMode.exit"
+     */
+    exitOneScreenMode(gridName) {
+        this.setOneScreenMode(gridName, false);
+
+        /**
+         * Event fired when a grid exits one-screen mode
+         *
+         * @event module:Grid.Data.Store#"grid.oneScreenMode.exit"
+         *
+         * @property {String} gridName - The name of the updated grid
+         */
+        this.emit('grid.oneScreenMode.exit', gridName);
+    },
+
+    /**
+     * Set the one-screen mode for a grid from the store by its name.
+     *
+     * @param  {String} gridName - Name of the grid for which we want to set the one-screen mode
+     * @param {bool} active - The new one-screen mode step for the grid
+     */
+    setOneScreenMode(gridName, active) {
+        const grid = this.getGridEntry(gridName);
+        grid.oneScreenMode = !!active;
     },
 
     // add the public interface

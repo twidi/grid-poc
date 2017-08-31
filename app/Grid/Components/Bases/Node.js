@@ -90,6 +90,15 @@ class GridNode extends React.Component {
         return (this.getDesignModeStep() !== 'disabled');
     }
 
+    /**
+     * Get the one-screen mode status of this component
+     *
+     * @return {boolean} - True if the grid is in one-screen mode, else False
+     */
+    isInOneScreenMode() {
+        return Store.isOneScreenMode(this.getGridName());
+    }
+
 }
 
 GridNode.displayName = 'GridNode';

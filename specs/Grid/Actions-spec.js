@@ -1806,4 +1806,68 @@ describe('Grid.Data.Actions', () => {
 
     });
 
+    it('should enter/leave one-screen mode', (done) => {
+        // will set this to True when the callback is called
+        let callbackCalled = false;
+        // will store the grid name received via the tested event
+        let updatedGridName;
+
+        const callback = (gridName) => {
+            callbackCalled = true;
+            updatedGridName = gridName;
+        };
+
+        // add a grid to work on
+        const grid = Manipulator.createBaseGrid('foo', 5);
+        Actions.addGrid(grid);
+
+        // listen to the tested event
+        Store.on('grid.oneScreenMode.enter', callback);
+
+        Actions.enterOneScreenMode('foo');
+
+        // give some time to let the callbacks to be called
+        setTimeout(() => {
+
+            // clean the listener
+            Store.off('grid.oneScreenMode.enter', callback);
+
+            // check if the callback were called
+            expect(callbackCalled).toBe(true);
+            expect(updatedGridName).toEqual('foo');
+
+            // check the new one-screen mode step
+            expect(Store.isOneScreenMode('foo')).toBe(true);
+
+            // reset test check data
+            callbackCalled = false;
+            updatedGridName = null;
+
+            // listen to the tested event
+            Store.on('grid.oneScreenMode.exit', callback);
+
+            Actions.exitOneScreenMode('foo');
+
+            // give some time to let the callbacks to be called
+            setTimeout(() => {
+
+                // clean the listener
+                Store.off('grid.oneScreenMode.exit', callback);
+
+                // check if the callback were called
+                expect(callbackCalled).toBe(true);
+                expect(updatedGridName).toEqual('foo');
+
+                // check the new one-screen mode step
+                expect(Store.isOneScreenMode('foo')).toBe(false);
+
+
+                // tell jasmine we're done
+                done();
+
+            }, 0.01);
+        }, 0.01);
+
+    });
+
 });

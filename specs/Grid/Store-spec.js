@@ -73,7 +73,6 @@ describe('Grid.Data.Store', () => {
         expect(Store.getMainGrid(grid)).toBe(grid);
     });
 
-
     it('should return the id attribute of a node', () => {
         const grid = createSimpleGrid();
         _(grid.querySelectorAll('*')).forEach((node) => {
@@ -298,6 +297,7 @@ describe('Grid.Data.Store', () => {
             expect(entry.name).toBe('foo');
             expect(entry.grid).toBe(grid);
             expect(entry.designModeStep).toEqual('disabled');
+            expect(entry.oneScreenMode).toBe(false);
             expect(entry.focusedModuleCellId).toBe(null);
             expect(entry.history.length).toEqual(1);
             expect(entry.currentHistoryIndex).toEqual(0);
@@ -306,7 +306,7 @@ describe('Grid.Data.Store', () => {
             expect(entry.hoveringTimeout).toBe(null);
             expect(entry.resizing).toEqual({});
 
-            expect(_.size(entry)).toEqual(10);
+            expect(_.size(entry)).toEqual(11);
         });
 
         it('should raise if a grid entry is not available', () => {
@@ -1104,6 +1104,19 @@ describe('Grid.Data.Store', () => {
 
             // the second one is focused
             expect(Store.__private.getFocusedModuleCell('foo')).toBe(moduleCell2);
+        });
+
+        it('should set the one-screen mode', () => {
+
+            // create a grid
+            createSimpleGrid();
+
+            Store.__private.enterOneScreenMode('foo');
+            expect(Store.__private.grids.foo.oneScreenMode).toBe(true);
+
+            Store.__private.exitOneScreenMode('foo');
+            expect(Store.__private.grids.foo.oneScreenMode).toBe(false);
+
         });
 
     });

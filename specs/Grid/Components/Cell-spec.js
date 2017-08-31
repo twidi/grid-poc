@@ -68,6 +68,15 @@ describe('Grid.Components.Cell', () => {
         expect(component.getDesignModeStep()).toEqual('enabled');
     });
 
+    it('should get the one-screen mode', () => {
+        const element = React.createElement(Cell, { node: subGridCell });
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
+        expect(component.isInOneScreenMode()).toBe(false);
+
+        Store.__private.enterOneScreenMode('Test grid');
+        expect(component.isInOneScreenMode()).toBe(true);
+    });
+
     it('should know if it\'s in design mode', () => {
         const element = React.createElement(Cell, { node: subGridCell });
         const component = componentUtils.renderIntoDocument(element).wrappedRef;

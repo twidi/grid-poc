@@ -58,7 +58,6 @@ let Actions = {
      */
     enterDesignMode(gridName) {},
 
-
     /**
      * Exit design mode for the given grid
      *
@@ -256,7 +255,31 @@ let Actions = {
      * @fires module:Grid.Data.Store#"grid.navigate.focus.off"
      * @fires module:Grid.Data.Store#"grid.navigate.focus.on"
      */
-    focusTopModuleCell(gridName) {}
+    focusTopModuleCell(gridName) {},
+
+    /**
+     * Set one-screen for the given grid.
+     *
+     * It's an action, should be called via
+     * {@link module:Grid.Data.Actions.enterOneScreenMode Actions.enterOneScreenMode}
+     *
+     * @param {String} gridName - The name of the grid for witch we want to enter the one-screen mode
+     *
+     * @fires module:Grid.Data.Store#"grid.oneScreenMode.enter"
+     */
+    enterOneScreenMode(gridName) {},
+
+    /**
+     * Exit one-screen mode for the given grid.
+     *
+     * It's an action, should be called via
+     * {@link module:Grid.Data.Actions.exitOneScreenMode Actions.exitOneScreenMode}
+     *
+     * @param {String} gridName - The name of the grid for witch we want to exit the one-screen mode
+     *
+     * @fires module:Grid.Data.Store#"grid.oneScreenMode.exit"
+     */
+    exitOneScreenMode(gridName) {}
 };
 
 Actions = flux.createActions(_.keys(Actions));
