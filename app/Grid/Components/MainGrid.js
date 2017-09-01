@@ -114,8 +114,6 @@ class BaseMainGrid extends Grid {
 
         if (eventName === 'grid.designMode.enter') {
 
-            this.deactivateGridNavigation();
-
             // entering design mode, we start by now to listen do `dragover` and `drop` events on
             // the whole document
 
@@ -138,8 +136,6 @@ class BaseMainGrid extends Grid {
 
 
         } else if (eventName === 'grid.designMode.exit') {
-
-            this.activateGridNavigation();
 
             // exiting the design mode, we can stop listening to dragover and drop events
 
@@ -400,14 +396,14 @@ class BaseMainGrid extends Grid {
      * Ask the store to focus on the cell next to the right of the current focused one
      */
     focusRightModuleCell() {
-        Actions.focusRightModuleCell(this.state.gridName);
+        Actions.focusRightModuleCell(this.state.gridName, this.state.oneScreenMode);
     }
 
     /**
      * Ask the store to focus on the cell next to the left of the current focused one
      */
     focusLeftModuleCell() {
-        Actions.focusLeftModuleCell(this.state.gridName);
+        Actions.focusLeftModuleCell(this.state.gridName, this.state.oneScreenMode);
     }
 
     /**
@@ -687,6 +683,15 @@ class BaseMainGrid extends Grid {
         _.forOwn(styles, (style, name) => {
             gridNode.style[name] = style;
         });
+
+        if (this.state.oneScreenMode) {
+            setTimeout(() => {
+                // focusing the cell may have change the horizontal scroll of the grid container
+                // so we reset it to 0 a little bit after
+                const container = domNode.querySelector('.grid-container');
+                container.scrollLeft = 0;
+            }, 1);
+        }
     }
 
     /**

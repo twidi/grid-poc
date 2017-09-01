@@ -896,7 +896,7 @@ const Manipulator = {
     },
 
     /**
-     * Get the previous/next cell on the left/right of the given cell.
+     * Get the previous/next cell (exluding resizers) on the left/right of the given cell.
      *
      * If there are many rows on the left/right, the topmost cell will be returned
      * except if asked to get it from the bottom
@@ -925,7 +925,13 @@ const Manipulator = {
                 &&
                 row === row.parentNode.lastChild
             );
-        const sibling = toRight ? cell.nextSibling : cell.previousSibling;
+        let sibling = cell;
+        while (true) {
+            sibling = toRight ? sibling.nextSibling : sibling.previousSibling;
+            if (!sibling) { break; }
+            if (sibling.nodeName !== 'cell') { continue; }
+            break;
+        }
         if (sibling) {
             return this.getModuleCellFromCell(sibling, isAtBottom, !toRight);
         }
@@ -936,7 +942,7 @@ const Manipulator = {
     },
 
     /**
-     * Get the previous/next cell on the top/bottom of the given cell.
+     * Get the previous/next cell (exluding resizers) on the top/bottom of the given cell.
      *
      * If there are many cols on the top/bottom, the leftmost cell will be returned
      * except if asked to get it from the right
@@ -955,7 +961,17 @@ const Manipulator = {
         if (!row) { return; }
         // we will force `forceAtRight` if the cell we are in is the last one in a multi-cells row
         const isAtRight = forceAtRight || (row.children.length > 1 && cell === row.lastChild);
-        const sibling = toBottom ? row.nextSibling : row.previousSibling;
+        let sibling = row;
+        while (true) {
+            sibling = toBottom ? sibling.nextSibling : sibling.previousSibling;
+            if (!sibling) { break; }
+            if (sibling.nodeName !== 'row') { continue; }
+            // check if a row with only a resizer, in which cas we want the next row
+            if (sibling.children.length === 1 && sibling.children[0].nodeName === 'resizer') { continue; }
+            // ok normal row with at least a cell, we can stop here
+            break;
+        }
+
         if (sibling) {
             return this.getModuleCellFromRow(sibling, !toBottom, isAtRight);
         }

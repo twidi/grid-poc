@@ -710,32 +710,6 @@ describe('Grid.Components.MainGrid', () => {
         expect(jasmineReact.classPrototype(BaseMainGrid).activateGridNavigation.calls.count()).toEqual(1);
     });
 
-    it('should deactivate/reactivate grid navigation when entering/exiting design mode', (done) => {
-        const element = React.createElement(MainGrid, { node: testGrid });
-        const component = componentUtils.renderIntoDocument(element).wrappedRef;
-
-        spyOn(component, 'activateGridNavigation').and.callThrough();
-        spyOn(component, 'deactivateGridNavigation').and.callThrough();
-
-        Store.__private.enterDesignMode('Test grid');
-
-        // leave time for the designMode.enter to be caught
-        setTimeout(() => {
-            expect(component.deactivateGridNavigation.calls.count()).toBe(1);
-
-            Store.__private.exitDesignMode('Test grid');
-
-            // leave time for the designMode.exit to be caught
-            setTimeout(() => {
-                expect(component.activateGridNavigation.calls.count()).toBe(1);
-
-                // tell jasmine we're done
-                done();
-
-            }, 0.01);
-        }, 0.01);
-    });
-
     it('should activate/deactivate 4 shortcuts for keyboard navigation', () => {
         jasmineReact.spyOnClass(MainGrid, 'bindShortcut').and.callThrough();
         jasmineReact.spyOnClass(MainGrid, 'unbindShortcut').and.callThrough();

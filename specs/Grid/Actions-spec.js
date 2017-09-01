@@ -1655,55 +1655,76 @@ describe('Grid.Data.Actions', () => {
                     ['#c9', '#c8', undefined, '#c6', undefined]
                 ];
 
-                const finalTests = [];
-                for (let numTest = 0; numTest < tests.length; numTest++) {
-                    const test = tests[numTest];
-                    finalTests.push([test[0], 'Top', test[1]]);
-                    finalTests.push([test[0], 'Bottom', test[2]]);
-                    finalTests.push([test[0], 'Left', test[3]]);
-                    finalTests.push([test[0], 'Right', test[4]]);
-                }
+                const runNavigationTests = (withResizers, nextAction) => {
 
-                const doTest = (test) => {
-                    resetCallbacks();
+                    const finalTests = [];
+                    for (let numTest = 0; numTest < tests.length; numTest++) {
+                        const test = tests[numTest];
+                        const resizersStr = `${withResizers ? 'with' : 'without'} resizers`;
+                        finalTests.push(
+                            [test[0], 'Top', test[1], `${test[0]} => Top => ${test[1]} (${resizersStr})`]
+                        );
+                        finalTests.push(
+                            [test[0], 'Bottom', test[2], `${test[0]} => Bottom => ${test[2]} (${resizersStr})`]
+                        );
+                        finalTests.push(
+                            [test[0], 'Left', test[3], `${test[0]} => Left => ${test[3]} (${resizersStr})`]
+                        );
+                        finalTests.push(
+                            [test[0], 'Right', test[4], `${test[0]} => Right => ${test[4]} (${resizersStr})`]
+                        );
+                    }
 
-                    const baseId = test[0].substring(1);
-                    Store.__private.grids.bar.focusedModuleCellId = baseId;
-                    Actions[`focus${test[1]}ModuleCell`]('bar');
-                    // leave some time to focus the new node
-                    setTimeout(() => {
-                        // if undefined, the focused didn't change, else we use the target
-                        const expectedId = (test[2] || test[0]).substring(1);
-                        expect(
-                            Store.__private.grids.bar.focusedModuleCellId
-                        ).toEqual(expectedId, `${test[1]} ${test[0]}`);
+                    const doTest = (test) => {
+                        resetCallbacks();
 
-                        // callbacks are called only if the focused cell changes
-                        if (test[2]) {
-                            expect(offCallbackCalled).toBe(true);
-                            expect(offUpdatedGridName).toEqual('bar');
-                            expect(offCellId).toEqual(baseId);
-                            expect(onCallbackCalled).toBe(true);
-                            expect(onUpdatedGridName).toEqual('bar');
-                            expect(onCellId).toEqual(expectedId);
-                        } else {
-                            expect(offCallbackCalled).toBe(false);
-                            expect(onCallbackCalled).toBe(false);
-                        }
+                        const baseId = test[0].substring(1);
+                        Store.__private.grids.bar.focusedModuleCellId = baseId;
+                        Actions[`focus${test[1]}ModuleCell`]('bar');
+                        // leave some time to focus the new node
+                        setTimeout(() => {
+                            // if undefined, the focused didn't change, else we use the target
+                            const expectedId = (test[2] || test[0]).substring(1);
+                            expect(
+                                Store.__private.grids.bar.focusedModuleCellId
+                            ).toEqual(expectedId, test[3]);
 
-                        if (!finalTests.length) {
-                            // no more test, we are done
-                            Store.off('grid.navigate.focus.off', offCallback);
-                            Store.off('grid.navigate.focus.on', onCallback);
-                            done();
-                        } else {
-                            // continue on the next available test
-                            doTest(finalTests.shift());
-                        }
-                    }, 0.01);
+                            // callbacks are called only if the focused cell changes
+                            if (test[2]) {
+                                expect(offCallbackCalled).toBe(true, test[3]);
+                                expect(offUpdatedGridName).toEqual('bar', test[3]);
+                                expect(offCellId).toEqual(baseId, test[3]);
+                                expect(onCallbackCalled).toBe(true, test[3]);
+                                expect(onUpdatedGridName).toEqual('bar', test[3]);
+                                expect(onCellId).toEqual(expectedId, test[3]);
+                            } else {
+                                expect(offCallbackCalled).toBe(false, test[3]);
+                                expect(onCallbackCalled).toBe(false, test[3]);
+                            }
+
+                            if (finalTests.length) {
+                                // continue on the next available test
+                                doTest(finalTests.shift());
+                            } else {
+                                // no more test, we do what we are asked to do next
+                                nextAction();
+                            }
+                        }, 0.01);
+                    };
+
+                    doTest(finalTests.shift());
                 };
 
-                doTest(finalTests.shift());
+
+                runNavigationTests(false, () => {
+                    Manipulator.addResizers(grid);
+                    runNavigationTests(true, () => {
+                        Store.off('grid.navigate.focus.off', offCallback);
+                        Store.off('grid.navigate.focus.on', onCallback);
+                        done();
+                    });
+                });
+
             }, 0.01);
         }, 0.01);
 
@@ -1750,57 +1771,50 @@ describe('Grid.Data.Actions', () => {
         Store.__private.addGrid(grid);
         grid = Store.getGrid('bar');
 
-        const testFocusedAndContinue = (expectedFocusedId, nextAction) => {
-            setTimeout(() => {
-                expect(Store.__private.grids.bar.focusedModuleCellId).toEqual(expectedFocusedId);
-                nextAction();
-            }, 0.01);
+        const tests = [
+            ['', ['bar', null, true], 'c1'],
+            ['Left', ['bar', false], 'c1'],
+            ['Right', ['bar', false], 'c2'],
+            ['Left', ['bar', false], 'c1'],
+            ['Right', ['bar', true], 'c2'],
+            ['Right', ['bar', true], 'c3'],
+            ['Right', ['bar', true], 'c4'],
+            ['Left', ['bar', true], 'c3'],
+            ['Right', ['bar', true], 'c4'],
+            ['Left', ['bar', false], 'c1'],
+            ['Top', ['bar'], 'c1'],
+            ['Bottom', ['bar'], 'c1'],
+            ['Right', ['bar', false], 'c2'],
+            ['Bottom', ['bar'], 'c4'],
+            ['Top', ['bar'], 'c2']
+        ];
+
+        const runNavigationTests = (withResizers, nextAction) => {
+
+            const finalTests = tests.slice();
+
+            const doTest = (test) => {
+                Actions[`focus${test[0]}ModuleCell`].apply(this, test[1]);
+                setTimeout(() => {
+                    expect(Store.__private.grids.bar.focusedModuleCellId).toEqual(test[2]);
+                    if (finalTests.length) {
+                        // continue on the next available test
+                        doTest(finalTests.shift());
+                    } else {
+                        // no more test, we do what we are asked to do next
+                        nextAction();
+                    }
+                }, 0.01);
+            };
+
+            doTest(finalTests.shift());
+
         };
 
-        Actions.focusModuleCell('bar', null, true);
-        testFocusedAndContinue('c1', () => {
-            Actions.focusLeftModuleCell('bar', false);
-            testFocusedAndContinue('c1', () => {
-                Actions.focusRightModuleCell('bar', false);
-                testFocusedAndContinue('c2', () => {
-                    Actions.focusLeftModuleCell('bar', false);
-                    testFocusedAndContinue('c1', () => {
-                        Actions.focusRightModuleCell('bar', true);
-                        testFocusedAndContinue('c2', () => {
-                            Actions.focusRightModuleCell('bar', true);
-                            testFocusedAndContinue('c3', () => {
-                                Actions.focusRightModuleCell('bar', true);
-                                testFocusedAndContinue('c4', () => {
-                                    Actions.focusLeftModuleCell('bar', true);
-                                    testFocusedAndContinue('c3', () => {
-                                        Actions.focusRightModuleCell('bar', true);
-                                        testFocusedAndContinue('c4', () => {
-                                            Actions.focusLeftModuleCell('bar', false);
-                                            testFocusedAndContinue('c1', () => {
-                                                Actions.focusTopModuleCell('bar');
-                                                testFocusedAndContinue('c1', () => {
-                                                    Actions.focusBottomModuleCell('bar');
-                                                    testFocusedAndContinue('c1', () => {
-                                                        Actions.focusRightModuleCell('bar', false);
-                                                        testFocusedAndContinue('c2', () => {
-                                                            Actions.focusBottomModuleCell('bar');
-                                                            testFocusedAndContinue('c4', () => {
-                                                                Actions.focusTopModuleCell('bar');
-                                                                testFocusedAndContinue('c2', () => {
-                                                                    done();
-                                                                });
-                                                            });
-                                                        });
-                                                    });
-                                                });
-                                            });
-                                        });
-                                    });
-                                });
-                            });
-                        });
-                    });
-                });
+        runNavigationTests(false, () => {
+            Manipulator.addResizers(grid);
+            runNavigationTests(true, () => {
+                done();
             });
         });
 

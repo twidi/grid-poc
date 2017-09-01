@@ -1089,20 +1089,29 @@ describe('Grid.Data.Manipulator', () => {
             ['#c9', '#c8', undefined, '#c6', undefined]
         ];
 
-        for (let numTest = 0; numTest < tests.length; numTest++) {
-            const test = tests[numTest];
-            const baseCell = grid.querySelector(test[0]);
-            const cells = {
-                Top: test[1] ? grid.querySelector(test[1]) : test[1],
-                Bottom: test[2] ? grid.querySelector(test[2]) : test[2],
-                Left: test[3] ? grid.querySelector(test[3]) : test[3],
-                Right: test[4] ? grid.querySelector(test[4]) : test[4]
-            };
-            expect(Manipulator.getTopCell(baseCell)).toBe(cells.Top, `top ${test[0]}`);
-            expect(Manipulator.getBottomCell(baseCell)).toBe(cells.Bottom, `bottom ${test[0]}`);
-            expect(Manipulator.getLeftCell(baseCell)).toBe(cells.Left, `left ${test[0]}`);
-            expect(Manipulator.getRightCell(baseCell)).toBe(cells.Right, `right ${test[0]}`);
-        }
+        const runNavigationTests = (withResizers, nextAction) => {
+            for (let numTest = 0; numTest < tests.length; numTest++) {
+                const test = tests[numTest];
+                const baseCell = grid.querySelector(test[0]);
+                const cells = {
+                    Top: test[1] ? grid.querySelector(test[1]) : test[1],
+                    Bottom: test[2] ? grid.querySelector(test[2]) : test[2],
+                    Left: test[3] ? grid.querySelector(test[3]) : test[3],
+                    Right: test[4] ? grid.querySelector(test[4]) : test[4]
+                };
+                expect(Manipulator.getTopCell(baseCell)).toBe(cells.Top, `top ${test[0]}`);
+                expect(Manipulator.getBottomCell(baseCell)).toBe(cells.Bottom, `bottom ${test[0]}`);
+                expect(Manipulator.getLeftCell(baseCell)).toBe(cells.Left, `left ${test[0]}`);
+                expect(Manipulator.getRightCell(baseCell)).toBe(cells.Right, `right ${test[0]}`);
+            }
+
+            if (nextAction) { nextAction(); }
+        };
+
+        runNavigationTests(false, () => {
+            Manipulator.addResizers(grid);
+            runNavigationTests(true);
+        });
 
     });
 
