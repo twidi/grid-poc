@@ -161,7 +161,7 @@ describe('Grid.Components.Resizer', () => {
         Store.__private.changeDesignModeStep('Test grid', 'enabled', true);
 
         // render the full grid, we'll need elements around the resizer
-        const gridElement = React.createElement(MainGrid, { node: testGrid });
+        const gridElement = React.createElement(MainGrid, { node: testGrid, screenMode: MainGrid.screenModes.multi });
         const gridComponent = componentUtils.renderIntoDocument(gridElement);
 
         // we need the node to be attached to the document for bubbling
@@ -206,7 +206,7 @@ describe('Grid.Components.Resizer', () => {
         Store.__private.changeDesignModeStep('Test grid', 'enabled', true);
 
         // render the full grid, we'll need elements around the resizer
-        const gridElement = React.createElement(MainGrid, { node: testGrid });
+        const gridElement = React.createElement(MainGrid, { node: testGrid, screenMode: MainGrid.screenModes.multi });
         const gridComponent = componentUtils.renderIntoDocument(gridElement);
         const gridDomNode = ReactDOM.findDOMNode(gridComponent);
 
@@ -240,7 +240,7 @@ describe('Grid.Components.Resizer', () => {
         Store.__private.changeDesignModeStep('Test grid', 'enabled', true);
 
         // render the full grid, we'll need elements around the resizer
-        const gridElement = React.createElement(MainGrid, { node: testGrid });
+        const gridElement = React.createElement(MainGrid, { node: testGrid, screenMode: MainGrid.screenModes.multi });
         const gridComponent = componentUtils.renderIntoDocument(gridElement);
 
         // we need the node to be attached to the document for bubbling
@@ -288,7 +288,7 @@ describe('Grid.Components.Resizer', () => {
         Store.__private.changeDesignModeStep('Test grid', 'enabled', true);
 
         // render the full grid, we'll need elements around the resizer
-        const gridElement = React.createElement(MainGrid, { node: testGrid });
+        const gridElement = React.createElement(MainGrid, { node: testGrid, screenMode: MainGrid.screenModes.multi });
         const gridComponent = componentUtils.renderIntoDocument(gridElement);
 
         // we need the node to be attached to the document for bubbling
@@ -335,7 +335,7 @@ describe('Grid.Components.Resizer', () => {
         Store.__private.changeDesignModeStep('Test grid', 'enabled', true);
 
         // render the full grid, we'll need elements around the resizer
-        const gridElement = React.createElement(MainGrid, { node: testGrid });
+        const gridElement = React.createElement(MainGrid, { node: testGrid, screenMode: MainGrid.screenModes.multi });
         const gridComponent = componentUtils.renderIntoDocument(gridElement);
 
         // we need the node to be attached to the document for bubbling

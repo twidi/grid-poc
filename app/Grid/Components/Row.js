@@ -30,10 +30,14 @@ class Row extends GridNode {
     /**
      * Get all the cells of the row
      *
-     * @return {array} - An array of XML grid cells, including resizers
+     * @return {Array} - An array of XML grid cells, including resizers if not in one-screen mode
      */
     getCells() {
-        return _.toArray(this.state.node.querySelectorAll(':scope > cell, :scope > resizer'));
+        let selector = ':scope > cell';
+        if (!this.isInOneScreenMode()) {
+            selector += ', :scope > resizer';
+        }
+        return _.toArray(this.state.node.querySelectorAll(selector));
     }
 
     /**

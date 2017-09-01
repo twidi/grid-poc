@@ -99,6 +99,22 @@ describe('Grid.Components.Row', () => {
         expect(cells[2].tagName).toEqual('cell');
     });
 
+    it('should be able to get its grid cells without resizers if in one-screen mode', () => {
+        Manipulator.addResizers(testGrid);
+        Manipulator.setIds(testGrid);
+
+        Store.__private.enterOneScreenMode('Test grid');
+
+        const element = React.createElement(Row, { node: gridRow });
+        const component = componentUtils.renderIntoDocument(element);
+        const cells = component.getCells();
+        const expectedCells = _.toArray(gridRow.querySelectorAll(':scope > cell'));
+        expect(cells).toEqual(expectedCells);
+        expect(cells.length).toEqual(2);
+        expect(cells[0].tagName).toEqual('cell');
+        expect(cells[1].tagName).toEqual('cell');
+    });
+
     it('should know if it\'s a placeholder or not', () => {
         Manipulator.addPlaceholders(testGrid);
         Manipulator.setIds(testGrid);
@@ -165,6 +181,20 @@ describe('Grid.Components.Row', () => {
         expect(TestUtils.isElementOfType(cells[0], Cell)).toBe(true);
         expect(TestUtils.isElementOfType(cells[1], Resizer)).toBe(true);
         expect(TestUtils.isElementOfType(cells[2], Cell)).toBe(true);
+    });
+
+    it('should not render resizers if in one-screen mode', () => {
+        Manipulator.addResizers(testGrid);
+        Manipulator.setIds(testGrid);
+
+        Store.__private.enterOneScreenMode('Test grid');
+
+        const element = React.createElement(Row, { node: gridRow });
+        const component = componentUtils.renderIntoDocument(element);
+        const cells = component.renderCells();
+        expect(cells.length).toEqual(2);
+        expect(TestUtils.isElementOfType(cells[0], Cell)).toBe(true);
+        expect(TestUtils.isElementOfType(cells[1], Cell)).toBe(true);
     });
 
     it('should render sub components', () => {

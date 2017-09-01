@@ -104,7 +104,7 @@ describe('Grid.Components.MainGrid', () => {
         Manipulator.addResizers(testGrid);
         Manipulator.setIds(testGrid);
 
-        const element = React.createElement(MainGrid, { node: testGrid });
+        const element = React.createElement(MainGrid, { node: testGrid, screenMode: MainGrid.screenModes.multi });
         const component = componentUtils.renderIntoDocument(element).wrappedRef;
         const rows = component.getRows();
         const expectedRows = _.toArray(testGrid.querySelectorAll(':scope > content > row, :scope > content > resizer'));
@@ -113,6 +113,20 @@ describe('Grid.Components.MainGrid', () => {
         expect(rows[0].tagName).toEqual('row');
         expect(rows[1].tagName).toEqual('resizer');
         expect(rows[2].tagName).toEqual('row');
+    });
+
+    it('should not get grid resizers if in one-screen-mode', () => {
+        Manipulator.addResizers(testGrid);
+        Manipulator.setIds(testGrid);
+
+        const element = React.createElement(MainGrid, { node: testGrid, screenMode: MainGrid.screenModes.one });
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
+        const rows = component.getRows();
+        const expectedRows = _.toArray(testGrid.querySelectorAll(':scope > content > row'));
+        expect(rows).toEqual(expectedRows);
+        expect(rows.length).toEqual(2);
+        expect(rows[0].tagName).toEqual('row');
+        expect(rows[1].tagName).toEqual('row');
     });
 
     it('should render a grid', () => {
@@ -208,7 +222,7 @@ describe('Grid.Components.MainGrid', () => {
     });
 
     it('should change when toggling design mode, managing resizers', (done) => {
-        const element = React.createElement(MainGrid, { node: testGrid });
+        const element = React.createElement(MainGrid, { node: testGrid, screenMode: MainGrid.screenModes.multi });
         const component = componentUtils.renderIntoDocument(element).wrappedRef;
         let domNode = ReactDOM.findDOMNode(component);
         expect(domNode.classList.contains('grid-component-design-mode')).toBe(false);

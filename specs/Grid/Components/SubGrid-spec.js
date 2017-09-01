@@ -121,6 +121,20 @@ describe('Grid.Components.SubGrid', () => {
         expect(TestUtils.isElementOfType(rows[2], Row)).toBe(true);
     });
 
+    it('should not render resizers if in one-screen-mode', () => {
+        Manipulator.addResizers(testGrid);
+        Manipulator.setIds(testGrid);
+
+        Store.__private.enterOneScreenMode('Test grid');
+
+        const element = React.createElement(SubGrid, { node: subGrid });
+        const component = componentUtils.renderIntoDocument(element);
+        const rows = component.renderRows();
+        expect(rows.length).toEqual(2);
+        expect(TestUtils.isElementOfType(rows[0], Row)).toBe(true);
+        expect(TestUtils.isElementOfType(rows[1], Row)).toBe(true);
+    });
+
     it('should render a grid', () => {
         const element = React.createElement(SubGrid, { node: subGrid });
         const component = componentUtils.renderIntoDocument(element);

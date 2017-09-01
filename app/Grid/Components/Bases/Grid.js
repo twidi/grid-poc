@@ -32,7 +32,13 @@ class Grid extends GridNode {
      * @return {Element|Node[]} - An array of XML grid rows, including resizers
      */
     getRows() {
-        return _.toArray(this.state.node.querySelectorAll(':scope > content > row, :scope > content > resizer'));
+        let selector = ':scope > content > row';
+        if (!this.isInOneScreenMode()) {
+            selector += ', :scope > content > resizer';
+        }
+        return _.toArray(this.state.node.querySelectorAll(selector));
+
+
     }
 
     /**
