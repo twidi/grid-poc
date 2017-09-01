@@ -797,8 +797,8 @@ class BaseMainGrid extends Grid {
         if (this.state.oneScreenMode) {
             const menuButtonId = `menu-button-${this.uuid}`;
             navBarSideMenu = [
-                <input type="checkbox" id={menuButtonId} />,
-                <label className="menu-button" key="menuButton" htmlFor={menuButtonId}>Menu</label>
+                <input type="checkbox" id={menuButtonId} key="menuButton" />,
+                <label className="menu-button" key="menuButtonLabel" htmlFor={menuButtonId}>Menu</label>
             ];
             containerChildren = (
                 <HammerComponent onSwipe={this.onSwipe} ref={this.saveGridContainerRef}>
