@@ -64,6 +64,7 @@ module.exports = {
                 ]
             }
         }),
+        new webpack.NamedModulesPlugin(),
         new CircularDependencyPlugin({
             exclude: /node_modules/,
             failOnError: false
