@@ -84,22 +84,26 @@ class BaseModuleHolder extends React.Component {
      * - the design mode is "enabled",so we make the element draggable
      * - the element is currently dragged, so we activate the dragleave event
      *
+     * These events are not activated if the grid is in one-screen mode
+     *
      * @return {object} - A "dict" with the attributes
      */
     getRenderAttrs() {
         const attrs = {};
 
-        if (Store.getDesignModeStep(this.props.gridName) === 'enabled') {
-            // design mode activated, we can activate dragging
-            attrs.draggable = true;
-            attrs.onDragStart = this.onDragStart;
+        if (!Store.isOneScreenMode(this.props.gridName)) {
+            if (Store.getDesignModeStep(this.props.gridName) === 'enabled') {
+                // design mode activated, we can activate dragging
+                attrs.draggable = true;
+                attrs.onDragStart = this.onDragStart;
 
-        } else if (Store.isDraggingCell(this.props.gridName, this.props.gridCell)) {
+            } else if (Store.isDraggingCell(this.props.gridName, this.props.gridCell)) {
 
-            // we are in design mode, at least dragging, but as the placeholder
-            // we'll hover will be replaced by the module holder, we'll have to
-            // leave the holder to tell the store that we left the placeholder
-            attrs.onDragLeave = this.onDragLeave;
+                // we are in design mode, at least dragging, but as the placeholder
+                // we'll hover will be replaced by the module holder, we'll have to
+                // leave the holder to tell the store that we left the placeholder
+                attrs.onDragLeave = this.onDragLeave;
+            }
         }
 
         return attrs;

@@ -105,6 +105,21 @@ describe('Grid.Components.ModuleHolder', () => {
         expect(attrs.onDragStart).toBe(component.onDragStart);
     });
 
+    it('should not make the dom node draggable in design mode if in one-screen-mode', () => {
+        const element = createCacheEntry().holderElement;
+        const component = componentUtils.renderIntoDocument(element).wrappedRef;
+
+        // dragging is only valid in design mode
+        Store.__private.enterOneScreenMode('Test grid');
+        Store.__private.setDesignModeStep('Test grid', 'enabled');
+
+        const attrs = component.getRenderAttrs();
+
+        expect(_.size(attrs)).toEqual(0);
+        expect(attrs.draggable).toBe(undefined);
+        expect(attrs.onDragStart).toBe(undefined);
+    });
+
     it('should handle the dragleave event if in dragging mode', () => {
         const element = createCacheEntry().holderElement;
         const component = componentUtils.renderIntoDocument(element).wrappedRef;
@@ -118,7 +133,6 @@ describe('Grid.Components.ModuleHolder', () => {
         expect(_.size(attrs)).toEqual(1);
         expect(attrs.onDragLeave).toBe(component.onDragLeave);
     });
-
 
     it('should attach the module component after being mounted', (done) => {
         jasmineReact.spyOnClass(ModuleHolder, 'attachExternalNode').and.callThrough();
@@ -136,7 +150,6 @@ describe('Grid.Components.ModuleHolder', () => {
             done();
         }, 0.01);
     });
-
 
     it('should detach/attach the module component during update', (done) => {
         jasmineReact.spyOnClass(ModuleHolder, 'attachExternalNode').and.callThrough();
@@ -185,7 +198,6 @@ describe('Grid.Components.ModuleHolder', () => {
         expect(moduleContainer.children[0].tagName).toEqual('DIV');
         expect(moduleContainer.children[0].className).toEqual('module');
     });
-
 
     it('should not return a module to attach if it\'s not a valid className', () => {
         const element = createCacheEntry().holderElement;
@@ -342,6 +354,5 @@ describe('Grid.Components.ModuleHolder', () => {
 
         }, 250);
     });
-
 
 });
