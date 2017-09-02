@@ -878,29 +878,34 @@ describe('Grid.Components.MainGrid', () => {
         // minimal required style for resize-detector
         domNode.style.position = 'relative';
 
+        const fakeEvent = {
+            preventDefault() {},
+            stopPropagation() {}
+        };
+
         // both bigger than threshold => multi screens mode
         domNode.style.width = '200px';
         domNode.style.height = '500px';
-        component.resizeDetectorRef.handleScroll();
+        component.resizeDetectorRef.handleScroll(fakeEvent);
         setTimeout(() => {
             expect(component.state.oneScreenMode).toBe(false);
 
             // width smaller than threshold and height bigger => one screen mode
             domNode.style.width = '50px';
-            component.resizeDetectorRef.handleScroll();
+            component.resizeDetectorRef.handleScroll(fakeEvent);
             setTimeout(() => {
                 expect(component.state.oneScreenMode).toBe(true);
 
                 // both exactly threshold => multi screens mode
                 domNode.style.width = '100px';
                 domNode.style.height = '400px';
-                component.resizeDetectorRef.handleScroll();
+                component.resizeDetectorRef.handleScroll(fakeEvent);
                 setTimeout(() => {
                     expect(component.state.oneScreenMode).toBe(false);
 
                     // width exactly threshold and height smaller => one screen mode
                     domNode.style.height = '300px';
-                    component.resizeDetectorRef.handleScroll();
+                    component.resizeDetectorRef.handleScroll(fakeEvent);
                     setTimeout(() => {
                         expect(component.state.oneScreenMode).toBe(true);
 
